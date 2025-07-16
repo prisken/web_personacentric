@@ -109,20 +109,27 @@ async function startServer() {
     await sequelize.sync({ alter: true });
     console.log('Database synced successfully.');
     
-    // Seed data if no users exist
-    const { User } = require('./models');
-    const userCount = await User.count();
-    if (userCount === 0) {
-      console.log('No users found, seeding database...');
-      const seedData = require('./seedData');
-      await seedData();
-      console.log('Database seeded successfully.');
-    }
-    
+    // Start server first, then seed data in background
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
+    
+    // Seed data if no users exist (in background)
+    setTimeout(async () => {
+      try {
+        const { User } = require('./models');
+        const userCount = await User.count();
+        if (userCount === 0) {
+          console.log('No users found, seeding database...');
+          const seedData = require('./seedData');
+          await seedData();
+          console.log('Database seeded successfully.');
+        }
+      } catch (error) {
+        console.error('Seeding error:', error);
+      }
+    }, 5000); // Wait 5 seconds before seeding
   } catch (error) {
     console.error('Unable to start server:', error);
     process.exit(1);
