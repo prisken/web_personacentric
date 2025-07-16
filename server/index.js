@@ -45,7 +45,7 @@ app.use('/api/', limiter);
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] 
+    ? [process.env.CORS_ORIGIN || 'https://web-personacentric.vercel.app'] 
     : ['http://localhost:3000'],
   credentials: true
 }));
