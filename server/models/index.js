@@ -1,17 +1,4 @@
-const { Sequelize } = require('sequelize');
-const path = require('path');
-
-// Database configuration
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.join(__dirname, '../../database.sqlite'),
-  logging: process.env.NODE_ENV === 'development' ? console.log : false,
-  define: {
-    timestamps: true,
-    underscored: true,
-    freezeTableName: true
-  }
-});
+const sequelize = require('../config/database');
 
 // Import models
 const User = require('./User');
@@ -26,13 +13,15 @@ const QuizResponse = require('./QuizResponse');
 const QuizSession = require('./QuizSession');
 const Contest = require('./Contest');
 const ContestSubmission = require('./ContestSubmission');
-const PointsTransaction = require('./PointsTransaction');
+const PointTransaction = require('./PointTransaction');
+const PaymentTransaction = require('./PaymentTransaction');
 const Subscription = require('./Subscription');
 const AccessCode = require('./AccessCode');
 const Notification = require('./Notification');
 const EventRegistration = require('./EventRegistration');
 const AgentReview = require('./AgentReview');
 const AgentClientRelationship = require('./AgentClientRelationship');
+const ClientUpgrade = require('./ClientUpgrade');
 
 // Define associations
 // User associations
@@ -41,7 +30,8 @@ User.hasMany(Event, { foreignKey: 'created_by', as: 'createdEvents' });
 User.hasMany(BlogPost, { foreignKey: 'author_id', as: 'blogPosts' });
 User.hasMany(Contest, { foreignKey: 'created_by', as: 'createdContests' });
 User.hasMany(ContestSubmission, { foreignKey: 'user_id', as: 'contestSubmissions' });
-User.hasMany(PointsTransaction, { foreignKey: 'user_id', as: 'pointsTransactions' });
+User.hasMany(PointTransaction, { foreignKey: 'user_id', as: 'pointTransactions' });
+User.hasMany(PaymentTransaction, { foreignKey: 'user_id', as: 'paymentTransactions' });
 User.hasMany(Subscription, { foreignKey: 'user_id', as: 'subscriptions' });
 User.hasMany(AccessCode, { foreignKey: 'user_id', as: 'accessCodes' });
 User.hasMany(AccessCode, { foreignKey: 'created_by', as: 'createdAccessCodes' });
@@ -51,6 +41,7 @@ User.hasMany(AgentReview, { foreignKey: 'reviewer_id', as: 'reviews' });
 User.hasMany(AgentClientRelationship, { foreignKey: 'client_id', as: 'clientRelationships' });
 User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
 User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
+User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
 
 // Agent associations
 Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -96,8 +87,14 @@ QuizResponse.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 QuizSession.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-// Points and subscriptions
-PointsTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+// Points and payments
+PointTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+PointTransaction.belongsTo(PaymentTransaction, { foreignKey: 'payment_transaction_id', as: 'paymentTransaction' });
+
+PaymentTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+PaymentTransaction.belongsTo(Subscription, { foreignKey: 'subscription_id', as: 'subscription' });
+
+// Subscriptions
 Subscription.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Access codes
@@ -119,6 +116,10 @@ AgentReview.belongsTo(User, { foreignKey: 'reviewer_id', as: 'reviewer' });
 AgentClientRelationship.belongsTo(Agent, { foreignKey: 'agent_id', as: 'agent' });
 AgentClientRelationship.belongsTo(User, { foreignKey: 'client_id', as: 'client' });
 
+// Client upgrade
+ClientUpgrade.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+ClientUpgrade.belongsTo(User, { foreignKey: 'reviewed_by', as: 'reviewer' });
+
 module.exports = {
   sequelize,
   User,
@@ -133,11 +134,13 @@ module.exports = {
   QuizSession,
   Contest,
   ContestSubmission,
-  PointsTransaction,
+  PointTransaction,
+  PaymentTransaction,
   Subscription,
   AccessCode,
   Notification,
   EventRegistration,
   AgentReview,
-  AgentClientRelationship
+  AgentClientRelationship,
+  ClientUpgrade
 }; 

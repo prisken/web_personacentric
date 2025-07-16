@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const { sequelize } = require('./index');
+const sequelize = require('../config/database');
 
 const BlogPostCategory = sequelize.define('BlogPostCategory', {
   blog_post_id: {

@@ -17,11 +17,17 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import PricingPage from './pages/PricingPage';
 import HelpCenterPage from './pages/HelpCenterPage';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
     <LanguageProvider>
-      <Router>
+      <Router
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <ScrollToTop />
         <div className="min-h-screen flex flex-col">
           <Header />
@@ -38,6 +44,7 @@ function App() {
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/pricing" element={<PricingPage />} />
               <Route path="/help" element={<HelpCenterPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
             </Routes>
           </main>
           <Footer />

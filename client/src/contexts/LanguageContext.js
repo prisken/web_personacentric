@@ -10,6 +10,9 @@ export const useLanguage = () => {
   return context;
 };
 
+// Alias for useTranslation to maintain compatibility
+export const useTranslation = useLanguage;
+
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('language') || 'zh-TW';
@@ -184,7 +187,7 @@ export const LanguageProvider = ({ children }) => {
       'pricing.pointsWorkAnswer': '每次成功的HKD$10付款都會獲得500積分。管理員授予的訪問權限不提供積分。',
       'pricing.enterprise': '需要自定義解決方案？',
       'pricing.enterpriseSubtitle': '我們為大型組織提供企業計劃，具有自定義功能和專用支持。',
-      'pricing.contactSales': '聯絡銷售',
+      'pricing.contactEnterprise': '聯絡銷售',
 
       // AI Trial Page
       'aiTrial.title': 'AI 內容生成器試用',
@@ -198,6 +201,131 @@ export const LanguageProvider = ({ children }) => {
       'aiTrial.investment': '投資',
       'aiTrial.retirement': '退休規劃',
       'aiTrial.realEstate': '房地產',
+
+      // Dashboard
+      'dashboard.admin.title': '管理員儀表板',
+      'dashboard.admin.subtitle': '平台管理和監控',
+      'dashboard.admin.totalUsers': '總用戶數',
+      'dashboard.admin.totalAgents': '總顧問數',
+      'dashboard.admin.monthlyRevenue': '月收入',
+      'dashboard.admin.pendingApprovals': '待審核',
+      'dashboard.admin.recentUsers': '最近用戶',
+      'dashboard.admin.recentPayments': '最近付款',
+      'dashboard.admin.notifications': '通知',
+      'dashboard.admin.noRecentUsers': '沒有最近的用戶',
+      'dashboard.admin.noRecentPayments': '沒有最近的付款',
+
+      'dashboard.agent.title': '顧問儀表板',
+      'dashboard.agent.subtitle': '管理您的客戶和業務',
+      'dashboard.agent.totalCommission': '總佣金',
+      'dashboard.agent.activeClients': '活躍客戶',
+      'dashboard.agent.hostedEvents': '舉辦活動',
+      'dashboard.agent.pointsBalance': '積分餘額',
+      'dashboard.agent.clientRelationships': '客戶關係',
+      'dashboard.agent.recentEvents': '最近活動',
+      'dashboard.agent.recentPointTransactions': '最近積分交易',
+      'dashboard.agent.notifications': '通知',
+      'dashboard.agent.noClients': '沒有客戶',
+      'dashboard.agent.noClientsDescription': '開始建立您的客戶網絡',
+      'dashboard.agent.noEvents': '沒有活動',
+      'dashboard.agent.noEventsDescription': '創建您的第一個活動',
+
+      'dashboard.client.title': '客戶儀表板',
+      'dashboard.client.subtitle': '管理您的活動和積分',
+      'dashboard.client.eventsAttended': '參加活動',
+      'dashboard.client.pointsEarned': '獲得積分',
+      'dashboard.client.pointsBalance': '積分餘額',
+      'dashboard.client.contestsParticipated': '參與競賽',
+      'dashboard.client.registeredEvents': '已註冊活動',
+      'dashboard.client.availableEvents': '可用活動',
+      'dashboard.client.upgradeApplication': '升級申請',
+      'dashboard.client.applicationStatus': '申請狀態',
+      'dashboard.client.recentPointTransactions': '最近積分交易',
+      'dashboard.client.contestParticipations': '競賽參與',
+      'dashboard.client.notifications': '通知',
+      'dashboard.client.noRegisteredEvents': '沒有註冊的活動',
+      'dashboard.client.noRegisteredEventsDescription': '註冊您的第一個活動',
+      'dashboard.client.noAvailableEvents': '沒有可用活動',
+      'dashboard.client.noAvailableEventsDescription': '稍後再來查看新活動',
+
+      // Common
+      'common.refresh': '重新整理',
+      'common.register': '註冊',
+      'common.retry': '重試',
+      'common.loading': '載入中...',
+      'common.error': '錯誤',
+      'common.success': '成功',
+      'common.cancel': '取消',
+      'common.save': '儲存',
+      'common.edit': '編輯',
+      'common.delete': '刪除',
+      'common.view': '查看',
+      'common.back': '返回',
+      'common.next': '下一步',
+      'common.previous': '上一步',
+      'common.submit': '提交',
+      'common.confirm': '確認',
+      'common.close': '關閉',
+
+      // Roles
+      'roles.admin': '管理員',
+      'roles.agent': '顧問',
+      'roles.client': '客戶',
+
+      // Payment Status
+      'payment.status.completed': '已完成',
+      'payment.status.pending': '待處理',
+      'payment.status.failed': '失敗',
+      'payment.status.refunded': '已退款',
+
+      // Relationship Status
+      'relationship.status.active': '活躍',
+      'relationship.status.prospective': '潛在',
+      'relationship.status.inactive': '非活躍',
+      'relationship.status.completed': '已完成',
+
+      // Event Status
+      'event.status.upcoming': '即將舉行',
+      'event.status.ongoing': '進行中',
+      'event.status.completed': '已完成',
+
+      // Registration Status
+      'registration.status.registered': '已註冊',
+      'registration.status.attended': '已參加',
+      'registration.status.cancelled': '已取消',
+      'registration.status.no_show': '未出席',
+
+      // Transaction Types
+      'transaction.type.earned': '獲得',
+      'transaction.type.spent': '消費',
+      'transaction.type.bonus': '獎勵',
+      'transaction.type.penalty': '扣除',
+      'transaction.type.payment_reward': '付款獎勵',
+
+      // Contest Categories
+      'contest.category.social_media': '社群媒體',
+      'contest.category.blog_article': '部落格文章',
+      'contest.category.poster_design': '海報設計',
+      'contest.category.video_content': '影片內容',
+      'contest.category.email_campaign': '電子郵件行銷',
+      'contest.category.infographic': '資訊圖表',
+
+      // Contest Status
+      'contest.status.pending': '待審核',
+      'contest.status.approved': '已核准',
+      'contest.status.rejected': '已拒絕',
+      'contest.status.winner': '得獎者',
+
+      // Upgrade Status
+      'upgrade.status.pending': '待審核',
+      'upgrade.status.approved': '已核准',
+      'upgrade.status.rejected': '已拒絕',
+      'upgrade.status.under_review': '審核中',
+
+      // Dashboard Error Messages
+      'dashboard.error': '載入儀表板時發生錯誤',
+      'dashboard.noData': '沒有可用的儀表板數據',
+      'dashboard.unknownRole': '未知的用戶角色',
       'aiTrial.contentType': '內容類型',
       'aiTrial.socialMedia': '社群媒體貼文',
       'aiTrial.blog': '部落格文章',
@@ -226,6 +354,7 @@ export const LanguageProvider = ({ children }) => {
 
       // Login Page
       'login.title': '登入',
+      'login.subtitle': '登入您的帳戶',
       'login.email': '電子郵件',
       'login.password': '密碼',
       'login.rememberMe': '記住我',
@@ -473,7 +602,7 @@ export const LanguageProvider = ({ children }) => {
       'pricing.pointsWorkAnswer': 'Each successful HKD$10 payment awards 500 points. Admin-granted access does not provide points.',
       'pricing.enterprise': 'Need a Custom Solution?',
       'pricing.enterpriseSubtitle': 'We offer enterprise plans for large organizations with custom features and dedicated support.',
-      'pricing.contactSales': 'Contact Sales',
+      'pricing.contactEnterprise': 'Contact Sales',
 
       // AI Trial Page
       'aiTrial.title': 'AI Content Generator Trial',

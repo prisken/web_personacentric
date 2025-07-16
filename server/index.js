@@ -16,10 +16,10 @@ const blogRoutes = require('./routes/blogs');
 const contestRoutes = require('./routes/contests');
 const aiRoutes = require('./routes/ai');
 const paymentRoutes = require('./routes/payments');
-const adminRoutes = require('./routes/admin');
+const dashboardRoutes = require('./routes/dashboard');
 
 // Import database
-const { sequelize } = require('./models');
+const sequelize = require('./config/database');
 
 // Security middleware
 app.use(helmet({
@@ -65,7 +65,7 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/contests', contestRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/payments', paymentRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
