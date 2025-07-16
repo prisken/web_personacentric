@@ -105,10 +105,18 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('Database connection established successfully.');
     
-    // Sync database (in development)
-    if (process.env.NODE_ENV === 'development') {
-      await sequelize.sync({ alter: true });
-      console.log('Database synced successfully.');
+    // Sync database (create tables if they don't exist)
+    await sequelize.sync({ alter: true });
+    console.log('Database synced successfully.');
+    
+    // Seed data if no users exist
+    const { User } = require('./models');
+    const userCount = await User.count();
+    if (userCount === 0) {
+      console.log('No users found, seeding database...');
+      const seedData = require('./seedData');
+      await seedData();
+      console.log('Database seeded successfully.');
     }
     
     app.listen(PORT, () => {
