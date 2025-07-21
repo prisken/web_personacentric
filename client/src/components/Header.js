@@ -34,11 +34,24 @@ const Header = () => {
   // Check if we're on a dashboard page
   const isDashboardPage = location.pathname === '/dashboard';
 
+  // Check if we're on a page with dark/gradient sections at the top
+  const hasDarkTopSection = [
+    '/',
+    '/about',
+    '/pricing',
+    '/blogs',
+    '/ai-trial',
+    '/contests',
+    '/events',
+    '/agent-matching',
+    '/help-center'
+  ].includes(location.pathname);
+
   const headerClasses = `
     fixed top-0 w-full z-50 transition-all duration-300
     ${isScrolled 
       ? 'bg-gray-900 shadow-lg' 
-      : isOverHero && !isDashboardPage
+      : isOverHero && hasDarkTopSection && !isDashboardPage
         ? 'bg-transparent' 
         : 'bg-white shadow-sm border-b border-gray-200'
     }
@@ -48,7 +61,7 @@ const Header = () => {
     transition-colors duration-300
     ${isScrolled 
       ? 'text-white' 
-      : isOverHero && !isDashboardPage
+      : isOverHero && hasDarkTopSection && !isDashboardPage
         ? 'text-white' 
         : 'text-gray-700'
     }
@@ -58,7 +71,7 @@ const Header = () => {
     transition-colors duration-200
     ${isScrolled 
       ? 'hover:text-blue-300' 
-      : isOverHero && !isDashboardPage
+      : isOverHero && hasDarkTopSection && !isDashboardPage
         ? 'hover:text-blue-200' 
         : 'hover:text-blue-600'
     }
@@ -163,7 +176,7 @@ const Header = () => {
                   className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
                     isScrolled 
                       ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                      : isOverHero && !isDashboardPage
+                      : isOverHero && hasDarkTopSection && !isDashboardPage
                         ? 'bg-white text-gray-900 hover:bg-gray-100' 
                         : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
@@ -189,7 +202,7 @@ const Header = () => {
             <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t ${
               isScrolled 
                 ? 'bg-gray-900 border-gray-700' 
-                : isOverHero && !isDashboardPage
+                : isOverHero && hasDarkTopSection && !isDashboardPage
                   ? 'bg-black bg-opacity-50 border-gray-600' 
                   : 'bg-white border-gray-200'
             }`}>
@@ -240,7 +253,7 @@ const Header = () => {
                       className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${
                         isScrolled 
                           ? 'text-blue-400 hover:text-blue-300' 
-                          : isOverHero && !isDashboardPage
+                          : isOverHero && hasDarkTopSection && !isDashboardPage
                             ? 'text-blue-200 hover:text-blue-100' 
                             : 'text-blue-600 hover:text-blue-700'
                       }`}
