@@ -33,7 +33,6 @@ const ClientDashboard = ({ data, onRefresh }) => {
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'points', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
-    { id: 'learning', label: '學習進度', icon: '📚' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
@@ -456,49 +455,6 @@ const ClientDashboard = ({ data, onRefresh }) => {
                     <p className="mt-2">暫無競賽參與記錄</p>
                   </div>
                 )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Learning Progress Tab */}
-        {activeTab === 'learning' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">學習進度</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-blue-600">
-                    {data.statistics?.total_events_attended || 0}
-                  </p>
-                  <p className="text-sm text-gray-500">參與活動</p>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-green-600">
-                    {data.statistics?.contests_participated || 0}
-                  </p>
-                  <p className="text-sm text-gray-500">競賽參與</p>
-                </div>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <p className="text-3xl font-bold text-purple-600">
-                    {Math.floor((data.statistics?.total_points_earned || 0) / 100)}
-                  </p>
-                  <p className="text-sm text-gray-500">學習等級</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">成就徽章</h3>
-              </div>
-              <div className="p-6">
-                <div className="text-center text-gray-500 py-8">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                  </svg>
-                  <p className="mt-2">暫無成就徽章</p>
-                </div>
               </div>
             </div>
           </div>
