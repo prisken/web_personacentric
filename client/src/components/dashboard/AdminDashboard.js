@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 
@@ -10,6 +10,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
   const [accessCodes, setAccessCodes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -22,15 +23,35 @@ const AdminDashboard = ({ data, onRefresh }) => {
     return new Date(dateString).toLocaleDateString('zh-TW');
   };
 
+  const fetchUsers = async () => {
+    try {
+      const response = await apiService.get('/admin/users');
+      if (response.success) {
+        setUsers(response.users);
+      }
+    } catch (error) {
+      console.error('Fetch users error:', error);
+    }
+  };
+
+  // Fetch users when component mounts and when users tab is active
+  useEffect(() => {
+    if (activeTab === 'users') {
+      fetchUsers();
+    }
+  }, [activeTab]);
+
   const handleUserAction = async (userId, action, newRole = null) => {
     try {
       setLoading(true);
       if (action === 'delete') {
         if (window.confirm('確定要刪除此用戶嗎？此操作無法撤銷。')) {
           await apiService.delete(`/admin/users/${userId}`);
+          await fetchUsers(); // Refresh users list
         }
       } else if (action === 'updateRole' && newRole) {
         await apiService.put(`/admin/users/${userId}/role`, { role: newRole });
+        await fetchUsers(); // Refresh users list
       }
       onRefresh();
     } catch (error) {
@@ -304,54 +325,54 @@ const AdminDashboard = ({ data, onRefresh }) => {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {data.recent_users?.map((user) => (
-                    <tr key={user.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                            <span className="text-sm font-medium text-gray-600">
-                              {user.first_name.charAt(0)}{user.last_name.charAt(0)}
-                            </span>
-                          </div>
-                          <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {user.first_name} {user.last_name}
+                                  <tbody className="bg-white divide-y divide-gray-200">
+                    {users.map((user) => (
+                      <tr key={user.id}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center">
+                            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                              <span className="text-sm font-medium text-gray-600">
+                                {user.first_name.charAt(0)}{user.last_name.charAt(0)}
+                              </span>
                             </div>
-                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="ml-4">
+                              <div className="text-sm font-medium text-gray-900">
+                                {user.first_name} {user.last_name}
+                              </div>
+                              <div className="text-sm text-gray-500">{user.email}</div>
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <select
-                          value={user.role}
-                          onChange={(e) => handleUserAction(user.id, 'updateRole', e.target.value)}
-                          className="text-sm border border-gray-300 rounded px-2 py-1"
-                        >
-                          <option value="client">客戶</option>
-                          <option value="agent">顧問</option>
-                          <option value="admin">管理員</option>
-                        </select>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                          活躍
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(user.created_at)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => handleUserAction(user.id, 'delete')}
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          刪除
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <select
+                            value={user.role}
+                            onChange={(e) => handleUserAction(user.id, 'updateRole', e.target.value)}
+                            className="text-sm border border-gray-300 rounded px-2 py-1"
+                          >
+                            <option value="client">客戶</option>
+                            <option value="agent">顧問</option>
+                            <option value="admin">管理員</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+                            活躍
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(user.created_at)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                          <button
+                            onClick={() => handleUserAction(user.id, 'delete')}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            刪除
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
               </table>
             </div>
           </div>

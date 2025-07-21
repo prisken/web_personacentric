@@ -34,31 +34,27 @@ class DashboardController {
       // Role-specific data
       switch (userRole) {
         case 'admin':
+          // Get real user statistics
+          const totalUsers = await User.count();
+          const totalAgents = await User.count({ where: { role: 'agent' } });
+          const totalClients = await User.count({ where: { role: 'client' } });
+          
+          // Get recent users (last 10)
+          const recentUsers = await User.findAll({
+            attributes: ['id', 'first_name', 'last_name', 'email', 'role', 'created_at'],
+            order: [['created_at', 'DESC']],
+            limit: 10
+          });
+
           dashboardData.statistics = {
-            total_users: 5,
-            total_agents: 2,
-            monthly_revenue: 2000,
+            total_users: totalUsers,
+            total_agents: totalAgents,
+            total_clients: totalClients,
+            monthly_revenue: 2000, // This would need to be calculated from actual payments
             pending_upgrades: 1,
             pending_contests: 0
           };
-          dashboardData.recent_users = [
-            {
-              id: '1',
-              first_name: '張',
-              last_name: '顧問',
-              email: 'agent1@personacentric.com',
-              role: 'agent',
-              created_at: new Date('2024-01-15')
-            },
-            {
-              id: '2',
-              first_name: '王',
-              last_name: '客戶',
-              email: 'client1@personacentric.com',
-              role: 'client',
-              created_at: new Date('2024-01-20')
-            }
-          ];
+          dashboardData.recent_users = recentUsers;
           dashboardData.recent_payments = [
             {
               id: '1',
