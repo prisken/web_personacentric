@@ -13,7 +13,6 @@ const Header = () => {
   const location = useLocation();
 
   const navItems = [
-    { key: 'nav.home', path: '/', label: t('nav.home') },
     { key: 'nav.events', path: '/events', label: t('nav.events') },
     { key: 'nav.agentPairing', path: '/agent-matching', label: t('nav.agentPairing') },
     { key: 'nav.contentGenerator', path: '/ai-trial', label: t('nav.contentGenerator') },
