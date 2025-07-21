@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 
 const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
@@ -11,6 +13,9 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const [accessCodes, setAccessCodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -40,6 +45,42 @@ const AdminDashboard = ({ data, onRefresh }) => {
       fetchUsers();
     }
   }, [activeTab]);
+
+  // Fetch events when events tab is active
+  useEffect(() => {
+    if (activeTab === 'events') {
+      fetchEvents();
+    }
+  }, [activeTab]);
+
+  const fetchEvents = async () => {
+    try {
+      const response = await apiService.getEvents();
+      if (response.success) {
+        setEvents(response.events);
+      }
+    } catch (error) {
+      console.error('Fetch events error:', error);
+    }
+  };
+
+  const handleEventAction = async (eventId, action) => {
+    try {
+      setLoading(true);
+      if (action === 'delete') {
+        if (window.confirm('確定要刪除此活動嗎？此操作無法撤銷。')) {
+          await apiService.deleteEvent(eventId);
+          await fetchEvents(); // Refresh events list
+        }
+      }
+      onRefresh();
+    } catch (error) {
+      console.error('Event action error:', error);
+      alert('操作失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleUserAction = async (userId, action, newRole = null) => {
     try {
@@ -373,6 +414,105 @@ const AdminDashboard = ({ data, onRefresh }) => {
                       </tr>
                     ))}
                   </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Events Management Tab */}
+        {activeTab === 'events' && (
+          <div className="bg-white rounded-lg shadow">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-medium text-gray-900">活動管理</h3>
+                <button
+                  onClick={() => navigate('/admin/events')}
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                >
+                  新增活動
+                </button>
+              </div>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      活動
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      類型
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      日期
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      狀態
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      參與人數
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      操作
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {events.map((event) => (
+                    <tr key={event.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {event.title}
+                          </div>
+                          <div className="text-sm text-gray-500">{event.location || '線上活動'}</div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
+                          {event.event_type === 'workshop' ? '工作坊' :
+                           event.event_type === 'seminar' ? '研討會' :
+                           event.event_type === 'consultation' ? '諮詢' :
+                           event.event_type === 'webinar' ? '網路研討會' : event.event_type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {formatDate(event.start_date)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          event.status === 'published' ? 'bg-green-100 text-green-800' :
+                          event.status === 'draft' ? 'bg-gray-100 text-gray-800' :
+                          event.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {event.status === 'published' ? '已發布' :
+                           event.status === 'draft' ? '草稿' :
+                           event.status === 'cancelled' ? '已取消' : event.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {event.current_participants || 0}/{event.max_participants || '∞'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => navigate(`/admin/events/${event.id}`)}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            編輯
+                          </button>
+                          <button
+                            onClick={() => handleEventAction(event.id, 'delete')}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            刪除
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>

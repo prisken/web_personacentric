@@ -19,6 +19,7 @@ import RegisterPage from './pages/RegisterPage';
 import PricingPage from './pages/PricingPage';
 import HelpCenterPage from './pages/HelpCenterPage';
 import DashboardPage from './pages/DashboardPage';
+import AdminEventPage from './pages/AdminEventPage';
 
 function App() {
   return (
@@ -47,6 +48,8 @@ function App() {
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/help" element={<HelpCenterPage />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/admin/events" element={<AdminEventPage />} />
+                <Route path="/admin/events/:id" element={<AdminEventPage />} />
               </Routes>
             </main>
             <Footer />
