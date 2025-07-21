@@ -7,6 +7,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [showEventModal, setShowEventModal] = useState(false);
   const [showBlogModal, setShowBlogModal] = useState(false);
+  const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const formatCurrency = (amount) => {
