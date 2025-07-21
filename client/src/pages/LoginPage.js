@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import apiService from '../services/api';
+import { useUser } from '../contexts/UserContext';
 
 const LoginPage = () => {
   const { t, language } = useLanguage();
+  const { login } = useUser();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: '',
@@ -20,15 +21,12 @@ const LoginPage = () => {
     setError('');
     
     try {
-      console.log('Login attempt:', formData);
-      const response = await apiService.login(formData);
-      console.log('Login response:', response);
+      const result = await login(formData);
       
-      if (response.success) {
-        // Redirect to dashboard based on user role
+      if (result.success) {
         navigate('/dashboard');
       } else {
-        setError(response.error || 'Login failed');
+        setError(result.error || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -43,12 +41,12 @@ const LoginPage = () => {
     setError('');
     
     try {
-      const response = await apiService.login({ email, password, rememberMe: false });
+      const result = await login({ email, password, rememberMe: false });
       
-      if (response.success) {
+      if (result.success) {
         navigate('/dashboard');
       } else {
-        setError(response.error || 'Login failed');
+        setError(result.error || 'Login failed');
       }
     } catch (error) {
       console.error('Quick login error:', error);

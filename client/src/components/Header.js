@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useUser } from '../contexts/UserContext';
 
 const Header = () => {
   const { t, language, toggleLanguage } = useLanguage();
+  const { user, logout } = useUser();
+  const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverHero, setIsOverHero] = useState(false);
@@ -62,6 +65,27 @@ const Header = () => {
     }
   `;
 
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setIsMobileMenuOpen(false);
+  };
+
+  const getUserDisplayName = () => {
+    if (!user) return '';
+    return `${user.first_name} ${user.last_name}`;
+  };
+
+  const getUserRoleLabel = () => {
+    if (!user) return '';
+    switch (user.role) {
+      case 'admin': return '👑 管理員';
+      case 'agent': return '👨‍💼 顧問';
+      case 'client': return '👤 客戶';
+      default: return user.role;
+    }
+  };
+
   return (
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,6 +113,14 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
+            {user && (
+              <Link
+                to="/dashboard"
+                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses}`}
+              >
+                📊 儀表板
+              </Link>
+            )}
           </nav>
 
           {/* Language Switcher & Auth Buttons */}
@@ -101,27 +133,46 @@ const Header = () => {
               {language === 'zh-TW' ? 'EN' : '中文'}
             </button>
 
-            {/* Auth Buttons */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <Link
-                to="/login"
-                className={`font-medium text-sm ${textClasses} ${hoverClasses}`}
-              >
-                {t('nav.login')}
-              </Link>
-              <Link
-                to="/register"
-                className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
-                  isScrolled 
-                    ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                    : isOverHero 
-                      ? 'bg-white text-gray-900 hover:bg-gray-100' 
-                      : 'bg-blue-600 text-white hover:bg-blue-700'
-                }`}
-              >
-                {t('nav.register')}
-              </Link>
-            </div>
+            {/* User Info & Auth Buttons */}
+            {user ? (
+              <div className="hidden sm:flex items-center space-x-3">
+                <div className="text-right">
+                  <div className={`text-sm font-medium ${textClasses}`}>
+                    {getUserDisplayName()}
+                  </div>
+                  <div className="text-xs text-gray-500">
+                    {getUserRoleLabel()}
+                  </div>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className={`font-medium text-sm ${textClasses} ${hoverClasses}`}
+                >
+                  登出
+                </button>
+              </div>
+            ) : (
+              <div className="hidden sm:flex items-center space-x-2">
+                <Link
+                  to="/login"
+                  className={`font-medium text-sm ${textClasses} ${hoverClasses}`}
+                >
+                  {t('nav.login')}
+                </Link>
+                <Link
+                  to="/register"
+                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
+                    isScrolled 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      : isOverHero && !isDashboardPage
+                        ? 'bg-white text-gray-900 hover:bg-gray-100' 
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}
+                >
+                  {t('nav.register')}
+                </Link>
+              </div>
+            )}
 
             {/* Mobile Menu Button */}
             <button
@@ -139,7 +190,7 @@ const Header = () => {
             <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t ${
               isScrolled 
                 ? 'bg-gray-900 border-gray-700' 
-                : isOverHero 
+                : isOverHero && !isDashboardPage
                   ? 'bg-black bg-opacity-50 border-gray-600' 
                   : 'bg-white border-gray-200'
             }`}>
@@ -153,27 +204,53 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-4 border-t border-gray-200">
+              {user && (
                 <Link
-                  to="/login"
+                  to="/dashboard"
                   className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t('nav.login')}
+                  📊 儀表板
                 </Link>
-                <Link
-                  to="/register"
-                  className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${
-                    isScrolled 
-                      ? 'text-blue-400 hover:text-blue-300' 
-                      : isOverHero 
-                        ? 'text-blue-200 hover:text-blue-100' 
-                        : 'text-blue-600 hover:text-blue-700'
-                  }`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t('nav.register')}
-                </Link>
+              )}
+              <div className="pt-4 border-t border-gray-200">
+                {user ? (
+                  <>
+                    <div className={`px-3 py-2 text-sm ${textClasses}`}>
+                      <div className="font-medium">{getUserDisplayName()}</div>
+                      <div className="text-xs text-gray-500">{getUserRoleLabel()}</div>
+                    </div>
+                    <button
+                      onClick={handleLogout}
+                      className={`block w-full text-left px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                    >
+                      登出
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      to="/login"
+                      className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {t('nav.login')}
+                    </Link>
+                    <Link
+                      to="/register"
+                      className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${
+                        isScrolled 
+                          ? 'text-blue-400 hover:text-blue-300' 
+                          : isOverHero && !isDashboardPage
+                            ? 'text-blue-200 hover:text-blue-100' 
+                            : 'text-blue-600 hover:text-blue-700'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {t('nav.register')}
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </div>
