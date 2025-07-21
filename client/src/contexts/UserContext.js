@@ -58,6 +58,22 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const register = async (userData) => {
+    try {
+      const response = await apiService.register(userData);
+      if (response.success) {
+        setUser(response.user);
+        localStorage.setItem('token', response.token);
+        return { success: true };
+      } else {
+        return { success: false, error: response.error };
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      return { success: false, error: error.message || 'Registration failed' };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('token');
@@ -67,6 +83,7 @@ export const UserProvider = ({ children }) => {
     user,
     loading,
     login,
+    register,
     logout,
     fetchCurrentUser
   };

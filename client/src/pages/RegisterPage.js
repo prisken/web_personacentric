@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useUser } from '../contexts/UserContext';
 
 const RegisterPage = () => {
   const { t, language } = useLanguage();
+  const { register } = useUser();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -13,11 +16,60 @@ const RegisterPage = () => {
     role: 'client',
     terms: false
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log('Registration attempt:', formData);
+    setLoading(true);
+    setError('');
+
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('密碼確認不匹配');
+      setLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (formData.password.length < 6) {
+      setError('密碼至少需要6個字符');
+      setLoading(false);
+      return;
+    }
+
+    // Validate terms acceptance
+    if (!formData.terms) {
+      setError('請接受服務條款');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Prepare registration data
+      const registrationData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role
+      };
+
+      // Register the user
+      const result = await register(registrationData);
+      
+      if (result.success) {
+        // Registration successful, redirect to dashboard
+        navigate('/dashboard');
+      } else {
+        setError(result.error || '註冊失敗');
+      }
+    } catch (error) {
+      console.error('Registration error:', error);
+      setError(error.message || '註冊失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -167,12 +219,19 @@ const RegisterPage = () => {
               </label>
             </div>
 
+            {error && (
+              <div className="text-red-600 text-sm text-center">
+                {error}
+              </div>
+            )}
+
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading}
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {t('register.submit')}
+                {loading ? '註冊中...' : t('register.submit')}
               </button>
             </div>
           </form>
