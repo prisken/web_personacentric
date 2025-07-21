@@ -1,0 +1,367 @@
+PERSONA CENTRIC - SITE TEXT REVIEW (ENGLISH)
+=============================================
+
+NAVIGATION & HEADER
+===================
+- Logo: "Persona Centric"
+- Navigation Items:
+  * Events
+  * Agent Pairing
+  * Content Generator
+  * Blogs
+  * Contests
+- Language Toggle: "EN" / "中文"
+- Auth Buttons:
+  * Login
+  * Register
+  * Dashboard (when logged in)
+  * Logout (when logged in)
+- User Info Display (when logged in):
+  * User name
+  * Role labels: "👑 Admin", "👨‍💼 Agent", "👤 Client"
+
+HOME PAGE
+=========
+Hero Section:
+- Title: "Your Financial Future Starts Here"
+- Subtitle: "AI-powered platform connecting you with expert financial advisors"
+- CTA: "Explore Events"
+- Alternative titles:
+  * "Find Your Perfect Financial Advisor"
+  * "AI Content Creation in 2 Minutes"
+- Alternative subtitles:
+  * "AI-powered matching to connect you with the right professional"
+  * "Generate professional financial content instantly"
+- Alternative CTAs:
+  * "Start Matching"
+  * "Try AI Tool"
+
+Small CTA Section:
+- Title: "Get the right agent and double your investment!"
+- Button: "Find Your Perfect Match"
+
+Proof of Concept Section:
+- Title: "Proof of Concept"
+- Subtitle: "Real results from our platform"
+- Statistics:
+  * "30" - "Active Financial Advisors"
+  * "1,250+" - "Successful Clients Served"
+  * "85%" - "Average Investment Growth"
+
+Contest Winners Section:
+- Title: "Latest Contest Winners"
+- Subtitle: "Celebrating creative financial content"
+- Contest Types:
+  * "Social Media Post"
+  * "Blog Article"
+  * "Poster Design"
+  * "Video Content"
+- Content descriptions:
+  * "Best viral post about financial literacy"
+  * "Insightful blog on investment strategies"
+  * "Creative poster for retirement planning"
+  * "Engaging video on insurance basics"
+
+Testimonials Section:
+- Title: "What Our Clients Say"
+- Subtitle: "Real stories from real people"
+- Testimonial quotes and names
+
+Features Section:
+- Title: "Why Choose Persona Centric?"
+- Feature cards with titles and descriptions
+
+ABOUT PAGE
+==========
+Hero Section:
+- Title: "About Persona Centric"
+- Subtitle: "Revolutionizing financial advisory through AI and human expertise"
+
+Mission Section:
+- Title: "Our Mission"
+- Description text
+
+Vision Section:
+- Title: "Our Vision"
+- Description text
+
+Values Section:
+- Title: "Our Values"
+- Value items with descriptions
+
+Team Section:
+- Title: "Meet Our Team"
+- Team member names and roles
+
+EVENTS PAGE
+===========
+Hero Section:
+- Title: "Financial Events & Workshops"
+- Subtitle: "Learn from experts and grow your wealth"
+
+Event Categories:
+- "Investment Strategies"
+- "Retirement Planning"
+- "Insurance Basics"
+- "Tax Optimization"
+
+Event Cards:
+- Event titles
+- Descriptions
+- Dates and times
+- Location information
+- Registration buttons
+
+AGENT MATCHING PAGE
+===================
+Hero Section:
+- Title: "Find Your Perfect Financial Advisor"
+- Subtitle: "AI-powered matching for personalized financial guidance"
+
+Matching Process:
+- Step titles and descriptions
+- Form labels and placeholders
+
+Agent Profiles:
+- Agent names and specializations
+- Experience and certifications
+- Bio descriptions
+
+AI TRIAL PAGE
+=============
+Hero Section:
+- Title: "AI Content Creation Tool"
+- Subtitle: "Generate professional financial content in minutes"
+
+Content Types:
+- "Blog Posts"
+- "Social Media Content"
+- "Email Newsletters"
+- "Presentations"
+
+Form Labels:
+- Content type selection
+- Topic input
+- Tone selection
+- Generate button
+
+BLOGS PAGE
+==========
+Hero Section:
+- Title: "Financial Insights & Tips"
+- Subtitle: "Expert advice to help you make informed decisions"
+
+Blog Categories:
+- "Investment"
+- "Insurance"
+- "Retirement"
+- "Tax Planning"
+
+Blog Cards:
+- Article titles
+- Excerpts
+- Author names
+- Publication dates
+
+CONTESTS PAGE
+=============
+Hero Section:
+- Title: "Financial Content Contests"
+- Subtitle: "Show your creativity and win prizes"
+
+Contest Categories:
+- "Social Media Posts"
+- "Blog Articles"
+- "Poster Designs"
+- "Video Content"
+
+Contest Details:
+- Prize amounts
+- Submission deadlines
+- Entry requirements
+
+PRICING PAGE
+===========
+Hero Section:
+- Title: "Choose Your Plan"
+- Subtitle: "Flexible pricing for every need"
+
+Plan Names:
+- "Basic"
+- "Professional"
+- "Enterprise"
+
+Plan Features:
+- Feature lists
+- Price amounts
+- CTA buttons
+
+HELP CENTER PAGE
+===============
+Hero Section:
+- Title: "Help Center"
+- Subtitle: "Find answers to your questions"
+
+FAQ Categories:
+- "Getting Started"
+- "Account Management"
+- "Payment & Billing"
+- "Technical Support"
+
+FAQ Questions and Answers
+
+LOGIN PAGE
+==========
+Title: "Welcome Back"
+Subtitle: "Sign in to your account"
+
+Form Labels:
+- Email
+- Password
+- Remember me
+- Forgot password?
+- Sign in button
+
+Quick Login Buttons:
+- "Login as Admin"
+- "Login as Agent"
+- "Login as Client"
+
+Registration Link:
+- "Don't have an account? Sign up"
+
+REGISTER PAGE
+=============
+Title: "Create Your Account"
+Subtitle: "Join Persona Centric today"
+
+Form Labels:
+- First Name
+- Last Name
+- Email
+- Password
+- Confirm Password
+- Role selection
+- Terms and conditions
+- Create account button
+
+Login Link:
+- "Already have an account? Sign in"
+
+DASHBOARD PAGES
+===============
+Admin Dashboard:
+- Title: "👑 Admin Dashboard"
+- Subtitle: "Platform management and monitoring center"
+- Tab Labels:
+  * "Overview"
+  * "User Management"
+  * "Content Review"
+  * "Payment Management"
+  * "Event Management"
+  * "Access Codes"
+  * "System Settings"
+- Statistics labels
+- User management actions
+- Refresh button: "Refresh Data"
+
+Agent Dashboard:
+- Title: "👨‍💼 Agent Dashboard"
+- Subtitle: "Manage your clients and grow your business"
+- Tab Labels:
+  * "Overview"
+  * "Client Management"
+  * "Points Management"
+  * "Event Management"
+  * "Content Creation"
+  * "Contest Participation"
+- Statistics labels
+- Client relationship data
+- Event management options
+
+Client Dashboard:
+- Title: "👤 Client Dashboard"
+- Subtitle: "Track your progress and manage your investments"
+- Tab Labels:
+  * "Overview"
+  * "Agent Relationships"
+  * "Points Management"
+  * "Event Participation"
+  * "Content Creation"
+  * "Contest Participation"
+- Statistics labels
+- Agent relationship data
+- Points transaction history
+
+FOOTER
+======
+- Company information
+- Quick links
+- Contact information
+- Social media links
+- Copyright notice
+
+ERROR MESSAGES
+==============
+- Form validation errors
+- API error messages
+- Loading states
+- Success messages
+- Confirmation dialogs
+
+BUTTONS & CTAs
+==============
+- Primary action buttons
+- Secondary action buttons
+- Navigation buttons
+- Form submission buttons
+- Modal action buttons
+
+FORM LABELS & PLACEHOLDERS
+==========================
+- Input field labels
+- Placeholder text
+- Required field indicators
+- Help text and hints
+
+MODAL DIALOGS
+=============
+- Modal titles
+- Modal content
+- Action buttons
+- Close buttons
+
+NOTIFICATIONS & ALERTS
+======================
+- Success messages
+- Error messages
+- Warning messages
+- Info messages
+
+LOADING STATES
+==============
+- Loading spinners
+- Loading text
+- Progress indicators
+
+ACCESSIBILITY
+=============
+- Alt text for images
+- ARIA labels
+- Screen reader text
+- Focus indicators
+
+RESPONSIVE TEXT
+===============
+- Mobile-specific text
+- Tablet-specific text
+- Desktop-specific text
+
+LANGUAGE CONTEXT
+===============
+- Language-specific translations
+- Cultural adaptations
+- Regional variations
+
+END OF TEXT REVIEW
+================== 
