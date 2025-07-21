@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const Header = () => {
@@ -7,6 +7,7 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverHero, setIsOverHero] = useState(false);
+  const location = useLocation();
 
   const navItems = [
     { key: 'nav.home', path: '/', label: t('nav.home') },
@@ -28,11 +29,14 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Check if we're on a dashboard page
+  const isDashboardPage = location.pathname === '/dashboard';
+
   const headerClasses = `
     fixed top-0 w-full z-50 transition-all duration-300
     ${isScrolled 
       ? 'bg-gray-900 shadow-lg' 
-      : isOverHero 
+      : isOverHero && !isDashboardPage
         ? 'bg-transparent' 
         : 'bg-white shadow-sm border-b border-gray-200'
     }
@@ -42,7 +46,7 @@ const Header = () => {
     transition-colors duration-300
     ${isScrolled 
       ? 'text-white' 
-      : isOverHero 
+      : isOverHero && !isDashboardPage
         ? 'text-white' 
         : 'text-gray-700'
     }
@@ -52,7 +56,7 @@ const Header = () => {
     transition-colors duration-200
     ${isScrolled 
       ? 'hover:text-blue-300' 
-      : isOverHero 
+      : isOverHero && !isDashboardPage
         ? 'hover:text-blue-200' 
         : 'hover:text-blue-600'
     }
