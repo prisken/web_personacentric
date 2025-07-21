@@ -9,7 +9,7 @@ class DashboardController {
       const userRole = user.role;
 
       // Get user data
-      const userData = await User.findByPk(userId);
+      const userData = await User.findByPk(userId, { include: [{ model: Agent, as: 'agent' }] });
       if (!userData) {
         return res.status(404).json({
           success: false,
