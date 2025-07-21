@@ -43,7 +43,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'clients', label: '客戶管理', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'content', label: '內容創作', icon: '📝' },
-    { id: 'analytics', label: '績效分析', icon: '📈' },
+    { id: 'analytics', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
