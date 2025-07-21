@@ -1,7 +1,8 @@
 const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
         Subscription, Notification, EventRegistration, AgentClientRelationship, 
-        ContestSubmission, ClientUpgrade } = require('./models');
+        ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 async function seedData() {
   try {
@@ -346,6 +347,9 @@ async function seedData() {
       votes: 15
     });
 
+    // Seed recommendation game data
+    await seedRecommendationData();
+
     console.log('Data seeding completed successfully!');
     console.log('Sample users created:');
     console.log('Admin: admin@personacentric.com / admin123');
@@ -357,6 +361,180 @@ async function seedData() {
   } catch (error) {
     console.error('Error seeding data:', error);
     throw error;
+  }
+}
+
+// Create badges for recommendation game
+const badges = [
+  {
+    name: 'First Recommendation',
+    description: 'Created your first recommendation',
+    icon: '🌟',
+    category: 'general',
+    requirement_type: 'count',
+    requirement_value: 1,
+    points_reward: 50
+  },
+  {
+    name: 'Movie Master',
+    description: 'Created 10 movie recommendations',
+    icon: '🎬',
+    category: 'movie',
+    requirement_type: 'count',
+    requirement_value: 10,
+    points_reward: 200
+  },
+  {
+    name: 'Foodie',
+    description: 'Created 5 restaurant recommendations',
+    icon: '🍽️',
+    category: 'restaurant',
+    requirement_type: 'count',
+    requirement_value: 5,
+    points_reward: 150
+  },
+  {
+    name: 'Gift Guru',
+    description: 'Created 8 gift recommendations',
+    icon: '🎁',
+    category: 'gift',
+    requirement_type: 'count',
+    requirement_value: 8,
+    points_reward: 180
+  },
+  {
+    name: 'Bookworm',
+    description: 'Created 6 book recommendations',
+    icon: '📚',
+    category: 'book',
+    requirement_type: 'count',
+    requirement_value: 6,
+    points_reward: 160
+  },
+  {
+    name: 'Event Enthusiast',
+    description: 'Created 4 event recommendations',
+    icon: '🎪',
+    category: 'event',
+    requirement_type: 'count',
+    requirement_value: 4,
+    points_reward: 120
+  },
+  {
+    name: 'Tech Savvy',
+    description: 'Created 7 app recommendations',
+    icon: '📱',
+    category: 'app',
+    requirement_type: 'count',
+    requirement_value: 7,
+    points_reward: 170
+  },
+  {
+    name: 'Engagement King',
+    description: 'Received 50 total engagements',
+    icon: '👑',
+    category: 'general',
+    requirement_type: 'engagement',
+    requirement_value: 50,
+    points_reward: 300
+  },
+  {
+    name: 'Viral Sensation',
+    description: 'Received 100 total views',
+    icon: '🔥',
+    category: 'general',
+    requirement_type: 'engagement',
+    requirement_value: 100,
+    points_reward: 250
+  },
+  {
+    name: 'Community Builder',
+    description: 'Helped 10 people sign up',
+    icon: '🌱',
+    category: 'general',
+    requirement_type: 'engagement',
+    requirement_value: 10,
+    points_reward: 500
+  }
+];
+
+// Create sample recommendations
+const sampleRecommendations = [
+  {
+    category: 'movie',
+    name: 'Inception',
+    description: 'A mind-bending sci-fi thriller about dreams within dreams',
+    why_recommend: 'The plot is incredibly creative and the visual effects are groundbreaking. It makes you think long after the movie ends.',
+    link: 'https://www.imdb.com/title/tt1375666/',
+    location: '',
+    photo_url: 'https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_.jpg'
+  },
+  {
+    category: 'restaurant',
+    name: '鼎泰豐',
+    description: 'Famous Taiwanese restaurant known for their xiaolongbao',
+    why_recommend: 'The soup dumplings are absolutely perfect - thin skin, flavorful broth, and tender meat. A must-try experience!',
+    link: 'https://www.dintaifung.com.tw/',
+    location: '台北市信義區信義路五段7號',
+    photo_url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Din_Tai_Fung_restaurant_in_Taipei.jpg/1200px-Din_Tai_Fung_restaurant_in_Taipei.jpg'
+  },
+  {
+    category: 'book',
+    name: '原子習慣',
+    description: 'A guide to building good habits and breaking bad ones',
+    why_recommend: 'This book completely changed how I think about habit formation. The 1% improvement concept is life-changing.',
+    link: 'https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299',
+    location: '',
+    photo_url: 'https://m.media-amazon.com/images/I/81wgcld4wxL._AC_UF1000,1000_QL80_.jpg'
+  },
+  {
+    category: 'app',
+    name: 'Notion',
+    description: 'All-in-one workspace for notes, docs, and project management',
+    why_recommend: 'Incredibly flexible and powerful. I use it for everything from daily notes to project planning.',
+    link: 'https://www.notion.so/',
+    location: '',
+    photo_url: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png'
+  },
+  {
+    category: 'gift',
+    name: 'AirPods Pro',
+    description: 'Wireless earbuds with active noise cancellation',
+    why_recommend: 'Perfect gift for anyone who commutes or works in noisy environments. The noise cancellation is amazing.',
+    link: 'https://www.apple.com/airpods-pro/',
+    location: '',
+    photo_url: 'https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/MQD83?wid=1144&hei=1144&fmt=jpeg&qlt=90&.v=1660803972361'
+  }
+];
+
+async function seedRecommendationData() {
+  try {
+    // Create badges
+    for (const badgeData of badges) {
+      await Badge.create(badgeData);
+    }
+    console.log('✅ Badges created successfully');
+
+    // Create sample recommendations for existing users
+    const users = await User.findAll({ where: { role: 'client' }, limit: 2 });
+    
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      const recommendations = sampleRecommendations.slice(i * 2, (i + 1) * 2);
+      
+      for (const recData of recommendations) {
+        const shareCode = crypto.randomBytes(10).toString('hex').toUpperCase();
+        await Recommendation.create({
+          ...recData,
+          user_id: user.id,
+          share_code: shareCode
+        });
+      }
+    }
+    console.log('✅ Sample recommendations created successfully');
+
+  } catch (error) {
+    console.error('❌ Error seeding recommendation data:', error);
   }
 }
 

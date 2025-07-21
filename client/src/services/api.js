@@ -171,6 +171,45 @@ class ApiService {
     return this.delete(`/events/${eventId}/remove-participant/${userId}`);
   }
 
+  // Recommendation game endpoints
+  async getMyRecommendations() {
+    return this.get('/recommendations/my-recommendations');
+  }
+
+  async getRecommendationByShareCode(shareCode) {
+    return this.get(`/recommendations/share/${shareCode}`);
+  }
+
+  async createRecommendation(recommendationData) {
+    return this.post('/recommendations', recommendationData);
+  }
+
+  async updateRecommendation(recommendationId, recommendationData) {
+    return this.put(`/recommendations/${recommendationId}`, recommendationData);
+  }
+
+  async deleteRecommendation(recommendationId) {
+    return this.delete(`/recommendations/${recommendationId}`);
+  }
+
+  async engageWithRecommendation(shareCode, engagementData) {
+    return this.post(`/recommendations/${shareCode}/engage`, engagementData);
+  }
+
+  async getRecommendationBadges() {
+    return this.get('/recommendations/badges');
+  }
+
+  async getRecommendationLeaderboard(period = 'weekly', category = null) {
+    const params = new URLSearchParams({ period });
+    if (category) params.append('category', category);
+    return this.get(`/recommendations/leaderboard?${params.toString()}`);
+  }
+
+  async getRecommendationStats() {
+    return this.get('/recommendations/stats');
+  }
+
   // Blog endpoints
   async getBlogs() {
     return this.get('/blogs');

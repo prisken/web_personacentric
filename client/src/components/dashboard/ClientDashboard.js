@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
+import RecommendationGame from './RecommendationGame';
 
 const ClientDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -31,6 +32,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
     { id: 'overview', label: '總覽', icon: '📊' },
     { id: 'agent', label: '顧問連接', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
+    { id: 'recommendations', label: '推薦遊戲', icon: '💡' },
     { id: 'points', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
     { id: 'profile', label: '個人資料', icon: '👤' }
@@ -328,6 +330,11 @@ const ClientDashboard = ({ data, onRefresh }) => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Recommendations Game Tab */}
+        {activeTab === 'recommendations' && (
+          <RecommendationGame />
         )}
 
         {/* Points Management Tab */}

@@ -20,6 +20,7 @@ import PricingPage from './pages/PricingPage';
 import HelpCenterPage from './pages/HelpCenterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminEventPage from './pages/AdminEventPage';
+import RecommendationViewPage from './pages/RecommendationViewPage';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/admin/events" element={<AdminEventPage />} />
                 <Route path="/admin/events/:id" element={<AdminEventPage />} />
+                <Route path="/recommendation/:shareCode" element={<RecommendationViewPage />} />
               </Routes>
             </main>
             <Footer />
