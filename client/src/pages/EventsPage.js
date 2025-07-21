@@ -1,102 +1,107 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useUser } from '../contexts/UserContext';
+import apiService from '../services/api';
 
 const EventsPage = () => {
   const { t, language } = useLanguage();
+  const { user } = useUser();
   const [activeTab, setActiveTab] = useState('upcoming');
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userRegistrations, setUserRegistrations] = useState([]);
+  const [showEventModal, setShowEventModal] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  const upcomingEvents = [
-    {
-      id: 1,
-      title: language === 'zh-TW' ? '財務規劃工作坊' : 'Financial Planning Workshop',
-      date: 'March 15, 2024',
-      time: '2:00 PM - 4:00 PM',
-      location: language === 'zh-TW' ? '線上活動' : 'Virtual Event',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      description: language === 'zh-TW' 
-        ? '學習財務規劃的基礎知識，為您的財務未來建立穩固的基礎。'
-        : 'Learn the fundamentals of financial planning and how to create a solid foundation for your financial future.',
-      category: language === 'zh-TW' ? '工作坊' : 'Workshop',
-      price: language === 'zh-TW' ? '免費' : 'Free',
-      spots: '150',
-      registered: '89'
-    },
-    {
-      id: 2,
-      title: language === 'zh-TW' ? '投資策略研討會' : 'Investment Strategy Seminar',
-      date: 'March 20, 2024',
-      time: '6:00 PM - 8:00 PM',
-      location: language === 'zh-TW' ? '市中心會議中心' : 'Downtown Conference Center',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      description: language === 'zh-TW'
-        ? '為有經驗的投資者提供高級投資策略，優化您的投資組合。'
-        : 'Advanced investment strategies for experienced investors looking to optimize their portfolio.',
-      category: language === 'zh-TW' ? '研討會' : 'Seminar',
-      price: '$50',
-      spots: '100',
-      registered: '67'
-    },
-    {
-      id: 3,
-      title: language === 'zh-TW' ? '退休規劃大師班' : 'Retirement Planning Masterclass',
-      date: 'March 25, 2024',
-      time: '10:00 AM - 12:00 PM',
-      location: language === 'zh-TW' ? '線上活動' : 'Virtual Event',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      description: language === 'zh-TW'
-        ? '退休規劃綜合指南，包括401(k)、IRA和社會保障策略。'
-        : 'Comprehensive guide to retirement planning, including 401(k), IRA, and social security strategies.',
-      category: language === 'zh-TW' ? '大師班' : 'Masterclass',
-      price: '$75',
-      spots: '80',
-      registered: '45'
+  useEffect(() => {
+    fetchEvents();
+    if (user) {
+      fetchUserRegistrations();
     }
-  ];
+  }, [user]);
 
-  const pastEvents = [
-    {
-      id: 4,
-      title: language === 'zh-TW' ? '稅務規劃工作坊' : 'Tax Planning Workshop',
-      date: 'February 28, 2024',
-      time: '2:00 PM - 4:00 PM',
-      location: language === 'zh-TW' ? '線上活動' : 'Virtual Event',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
-      description: language === 'zh-TW'
-        ? '個人和小企業主的必要稅務規劃策略。'
-        : 'Essential tax planning strategies for individuals and small business owners.',
-      category: language === 'zh-TW' ? '工作坊' : 'Workshop',
-      attendees: '120',
-      rating: 4.8
-    },
-    {
-      id: 5,
-      title: language === 'zh-TW' ? '房地產投資論壇' : 'Real Estate Investment Forum',
-      date: 'February 15, 2024',
-      time: '6:00 PM - 8:00 PM',
-      location: language === 'zh-TW' ? '商業中心' : 'Business Center',
-      image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80',
-      description: language === 'zh-TW'
-        ? '探索房地產投資機會和市場趨勢。'
-        : 'Exploring real estate investment opportunities and market trends.',
-      category: language === 'zh-TW' ? '論壇' : 'Forum',
-      attendees: '85',
-      rating: 4.6
-    },
-    {
-      id: 6,
-      title: language === 'zh-TW' ? '保險規劃研討會' : 'Insurance Planning Seminar',
-      date: 'February 10, 2024',
-      time: '10:00 AM - 12:00 PM',
-      location: language === 'zh-TW' ? '線上活動' : 'Virtual Event',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      description: language === 'zh-TW'
-        ? '了解不同類型的保險以及如何選擇合適的保障。'
-        : 'Understanding different types of insurance and how to choose the right coverage.',
-      category: language === 'zh-TW' ? '研討會' : 'Seminar',
-      attendees: '95',
-      rating: 4.7
+  const fetchEvents = async () => {
+    try {
+      setLoading(true);
+      const response = await apiService.getEvents({ status: 'published' });
+      if (response.success) {
+        setEvents(response.events);
+      }
+    } catch (error) {
+      console.error('Failed to fetch events:', error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  const fetchUserRegistrations = async () => {
+    try {
+      const response = await apiService.getUserEventRegistrations();
+      if (response.success) {
+        setUserRegistrations(response.registrations);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user registrations:', error);
+    }
+  };
+
+  const handleRegisterForEvent = async (eventId) => {
+    try {
+      const response = await apiService.registerForEvent(eventId);
+      if (response.success) {
+        alert(language === 'zh-TW' ? '註冊成功！' : 'Registration successful!');
+        fetchUserRegistrations();
+        fetchEvents(); // Refresh events to update registration count
+      }
+    } catch (error) {
+      alert(language === 'zh-TW' ? '註冊失敗：' + error.message : 'Registration failed: ' + error.message);
+    }
+  };
+
+  const handleCancelRegistration = async (eventId) => {
+    try {
+      const response = await apiService.cancelEventRegistration(eventId);
+      if (response.success) {
+        alert(language === 'zh-TW' ? '取消註冊成功！' : 'Registration cancelled successfully!');
+        fetchUserRegistrations();
+        fetchEvents(); // Refresh events to update registration count
+      }
+    } catch (error) {
+      alert(language === 'zh-TW' ? '取消註冊失敗：' + error.message : 'Failed to cancel registration: ' + error.message);
+    }
+  };
+
+  const isUserRegistered = (eventId) => {
+    return userRegistrations.some(reg => reg.event_id === eventId && reg.status === 'registered');
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString(language === 'zh-TW' ? 'zh-TW' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (dateString) => {
+    return new Date(dateString).toLocaleTimeString(language === 'zh-TW' ? 'zh-TW' : 'en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getEventTypeLabel = (eventType) => {
+    const labels = {
+      workshop: language === 'zh-TW' ? '工作坊' : 'Workshop',
+      seminar: language === 'zh-TW' ? '研討會' : 'Seminar',
+      consultation: language === 'zh-TW' ? '諮詢' : 'Consultation',
+      webinar: language === 'zh-TW' ? '網路研討會' : 'Webinar'
+    };
+    return labels[eventType] || eventType;
+  };
+
+  const upcomingEvents = events.filter(event => new Date(event.start_date) > new Date());
+  const pastEvents = events.filter(event => new Date(event.start_date) <= new Date());
 
   const categories = language === 'zh-TW' 
     ? ['全部', '工作坊', '研討會', '大師班', '論壇', '網路研討會']
@@ -164,82 +169,138 @@ const EventsPage = () => {
           </div>
 
           {/* Event Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(activeTab === 'upcoming' ? upcomingEvents : pastEvents).map((event) => (
-              <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={event.image} 
-                    alt={event.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-semibold text-blue-600">{event.category}</span>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+              <p className="mt-4 text-gray-600">
+                {language === 'zh-TW' ? '載入中...' : 'Loading...'}
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {(activeTab === 'upcoming' ? upcomingEvents : pastEvents).map((event) => (
+                <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200">
+                  <div className="h-48 overflow-hidden">
+                    <img 
+                      src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                      alt={event.title}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-semibold text-blue-600">
+                        {getEventTypeLabel(event.event_type)}
+                      </span>
+                      {activeTab === 'upcoming' && (
+                        <span className="text-sm text-gray-500">
+                          {event.price ? `$${event.price}` : (language === 'zh-TW' ? '免費' : 'Free')}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
+                    <p className="text-gray-600 mb-4">{event.description}</p>
+                    
+                    <div className="space-y-2 mb-4">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <i className="fas fa-calendar mr-2"></i>
+                        {formatDate(event.start_date)}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <i className="fas fa-clock mr-2"></i>
+                        {formatTime(event.start_date)} - {formatTime(event.end_date)}
+                      </div>
+                      <div className="flex items-center text-sm text-gray-600">
+                        <i className="fas fa-map-marker-alt mr-2"></i>
+                        {event.location || (language === 'zh-TW' ? '線上活動' : 'Virtual Event')}
+                      </div>
+                    </div>
+
                     {activeTab === 'upcoming' ? (
-                      <span className="text-sm text-gray-500">{event.price}</span>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            {language === 'zh-TW' ? '已註冊：' : 'Registered:'}
+                          </span>
+                          <span className="font-semibold">
+                            {event.current_participants || 0}/{event.max_participants || '∞'}
+                          </span>
+                        </div>
+                        {event.max_participants && (
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-blue-600 h-2 rounded-full"
+                              style={{ width: `${((event.current_participants || 0) / event.max_participants) * 100}%` }}
+                            ></div>
+                          </div>
+                        )}
+                        {user ? (
+                          isUserRegistered(event.id) ? (
+                            <button 
+                              onClick={() => handleCancelRegistration(event.id)}
+                              className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200"
+                            >
+                              {language === 'zh-TW' ? '取消註冊' : 'Cancel Registration'}
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={() => handleRegisterForEvent(event.id)}
+                              disabled={event.max_participants && (event.current_participants || 0) >= event.max_participants}
+                              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                              {event.max_participants && (event.current_participants || 0) >= event.max_participants
+                                ? (language === 'zh-TW' ? '已滿額' : 'Full')
+                                : (language === 'zh-TW' ? '立即註冊' : 'Register Now')
+                              }
+                            </button>
+                          )
+                        ) : (
+                          <button 
+                            onClick={() => alert(language === 'zh-TW' ? '請先登入' : 'Please login first')}
+                            className="w-full bg-gray-400 text-white py-2 rounded-lg font-semibold cursor-not-allowed"
+                          >
+                            {language === 'zh-TW' ? '請先登入' : 'Login Required'}
+                          </button>
+                        )}
+                      </div>
                     ) : (
-                      <div className="flex items-center">
-                        <i className="fas fa-star text-yellow-400 text-sm mr-1"></i>
-                        <span className="text-sm text-gray-600">{event.rating}</span>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            {language === 'zh-TW' ? '參與者：' : 'Attendees:'}
+                          </span>
+                          <span className="font-semibold">{event.current_participants || 0}</span>
+                        </div>
+                        <button 
+                          onClick={() => setSelectedEvent(event)}
+                          className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
+                        >
+                          {language === 'zh-TW' ? '查看詳情' : 'View Details'}
+                        </button>
                       </div>
                     )}
                   </div>
-                  
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                  <p className="text-gray-600 mb-4">{event.description}</p>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <i className="fas fa-calendar mr-2"></i>
-                      {event.date}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <i className="fas fa-clock mr-2"></i>
-                      {event.time}
-                    </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <i className="fas fa-map-marker-alt mr-2"></i>
-                      {event.location}
-                    </div>
-                  </div>
-
-                  {activeTab === 'upcoming' ? (
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">
-                          {language === 'zh-TW' ? '已註冊：' : 'Registered:'}
-                        </span>
-                        <span className="font-semibold">{event.registered}/{event.spots}</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className="bg-blue-600 h-2 rounded-full"
-                          style={{ width: `${(event.registered / event.spots) * 100}%` }}
-                        ></div>
-                      </div>
-                      <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-                        {t('events.registerNow')}
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">
-                          {language === 'zh-TW' ? '參與者：' : 'Attendees:'}
-                        </span>
-                        <span className="font-semibold">{event.attendees}</span>
-                      </div>
-                      <button className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200">
-                        {t('events.revisit')}
-                      </button>
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
+
+          {/* Empty State */}
+          {!loading && (activeTab === 'upcoming' ? upcomingEvents : pastEvents).length === 0 && (
+            <div className="text-center py-12">
+              <i className="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                {language === 'zh-TW' ? '暫無活動' : 'No Events'}
+              </h3>
+              <p className="text-gray-500">
+                {activeTab === 'upcoming' 
+                  ? (language === 'zh-TW' ? '目前沒有即將舉行的活動' : 'No upcoming events at the moment')
+                  : (language === 'zh-TW' ? '沒有過去的活動記錄' : 'No past events found')
+                }
+              </p>
+            </div>
+          )}
 
           {/* Load More Button */}
           <div className="text-center mt-12">

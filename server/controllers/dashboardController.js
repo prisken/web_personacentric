@@ -1,4 +1,4 @@
-const { User } = require('../models');
+const { User, Event, EventRegistration, Agent } = require('../models');
 
 class DashboardController {
   // Get dashboard data based on user role
@@ -46,15 +46,41 @@ class DashboardController {
             limit: 10
           });
 
+          // Get event statistics
+          const totalEvents = await Event.count();
+          const upcomingEvents = await Event.count({
+            where: {
+              start_date: { [require('sequelize').Op.gt]: new Date() },
+              status: 'published'
+            }
+          });
+          const totalRegistrations = await EventRegistration.count({
+            where: { status: 'registered' }
+          });
+
           dashboardData.statistics = {
             total_users: totalUsers,
             total_agents: totalAgents,
             total_clients: totalClients,
+            total_events: totalEvents,
+            upcoming_events: upcomingEvents,
+            total_registrations: totalRegistrations,
             monthly_revenue: 2000, // This would need to be calculated from actual payments
             pending_upgrades: 1,
             pending_contests: 0
           };
           dashboardData.recent_users = recentUsers;
+          dashboardData.recent_events = await Event.findAll({
+            include: [
+              {
+                model: User,
+                as: 'creator',
+                attributes: ['first_name', 'last_name']
+              }
+            ],
+            order: [['created_at', 'DESC']],
+            limit: 5
+          });
           dashboardData.recent_payments = [
             {
               id: '1',
@@ -70,10 +96,34 @@ class DashboardController {
           break;
 
         case 'agent':
+          // Get agent-specific statistics
+          const agentEvents = await Event.count({
+            where: { agent_id: userData.agent?.id }
+          });
+          const agentUpcomingEvents = await Event.count({
+            where: {
+              agent_id: userData.agent?.id,
+              start_date: { [require('sequelize').Op.gt]: new Date() },
+              status: 'published'
+            }
+          });
+          const agentTotalRegistrations = await EventRegistration.count({
+            include: [
+              {
+                model: Event,
+                as: 'event',
+                where: { agent_id: userData.agent?.id }
+              }
+            ],
+            where: { status: 'registered' }
+          });
+
           dashboardData.statistics = {
             total_commission: 1500.00,
             active_clients: 3,
-            hosted_events: 2,
+            hosted_events: agentEvents,
+            upcoming_events: agentUpcomingEvents,
+            total_registrations: agentTotalRegistrations,
             points_balance: 1500
           };
           dashboardData.client_relationships = [
@@ -89,15 +139,24 @@ class DashboardController {
               created_at: new Date('2024-01-01')
             }
           ];
-          dashboardData.recent_events = [
-            {
-              id: '1',
-              title: '投資策略研討會',
-              description: '學習最新的投資策略和市場分析',
-              start_date: new Date('2024-02-15'),
-              status: 'upcoming'
-            }
-          ];
+          dashboardData.recent_events = await Event.findAll({
+            where: { agent_id: userData.agent?.id },
+            include: [
+              {
+                model: EventRegistration,
+                as: 'registrations',
+                include: [
+                  {
+                    model: User,
+                    as: 'user',
+                    attributes: ['first_name', 'last_name', 'email']
+                  }
+                ]
+              }
+            ],
+            order: [['start_date', 'ASC']],
+            limit: 5
+          });
           dashboardData.recent_point_transactions = [
             {
               id: '1',
@@ -110,31 +169,41 @@ class DashboardController {
           break;
 
         case 'client':
+          // Get client-specific statistics
+          const clientRegistrations = await EventRegistration.count({
+            where: { user_id: userId, status: 'registered' }
+          });
+          const clientAttendedEvents = await EventRegistration.count({
+            where: { user_id: userId, status: 'attended' }
+          });
+
           dashboardData.statistics = {
-            total_events_attended: 2,
+            total_events_attended: clientAttendedEvents,
+            total_events_registered: clientRegistrations,
             total_points_earned: 800,
             points_balance: 800,
             contests_participated: 1
           };
-          dashboardData.registered_events = [
-            {
-              id: '1',
-              event: {
-                title: '投資策略研討會',
-                description: '學習最新的投資策略和市場分析',
-                start_date: new Date('2024-02-15')
-              },
-              status: 'registered'
-            }
-          ];
-          dashboardData.available_events = [
-            {
-              id: '2',
-              title: '退休規劃工作坊',
-              description: '為您的退休生活做好準備',
-              start_date: new Date('2024-02-20')
-            }
-          ];
+          dashboardData.registered_events = await EventRegistration.findAll({
+            where: { user_id: userId, status: 'registered' },
+            include: [
+              {
+                model: Event,
+                as: 'event',
+                attributes: ['id', 'title', 'description', 'start_date', 'end_date', 'location']
+              }
+            ],
+            order: [['created_at', 'DESC']],
+            limit: 5
+          });
+          dashboardData.available_events = await Event.findAll({
+            where: {
+              start_date: { [require('sequelize').Op.gt]: new Date() },
+              status: 'published'
+            },
+            order: [['start_date', 'ASC']],
+            limit: 5
+          });
           dashboardData.recent_point_transactions = [
             {
               id: '1',

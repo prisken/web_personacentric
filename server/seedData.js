@@ -101,33 +101,84 @@ async function seedData() {
       is_verified: true
     });
 
-    // Create events
+    // Create sample events
     const event1 = await Event.create({
-      title: '投資策略研討會',
-      description: '學習最新的投資策略和市場分析',
-      start_date: new Date('2024-02-15T10:00:00'),
-      end_date: new Date('2024-02-15T12:00:00'),
-      location: '香港中環',
+      title: '財務規劃基礎工作坊',
+      description: '學習財務規劃的基礎知識，為您的財務未來建立穩固的基礎。適合初學者參加。',
+      event_type: 'workshop',
+      start_date: new Date('2024-03-15T14:00:00'),
+      end_date: new Date('2024-03-15T16:00:00'),
+      location: '線上活動',
       max_participants: 50,
-      current_participants: 25,
-      status: 'upcoming',
-      created_by: admin.id,
+      price: 0,
+      points_reward: 100,
       agent_id: agent1Profile.id,
-      event_type: 'seminar'
+      created_by: admin.id,
+      status: 'published'
     });
 
     const event2 = await Event.create({
-      title: '退休規劃工作坊',
-      description: '為您的退休生活做好準備',
-      start_date: new Date('2024-02-20T14:00:00'),
-      end_date: new Date('2024-02-20T16:00:00'),
-      location: '香港灣仔',
+      title: '投資策略進階研討會',
+      description: '為有經驗的投資者提供高級投資策略，優化您的投資組合。',
+      event_type: 'seminar',
+      start_date: new Date('2024-03-20T18:00:00'),
+      end_date: new Date('2024-03-20T20:00:00'),
+      location: '市中心會議中心',
       max_participants: 30,
-      current_participants: 15,
-      status: 'upcoming',
+      price: 50.00,
+      points_reward: 200,
+      agent_id: agent1Profile.id,
       created_by: admin.id,
+      status: 'published'
+    });
+
+    const event3 = await Event.create({
+      title: '退休規劃大師班',
+      description: '退休規劃綜合指南，包括401(k)、IRA和社會保障策略。',
+      event_type: 'workshop',
+      start_date: new Date('2024-03-25T10:00:00'),
+      end_date: new Date('2024-03-25T12:00:00'),
+      location: '線上活動',
+      max_participants: 40,
+      price: 75.00,
+      points_reward: 150,
       agent_id: agent2Profile.id,
-      event_type: 'workshop'
+      created_by: admin.id,
+      status: 'published'
+    });
+
+    const event4 = await Event.create({
+      title: '保險規劃諮詢會',
+      description: '了解不同類型的保險以及如何選擇合適的保障。',
+      event_type: 'consultation',
+      start_date: new Date('2024-02-28T14:00:00'),
+      end_date: new Date('2024-02-28T15:30:00'),
+      location: '線上活動',
+      max_participants: 25,
+      price: 0,
+      points_reward: 80,
+      agent_id: agent2Profile.id,
+      created_by: admin.id,
+      status: 'published'
+    });
+
+    // Create some event registrations
+    await EventRegistration.create({
+      event_id: event1.id,
+      user_id: client1.id,
+      status: 'registered'
+    });
+
+    await EventRegistration.create({
+      event_id: event2.id,
+      user_id: client1.id,
+      status: 'registered'
+    });
+
+    await EventRegistration.create({
+      event_id: event1.id,
+      user_id: client2.id,
+      status: 'registered'
     });
 
     // Create blog posts

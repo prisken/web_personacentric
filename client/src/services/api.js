@@ -116,8 +116,9 @@ class ApiService {
   }
 
   // Event endpoints
-  async getEvents() {
-    return this.get('/events');
+  async getEvents(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.get(`/events${queryString ? `?${queryString}` : ''}`);
   }
 
   async getEvent(id) {
@@ -125,7 +126,49 @@ class ApiService {
   }
 
   async registerForEvent(eventId) {
-    return this.post(`/events/${eventId}/register`);
+    return this.post(`/events/${eventId}/register`, {});
+  }
+
+  async cancelEventRegistration(eventId) {
+    return this.post(`/events/${eventId}/cancel`, {});
+  }
+
+  async getUserEventRegistrations() {
+    return this.get('/events/user/registrations');
+  }
+
+  // Admin event management
+  async createEvent(eventData) {
+    return this.post('/events', eventData);
+  }
+
+  async updateEvent(eventId, eventData) {
+    return this.put(`/events/${eventId}`, eventData);
+  }
+
+  async deleteEvent(eventId) {
+    return this.delete(`/events/${eventId}`);
+  }
+
+  async getEventRegistrations(eventId) {
+    return this.get(`/events/${eventId}/registrations`);
+  }
+
+  async updateRegistrationStatus(eventId, registrationId, status) {
+    return this.put(`/events/${eventId}/registrations/${registrationId}`, { status });
+  }
+
+  // Agent event management
+  async getAgentEvents() {
+    return this.get('/events/agent/my-events');
+  }
+
+  async addParticipantToEvent(eventId, userId) {
+    return this.post(`/events/${eventId}/add-participant`, { user_id: userId });
+  }
+
+  async removeParticipantFromEvent(eventId, userId) {
+    return this.delete(`/events/${eventId}/remove-participant/${userId}`);
   }
 
   // Blog endpoints
