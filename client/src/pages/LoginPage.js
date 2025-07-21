@@ -38,6 +38,26 @@ const LoginPage = () => {
     }
   };
 
+  const handleQuickLogin = async (email, password) => {
+    setLoading(true);
+    setError('');
+    
+    try {
+      const response = await apiService.login({ email, password, rememberMe: false });
+      
+      if (response.success) {
+        navigate('/dashboard');
+      } else {
+        setError(response.error || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Quick login error:', error);
+      setError(error.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -59,6 +79,45 @@ const LoginPage = () => {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {/* Quick Login Section */}
+          <div className="mb-6">
+            <h3 className="text-sm font-medium text-gray-700 mb-3 text-center">
+              🧪 測試帳號快速登入
+            </h3>
+            <div className="space-y-2">
+              <button
+                onClick={() => handleQuickLogin('admin@personacentric.com', 'admin123')}
+                disabled={loading}
+                className="w-full bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                👑 管理員登入 (admin@personacentric.com)
+              </button>
+              <button
+                onClick={() => handleQuickLogin('agent1@personacentric.com', 'agent123')}
+                disabled={loading}
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                👨‍💼 顧問登入 (agent1@personacentric.com)
+              </button>
+              <button
+                onClick={() => handleQuickLogin('client1@personacentric.com', 'client123')}
+                disabled={loading}
+                className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                👤 客戶登入 (client1@personacentric.com)
+              </button>
+            </div>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">或手動輸入</span>
+            </div>
+          </div>
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
