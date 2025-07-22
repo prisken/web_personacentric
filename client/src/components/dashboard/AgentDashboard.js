@@ -4,10 +4,7 @@ import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
 
 const AgentDashboard = ({ data, onRefresh }) => {
-  // Debug: log props on every render
-  useEffect(() => {
-    console.log('[AgentDashboard] Rendered. Props:', data);
-  });
+
 
   // Persist activeTab in localStorage
   const getInitialTab = () => localStorage.getItem('agentDashboardActiveTab') || 'overview';
@@ -510,28 +507,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
               <h3 className="text-lg font-medium text-gray-900">個人資料</h3>
             </div>
             <div className="p-6">
-              {/* DEBUG: Show current image URLs */}
-              <div className="mb-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                <div><strong>DEBUG:</strong></div>
-                <div>profileImageUrl (state): <span>{profileImageUrl || 'null'}</span></div>
-                <div>data.agent?.profile_image (props): <span>{data.agent?.profile_image || 'null'}</span></div>
-                <button 
-                  onClick={() => {
-                    console.log('[DEBUG] Manual refresh clicked');
-                    if (typeof onRefresh === 'function') onRefresh();
-                  }}
-                  className="mt-2 bg-blue-500 text-white px-2 py-1 rounded text-xs"
-                >
-                  Manual Refresh
-                </button>
-              </div>
-              {/* DEBUG: Show current image visually if available */}
-              {profileImageUrl && (
-                <div className="mb-2">
-                  <img src={profileImageUrl} alt="Debug Profile" style={{width: 80, height: 80, borderRadius: '50%', border: '2px solid #ccc'}} />
-                  <div className="text-xs text-gray-500">(Debug: profileImageUrl)</div>
-                </div>
-              )}
+
               <div className="space-y-6">
                 {showProfileSuccess && (
                   <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-4 text-center font-medium">
@@ -551,13 +527,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
                       // Update parent data.agent.profile_image if possible
                       if (data.agent) data.agent.profile_image = imageUrl;
                       setActiveTab('profile'); // Stay on profile tab
-                      console.log('[AgentDashboard] Profile image uploaded, updated imageUrl:', imageUrl);
-                      
-                      // Don't call onRefresh immediately - let the local state handle the display
-                      // The user can manually refresh if needed, or we can add a longer delay
-                      // setTimeout(() => {
-                      //   if (typeof onRefresh === 'function') onRefresh();
-                      // }, 5000); // 5 second delay if we want to refresh later
                     }}
                     className="mb-6"
                   />
