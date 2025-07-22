@@ -52,7 +52,7 @@ ${selectedIndustry === 'Investment' ?
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="pt-16 bg-gray-50 min-h-screen">
       {/* Hero Section */}
       <section className="py-20 bg-gradient-to-r from-purple-600 to-blue-600 text-white">
         <div className="max-w-7xl mx-auto px-4 text-center">
