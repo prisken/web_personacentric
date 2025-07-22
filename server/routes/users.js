@@ -84,10 +84,10 @@ router.put('/agent/profile', authenticateToken, upload.single('profile_image'), 
 
     await agent.update(updateData);
 
+    // Always return the updated agent data
     res.json({
       success: true,
-      message: 'Agent profile updated successfully',
-      data: {
+      agent: {
         ...agent.toJSON(),
         profile_image: profileImageUrl
       }
@@ -98,6 +98,21 @@ router.put('/agent/profile', authenticateToken, upload.single('profile_image'), 
       success: false,
       error: 'Failed to update agent profile'
     });
+  }
+});
+
+// Get current agent profile for logged-in user
+router.get('/agent/me', authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const agent = await Agent.findOne({ where: { user_id: userId } });
+    if (!agent) {
+      return res.status(404).json({ success: false, error: 'Agent profile not found' });
+    }
+    res.json({ success: true, agent });
+  } catch (error) {
+    console.error('Get agent profile error:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch agent profile' });
   }
 });
 
