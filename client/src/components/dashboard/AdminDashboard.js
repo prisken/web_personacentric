@@ -57,10 +57,13 @@ const AdminDashboard = ({ data, onRefresh }) => {
     try {
       const response = await apiService.getEvents();
       if (response.success) {
-        setEvents(response.events);
+        setEvents(response.events || []);
+      } else {
+        setEvents([]);
       }
     } catch (error) {
       console.error('Fetch events error:', error);
+      setEvents([]);
     }
   };
 
@@ -458,7 +461,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {events.map((event) => (
+                  {(events || []).map((event) => (
                     <tr key={event.id}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div>
