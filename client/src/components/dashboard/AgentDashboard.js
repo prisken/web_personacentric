@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
 
 const AgentDashboard = ({ data, onRefresh }) => {
-  const { t } = useTranslation();
-  const [activeTab, setActiveTab] = useState('overview');
+  // Debug: log props on every render
+  useEffect(() => {
+    console.log('[AgentDashboard] Rendered. Props:', data);
+  });
+
+  // Persist activeTab in localStorage
+  const getInitialTab = () => localStorage.getItem('agentDashboardActiveTab') || 'overview';
+  const [activeTab, setActiveTab] = useState(getInitialTab());
+  useEffect(() => {
+    localStorage.setItem('agentDashboardActiveTab', activeTab);
+  }, [activeTab]);
+
   const [showEventModal, setShowEventModal] = useState(false);
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [showContestModal, setShowContestModal] = useState(false);
@@ -524,7 +534,9 @@ const AgentDashboard = ({ data, onRefresh }) => {
                       notifyProfileImageUpdated();
                       // Update parent data.agent.profile_image if possible
                       if (data.agent) data.agent.profile_image = imageUrl;
-                      onRefresh(); // Optionally refresh dashboard data
+                      if (typeof onRefresh === 'function') onRefresh(); // Ensure parent fetches latest data
+                      setActiveTab('profile'); // Stay on profile tab
+                      console.log('[AgentDashboard] Profile image uploaded, updated imageUrl:', imageUrl);
                     }}
                     className="mb-6"
                   />
