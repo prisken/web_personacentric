@@ -100,7 +100,7 @@ const BlogsPage = () => {
       author: 'Lisa Wang',
       authorImage: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
       date: 'March 5, 2024',
-      readTime: language === 'zh-TW' ? '11 分鐘閱讀' : '11 min read',
+      readTime: language === 'zh-TW' ? '14 分鐘閱讀' : '14 min read',
       category: language === 'zh-TW' ? '房地產' : 'Real Estate',
       image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80',
       featured: false
@@ -108,190 +108,207 @@ const BlogsPage = () => {
     {
       id: 6,
       title: language === 'zh-TW'
-        ? '建立綜合財務計劃'
-        : 'Building a Comprehensive Financial Plan',
+        ? '市場分析：2024年第一季度回顧'
+        : 'Market Analysis: Q1 2024 Review',
       excerpt: language === 'zh-TW'
-        ? '學習如何創建涵蓋您財務生活各個方面的綜合財務計劃。'
-        : 'Learn how to create a comprehensive financial plan that covers all aspects of your financial life.',
+        ? '深入分析2024年第一季度的市場表現和對未來趨勢的預測。'
+        : 'Deep dive into Q1 2024 market performance and predictions for future trends.',
       content: language === 'zh-TW'
-        ? '綜合財務計劃是財務成功的基礎。它應該涵蓋您財務生活的各個方面，從預算到遺產規劃...'
-        : 'A comprehensive financial plan is the foundation of financial success. It should cover all aspects of your financial life, from budgeting to estate planning...',
-      author: 'Robert Thompson',
+        ? '2024年第一季度為投資者帶來了混合的結果。讓我們分析關鍵市場指標和對未來幾個月的預期...'
+        : 'Q1 2024 brought mixed results for investors. Let\'s analyze key market indicators and expectations for the coming months...',
+      author: 'Robert Zhang',
       authorImage: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-      date: 'March 3, 2024',
-      readTime: language === 'zh-TW' ? '14 分鐘閱讀' : '14 min read',
-      category: language === 'zh-TW' ? '財務規劃' : 'Financial Planning',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
+      date: 'March 1, 2024',
+      readTime: language === 'zh-TW' ? '11 分鐘閱讀' : '11 min read',
+      category: language === 'zh-TW' ? '市場分析' : 'Market Analysis',
+      image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
       featured: false
     }
   ];
 
-  const filteredPosts = selectedCategory === (language === 'zh-TW' ? '全部' : 'All')
-    ? blogPosts 
+  const filteredPosts = selectedCategory === 'All' || selectedCategory === '全部'
+    ? blogPosts
     : blogPosts.filter(post => post.category === selectedCategory);
 
   const featuredPost = blogPosts.find(post => post.featured);
+  const regularPosts = filteredPosts.filter(post => !post.featured);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            {t('nav.blogs')}
-          </h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            {language === 'zh-TW'
-              ? '通過我們專業團隊的最新財務見解、專家建議和市場分析保持信息靈通。'
-              : 'Stay informed with the latest financial insights, expert advice, and market analysis from our team of professionals.'
-            }
-          </p>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="py-8 bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap gap-4 justify-center">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full border transition-colors duration-200 ${
-                  selectedCategory === category
-                    ? 'bg-blue-600 text-white border-blue-600'
-                    : 'border-gray-300 text-gray-700 hover:bg-blue-600 hover:text-white hover:border-blue-600'
-                }`}
-              >
-                {category}
-              </button>
-            ))}
+    <div className="pt-16 bg-gray-50 min-h-screen">
+      {/* Page Header */}
+      <div className="bg-white shadow-lg border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 lg:py-12">
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">
+              📝 {t('blogs.title')}
+            </h1>
+            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl">
+              {t('blogs.description')}
+            </p>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Featured Post */}
-      {featuredPost && (
-        <section className="py-12 bg-white">
-          <div className="max-w-7xl mx-auto px-4">
-            <h2 className="text-3xl font-bold text-gray-900 mb-8">
-              {t('blogs.featured')}
+      {/* Category Filter */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-6 lg:py-8">
+            <div className="flex flex-wrap gap-3 lg:gap-4">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => setSelectedCategory(category)}
+                  className={`px-4 py-2 lg:px-6 lg:py-3 rounded-xl text-sm lg:text-base font-medium transition-all duration-300 ${
+                    selectedCategory === category
+                      ? 'bg-blue-600 text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {/* Featured Post */}
+        {featuredPost && selectedCategory === 'All' && (
+          <div className="mb-12 lg:mb-16">
+            <h2 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-8">
+              ⭐ {language === 'zh-TW' ? '精選文章' : 'Featured Article'}
             </h2>
-            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
               <div className="grid grid-cols-1 lg:grid-cols-2">
                 <div className="h-64 lg:h-full overflow-hidden">
                   <img 
                     src={featuredPost.image} 
                     alt={featuredPost.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-8">
-                  <div className="flex items-center mb-4">
-                    <span className="px-3 py-1 bg-blue-600 text-white text-sm rounded-full">
+                <div className="p-6 lg:p-8 flex flex-col justify-center">
+                  <div className="flex items-center mb-4 lg:mb-6">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
                       {featuredPost.category}
                     </span>
-                    <span className="ml-4 text-sm text-gray-500">{featuredPost.readTime}</span>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{featuredPost.title}</h3>
-                  <p className="text-gray-600 mb-6">{featuredPost.excerpt}</p>
-                  <div className="flex items-center mb-6">
-                    <img 
-                      src={featuredPost.authorImage} 
-                      alt={featuredPost.author}
-                      className="w-10 h-10 rounded-full mr-3"
-                    />
-                    <div>
-                      <p className="font-semibold text-gray-900">{featuredPost.author}</p>
-                      <p className="text-sm text-gray-500">{featuredPost.date}</p>
-                    </div>
-                  </div>
-                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-                    {t('blogs.readMore')}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Blog Posts Grid */}
-      <section className="py-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.filter(post => !post.featured).map((post) => (
-              <div key={post.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200">
-                <div className="h-48 overflow-hidden">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-600 text-sm rounded-full">
-                      {post.category}
+                    <span className="ml-4 text-sm lg:text-base text-gray-500">
+                      {featuredPost.readTime}
                     </span>
-                    <span className="text-sm text-gray-500">{post.readTime}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">{post.title}</h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                  <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
+                    {featuredPost.title}
+                  </h3>
+                  <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8 leading-relaxed">
+                    {featuredPost.excerpt}
+                  </p>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center">
                       <img 
-                        src={post.authorImage} 
-                        alt={post.author}
-                        className="w-8 h-8 rounded-full mr-2"
+                        src={featuredPost.authorImage} 
+                        alt={featuredPost.author}
+                        className="w-10 h-10 lg:w-12 lg:h-12 rounded-full mr-3 lg:mr-4"
                       />
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">{post.author}</p>
-                        <p className="text-xs text-gray-500">{post.date}</p>
+                        <p className="text-sm lg:text-base font-medium text-gray-900">{featuredPost.author}</p>
+                        <p className="text-xs lg:text-sm text-gray-500">{featuredPost.date}</p>
                       </div>
                     </div>
-                    <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm">
-                      {t('blogs.readMore')} →
+                    <button className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      {language === 'zh-TW' ? '閱讀全文' : 'Read More'}
                     </button>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
+        )}
 
-          {/* Load More Button */}
-          <div className="text-center mt-12">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-              {language === 'zh-TW' ? '載入更多文章' : 'Load More Articles'}
-            </button>
+        {/* Regular Posts Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {regularPosts.map((post) => (
+            <div key={post.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
+              {/* Post Image */}
+              <div className="h-48 lg:h-56 overflow-hidden">
+                <img 
+                  src={post.image} 
+                  alt={post.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Post Content */}
+              <div className="p-6 lg:p-8">
+                {/* Category and Read Time */}
+                <div className="flex items-center justify-between mb-4 lg:mb-6">
+                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
+                    {post.category}
+                  </span>
+                  <span className="text-xs lg:text-sm text-gray-500">
+                    {post.readTime}
+                  </span>
+                </div>
+
+                {/* Post Title */}
+                <h3 className="text-lg lg:text-xl xl:text-2xl font-bold text-gray-900 mb-3 lg:mb-4 line-clamp-2 leading-tight">
+                  {post.title}
+                </h3>
+
+                {/* Post Excerpt */}
+                <p className="text-sm lg:text-base text-gray-600 mb-6 lg:mb-8 line-clamp-3 leading-relaxed">
+                  {post.excerpt}
+                </p>
+
+                {/* Author and Date */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <img 
+                      src={post.authorImage} 
+                      alt={post.author}
+                      className="w-8 h-8 lg:w-10 lg:h-10 rounded-full mr-3"
+                    />
+                    <div>
+                      <p className="text-sm lg:text-base font-medium text-gray-900">{post.author}</p>
+                      <p className="text-xs lg:text-sm text-gray-500">{post.date}</p>
+                    </div>
+                  </div>
+                  <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm lg:text-base transition-all duration-200 hover:translate-x-1">
+                    {language === 'zh-TW' ? '閱讀更多' : 'Read More'} →
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Newsletter Signup */}
+        <div className="mt-16 lg:mt-20">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 lg:p-12 text-white">
+            <div className="text-center max-w-2xl mx-auto">
+              <h3 className="text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 lg:mb-6">
+                {language === 'zh-TW' ? '保持更新' : 'Stay Updated'}
+              </h3>
+              <p className="text-lg lg:text-xl mb-8 lg:mb-10 opacity-90">
+                {language === 'zh-TW'
+                  ? '獲取最新的財務見解和獨家內容'
+                  : 'Get the latest financial insights and exclusive content'
+                }
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
+                  className="flex-1 px-6 py-4 lg:px-8 lg:py-5 rounded-xl text-gray-900 focus:ring-4 focus:ring-white focus:outline-none text-base lg:text-lg"
+                />
+                <button className="bg-white text-blue-600 px-8 py-4 lg:px-10 lg:py-5 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-base lg:text-lg">
+                  {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
-
-      {/* Newsletter Signup */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {language === 'zh-TW' ? '保持更新' : 'Stay Updated'}
-          </h2>
-          <p className="text-xl mb-8">
-            {language === 'zh-TW'
-              ? '獲取最新的財務見解和專家建議，直接發送到您的收件箱'
-              : 'Get the latest financial insights and expert advice delivered to your inbox'
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
-            />
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
-              {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
-            </button>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

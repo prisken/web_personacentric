@@ -22,7 +22,8 @@ const PricingPage = () => {
       ],
       cta: language === 'zh-TW' ? '立即開始' : 'Get Started',
       popular: false,
-      type: 'client'
+      type: 'client',
+      icon: '👤'
     },
     {
       name: language === 'zh-TW' ? '付費代理計劃' : 'Paid Agent Plan',
@@ -40,7 +41,8 @@ const PricingPage = () => {
       ],
       cta: language === 'zh-TW' ? '開始付費計劃' : 'Start Paid Plan',
       popular: true,
-      type: 'paid-agent'
+      type: 'paid-agent',
+      icon: '👨‍💼'
     },
     {
       name: language === 'zh-TW' ? '無限代理計劃' : 'Unlimited Agent Plan',
@@ -56,7 +58,8 @@ const PricingPage = () => {
       ],
       cta: language === 'zh-TW' ? '請求無限訪問' : 'Request Unlimited Access',
       popular: false,
-      type: 'unlimited-agent'
+      type: 'unlimited-agent',
+      icon: '👑'
     }
   ];
 
@@ -67,89 +70,96 @@ const PricingPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-green-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            {language === 'zh-TW' ? '定價計劃' : 'Pricing Plans'}
-          </h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            {language === 'zh-TW' 
-              ? '選擇適合您的計劃，從免費客戶到付費代理，或請求無限訪問'
-              : 'Choose the plan that fits you, from free client to paid agent, or request unlimited access'
-            }
-          </p>
+    <div className="pt-16 bg-gray-50 min-h-screen">
+      {/* Page Header */}
+      <div className="bg-white shadow-lg border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 lg:py-12 text-center">
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">
+              💰 {language === 'zh-TW' ? '定價計劃' : 'Pricing Plans'}
+            </h1>
+            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto">
+              {language === 'zh-TW' 
+                ? '選擇適合您的計劃，從免費客戶到付費代理，或請求無限訪問'
+                : 'Choose the plan that fits you, from free client to paid agent, or request unlimited access'
+              }
+            </p>
+          </div>
         </div>
-      </section>
+      </div>
 
       {/* Pricing Plans */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {plans.map((plan, index) => (
-              <div
-                key={index}
-                className={`relative bg-white rounded-lg shadow-lg overflow-hidden ${
-                  plan.popular ? 'ring-2 ring-blue-600' : ''
-                }`}
-              >
-                {plan.popular && (
-                  <div className="absolute top-0 left-0 right-0 bg-blue-600 text-white text-center py-2 text-sm font-semibold">
-                    {language === 'zh-TW' ? '最受歡迎' : 'Most Popular'}
-                  </div>
-                )}
-                
-                <div className="p-8">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                    <p className="text-gray-600 mb-6">{plan.description}</p>
-                    
-                    <div className="mb-4">
-                      {plan.price > 0 ? (
-                        <>
-                          <span className="text-4xl font-bold text-gray-900">
-                            HKD${plan.price}
-                          </span>
-                          <span className="text-gray-600">/month</span>
-                        </>
-                      ) : (
-                        <span className="text-4xl font-bold text-gray-900">
-                          {language === 'zh-TW' ? '免費' : 'Free'}
-                        </span>
-                      )}
-                    </div>
-                    
-                    {plan.type === 'paid-agent' && (
-                      <div className="text-sm text-green-600 font-semibold mb-2">
-                        {language === 'zh-TW' ? '每次付款獲得500積分' : '500 points per successful payment'}
-                      </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          {plans.map((plan, index) => (
+            <div
+              key={index}
+              className={`relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105 ${
+                plan.popular ? 'ring-2 ring-blue-600 shadow-xl' : ''
+              }`}
+            >
+              {plan.popular && (
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-center py-3 lg:py-4 text-sm lg:text-base font-semibold">
+                  ⭐ {language === 'zh-TW' ? '最受歡迎' : 'Most Popular'}
+                </div>
+              )}
+
+              <div className={`p-6 lg:p-8 ${plan.popular ? 'pt-16 lg:pt-20' : ''}`}>
+                {/* Plan Header */}
+                <div className="text-center mb-6 lg:mb-8">
+                  <div className="text-4xl lg:text-5xl mb-4 lg:mb-6">{plan.icon}</div>
+                  <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-2 lg:mb-4">
+                    {plan.name}
+                  </h3>
+                  <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8">
+                    {plan.description}
+                  </p>
+                  <div className="mb-6 lg:mb-8">
+                    <span className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900">
+                      {plan.price === 0 ? (language === 'zh-TW' ? '免費' : 'Free') : `HKD$${plan.price}`}
+                    </span>
+                    {plan.price > 0 && (
+                      <span className="text-base lg:text-lg text-gray-500 ml-2">
+                        {language === 'zh-TW' ? '/月' : '/month'}
+                      </span>
                     )}
                   </div>
+                </div>
 
-                  <ul className="space-y-4 mb-8">
-                    {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start">
-                        <i className="fas fa-check text-green-500 mt-1 mr-3"></i>
-                        <span className="text-gray-700">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {/* Features List */}
+                <div className="space-y-4 lg:space-y-6 mb-8 lg:mb-10">
+                  {plan.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center">
+                      <div className="flex-shrink-0 w-5 h-5 lg:w-6 lg:h-6 bg-green-500 rounded-full flex items-center justify-center mr-3 lg:mr-4">
+                        <svg className="w-3 h-3 lg:w-4 lg:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                      <span className="text-sm lg:text-base text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
 
+                {/* CTA Button */}
+                <div className="text-center">
                   {plan.type === 'unlimited-agent' ? (
                     <button
                       onClick={() => setShowAccessCode(true)}
-                      className="block w-full text-center py-3 px-6 rounded-lg font-semibold bg-gray-100 text-gray-900 hover:bg-gray-200 transition-colors duration-200"
+                      className={`w-full py-3 lg:py-4 px-6 lg:px-8 rounded-xl text-sm lg:text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl ${
+                        plan.popular
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                          : 'bg-gray-600 text-white hover:bg-gray-700'
+                      }`}
                     >
                       {plan.cta}
                     </button>
                   ) : (
                     <Link
-                      to={plan.type === 'client' ? '/register' : '/register'}
-                      className={`block w-full text-center py-3 px-6 rounded-lg font-semibold transition-colors duration-200 ${
+                      to={plan.type === 'client' ? '/register' : '/agent-matching'}
+                      className={`inline-block w-full py-3 lg:py-4 px-6 lg:px-8 rounded-xl text-sm lg:text-base font-semibold transition-all duration-300 shadow-lg hover:shadow-xl ${
                         plan.popular
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                          ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
                       }`}
                     >
                       {plan.cta}
@@ -157,179 +167,141 @@ const PricingPage = () => {
                   )}
                 </div>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Access Code Modal */}
+        {showAccessCode && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-2xl shadow-xl p-6 lg:p-8 max-w-md w-full">
+              <div className="text-center mb-6 lg:mb-8">
+                <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-2 lg:mb-4">
+                  {language === 'zh-TW' ? '輸入訪問代碼' : 'Enter Access Code'}
+                </h3>
+                <p className="text-base lg:text-lg text-gray-600">
+                  {language === 'zh-TW' 
+                    ? '請輸入管理員提供的訪問代碼以獲得無限代理訪問權限'
+                    : 'Please enter the access code provided by an administrator to get unlimited agent access'
+                  }
+                </p>
+              </div>
+              
+              <form onSubmit={handleAccessCodeSubmit} className="space-y-6 lg:space-y-8">
+                <div>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700 mb-2 lg:mb-3">
+                    {language === 'zh-TW' ? '訪問代碼' : 'Access Code'}
+                  </label>
+                  <input
+                    type="text"
+                    value={accessCode}
+                    onChange={(e) => setAccessCode(e.target.value)}
+                    className="w-full px-4 py-3 lg:px-6 lg:py-4 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base lg:text-lg"
+                    placeholder={language === 'zh-TW' ? '輸入您的訪問代碼' : 'Enter your access code'}
+                    required
+                  />
+                </div>
+                
+                <div className="flex space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => setShowAccessCode(false)}
+                    className="flex-1 py-3 lg:py-4 px-6 lg:px-8 bg-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-400 transition-all duration-300 text-sm lg:text-base"
+                  >
+                    {language === 'zh-TW' ? '取消' : 'Cancel'}
+                  </button>
+                  <button
+                    type="submit"
+                    className="flex-1 py-3 lg:py-4 px-6 lg:px-8 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl text-sm lg:text-base"
+                  >
+                    {language === 'zh-TW' ? '提交' : 'Submit'}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* FAQ Section */}
+        <div className="mt-16 lg:mt-20">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-4 lg:mb-6">
+              ❓ {language === 'zh-TW' ? '常見問題' : 'Frequently Asked Questions'}
+            </h2>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
+              <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-4 lg:mb-6">
+                {language === 'zh-TW' ? '如何升級到代理計劃？' : 'How do I upgrade to an agent plan?'}
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
+                {language === 'zh-TW'
+                  ? '您可以通過點擊"開始付費計劃"按鈕來升級到代理計劃。我們會引導您完成整個過程。'
+                  : 'You can upgrade to an agent plan by clicking the "Start Paid Plan" button. We\'ll guide you through the entire process.'
+                }
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
+              <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-4 lg:mb-6">
+                {language === 'zh-TW' ? '訪問代碼如何獲得？' : 'How do I get an access code?'}
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
+                {language === 'zh-TW'
+                  ? '訪問代碼由管理員提供，通常用於戰略合作夥伴或特殊情況。請聯繫我們的管理團隊。'
+                  : 'Access codes are provided by administrators, typically for strategic partners or special circumstances. Please contact our admin team.'
+                }
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
+              <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-4 lg:mb-6">
+                {language === 'zh-TW' ? '可以隨時取消訂閱嗎？' : 'Can I cancel my subscription anytime?'}
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
+                {language === 'zh-TW'
+                  ? '是的，您可以隨時取消您的代理訂閱。取消後，您將保留客戶訪問權限。'
+                  : 'Yes, you can cancel your agent subscription at any time. After cancellation, you\'ll retain client access.'
+                }
+              </p>
+            </div>
+            
+            <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
+              <h3 className="text-lg lg:text-xl font-bold text-gray-900 mb-4 lg:mb-6">
+                {language === 'zh-TW' ? '支持哪些付款方式？' : 'What payment methods are supported?'}
+              </h3>
+              <p className="text-base lg:text-lg text-gray-600 leading-relaxed">
+                {language === 'zh-TW'
+                  ? '我們支持信用卡、借記卡和各種電子支付方式。所有付款都通過安全的支付網關處理。'
+                  : 'We support credit cards, debit cards, and various electronic payment methods. All payments are processed through secure payment gateways.'
+                }
+              </p>
+            </div>
           </div>
         </div>
-      </section>
 
-      {/* Access Code Modal */}
-      {showAccessCode && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4">
-              {language === 'zh-TW' ? '輸入訪問代碼' : 'Enter Access Code'}
+        {/* Contact Section */}
+        <div className="mt-16 lg:mt-20">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 lg:p-12 text-white text-center">
+            <h3 className="text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 lg:mb-6">
+              {language === 'zh-TW' ? '需要幫助？' : 'Need Help?'}
             </h3>
-            <p className="text-gray-600 mb-6">
-              {language === 'zh-TW' 
-                ? '請輸入6位數訪問代碼以獲得無限代理訪問權限'
-                : 'Please enter your 6-digit access code to get unlimited agent access'
+            <p className="text-lg lg:text-xl mb-8 lg:mb-10 opacity-90">
+              {language === 'zh-TW'
+                ? '我們的團隊隨時準備協助您選擇最適合的計劃'
+                : 'Our team is ready to help you choose the perfect plan'
               }
             </p>
-            <form onSubmit={handleAccessCodeSubmit}>
-              <input
-                type="text"
-                value={accessCode}
-                onChange={(e) => setAccessCode(e.target.value)}
-                placeholder={language === 'zh-TW' ? '輸入6位數代碼' : 'Enter 6-digit code'}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 mb-4"
-                maxLength="6"
-              />
-              <div className="flex space-x-4">
-                <button
-                  type="submit"
-                  className="flex-1 bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
-                >
-                  {language === 'zh-TW' ? '激活' : 'Activate'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setShowAccessCode(false)}
-                  className="flex-1 bg-gray-200 text-gray-900 py-3 px-6 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
-                >
-                  {language === 'zh-TW' ? '取消' : 'Cancel'}
-                </button>
-              </div>
-            </form>
+            <Link
+              to="/contact"
+              className="inline-block bg-white text-blue-600 px-8 py-4 lg:px-10 lg:py-5 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-base lg:text-lg"
+            >
+              {language === 'zh-TW' ? '聯繫我們' : 'Contact Us'}
+            </Link>
           </div>
         </div>
-      )}
-
-      {/* Payment Methods Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {language === 'zh-TW' ? '支付方式' : 'Payment Methods'}
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-blue-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-credit-card text-2xl text-blue-600"></i>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '信用卡/借記卡' : 'Credit/Debit Cards'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' ? 'Visa, MasterCard, American Express' : 'Visa, MasterCard, American Express'}
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-wallet text-2xl text-green-600"></i>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '數字錢包' : 'Digital Wallets'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' ? 'PayPal, Apple Pay, Google Pay' : 'PayPal, Apple Pay, Google Pay'}
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
-                <i className="fas fa-university text-2xl text-purple-600"></i>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '銀行轉帳' : 'Bank Transfer'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' ? 'ACH, SEPA (國際)' : 'ACH, SEPA (International)'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {language === 'zh-TW' ? '常見問題' : 'Frequently Asked Questions'}
-          </h2>
-          
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '我可以隨時更改計劃嗎？' : 'Can I change my plan at any time?'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' 
-                  ? '是的，您可以隨時升級或降級您的計劃。變更將在您的下一個計費週期生效。'
-                  : 'Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.'
-                }
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '付款失敗會發生什麼？' : 'What happens if payment fails?'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' 
-                  ? '我們提供3個月的寬限期。如果連續3個月付款失敗，您的帳戶將被暫停。'
-                  : 'We provide a 3-month grace period. If payment fails for 3 consecutive months, your account will be suspended.'
-                }
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '如何獲得無限訪問權限？' : 'How do I get unlimited access?'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' 
-                  ? '您可以請求管理員授予無限訪問權限，或使用6位數訪問代碼立即激活。'
-                  : 'You can request admin-granted unlimited access, or use a 6-digit access code for immediate activation.'
-                }
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '積分獎勵如何運作？' : 'How do point rewards work?'}
-              </h3>
-              <p className="text-gray-600">
-                {language === 'zh-TW' 
-                  ? '每次成功的HKD$10付款都會獲得500積分。管理員授予的訪問權限不提供積分。'
-                  : 'Each successful HKD$10 payment awards 500 points. Admin-granted access does not provide points.'
-                }
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Enterprise CTA */}
-      <section className="py-16 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {language === 'zh-TW' ? '需要自定義解決方案？' : 'Need a Custom Solution?'}
-          </h2>
-          <p className="text-xl mb-8">
-            {language === 'zh-TW' 
-              ? '我們為大型組織提供企業計劃，具有自定義功能和專用支持。'
-              : 'We offer enterprise plans for large organizations with custom features and dedicated support.'
-            }
-          </p>
-          <Link
-            to="/help"
-            className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
-          >
-            {language === 'zh-TW' ? '聯繫銷售' : 'Contact Sales'}
-          </Link>
-        </div>
-      </section>
+      </div>
     </div>
   );
 };
