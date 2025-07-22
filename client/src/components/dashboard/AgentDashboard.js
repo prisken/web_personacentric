@@ -512,7 +512,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
                 <div>
                   <h4 className="text-md font-medium text-gray-900 mb-4">個人照片</h4>
                   <AgentProfileImageUpload
-                    currentImageUrl={profileImageUrl}
+                    currentImageUrl={profileImageUrl || 'https://ui-avatars.com/api/?name=Agent&background=ddd&color=555&size=128'}
                     onImageUploaded={(imageUrl) => {
                       setProfileImageUrl(imageUrl);
                       setShowProfileSuccess(true);
