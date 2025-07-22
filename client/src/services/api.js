@@ -94,11 +94,38 @@ class ApiService {
   }
 
   // PUT request
-  async put(endpoint, data) {
-    return this.request(endpoint, {
+  async put(endpoint, data, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const token = this.getAuthToken();
+
+    const config = {
       method: 'PUT',
-      body: JSON.stringify(data),
-    });
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    if (data instanceof FormData) {
+      delete config.headers['Content-Type'];
+      config.body = data;
+    } else {
+      config.headers['Content-Type'] = 'application/json';
+      config.body = JSON.stringify(data);
+    }
+
+    try {
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
+    }
   }
 
   // DELETE request
