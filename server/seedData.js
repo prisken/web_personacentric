@@ -1,6 +1,9 @@
 const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
         Subscription, Notification, EventRegistration, AgentClientRelationship, 
-        ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
+        ContestSubmission, ClientUpgrade } = require('./models');
+// const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
+//         Subscription, Notification, EventRegistration, AgentClientRelationship, 
+//         ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
@@ -348,7 +351,7 @@ async function seedData() {
     });
 
     // Seed recommendation game data
-    await seedRecommendationData();
+    // await seedRecommendationData();
 
     console.log('Data seeding completed successfully!');
     console.log('Sample users created:');
