@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
+import apiService from '../services/api';
 
 const Header = () => {
   const { t, language, toggleLanguage } = useLanguage();
@@ -11,6 +12,33 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOverHero, setIsOverHero] = useState(false);
   const location = useLocation();
+  const [agentProfileImage, setAgentProfileImage] = useState(null);
+
+  useEffect(() => {
+    const fetchAgentProfile = async () => {
+      if (user && user.role === 'agent') {
+        try {
+          const response = await apiService.getMyAgentProfile();
+          if (response.success && response.agent && response.agent.profile_image) {
+            setAgentProfileImage(response.agent.profile_image);
+          }
+        } catch (e) {
+          // ignore
+        }
+      } else {
+        setAgentProfileImage(null);
+      }
+    };
+    fetchAgentProfile();
+    // Listen for profile image update events
+    const handleProfileImageUpdated = () => {
+      fetchAgentProfile();
+    };
+    window.addEventListener('agent-profile-image-updated', handleProfileImageUpdated);
+    return () => {
+      window.removeEventListener('agent-profile-image-updated', handleProfileImageUpdated);
+    };
+  }, [user]);
 
   const navItems = [
     { key: 'nav.events', path: '/events', label: t('nav.events') },
@@ -148,6 +176,13 @@ const Header = () => {
             {/* User Info & Auth Buttons */}
             {user ? (
               <div className="hidden sm:flex items-center space-x-3">
+                {user.role === 'agent' && agentProfileImage && (
+                  <img
+                    src={agentProfileImage}
+                    alt="Profile"
+                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 shadow mr-2"
+                  />
+                )}
                 <div className="text-right">
                   <div className={`text-sm font-medium ${textClasses}`}>
                     {getUserDisplayName()}

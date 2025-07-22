@@ -10,6 +10,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const [showBlogModal, setShowBlogModal] = useState(false);
   const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
+  const [showProfileSuccess, setShowProfileSuccess] = useState(false);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -48,6 +50,12 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'contests', label: '競賽參與', icon: '🏆' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
+
+  // Utility to notify other components (like Header) of profile image update
+  const notifyProfileImageUpdated = () => {
+    const event = new CustomEvent('agent-profile-image-updated');
+    window.dispatchEvent(event);
+  };
 
   return (
     <div className="pt-16 bg-gray-50">
@@ -489,14 +497,22 @@ const AgentDashboard = ({ data, onRefresh }) => {
             </div>
             <div className="p-6">
               <div className="space-y-6">
+                {showProfileSuccess && (
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-4 text-center font-medium">
+                    個人照片已成功更新！
+                  </div>
+                )}
                 {/* Profile Image Upload */}
                 <div>
                   <h4 className="text-md font-medium text-gray-900 mb-4">個人照片</h4>
                   <AgentProfileImageUpload
-                    currentImageUrl={data.agent?.profile_image}
+                    currentImageUrl={profileImageUrl}
                     onImageUploaded={(imageUrl) => {
-                      console.log('Profile image updated:', imageUrl);
-                      onRefresh(); // Refresh dashboard data
+                      setProfileImageUrl(imageUrl);
+                      setShowProfileSuccess(true);
+                      setTimeout(() => setShowProfileSuccess(false), 3000);
+                      notifyProfileImageUpdated();
+                      onRefresh(); // Optionally refresh dashboard data
                     }}
                     className="mb-6"
                   />
