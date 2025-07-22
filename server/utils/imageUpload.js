@@ -4,10 +4,6 @@ const { Readable } = require('stream');
 // Upload image to Cloudinary
 const uploadImage = async (file, folder = 'personacentric') => {
   try {
-    console.log('=== Starting Cloudinary upload ===');
-    console.log('File buffer size:', file.buffer.length);
-    console.log('Folder:', folder);
-    
     // Convert buffer to stream
     const stream = Readable.from(file.buffer);
     

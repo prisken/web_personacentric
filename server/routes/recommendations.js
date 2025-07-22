@@ -14,7 +14,7 @@ const checkRecommendationTables = async () => {
     await Recommendation.count();
     return true;
   } catch (error) {
-    console.log('Recommendation tables not available:', error.message);
+    console.error('Recommendation tables not available:', error.message);
     return false;
   }
 };
@@ -26,28 +26,20 @@ const generateShareCode = () => {
 
 // Get user's recommendations (authenticated users)
 router.get('/my-recommendations', authenticateToken, async (req, res) => {
-  console.log('=== GET /my-recommendations called ===');
   try {
-    console.log('Checking if tables exist...');
     const tablesExist = await checkRecommendationTables();
-    console.log('Tables exist:', tablesExist);
     
     if (!tablesExist) {
-      console.log('Tables do not exist, returning empty array');
       return res.json({
         success: true,
         recommendations: []
       });
     }
 
-    console.log('Importing Recommendation model...');
     const { Recommendation } = require('../models');
-    console.log('Recommendation model imported successfully');
     
     const userId = req.user.userId;
-    console.log('User ID:', userId);
 
-    console.log('Finding recommendations...');
     const recommendations = await Recommendation.findAll({
       where: { user_id: userId },
       include: [
@@ -59,7 +51,6 @@ router.get('/my-recommendations', authenticateToken, async (req, res) => {
       ],
       order: [['created_at', 'DESC']]
     });
-    console.log('Found recommendations:', recommendations.length);
 
     res.json({
       success: true,
@@ -341,14 +332,10 @@ router.post('/:shareCode/engage', async (req, res) => {
 
 // Get user's badges (authenticated users)
 router.get('/badges', authenticateToken, async (req, res) => {
-  console.log('=== GET /badges called ===');
   try {
-    console.log('Checking if tables exist...');
     const tablesExist = await checkRecommendationTables();
-    console.log('Tables exist:', tablesExist);
     
     if (!tablesExist) {
-      console.log('Tables do not exist, returning empty arrays');
       return res.json({
         success: true,
         userBadges: [],
@@ -357,9 +344,7 @@ router.get('/badges', authenticateToken, async (req, res) => {
     }
 
     const userId = req.user.userId;
-    console.log('User ID:', userId);
 
-    console.log('Finding user badges...');
     const userBadges = await require('../models').UserBadge.findAll({
       where: { user_id: userId },
       include: [
@@ -370,14 +355,11 @@ router.get('/badges', authenticateToken, async (req, res) => {
       ],
       order: [['earned_at', 'DESC']]
     });
-    console.log('Found user badges:', userBadges.length);
 
-    console.log('Finding all badges...');
     const allBadges = await require('../models').Badge.findAll({
       where: { is_active: true },
       order: [['requirement_value', 'ASC']]
     });
-    console.log('Found all badges:', allBadges.length);
 
     res.json({
       success: true,

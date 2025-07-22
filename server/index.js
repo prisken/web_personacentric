@@ -110,20 +110,16 @@ app.use('*', (req, res) => {
 async function startServer() {
   try {
     await sequelize.authenticate();
-    console.log('Database connection established successfully.');
     
     // Sync database (create tables if they don't exist)
     // Use force: false to prevent conflicts with existing schema
     await sequelize.sync({ force: false, alter: false });
-    console.log('Database synced successfully.');
     
     // Run custom migrations for schema changes
     await runMigrations();
     
     // Start server first, then seed data in background
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
     });
     
     // Seed data if no users exist (in background)
@@ -132,10 +128,8 @@ async function startServer() {
         const { User } = require('./models');
         const userCount = await User.count();
         if (userCount === 0) {
-          console.log('No users found, seeding database...');
           const seedData = require('./seedData');
           await seedData();
-          console.log('Database seeded successfully.');
         }
       } catch (error) {
         console.error('Seeding error:', error);

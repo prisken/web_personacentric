@@ -24,26 +24,14 @@ const upload = multer({
 // Upload single image
 router.post('/image', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    console.log('=== Upload single image called ===');
-    console.log('Request body:', req.body);
-    console.log('Request file:', req.file ? 'File received' : 'No file');
-    
     if (!req.file) {
-      console.log('No file provided');
       return res.status(400).json({
         success: false,
         error: 'No image file provided'
       });
     }
 
-    console.log('File details:', {
-      originalname: req.file.originalname,
-      mimetype: req.file.mimetype,
-      size: req.file.size
-    });
-
     const folder = req.body.folder || 'personacentric';
-    console.log('Uploading to folder:', folder);
     
     const result = await uploadImage(req.file, folder);
 
