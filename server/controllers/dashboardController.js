@@ -26,6 +26,16 @@ class DashboardController {
           points: userData.points,
           subscription_status: userData.subscription_status
         },
+        agent: userData.agent ? {
+          id: userData.agent.id,
+          user_id: userData.agent.user_id,
+          profile_image: userData.agent.profile_image,
+          bio: userData.agent.bio,
+          professional_field: userData.agent.professional_field,
+          certifications: userData.agent.certifications,
+          created_at: userData.agent.created_at,
+          updated_at: userData.agent.updated_at
+        } : null,
         statistics: {},
         notifications: [],
         recent_point_transactions: []

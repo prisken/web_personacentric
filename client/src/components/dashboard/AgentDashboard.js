@@ -541,9 +541,13 @@ const AgentDashboard = ({ data, onRefresh }) => {
                       notifyProfileImageUpdated();
                       // Update parent data.agent.profile_image if possible
                       if (data.agent) data.agent.profile_image = imageUrl;
-                      if (typeof onRefresh === 'function') onRefresh(); // Ensure parent fetches latest data
                       setActiveTab('profile'); // Stay on profile tab
                       console.log('[AgentDashboard] Profile image uploaded, updated imageUrl:', imageUrl);
+                      
+                      // Delay the refresh to ensure server has processed the update
+                      setTimeout(() => {
+                        if (typeof onRefresh === 'function') onRefresh();
+                      }, 1000);
                     }}
                     className="mb-6"
                   />
