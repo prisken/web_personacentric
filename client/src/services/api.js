@@ -173,41 +173,86 @@ class ApiService {
 
   // Recommendation game endpoints
   async getMyRecommendations() {
-    return this.get('/recommendations/my-recommendations');
+    try {
+      return this.get('/recommendations/my-recommendations');
+    } catch (error) {
+      console.log('Recommendation API not available, returning empty data');
+      return { success: true, recommendations: [] };
+    }
   }
 
   async getRecommendationByShareCode(shareCode) {
-    return this.get(`/recommendations/share/${shareCode}`);
+    try {
+      return this.get(`/recommendations/share/${shareCode}`);
+    } catch (error) {
+      console.log('Recommendation API not available');
+      return { success: false, error: 'Recommendation not found' };
+    }
   }
 
   async createRecommendation(recommendationData) {
-    return this.post('/recommendations', recommendationData);
+    try {
+      return this.post('/recommendations', recommendationData);
+    } catch (error) {
+      console.log('Recommendation API not available');
+      return { success: false, error: 'Service temporarily unavailable' };
+    }
   }
 
   async updateRecommendation(recommendationId, recommendationData) {
-    return this.put(`/recommendations/${recommendationId}`, recommendationData);
+    try {
+      return this.put(`/recommendations/${recommendationId}`, recommendationData);
+    } catch (error) {
+      console.log('Recommendation API not available');
+      return { success: false, error: 'Service temporarily unavailable' };
+    }
   }
 
   async deleteRecommendation(recommendationId) {
-    return this.delete(`/recommendations/${recommendationId}`);
+    try {
+      return this.delete(`/recommendations/${recommendationId}`);
+    } catch (error) {
+      console.log('Recommendation API not available');
+      return { success: false, error: 'Service temporarily unavailable' };
+    }
   }
 
   async engageWithRecommendation(shareCode, engagementData) {
-    return this.post(`/recommendations/${shareCode}/engage`, engagementData);
+    try {
+      return this.post(`/recommendations/${shareCode}/engage`, engagementData);
+    } catch (error) {
+      console.log('Recommendation API not available');
+      return { success: false, error: 'Service temporarily unavailable' };
+    }
   }
 
   async getRecommendationBadges() {
-    return this.get('/recommendations/badges');
+    try {
+      return this.get('/recommendations/badges');
+    } catch (error) {
+      console.log('Recommendation API not available, returning empty data');
+      return { success: true, userBadges: [], allBadges: [] };
+    }
   }
 
   async getRecommendationLeaderboard(period = 'weekly', category = null) {
-    const params = new URLSearchParams({ period });
-    if (category) params.append('category', category);
-    return this.get(`/recommendations/leaderboard?${params.toString()}`);
+    try {
+      const params = new URLSearchParams({ period });
+      if (category) params.append('category', category);
+      return this.get(`/recommendations/leaderboard?${params.toString()}`);
+    } catch (error) {
+      console.log('Recommendation API not available, returning empty data');
+      return { success: true, leaderboard: [], period };
+    }
   }
 
   async getRecommendationStats() {
-    return this.get('/recommendations/stats');
+    try {
+      return this.get('/recommendations/stats');
+    } catch (error) {
+      console.log('Recommendation API not available, returning empty data');
+      return { success: true, stats: null };
+    }
   }
 
   // Blog endpoints
