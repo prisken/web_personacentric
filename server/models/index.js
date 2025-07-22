@@ -22,10 +22,10 @@ const EventRegistration = require('./EventRegistration');
 const AgentReview = require('./AgentReview');
 const AgentClientRelationship = require('./AgentClientRelationship');
 const ClientUpgrade = require('./ClientUpgrade');
-// const Recommendation = require('./Recommendation');
-// const RecommendationEngagement = require('./RecommendationEngagement');
-// const Badge = require('./Badge');
-// const UserBadge = require('./UserBadge');
+const Recommendation = require('./Recommendation');
+const RecommendationEngagement = require('./RecommendationEngagement');
+const Badge = require('./Badge');
+const UserBadge = require('./UserBadge');
 
 // Define associations
 // User associations
@@ -46,8 +46,8 @@ User.hasMany(AgentClientRelationship, { foreignKey: 'client_id', as: 'clientRela
 User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
 User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
-// User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
-// User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
+User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
+User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
 
 // Agent associations
 Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -127,18 +127,18 @@ ClientUpgrade.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 ClientUpgrade.belongsTo(User, { foreignKey: 'reviewed_by', as: 'reviewer' });
 
 // Recommendation associations
-// Recommendation.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-// Recommendation.hasMany(RecommendationEngagement, { foreignKey: 'recommendation_id', as: 'engagements' });
+Recommendation.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+Recommendation.hasMany(RecommendationEngagement, { foreignKey: 'recommendation_id', as: 'engagements' });
 
 // Recommendation engagements
-// RecommendationEngagement.belongsTo(Recommendation, { foreignKey: 'recommendation_id', as: 'recommendation' });
+RecommendationEngagement.belongsTo(Recommendation, { foreignKey: 'recommendation_id', as: 'recommendation' });
 
 // Badge associations
-// Badge.hasMany(UserBadge, { foreignKey: 'badge_id', as: 'userBadges' });
+Badge.hasMany(UserBadge, { foreignKey: 'badge_id', as: 'userBadges' });
 
 // User badges
-// UserBadge.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-// UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
+UserBadge.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
 
 module.exports = {
   sequelize,
@@ -162,9 +162,9 @@ module.exports = {
   EventRegistration,
   AgentReview,
   AgentClientRelationship,
-  ClientUpgrade
-  // Recommendation,
-  // RecommendationEngagement,
-  // Badge,
-  // UserBadge
+  ClientUpgrade,
+  Recommendation,
+  RecommendationEngagement,
+  Badge,
+  UserBadge
 }; 

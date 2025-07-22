@@ -1,6 +1,6 @@
 const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
         Subscription, Notification, EventRegistration, AgentClientRelationship, 
-        ContestSubmission, ClientUpgrade } = require('./models');
+        ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
 // const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
 //         Subscription, Notification, EventRegistration, AgentClientRelationship, 
 //         ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
@@ -351,7 +351,11 @@ async function seedData() {
     });
 
     // Seed recommendation game data
-    // await seedRecommendationData();
+    try {
+      await seedRecommendationData();
+    } catch (error) {
+      console.log('⚠️ Recommendation seeding skipped (tables may not exist yet):', error.message);
+    }
 
     console.log('Data seeding completed successfully!');
     console.log('Sample users created:');
@@ -512,6 +516,10 @@ const sampleRecommendations = [
 
 async function seedRecommendationData() {
   try {
+    // Check if tables exist by trying to query them
+    await Badge.count();
+    await Recommendation.count();
+    
     // Create badges
     for (const badgeData of badges) {
       await Badge.create(badgeData);
@@ -538,6 +546,7 @@ async function seedRecommendationData() {
 
   } catch (error) {
     console.error('❌ Error seeding recommendation data:', error);
+    throw error; // Re-throw to be caught by the outer try-catch
   }
 }
 

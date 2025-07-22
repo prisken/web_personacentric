@@ -32,30 +32,58 @@ const RecommendationGame = () => {
       setLoading(true);
       
       if (activeTab === 'overview' || activeTab === 'recommendations') {
-        const recResponse = await apiService.getMyRecommendations();
-        if (recResponse.success) {
-          setRecommendations(recResponse.recommendations);
+        try {
+          const recResponse = await apiService.getMyRecommendations();
+          if (recResponse.success) {
+            setRecommendations(recResponse.recommendations || []);
+          } else {
+            setRecommendations([]);
+          }
+        } catch (error) {
+          console.error('Failed to fetch recommendations:', error);
+          setRecommendations([]);
         }
       }
 
       if (activeTab === 'overview' || activeTab === 'badges') {
-        const badgeResponse = await apiService.getRecommendationBadges();
-        if (badgeResponse.success) {
-          setBadges(badgeResponse);
+        try {
+          const badgeResponse = await apiService.getRecommendationBadges();
+          if (badgeResponse.success) {
+            setBadges(badgeResponse);
+          } else {
+            setBadges({ userBadges: [], allBadges: [] });
+          }
+        } catch (error) {
+          console.error('Failed to fetch badges:', error);
+          setBadges({ userBadges: [], allBadges: [] });
         }
       }
 
       if (activeTab === 'leaderboard') {
-        const leaderboardResponse = await apiService.getRecommendationLeaderboard();
-        if (leaderboardResponse.success) {
-          setLeaderboard(leaderboardResponse.leaderboard);
+        try {
+          const leaderboardResponse = await apiService.getRecommendationLeaderboard();
+          if (leaderboardResponse.success) {
+            setLeaderboard(leaderboardResponse.leaderboard || []);
+          } else {
+            setLeaderboard([]);
+          }
+        } catch (error) {
+          console.error('Failed to fetch leaderboard:', error);
+          setLeaderboard([]);
         }
       }
 
       if (activeTab === 'stats') {
-        const statsResponse = await apiService.getRecommendationStats();
-        if (statsResponse.success) {
-          setStats(statsResponse);
+        try {
+          const statsResponse = await apiService.getRecommendationStats();
+          if (statsResponse.success) {
+            setStats(statsResponse);
+          } else {
+            setStats(null);
+          }
+        } catch (error) {
+          console.error('Failed to fetch stats:', error);
+          setStats(null);
         }
       }
     } catch (error) {
@@ -92,9 +120,12 @@ const RecommendationGame = () => {
           photo_url: ''
         });
         fetchData();
+      } else {
+        alert(language === 'zh-TW' ? '創建推薦失敗：' + (response.error || '未知錯誤') : 'Failed to create recommendation: ' + (response.error || 'Unknown error'));
       }
     } catch (error) {
-      alert(language === 'zh-TW' ? '創建推薦失敗：' + error.message : 'Failed to create recommendation: ' + error.message);
+      console.error('Create recommendation error:', error);
+      alert(language === 'zh-TW' ? '創建推薦失敗：' + (error.message || '網路錯誤') : 'Failed to create recommendation: ' + (error.message || 'Network error'));
     } finally {
       setLoading(false);
     }
