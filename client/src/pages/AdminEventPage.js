@@ -26,6 +26,7 @@ const AdminEventPage = () => {
     status: 'draft',
     image: ''
   });
+  const [showImageSuccess, setShowImageSuccess] = useState(false);
 
   const isEditing = !!id;
 
@@ -292,6 +293,11 @@ const AdminEventPage = () => {
 
               {/* Event Image Upload */}
               <div className="mt-6">
+                {showImageSuccess && (
+                  <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-4 text-center font-medium">
+                    活動圖片已成功更新！
+                  </div>
+                )}
                 <EventImageUpload
                   currentImageUrl={eventData.image}
                   onImageUploaded={(imageData) => {
@@ -299,6 +305,8 @@ const AdminEventPage = () => {
                       ...prev,
                       image: imageData.url
                     }));
+                    setShowImageSuccess(true);
+                    setTimeout(() => setShowImageSuccess(false), 3000);
                     console.log('Event image uploaded:', imageData.url);
                   }}
                 />
