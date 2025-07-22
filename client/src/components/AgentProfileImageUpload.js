@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import apiService from '../services/api';
 
 const AgentProfileImageUpload = ({ 
@@ -9,6 +9,11 @@ const AgentProfileImageUpload = ({
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState(currentImageUrl);
+
+  // Update previewUrl if currentImageUrl prop changes (e.g., after parent update)
+  useEffect(() => {
+    setPreviewUrl(currentImageUrl);
+  }, [currentImageUrl]);
 
   const handleFileSelect = async (event) => {
     const file = event.target.files[0];

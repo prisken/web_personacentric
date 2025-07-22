@@ -182,7 +182,7 @@ const EventsPage = () => {
                 <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200">
                   <div className="h-48 overflow-hidden">
                     <img 
-                      src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                      src={event.image ? event.image : "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"}
                       alt={event.title}
                       className="w-full h-full object-cover"
                     />
