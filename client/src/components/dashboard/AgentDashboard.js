@@ -516,6 +516,13 @@ const AgentDashboard = ({ data, onRefresh }) => {
                 <div>profileImageUrl (state): <span>{profileImageUrl || 'null'}</span></div>
                 <div>data.agent?.profile_image (props): <span>{data.agent?.profile_image || 'null'}</span></div>
               </div>
+              {/* DEBUG: Show current image visually if available */}
+              {profileImageUrl && (
+                <div className="mb-2">
+                  <img src={profileImageUrl} alt="Debug Profile" style={{width: 80, height: 80, borderRadius: '50%', border: '2px solid #ccc'}} />
+                  <div className="text-xs text-gray-500">(Debug: profileImageUrl)</div>
+                </div>
+              )}
               <div className="space-y-6">
                 {showProfileSuccess && (
                   <div className="bg-green-100 text-green-800 px-4 py-2 rounded mb-4 text-center font-medium">
