@@ -77,12 +77,12 @@ const Header = () => {
   ].includes(location.pathname);
 
   const headerClasses = `
-    fixed top-0 w-full z-50 transition-all duration-300
+    fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-sm
     ${isScrolled 
-      ? 'bg-gray-900 shadow-lg' 
+      ? 'bg-gray-900/95 shadow-lg' 
       : isOverHero && hasDarkTopSection && !isDashboardPage
         ? 'bg-transparent' 
-        : 'bg-white shadow-sm border-b border-gray-200'
+        : 'bg-white/95 shadow-sm border-b border-gray-200'
     }
   `;
 
@@ -130,91 +130,93 @@ const Header = () => {
   return (
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 md:h-16">
+        <div className="flex justify-between items-center h-16 lg:h-18">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center">
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center mr-2">
-                <i className="fas fa-chart-line text-white text-xs md:text-sm"></i>
+            <Link to="/" className="flex items-center group">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center mr-3 transition-transform duration-200 group-hover:scale-110">
+                <i className="fas fa-chart-line text-white text-sm lg:text-base"></i>
               </div>
-              <span className={`text-lg md:text-xl font-bold ${textClasses}`}>
+              <span className={`text-xl lg:text-2xl font-bold ${textClasses} transition-colors duration-200`}>
                 Persona Centric
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
+          <nav className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.key}
                 to={item.path}
-                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses}`}
+                className={`font-medium text-base ${textClasses} ${hoverClasses} relative group`}
               >
                 {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             ))}
             {user && (
               <Link
                 to="/dashboard"
-                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses}`}
+                className={`font-medium text-base ${textClasses} ${hoverClasses} relative group`}
               >
                 📊 儀表板
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             )}
           </nav>
 
           {/* Language Switcher & Auth Buttons */}
-          <div className="flex items-center space-x-2 md:space-x-4">
+          <div className="flex items-center space-x-3 lg:space-x-6">
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className={`text-xs md:text-sm font-medium ${textClasses} ${hoverClasses}`}
+              className={`text-sm lg:text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
             >
               {language === 'zh-TW' ? 'EN' : '中文'}
             </button>
 
             {/* User Info & Auth Buttons */}
             {user ? (
-              <div className="hidden sm:flex items-center space-x-3">
+              <div className="hidden md:flex items-center space-x-4">
                 {user.role === 'agent' && agentProfileImage && (
                   <img
                     src={agentProfileImage}
                     alt="Profile"
-                    className="w-10 h-10 rounded-full object-cover border-2 border-blue-500 shadow mr-2"
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-blue-500 shadow-lg transition-transform duration-200 hover:scale-110"
                   />
                 )}
                 <div className="text-right">
-                  <div className={`text-sm font-medium ${textClasses}`}>
+                  <div className={`text-sm lg:text-base font-semibold ${textClasses}`}>
                     {getUserDisplayName()}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs lg:text-sm text-gray-400">
                     {getUserRoleLabel()}
                   </div>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className={`font-medium text-sm ${textClasses} ${hoverClasses}`}
+                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
                 >
                   登出
                 </button>
               </div>
             ) : (
-              <div className="hidden sm:flex items-center space-x-2">
+              <div className="hidden md:flex items-center space-x-3">
                 <Link
                   to="/login"
-                  className={`font-medium text-sm ${textClasses} ${hoverClasses}`}
+                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className={`px-3 py-1.5 md:px-4 md:py-2 rounded-lg font-medium text-sm transition-colors duration-200 ${
+                  className={`px-4 py-2 lg:px-6 lg:py-3 rounded-lg font-medium text-sm lg:text-base transition-all duration-200 transform hover:scale-105 ${
                     isScrolled 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg' 
                       : isOverHero && hasDarkTopSection && !isDashboardPage
-                        ? 'bg-white text-gray-900 hover:bg-gray-100' 
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                        ? 'bg-white text-gray-900 hover:bg-gray-100 shadow-lg' 
+                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg'
                   }`}
                 >
                   {t('nav.register')}
@@ -225,28 +227,29 @@ const Header = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`md:hidden p-1.5 rounded-md ${textClasses} ${hoverClasses}`}
+              className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
+              aria-label="Toggle mobile menu"
             >
-              <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
+              <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
             </button>
           </div>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className={`px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t ${
+          <div className="lg:hidden">
+            <div className={`px-4 pt-4 pb-6 space-y-2 border-t transition-all duration-300 ${
               isScrolled 
-                ? 'bg-gray-900 border-gray-700' 
+                ? 'bg-gray-900/95 border-gray-700' 
                 : isOverHero && hasDarkTopSection && !isDashboardPage
-                  ? 'bg-black bg-opacity-50 border-gray-600' 
-                  : 'bg-white border-gray-200'
+                  ? 'bg-black/50 border-gray-600' 
+                  : 'bg-white/95 border-gray-200'
             }`}>
               {navItems.map((item) => (
                 <Link
                   key={item.key}
                   to={item.path}
-                  className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                  className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -255,22 +258,22 @@ const Header = () => {
               {user && (
                 <Link
                   to="/dashboard"
-                  className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                  className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   📊 儀表板
                 </Link>
               )}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="pt-4 border-t border-gray-300/30">
                 {user ? (
                   <>
-                    <div className={`px-3 py-2 text-sm ${textClasses}`}>
-                      <div className="font-medium">{getUserDisplayName()}</div>
-                      <div className="text-xs text-gray-500">{getUserRoleLabel()}</div>
+                    <div className={`px-4 py-3 text-sm ${textClasses}`}>
+                      <div className="font-semibold text-base">{getUserDisplayName()}</div>
+                      <div className="text-xs text-gray-400 mt-1">{getUserRoleLabel()}</div>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className={`block w-full text-left px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                      className={`block w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                     >
                       登出
                     </button>
@@ -279,19 +282,19 @@ const Header = () => {
                   <>
                     <Link
                       to="/login"
-                      className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${textClasses} ${hoverClasses}`}
+                      className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {t('nav.login')}
                     </Link>
                     <Link
                       to="/register"
-                      className={`block px-3 py-3 rounded-md transition-colors duration-200 text-base ${
+                      className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${
                         isScrolled 
-                          ? 'text-blue-400 hover:text-blue-300' 
+                          ? 'text-blue-400 hover:text-blue-300 hover:bg-white/10' 
                           : isOverHero && hasDarkTopSection && !isDashboardPage
-                            ? 'text-blue-200 hover:text-blue-100' 
-                            : 'text-blue-600 hover:text-blue-700'
+                            ? 'text-blue-200 hover:text-blue-100 hover:bg-white/10' 
+                            : 'text-blue-600 hover:text-blue-700 hover:bg-white/10'
                       }`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >

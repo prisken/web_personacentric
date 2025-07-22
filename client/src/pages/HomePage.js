@@ -242,28 +242,28 @@ const HomePage = () => {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${heroSlides[currentSlide].image})` }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+          <div className="absolute inset-0 bg-black bg-opacity-60"></div>
         </div>
 
         {/* Geometric Shapes */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-12 h-12 md:w-20 md:h-20 bg-orange-500 rounded-full opacity-20 animate-bounce"></div>
-          <div className="absolute top-40 right-20 w-10 h-10 md:w-16 md:h-16 bg-blue-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-40 left-20 w-8 h-8 md:w-12 md:h-12 bg-green-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-20 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-orange-500 rounded-full opacity-20 animate-bounce"></div>
+          <div className="absolute top-40 right-20 w-10 h-10 lg:w-16 lg:h-16 bg-blue-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute bottom-40 left-20 w-8 h-8 lg:w-12 lg:h-12 bg-green-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 md:mb-6 animate-fade-in leading-tight">
+        <div className="relative z-10 text-center text-white max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 lg:mb-8 animate-fade-in leading-tight">
             {heroSlides[currentSlide].title}
           </h1>
-          <p className="text-lg sm:text-xl md:text-2xl mb-6 md:mb-8 animate-slide-up px-2">
+          <p className="text-xl sm:text-2xl lg:text-3xl mb-8 lg:mb-10 animate-slide-up px-4 lg:px-8 leading-relaxed">
             {heroSlides[currentSlide].subtitle}
           </p>
           <div className="flex justify-center">
             <Link
               to={heroSlides[currentSlide].ctaLink}
-              className="bg-orange-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-orange-700 transition-colors duration-200 transform hover:scale-105"
+              className="bg-orange-600 text-white px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               {heroSlides[currentSlide].cta}
             </Link>
@@ -271,13 +271,13 @@ const HomePage = () => {
         </div>
 
         {/* Carousel Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
           {heroSlides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-colors duration-200 ${
-                index === currentSlide ? 'bg-white' : 'bg-white bg-opacity-50'
+              className={`w-3 h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-300 ${
+                index === currentSlide ? 'bg-white scale-110' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
               }`}
             />
           ))}
@@ -285,14 +285,14 @@ const HomePage = () => {
       </section>
 
       {/* Small CTA Section - fixed text on one line */}
-      <section className="py-12 md:py-16 bg-gradient-to-r from-blue-50 to-green-50">
-        <div className="max-w-4xl mx-auto text-center px-4">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 leading-tight">
+      <section className="py-16 lg:py-20 bg-gradient-to-r from-blue-50 to-green-50">
+        <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6 lg:mb-8 leading-tight">
             Get the right agent and double your investment!
           </h2>
           <Link
             to="/agent-matching"
-            className="inline-block bg-blue-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105"
+            className="inline-block bg-blue-600 text-white px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
             {t('smallCTA.button')}
           </Link>
@@ -300,30 +300,30 @@ const HomePage = () => {
       </section>
 
       {/* Proof of Concept - Statistics with CTA */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
               Proof of Concept
             </h2>
-            <p className="text-lg md:text-xl text-gray-600">
+            <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto">
               Real results from our platform
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mb-8 md:mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 mb-12 lg:mb-16">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center">
+              <div key={index} className="text-center group">
                 <div className="relative">
-                  <div className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-4 md:mb-6 rounded-full bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center">
-                    <span className="text-2xl md:text-4xl font-bold text-white">{stat.number}</span>
+                  <div className="w-28 h-28 lg:w-36 lg:h-36 mx-auto mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <span className="text-3xl lg:text-5xl font-bold text-white">{stat.number}</span>
                   </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 md:w-8 md:h-8 bg-orange-500 rounded-full flex items-center justify-center">
-                    <i className="fas fa-chart-line text-white text-xs md:text-sm"></i>
+                  <div className="absolute -top-3 -right-3 w-8 h-8 lg:w-10 lg:h-10 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <i className="fas fa-chart-line text-white text-sm lg:text-base"></i>
                   </div>
                 </div>
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{stat.label}</h3>
-                <p className="text-sm md:text-base text-gray-600">{stat.description}</p>
+                <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 lg:mb-4">{stat.label}</h3>
+                <p className="text-base lg:text-lg text-gray-600 leading-relaxed">{stat.description}</p>
               </div>
             ))}
           </div>
@@ -332,7 +332,7 @@ const HomePage = () => {
           <div className="text-center">
             <Link
               to="/pricing"
-              className="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-200 transform hover:scale-105"
+              className="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Become a Member
             </Link>
@@ -341,29 +341,29 @@ const HomePage = () => {
       </section>
 
       {/* AI Content Creation Section */}
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 lg:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
               {t('ai.title')}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Lifestyle Selector */}
-            <div className="space-y-4 md:space-y-6">
-              <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6">
+            <div className="space-y-6 lg:space-y-8">
+              <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-10">
+                <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-8">
                   {t('ai.industrySelector')}
                 </h3>
-                <select className="w-full p-3 md:p-4 border border-gray-300 rounded-lg text-base md:text-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                <select className="w-full p-4 lg:p-5 border-2 border-gray-200 rounded-xl text-lg lg:text-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
                   {lifestyleOptions.map(option => (
                     <option key={option.value} value={option.value}>{option.label}</option>
                   ))}
                 </select>
                 <Link
                   to="/ai-trial"
-                  className="mt-4 md:mt-6 inline-block bg-orange-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-orange-700 transition-colors duration-200 w-full text-center"
+                  className="mt-6 lg:mt-8 inline-block bg-orange-600 text-white px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:bg-orange-700 transition-all duration-300 w-full text-center shadow-lg hover:shadow-xl"
                 >
                   {t('ai.tryButton')}
                 </Link>
@@ -371,30 +371,30 @@ const HomePage = () => {
             </div>
 
             {/* Contest Winners Showcase */}
-            <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 flex flex-col items-center">
-              <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 md:mb-6 text-center">
+            <div className="bg-white rounded-2xl shadow-xl p-8 lg:p-10 flex flex-col items-center">
+              <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-6 lg:mb-8 text-center">
                 {t('ai.contestWinner')}
               </h3>
-              <div className="w-full max-w-xs sm:max-w-sm md:max-w-md flex flex-col items-center">
-                <div className={`bg-gradient-to-br ${contestWinners[winnerIndex].bg} rounded-lg p-4 text-white w-full flex flex-col items-center transition-all duration-500`}>
-                  <img src={contestWinners[winnerIndex].image} alt={contestWinners[winnerIndex].type} className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg mb-2" />
-                  <i className={`${contestWinners[winnerIndex].icon} text-xl md:text-2xl mb-2`}></i>
-                  <p className="text-sm md:text-base lg:text-lg font-semibold mb-1 text-center">{contestWinners[winnerIndex].type}</p>
-                  <p className="text-xs md:text-sm lg:text-base text-white/80 text-center">{contestWinners[winnerIndex].content}</p>
+              <div className="w-full max-w-sm lg:max-w-md flex flex-col items-center">
+                <div className={`bg-gradient-to-br ${contestWinners[winnerIndex].bg} rounded-2xl p-6 lg:p-8 text-white w-full flex flex-col items-center transition-all duration-500 shadow-lg`}>
+                  <img src={contestWinners[winnerIndex].image} alt={contestWinners[winnerIndex].type} className="w-28 h-28 lg:w-36 lg:h-36 object-cover rounded-xl mb-4 lg:mb-6 shadow-lg" />
+                  <i className={`${contestWinners[winnerIndex].icon} text-2xl lg:text-3xl mb-3 lg:mb-4`}></i>
+                  <p className="text-lg lg:text-xl font-semibold mb-2 lg:mb-3 text-center">{contestWinners[winnerIndex].type}</p>
+                  <p className="text-sm lg:text-base text-white/90 text-center leading-relaxed">{contestWinners[winnerIndex].content}</p>
                 </div>
-                <div className="flex space-x-2 mt-4">
+                <div className="flex space-x-3 mt-6 lg:mt-8">
                   {contestWinners.map((_, idx) => (
                     <button
                       key={idx}
                       onClick={() => setWinnerIndex(idx)}
-                      className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${idx === winnerIndex ? 'bg-blue-600' : 'bg-gray-300'}`}
+                      className={`w-3 h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-200 ${idx === winnerIndex ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'}`}
                     />
                   ))}
                 </div>
               </div>
               <Link
                 to="/contests"
-                className="mt-4 md:mt-6 inline-block text-blue-600 hover:text-blue-700 font-semibold text-sm md:text-base"
+                className="mt-6 lg:mt-8 inline-block text-blue-600 hover:text-blue-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:translate-x-1"
               >
                 {t('ai.viewAllWinners')} →
               </Link>
@@ -404,43 +404,43 @@ const HomePage = () => {
       </section>
 
       {/* Client Testimonials */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
               {t('testimonials.title')}
             </h2>
           </div>
           <div className="flex flex-col items-center">
-            <div className="w-full max-w-4xl bg-gray-50 rounded-lg p-6 md:p-8 shadow-lg transition-all duration-500">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+            <div className="w-full max-w-6xl bg-gray-50 rounded-2xl p-8 lg:p-12 shadow-xl transition-all duration-500">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
                 {getCurrentTestimonials().map((testimonial, index) => (
-                  <div key={index} className="text-center">
-                    <div className="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-full overflow-hidden">
+                  <div key={index} className="text-center group">
+                    <div className="w-16 h-16 lg:w-20 lg:h-20 mx-auto mb-4 lg:mb-6 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
                       <img 
                         src={testimonial.avatar} 
                         alt={testimonial.name}
                         className="w-full h-full object-cover"
                       />
                     </div>
-                    <div className="flex justify-center mb-3 md:mb-4">
+                    <div className="flex justify-center mb-4 lg:mb-6">
                       {[...Array(5)].map((_, i) => (
-                        <i key={i} className="fas fa-star text-yellow-400 text-xs md:text-sm"></i>
+                        <i key={i} className="fas fa-star text-yellow-400 text-sm lg:text-base"></i>
                       ))}
                     </div>
-                    <p className="text-gray-700 mb-3 md:mb-4 italic text-xs md:text-sm lg:text-base leading-relaxed">"{testimonial.quote}"</p>
-                    <h4 className="font-semibold text-gray-900 text-sm md:text-base lg:text-lg">{testimonial.name}</h4>
-                    <p className="text-gray-600 text-xs md:text-sm">{testimonial.title}</p>
+                    <p className="text-gray-700 mb-4 lg:mb-6 italic text-base lg:text-lg leading-relaxed">"{testimonial.quote}"</p>
+                    <h4 className="font-semibold text-gray-900 text-lg lg:text-xl mb-2">{testimonial.name}</h4>
+                    <p className="text-gray-600 text-sm lg:text-base">{testimonial.title}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="flex space-x-2 mt-4">
+            <div className="flex space-x-3 mt-8 lg:mt-12">
               {[...Array(totalSlides)].map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setTestimonialIndex(idx)}
-                  className={`w-2 h-2 md:w-3 md:h-3 rounded-full ${idx === testimonialIndex ? 'bg-blue-600' : 'bg-gray-300'}`}
+                  className={`w-3 h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-200 ${idx === testimonialIndex ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'}`}
                 />
               ))}
             </div>
@@ -449,32 +449,32 @@ const HomePage = () => {
       </section>
 
       {/* Events Section */}
-      <section className="py-12 md:py-16 bg-orange-600">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+      <section className="py-16 lg:py-20 bg-orange-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-6 lg:mb-8">
               {t('events.title')}
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {events.map((event, index) => (
-              <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg">
-                <div className="h-40 md:h-48 overflow-hidden">
+              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
+                <div className="h-48 lg:h-56 overflow-hidden">
                   <img 
                     src={event.image} 
                     alt={event.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-4 md:p-6">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600 mb-4">{event.date}</p>
+                <div className="p-6 lg:p-8">
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">{event.title}</h3>
+                  <p className="text-base lg:text-lg text-gray-600 mb-6 lg:mb-8">{event.date}</p>
                   <Link
                     to="/events"
-                    className={`inline-block px-4 py-2 md:px-6 md:py-2 rounded-lg text-sm md:text-base font-semibold transition-colors duration-200 ${
+                    className={`inline-block px-6 py-3 lg:px-8 lg:py-4 rounded-xl text-base lg:text-lg font-semibold transition-all duration-300 ${
                       event.status === 'upcoming' 
-                        ? 'bg-orange-600 text-white hover:bg-orange-700' 
+                        ? 'bg-orange-600 text-white hover:bg-orange-700 shadow-lg hover:shadow-xl' 
                         : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                     }`}
                   >
@@ -485,10 +485,10 @@ const HomePage = () => {
             ))}
           </div>
           
-          <div className="text-center mt-6 md:mt-8">
+          <div className="text-center mt-12 lg:mt-16">
             <Link
               to="/events"
-              className="inline-block bg-white text-orange-600 px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
+              className="inline-block bg-white text-orange-600 px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {t('events.viewAll')}
             </Link>
@@ -497,19 +497,19 @@ const HomePage = () => {
       </section>
 
       {/* Partnering Organizations */}
-      <section className="py-12 md:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 lg:py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
               {t('partners.title')}
             </h2>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
             {[...Array(8)].map((_, index) => (
-              <div key={index} className="bg-gray-100 rounded-lg p-4 md:p-6 flex items-center justify-center">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-300 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-600 font-semibold text-xs md:text-sm">Partner {index + 1}</span>
+              <div key={index} className="bg-gray-100 rounded-2xl p-6 lg:p-8 flex items-center justify-center hover:bg-gray-200 transition-all duration-300 group hover:scale-105">
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-300 rounded-xl flex items-center justify-center group-hover:bg-gray-400 transition-all duration-300">
+                  <span className="text-gray-600 font-semibold text-sm lg:text-base">Partner {index + 1}</span>
                 </div>
               </div>
             ))}
@@ -518,31 +518,31 @@ const HomePage = () => {
       </section>
 
       {/* Blogs Section */}
-      <section className="py-12 md:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-8 md:mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+      <section className="py-16 lg:py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
               {t('blogs.title')}
             </h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {blogPosts.map((post, index) => (
-              <div key={index} className="bg-white rounded-lg overflow-hidden shadow-lg">
-                <div className="h-40 md:h-48 overflow-hidden">
+              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
+                <div className="h-48 lg:h-56 overflow-hidden">
                   <img 
                     src={post.image} 
                     alt={post.title}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <div className="p-4 md:p-6">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">{post.title}</h3>
-                  <p className="text-sm md:text-base text-gray-600 mb-4">{post.excerpt}</p>
-                  <p className="text-xs md:text-sm text-gray-500 mb-4">{post.date}</p>
+                <div className="p-6 lg:p-8">
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4">{post.title}</h3>
+                  <p className="text-base lg:text-lg text-gray-600 mb-4 lg:mb-6 leading-relaxed">{post.excerpt}</p>
+                  <p className="text-sm lg:text-base text-gray-500 mb-6 lg:mb-8">{post.date}</p>
                   <Link
                     to="/blogs"
-                    className="text-blue-600 hover:text-blue-700 font-semibold text-sm md:text-base"
+                    className="text-blue-600 hover:text-blue-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:translate-x-1 inline-block"
                   >
                     {t('blogs.readMore')} →
                   </Link>
@@ -551,10 +551,10 @@ const HomePage = () => {
             ))}
           </div>
           
-          <div className="text-center mt-6 md:mt-8">
+          <div className="text-center mt-12 lg:mt-16">
             <Link
               to="/blogs"
-              className="inline-block bg-blue-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-lg text-base md:text-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
+              className="inline-block bg-blue-600 text-white px-8 py-4 lg:px-10 lg:py-5 rounded-xl text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
             >
               {t('blogs.viewAll')}
             </Link>
@@ -563,44 +563,44 @@ const HomePage = () => {
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 bg-gray-900 text-white">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">
+      <section className="py-20 lg:py-24 bg-gray-900 text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 lg:mb-20">
+            <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold mb-6 lg:mb-8">
               {t('contact.title')}
             </h2>
-            <p className="text-xl text-gray-300">
+            <p className="text-xl lg:text-2xl text-gray-300 leading-relaxed">
               Get in touch with us for any questions or support
             </p>
           </div>
           
-          <form className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <form className="space-y-8 lg:space-y-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
               <input
                 type="text"
                 placeholder={t('contact.name')}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base lg:text-lg"
               />
               <input
                 type="tel"
                 placeholder={t('contact.phone')}
-                className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base lg:text-lg"
               />
             </div>
             <input
               type="email"
               placeholder={t('contact.email')}
-              className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base lg:text-lg"
             />
             <textarea
               placeholder={t('contact.message')}
-              rows="4"
-              className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              rows="6"
+              className="w-full px-6 py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-base lg:text-lg resize-none"
             ></textarea>
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
+                className="bg-blue-600 text-white px-10 py-5 lg:px-12 lg:py-6 rounded-xl text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 {t('contact.send')}
               </button>
