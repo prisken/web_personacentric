@@ -26,18 +26,28 @@ const generateShareCode = () => {
 
 // Get user's recommendations (authenticated users)
 router.get('/my-recommendations', authenticateToken, async (req, res) => {
+  console.log('=== GET /my-recommendations called ===');
   try {
+    console.log('Checking if tables exist...');
     const tablesExist = await checkRecommendationTables();
+    console.log('Tables exist:', tablesExist);
+    
     if (!tablesExist) {
+      console.log('Tables do not exist, returning empty array');
       return res.json({
         success: true,
         recommendations: []
       });
     }
 
+    console.log('Importing Recommendation model...');
     const { Recommendation } = require('../models');
+    console.log('Recommendation model imported successfully');
+    
     const userId = req.user.userId;
+    console.log('User ID:', userId);
 
+    console.log('Finding recommendations...');
     const recommendations = await Recommendation.findAll({
       where: { user_id: userId },
       include: [
@@ -49,16 +59,21 @@ router.get('/my-recommendations', authenticateToken, async (req, res) => {
       ],
       order: [['created_at', 'DESC']]
     });
+    console.log('Found recommendations:', recommendations.length);
 
     res.json({
       success: true,
       recommendations: recommendations
     });
   } catch (error) {
-    console.error('Get recommendations error:', error);
-    res.json({
-      success: true,
-      recommendations: []
+    console.error('=== Get recommendations error ===');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get recommendations',
+      details: error.message
     });
   }
 });
@@ -326,9 +341,14 @@ router.post('/:shareCode/engage', async (req, res) => {
 
 // Get user's badges (authenticated users)
 router.get('/badges', authenticateToken, async (req, res) => {
+  console.log('=== GET /badges called ===');
   try {
+    console.log('Checking if tables exist...');
     const tablesExist = await checkRecommendationTables();
+    console.log('Tables exist:', tablesExist);
+    
     if (!tablesExist) {
+      console.log('Tables do not exist, returning empty arrays');
       return res.json({
         success: true,
         userBadges: [],
@@ -337,7 +357,9 @@ router.get('/badges', authenticateToken, async (req, res) => {
     }
 
     const userId = req.user.userId;
+    console.log('User ID:', userId);
 
+    console.log('Finding user badges...');
     const userBadges = await require('../models').UserBadge.findAll({
       where: { user_id: userId },
       include: [
@@ -348,12 +370,14 @@ router.get('/badges', authenticateToken, async (req, res) => {
       ],
       order: [['earned_at', 'DESC']]
     });
+    console.log('Found user badges:', userBadges.length);
 
-    // Get all available badges for comparison
+    console.log('Finding all badges...');
     const allBadges = await require('../models').Badge.findAll({
       where: { is_active: true },
       order: [['requirement_value', 'ASC']]
     });
+    console.log('Found all badges:', allBadges.length);
 
     res.json({
       success: true,
@@ -361,11 +385,14 @@ router.get('/badges', authenticateToken, async (req, res) => {
       allBadges: allBadges
     });
   } catch (error) {
-    console.error('Get badges error:', error);
-    res.json({
-      success: true,
-      userBadges: [],
-      allBadges: []
+    console.error('=== Get badges error ===');
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    console.error('Error details:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get badges',
+      details: error.message
     });
   }
 });
