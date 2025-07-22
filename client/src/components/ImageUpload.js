@@ -43,10 +43,7 @@ const ImageUpload = ({
       
       formData.append('folder', folder);
 
-      const response = await apiService.post('/upload/' + (multiple ? 'images' : 'image'), formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await apiService.uploadFile('/upload/' + (multiple ? 'images' : 'image'), formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
