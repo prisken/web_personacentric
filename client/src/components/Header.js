@@ -15,6 +15,7 @@ const Header = () => {
   const [agentProfileImage, setAgentProfileImage] = useState(null);
 
   useEffect(() => {
+    // Fetch agent profile image for avatar
     const fetchAgentProfile = async () => {
       if (user && user.role === 'agent') {
         try {
@@ -30,7 +31,7 @@ const Header = () => {
       }
     };
     fetchAgentProfile();
-    // Listen for profile image update events
+    // Listen for agent profile image update events and re-fetch avatar
     const handleProfileImageUpdated = () => {
       fetchAgentProfile();
     };

@@ -52,9 +52,9 @@ const AgentDashboard = ({ data, onRefresh }) => {
   ];
 
   // Utility to notify other components (like Header) of profile image update
+  // Notify other components (like Header) that the agent profile image has changed
   const notifyProfileImageUpdated = () => {
-    const event = new CustomEvent('agent-profile-image-updated');
-    window.dispatchEvent(event);
+    window.dispatchEvent(new CustomEvent('agent-profile-image-updated'));
   };
 
   return (
