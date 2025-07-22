@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
+import AgentProfileImageUpload from '../AgentProfileImageUpload';
 
 const AgentDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -487,7 +488,19 @@ const AgentDashboard = ({ data, onRefresh }) => {
               <h3 className="text-lg font-medium text-gray-900">個人資料</h3>
             </div>
             <div className="p-6">
-              <div className="space-y-4">
+              <div className="space-y-6">
+                {/* Profile Image Upload */}
+                <div>
+                  <h4 className="text-md font-medium text-gray-900 mb-4">個人照片</h4>
+                  <AgentProfileImageUpload
+                    currentImageUrl={data.agent?.profile_image}
+                    onImageUploaded={(imageUrl) => {
+                      console.log('Profile image updated:', imageUrl);
+                      onRefresh(); // Refresh dashboard data
+                    }}
+                    className="mb-6"
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">姓名</label>
                   <input

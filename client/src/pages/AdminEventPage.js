@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
 import apiService from '../services/api';
+import EventImageUpload from '../components/EventImageUpload';
 
 const AdminEventPage = () => {
   const { t, language } = useLanguage();
@@ -22,7 +23,8 @@ const AdminEventPage = () => {
     price: '',
     points_reward: '',
     agent_id: '',
-    status: 'draft'
+    status: 'draft',
+    image: ''
   });
 
   const isEditing = !!id;
@@ -69,7 +71,8 @@ const AdminEventPage = () => {
           price: event.price || '',
           points_reward: event.points_reward || '',
           agent_id: event.agent_id || '',
-          status: event.status || 'draft'
+          status: event.status || 'draft',
+          image: event.image || ''
         });
       }
     } catch (error) {
@@ -284,6 +287,20 @@ const AdminEventPage = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder={language === 'zh-TW' ? '詳細描述活動內容和目標' : 'Describe the event content and objectives'}
                   required
+                />
+              </div>
+
+              {/* Event Image Upload */}
+              <div className="mt-6">
+                <EventImageUpload
+                  currentImageUrl={eventData.image}
+                  onImageUploaded={(imageData) => {
+                    setEventData(prev => ({
+                      ...prev,
+                      image: imageData.url
+                    }));
+                    console.log('Event image uploaded:', imageData.url);
+                  }}
                 />
               </div>
             </div>
