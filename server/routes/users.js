@@ -40,7 +40,7 @@ router.put('/profile', authenticateToken, (req, res) => {
 // Update agent profile with image upload
 router.put('/agent/profile', authenticateToken, upload.single('profile_image'), async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     
     // Find the agent record for this user
     const agent = await Agent.findOne({ where: { user_id: userId } });
