@@ -65,10 +65,6 @@ const RecommendationEngagement = sequelize.define('RecommendationEngagement', {
     },
     {
       fields: ['created_at']
-    },
-    {
-      unique: true,
-      fields: ['recommendation_id', 'visitor_email', 'engagement_type']
     }
   ]
 });
