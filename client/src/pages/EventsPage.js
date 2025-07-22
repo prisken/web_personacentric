@@ -100,241 +100,202 @@ const EventsPage = () => {
     return labels[eventType] || eventType;
   };
 
-  const upcomingEvents = events.filter(event => new Date(event.start_date) > new Date());
-  const pastEvents = events.filter(event => new Date(event.start_date) <= new Date());
+  const getEventTypeColor = (eventType) => {
+    const colors = {
+      workshop: 'bg-blue-500',
+      seminar: 'bg-green-500',
+      consultation: 'bg-purple-500',
+      webinar: 'bg-orange-500'
+    };
+    return colors[eventType] || 'bg-gray-500';
+  };
 
-  const categories = language === 'zh-TW' 
-    ? ['全部', '工作坊', '研討會', '大師班', '論壇', '網路研討會']
-    : ['All', 'Workshop', 'Seminar', 'Masterclass', 'Forum', 'Webinar'];
+  const filteredEvents = events.filter(event => {
+    const now = new Date();
+    const eventDate = new Date(event.start_date);
+    
+    if (activeTab === 'upcoming') {
+      return eventDate >= now;
+    } else if (activeTab === 'past') {
+      return eventDate < now;
+    }
+    return true;
+  });
+
+  if (loading) {
+    return (
+      <div className="pt-16 bg-gray-50 min-h-screen">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 lg:h-16 lg:w-16 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-green-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-6">
-            {t('nav.events')}
-          </h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            {language === 'zh-TW'
-              ? '參加我們專家主導的活動，提升您的財務知識並與行業專業人士建立聯繫。'
-              : 'Join our expert-led events to enhance your financial knowledge and connect with industry professionals.'
-            }
-          </p>
-        </div>
-      </section>
-
-      {/* Event Categories */}
-      <section className="py-8 bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex flex-wrap gap-4 justify-center">
-            {categories.map((category) => (
-              <button
-                key={category}
-                className="px-6 py-2 rounded-full border border-gray-300 text-gray-700 hover:bg-blue-600 hover:text-white transition-colors duration-200"
-              >
-                {category}
-              </button>
-            ))}
+    <div className="pt-16 bg-gray-50 min-h-screen">
+      {/* Page Header */}
+      <div className="bg-white shadow-lg border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-8 lg:py-12">
+            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 lg:mb-6">
+              📅 {t('events.title')}
+            </h1>
+            <p className="text-lg lg:text-xl text-gray-600 max-w-3xl">
+              {t('events.description')}
+            </p>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Event Tabs */}
-      <section className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex justify-center mb-8">
-            <div className="bg-gray-200 rounded-lg p-1">
-              <button
-                onClick={() => setActiveTab('upcoming')}
-                className={`px-6 py-2 rounded-md transition-colors duration-200 ${
-                  activeTab === 'upcoming'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {t('events.upcoming')}
-              </button>
-              <button
-                onClick={() => setActiveTab('past')}
-                className={`px-6 py-2 rounded-md transition-colors duration-200 ${
-                  activeTab === 'past'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {t('events.past')}
-              </button>
-            </div>
-          </div>
+      {/* Tab Navigation */}
+      <div className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <nav className="flex space-x-1 lg:space-x-2 overflow-x-auto scrollbar-hide">
+            <button
+              onClick={() => setActiveTab('upcoming')}
+              className={`py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
+                activeTab === 'upcoming'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              🔮 {t('events.upcoming')}
+            </button>
+            <button
+              onClick={() => setActiveTab('past')}
+              className={`py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
+                activeTab === 'past'
+                  ? 'border-blue-500 text-blue-600 bg-blue-50'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              📚 {t('events.past')}
+            </button>
+          </nav>
+        </div>
+      </div>
 
-          {/* Event Grid */}
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">
-                {language === 'zh-TW' ? '載入中...' : 'Loading...'}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+        {filteredEvents.length === 0 ? (
+          <div className="text-center py-12 lg:py-16">
+            <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12 max-w-md mx-auto">
+              <svg className="mx-auto h-16 w-16 lg:h-20 lg:w-20 text-gray-400 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <h3 className="text-lg lg:text-xl font-medium text-gray-900 mb-2">
+                {activeTab === 'upcoming' ? t('events.noUpcoming') : t('events.noPast')}
+              </h3>
+              <p className="text-base lg:text-lg text-gray-500">
+                {activeTab === 'upcoming' ? t('events.checkBackLater') : t('events.noPastEvents')}
               </p>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(activeTab === 'upcoming' ? upcomingEvents : pastEvents).map((event) => (
-                <div key={event.id} className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-200">
-                  <div className="h-48 overflow-hidden">
-                    <img 
-                      src={event.image ? event.image : "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"}
-                      alt={event.title}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-semibold text-blue-600">
-                        {getEventTypeLabel(event.event_type)}
-                      </span>
-                      {activeTab === 'upcoming' && (
-                        <span className="text-sm text-gray-500">
-                          {event.price ? `$${event.price}` : (language === 'zh-TW' ? '免費' : 'Free')}
-                        </span>
-                      )}
-                    </div>
-                    
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{event.title}</h3>
-                    <p className="text-gray-600 mb-4">{event.description}</p>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center text-sm text-gray-600">
-                        <i className="fas fa-calendar mr-2"></i>
-                        {formatDate(event.start_date)}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <i className="fas fa-clock mr-2"></i>
-                        {formatTime(event.start_date)} - {formatTime(event.end_date)}
-                      </div>
-                      <div className="flex items-center text-sm text-gray-600">
-                        <i className="fas fa-map-marker-alt mr-2"></i>
-                        {event.location || (language === 'zh-TW' ? '線上活動' : 'Virtual Event')}
-                      </div>
-                    </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {filteredEvents.map((event) => (
+              <div key={event.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
+                {/* Event Image */}
+                <div className="h-48 lg:h-56 overflow-hidden">
+                  <img 
+                    src={event.image ? event.image : "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"}
+                    alt={event.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
 
-                    {activeTab === 'upcoming' ? (
-                      <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">
-                            {language === 'zh-TW' ? '已註冊：' : 'Registered:'}
-                          </span>
-                          <span className="font-semibold">
-                            {event.current_participants || 0}/{event.max_participants || '∞'}
-                          </span>
-                        </div>
-                        {event.max_participants && (
-                          <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                              className="bg-blue-600 h-2 rounded-full"
-                              style={{ width: `${((event.current_participants || 0) / event.max_participants) * 100}%` }}
-                            ></div>
-                          </div>
-                        )}
-                        {user ? (
-                          isUserRegistered(event.id) ? (
-                            <button 
-                              onClick={() => handleCancelRegistration(event.id)}
-                              className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200"
-                            >
-                              {language === 'zh-TW' ? '取消註冊' : 'Cancel Registration'}
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => handleRegisterForEvent(event.id)}
-                              disabled={event.max_participants && (event.current_participants || 0) >= event.max_participants}
-                              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                            >
-                              {event.max_participants && (event.current_participants || 0) >= event.max_participants
-                                ? (language === 'zh-TW' ? '已滿額' : 'Full')
-                                : (language === 'zh-TW' ? '立即註冊' : 'Register Now')
-                              }
-                            </button>
-                          )
-                        ) : (
-                          <button 
-                            onClick={() => alert(language === 'zh-TW' ? '請先登入' : 'Please login first')}
-                            className="w-full bg-gray-400 text-white py-2 rounded-lg font-semibold cursor-not-allowed"
-                          >
-                            {language === 'zh-TW' ? '請先登入' : 'Login Required'}
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <div className="space-y-3">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">
-                            {language === 'zh-TW' ? '參與者：' : 'Attendees:'}
-                          </span>
-                          <span className="font-semibold">{event.current_participants || 0}</span>
-                        </div>
-                        <button 
-                          onClick={() => setSelectedEvent(event)}
-                          className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg font-semibold hover:bg-gray-300 transition-colors duration-200"
-                        >
-                          {language === 'zh-TW' ? '查看詳情' : 'View Details'}
-                        </button>
+                {/* Event Content */}
+                <div className="p-6 lg:p-8">
+                  {/* Event Type Badge */}
+                  <div className="flex items-center justify-between mb-4 lg:mb-6">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium text-white ${getEventTypeColor(event.event_type)}`}>
+                      {getEventTypeLabel(event.event_type)}
+                    </span>
+                    <span className="text-xs lg:text-sm text-gray-500">
+                      {event.registrations_count || 0} {t('events.registered')}
+                    </span>
+                  </div>
+
+                  {/* Event Title */}
+                  <h3 className="text-xl lg:text-2xl font-bold text-gray-900 mb-3 lg:mb-4 line-clamp-2">
+                    {event.title}
+                  </h3>
+
+                  {/* Event Description */}
+                  <p className="text-sm lg:text-base text-gray-600 mb-4 lg:mb-6 line-clamp-3">
+                    {event.description}
+                  </p>
+
+                  {/* Event Details */}
+                  <div className="space-y-2 lg:space-y-3 mb-6 lg:mb-8">
+                    <div className="flex items-center text-sm lg:text-base text-gray-500">
+                      <svg className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      {formatDate(event.start_date)}
+                    </div>
+                    <div className="flex items-center text-sm lg:text-base text-gray-500">
+                      <svg className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {formatTime(event.start_date)}
+                    </div>
+                    {event.location && (
+                      <div className="flex items-center text-sm lg:text-base text-gray-500">
+                        <svg className="w-4 h-4 lg:w-5 lg:h-5 mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        {event.location}
                       </div>
                     )}
                   </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex space-x-3">
+                    {user ? (
+                      isUserRegistered(event.id) ? (
+                        <button
+                          onClick={() => handleCancelRegistration(event.id)}
+                          className="flex-1 bg-red-600 text-white px-4 py-3 lg:px-6 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        >
+                          {t('events.cancelRegistration')}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleRegisterForEvent(event.id)}
+                          className="flex-1 bg-blue-600 text-white px-4 py-3 lg:px-6 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        >
+                          {t('events.register')}
+                        </button>
+                      )
+                    ) : (
+                      <button
+                        onClick={() => window.location.href = '/login'}
+                        className="flex-1 bg-gray-600 text-white px-4 py-3 lg:px-6 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      >
+                        {t('events.loginToRegister')}
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={() => {
+                        setSelectedEvent(event);
+                        setShowEventModal(true);
+                      }}
+                      className="px-4 py-3 lg:px-6 lg:py-4 border border-gray-300 text-gray-700 rounded-xl text-sm lg:text-base font-semibold hover:bg-gray-50 transition-all duration-300"
+                    >
+                      {t('events.details')}
+                    </button>
+                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!loading && (activeTab === 'upcoming' ? upcomingEvents : pastEvents).length === 0 && (
-            <div className="text-center py-12">
-              <i className="fas fa-calendar-times text-4xl text-gray-400 mb-4"></i>
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">
-                {language === 'zh-TW' ? '暫無活動' : 'No Events'}
-              </h3>
-              <p className="text-gray-500">
-                {activeTab === 'upcoming' 
-                  ? (language === 'zh-TW' ? '目前沒有即將舉行的活動' : 'No upcoming events at the moment')
-                  : (language === 'zh-TW' ? '沒有過去的活動記錄' : 'No past events found')
-                }
-              </p>
-            </div>
-          )}
-
-          {/* Load More Button */}
-          <div className="text-center mt-12">
-            <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-              {language === 'zh-TW' ? '載入更多活動' : 'Load More Events'}
-            </button>
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
-
-      {/* Newsletter Signup */}
-      <section className="py-16 bg-blue-600 text-white">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            {language === 'zh-TW' ? '保持更新' : 'Stay Updated'}
-          </h2>
-          <p className="text-xl mb-8">
-            {language === 'zh-TW'
-              ? '獲取即將舉行的活動和獨家內容的通知'
-              : 'Get notified about upcoming events and exclusive content'
-            }
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-            <input
-              type="email"
-              placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
-              className="flex-1 px-4 py-3 rounded-lg text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
-            />
-            <button className="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
-              {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
-            </button>
-          </div>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };
