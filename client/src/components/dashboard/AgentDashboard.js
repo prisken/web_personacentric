@@ -515,6 +515,15 @@ const AgentDashboard = ({ data, onRefresh }) => {
                 <div><strong>DEBUG:</strong></div>
                 <div>profileImageUrl (state): <span>{profileImageUrl || 'null'}</span></div>
                 <div>data.agent?.profile_image (props): <span>{data.agent?.profile_image || 'null'}</span></div>
+                <button 
+                  onClick={() => {
+                    console.log('[DEBUG] Manual refresh clicked');
+                    if (typeof onRefresh === 'function') onRefresh();
+                  }}
+                  className="mt-2 bg-blue-500 text-white px-2 py-1 rounded text-xs"
+                >
+                  Manual Refresh
+                </button>
               </div>
               {/* DEBUG: Show current image visually if available */}
               {profileImageUrl && (
@@ -544,10 +553,11 @@ const AgentDashboard = ({ data, onRefresh }) => {
                       setActiveTab('profile'); // Stay on profile tab
                       console.log('[AgentDashboard] Profile image uploaded, updated imageUrl:', imageUrl);
                       
-                      // Delay the refresh to ensure server has processed the update
-                      setTimeout(() => {
-                        if (typeof onRefresh === 'function') onRefresh();
-                      }, 1000);
+                      // Don't call onRefresh immediately - let the local state handle the display
+                      // The user can manually refresh if needed, or we can add a longer delay
+                      // setTimeout(() => {
+                      //   if (typeof onRefresh === 'function') onRefresh();
+                      // }, 5000); // 5 second delay if we want to refresh later
                     }}
                     className="mb-6"
                   />

@@ -41,6 +41,11 @@ class DashboardController {
         recent_point_transactions: []
       };
 
+      // Debug: Log agent data for troubleshooting
+      console.log('[DashboardController] User role:', userRole);
+      console.log('[DashboardController] UserData.agent:', userData.agent);
+      console.log('[DashboardController] DashboardData.agent:', dashboardData.agent);
+
       // Role-specific data
       switch (userRole) {
         case 'admin':
