@@ -23,6 +23,7 @@ const uploadRoutes = require('./routes/upload');
 
 // Import database
 const sequelize = require('./config/database');
+const { runMigrations } = require('./utils/databaseMigration');
 
 // Security middleware
 app.use(helmet({
@@ -112,8 +113,12 @@ async function startServer() {
     console.log('Database connection established successfully.');
     
     // Sync database (create tables if they don't exist)
-    await sequelize.sync({ alter: true });
+    // Use force: false to prevent conflicts with existing schema
+    await sequelize.sync({ force: false, alter: false });
     console.log('Database synced successfully.');
+    
+    // Run custom migrations for schema changes
+    await runMigrations();
     
     // Start server first, then seed data in background
     app.listen(PORT, () => {
