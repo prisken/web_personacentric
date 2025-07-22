@@ -21,7 +21,6 @@ import HelpCenterPage from './pages/HelpCenterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminEventPage from './pages/AdminEventPage';
 import RecommendationViewPage from './pages/RecommendationViewPage';
-import CloudinaryTest from './components/CloudinaryTest';
 
 function App() {
   return (
@@ -53,7 +52,6 @@ function App() {
                 <Route path="/admin/events" element={<AdminEventPage />} />
                 <Route path="/admin/events/:id" element={<AdminEventPage />} />
                 <Route path="/recommendation/:shareCode" element={<RecommendationViewPage />} />
-                <Route path="/test-upload" element={<CloudinaryTest />} />
               </Routes>
             </main>
             <Footer />
