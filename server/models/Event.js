@@ -66,6 +66,11 @@ const Event = sequelize.define('Event', {
   status: {
     type: DataTypes.ENUM('draft', 'published', 'cancelled', 'completed'),
     defaultValue: 'draft'
+  },
+  image: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+    comment: 'Cloudinary URL for event image'
   }
 }, {
   tableName: 'events',

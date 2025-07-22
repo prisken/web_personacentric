@@ -3,6 +3,23 @@ const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const { Event, EventRegistration, User, Agent } = require('../models');
 const { Op } = require('sequelize');
+const multer = require('multer');
+const { uploadImage } = require('../utils/imageUpload');
+
+// Configure multer for memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  },
+});
 
 // Middleware to check if user is admin
 const requireAdmin = (req, res, next) => {
@@ -251,8 +268,8 @@ router.get('/user/registrations', authenticateToken, async (req, res) => {
 // ADMIN ROUTES
 // ============
 
-// Create event (admin only)
-router.post('/', authenticateToken, requireAdmin, async (req, res) => {
+// Create event with image upload (admin only)
+router.post('/', authenticateToken, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const {
       title,
@@ -267,6 +284,23 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
       agent_id
     } = req.body;
 
+    // Handle image upload if provided
+    let imageUrl = null;
+    if (req.file) {
+      console.log('=== Uploading event image ===');
+      const result = await uploadImage(req.file, 'events');
+      
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to upload event image: ' + result.error
+        });
+      }
+      
+      imageUrl = result.url;
+      console.log('Event image uploaded:', imageUrl);
+    }
+
     const event = await Event.create({
       title,
       description,
@@ -278,6 +312,7 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
       price,
       points_reward,
       agent_id,
+      image: imageUrl,
       created_by: req.user.userId,
       status: 'published'
     });
@@ -296,11 +331,11 @@ router.post('/', authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// Update event (admin only)
-router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
+// Update event with image upload (admin only)
+router.put('/:id', authenticateToken, requireAdmin, upload.single('image'), async (req, res) => {
   try {
     const { id } = req.params;
-    const updateData = req.body;
+    const updateData = { ...req.body };
 
     const event = await Event.findByPk(id);
     if (!event) {
@@ -308,6 +343,22 @@ router.put('/:id', authenticateToken, requireAdmin, async (req, res) => {
         success: false,
         error: 'Event not found'
       });
+    }
+
+    // Handle image upload if provided
+    if (req.file) {
+      console.log('=== Uploading updated event image ===');
+      const result = await uploadImage(req.file, 'events');
+      
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to upload event image: ' + result.error
+        });
+      }
+      
+      updateData.image = result.url;
+      console.log('Updated event image uploaded:', result.url);
     }
 
     await event.update(updateData);

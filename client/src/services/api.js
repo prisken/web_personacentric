@@ -151,6 +151,11 @@ class ApiService {
     return this.put('/users/profile', userData);
   }
 
+  // Agent profile endpoints
+  async updateAgentProfile(profileData) {
+    return this.put('/users/agent/profile', profileData);
+  }
+
   // Event endpoints
   async getEvents(params = {}) {
     const queryString = new URLSearchParams(params).toString();

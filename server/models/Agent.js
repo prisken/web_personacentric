@@ -57,6 +57,11 @@ const Agent = sequelize.define('Agent', {
   total_reviews: {
     type: DataTypes.INTEGER,
     defaultValue: 0
+  },
+  profile_image: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+    comment: 'Cloudinary URL for agent profile image'
   }
 }, {
   tableName: 'agents',
