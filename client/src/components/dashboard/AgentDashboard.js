@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
@@ -12,6 +12,10 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const [loading, setLoading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
   const [showProfileSuccess, setShowProfileSuccess] = useState(false);
+  // Update local image state if parent data changes (e.g., after refresh)
+  useEffect(() => {
+    setProfileImageUrl(data.agent?.profile_image || null);
+  }, [data.agent?.profile_image]);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -518,6 +522,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
                       setShowProfileSuccess(true);
                       setTimeout(() => setShowProfileSuccess(false), 3000);
                       notifyProfileImageUpdated();
+                      // Update parent data.agent.profile_image if possible
+                      if (data.agent) data.agent.profile_image = imageUrl;
                       onRefresh(); // Optionally refresh dashboard data
                     }}
                     className="mb-6"
