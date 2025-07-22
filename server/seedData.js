@@ -1,6 +1,6 @@
 const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
         Subscription, Notification, EventRegistration, AgentClientRelationship, 
-        ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
+        ContestSubmission, ClientUpgrade } = require('./models');
 // const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
 //         Subscription, Notification, EventRegistration, AgentClientRelationship, 
 //         ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
@@ -351,11 +351,11 @@ async function seedData() {
     });
 
     // Seed recommendation game data
-    try {
-      await seedRecommendationData();
-    } catch (error) {
-      console.log('⚠️ Recommendation seeding skipped (tables may not exist yet):', error.message);
-    }
+    // try {
+    //   await seedRecommendationData();
+    // } catch (error) {
+    //   console.log('⚠️ Recommendation seeding skipped (tables may not exist yet):', error.message);
+    // }
 
     console.log('Data seeding completed successfully!');
     console.log('Sample users created:');
