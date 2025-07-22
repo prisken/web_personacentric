@@ -37,7 +37,7 @@ router.put('/profile', authenticateToken, (req, res) => {
   });
 });
 
-// Update agent profile with image upload
+// Update agent profile with image upload or JSON update
 router.put('/agent/profile', authenticateToken, upload.single('profile_image'), async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -52,11 +52,12 @@ router.put('/agent/profile', authenticateToken, upload.single('profile_image'), 
       });
     }
 
-    // Handle profile image upload if provided
+    // Handle profile image - either from file upload or JSON body
     let profileImageUrl = agent.profile_image; // Keep existing if no new image
     
     if (req.file) {
-      console.log('=== Uploading agent profile image ===');
+      // Handle file upload
+      console.log('=== Uploading agent profile image via file ===');
       const result = await uploadImage(req.file, 'agent-profiles');
       
       if (!result.success) {
@@ -67,7 +68,12 @@ router.put('/agent/profile', authenticateToken, upload.single('profile_image'), 
       }
       
       profileImageUrl = result.url;
-      console.log('Profile image uploaded:', profileImageUrl);
+      console.log('Profile image uploaded via file:', profileImageUrl);
+    } else if (req.body.profile_image) {
+      // Handle JSON update with image URL
+      console.log('=== Updating agent profile image via JSON ===');
+      profileImageUrl = req.body.profile_image;
+      console.log('Profile image updated via JSON:', profileImageUrl);
     }
 
     // Update agent profile data
