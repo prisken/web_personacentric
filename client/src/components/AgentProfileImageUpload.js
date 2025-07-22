@@ -26,23 +26,36 @@ const AgentProfileImageUpload = ({
     setProgress(0);
 
     try {
+      // Step 1: Upload image to /api/upload/image
       const formData = new FormData();
-      formData.append('profile_image', file);
-      
-      // Add any other profile data if needed
-      formData.append('bio', ''); // You can add more fields here
+      formData.append('image', file);
+      formData.append('folder', 'agent-profiles');
 
-      const response = await apiService.uploadFile('/users/agent/profile', formData, {
+      const uploadResponse = await apiService.uploadFile('/upload/image', formData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setProgress(percentCompleted);
         },
       });
 
-      if (response.success) {
-        onImageUploaded(response.data.profile_image);
+      if (!uploadResponse.success) {
+        alert('Image upload failed: ' + uploadResponse.error);
+        setPreviewUrl(currentImageUrl); // Revert preview
+        setUploading(false);
+        setProgress(0);
+        return;
+      }
+
+      // Step 2: Update agent profile with new image URL
+      const profileUpdateResponse = await apiService.put('/users/agent/profile', {
+        profile_image: uploadResponse.image.url,
+        bio: '' // Add other fields as needed
+      });
+
+      if (profileUpdateResponse.success) {
+        onImageUploaded(uploadResponse.image.url);
       } else {
-        alert('Upload failed: ' + response.error);
+        alert('Profile update failed: ' + profileUpdateResponse.error);
         setPreviewUrl(currentImageUrl); // Revert preview
       }
     } catch (error) {
