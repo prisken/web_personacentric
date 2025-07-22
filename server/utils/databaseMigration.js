@@ -1,10 +1,10 @@
-const { sequelize } = require('../config/database');
+// Fix import: get sequelize instance directly
+const sequelize = require('../config/database');
 
 // Database migration utility
 const runMigrations = async () => {
   try {
     console.log('=== Running Database Migrations ===');
-    
     // Add new columns if they don't exist
     await sequelize.query(`
       DO $$ 
@@ -17,7 +17,6 @@ const runMigrations = async () => {
           ALTER TABLE agents ADD COLUMN profile_image VARCHAR(500);
           COMMENT ON COLUMN agents.profile_image IS 'Cloudinary URL for agent profile image';
         END IF;
-        
         -- Add image to events table if not exists
         IF NOT EXISTS (
           SELECT 1 FROM information_schema.columns 
@@ -28,7 +27,6 @@ const runMigrations = async () => {
         END IF;
       END $$;
     `);
-    
     console.log('Database migrations completed successfully.');
   } catch (error) {
     console.error('Migration error:', error);
