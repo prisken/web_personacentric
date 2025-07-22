@@ -24,7 +24,7 @@ const RecommendationGame = () => {
   });
 
   // Feature flag to disable recommendation features
-  const RECOMMENDATIONS_ENABLED = false;
+  const RECOMMENDATIONS_ENABLED = true;
 
   useEffect(() => {
     if (RECOMMENDATIONS_ENABLED) {
