@@ -9,7 +9,7 @@ const RecommendationGame = () => {
   const [badges, setBadges] = useState({ userBadges: [], allBadges: [] });
   const [leaderboard, setLeaderboard] = useState([]);
   const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showShareModal, setShowShareModal] = useState(false);
   const [selectedRecommendation, setSelectedRecommendation] = useState(null);
@@ -23,11 +23,27 @@ const RecommendationGame = () => {
     photo_url: ''
   });
 
+  // Feature flag to disable recommendation features
+  const RECOMMENDATIONS_ENABLED = false;
+
   useEffect(() => {
-    fetchData();
+    if (RECOMMENDATIONS_ENABLED) {
+      fetchData();
+    } else {
+      // Set empty data without making API calls
+      setRecommendations([]);
+      setBadges({ userBadges: [], allBadges: [] });
+      setLeaderboard([]);
+      setStats(null);
+      setLoading(false);
+    }
   }, [activeTab]);
 
   const fetchData = async () => {
+    if (!RECOMMENDATIONS_ENABLED) {
+      return;
+    }
+
     try {
       setLoading(true);
       
@@ -104,6 +120,11 @@ const RecommendationGame = () => {
   const handleCreateRecommendation = async (e) => {
     e.preventDefault();
     
+    if (!RECOMMENDATIONS_ENABLED) {
+      alert(language === 'zh-TW' ? '推薦功能暫時停用' : 'Recommendation feature is temporarily disabled');
+      return;
+    }
+    
     try {
       setLoading(true);
       const response = await apiService.createRecommendation(formData);
@@ -132,6 +153,11 @@ const RecommendationGame = () => {
   };
 
   const handleDeleteRecommendation = async (id) => {
+    if (!RECOMMENDATIONS_ENABLED) {
+      alert(language === 'zh-TW' ? '推薦功能暫時停用' : 'Recommendation feature is temporarily disabled');
+      return;
+    }
+
     if (!window.confirm(language === 'zh-TW' ? '確定要刪除此推薦嗎？' : 'Are you sure you want to delete this recommendation?')) {
       return;
     }
