@@ -136,12 +136,12 @@ const AdminDashboard = ({ data, onRefresh }) => {
       {/* Dashboard Header */}
       <div className="bg-white shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-8 lg:py-10 space-y-4 sm:space-y-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-8 lg:py-12 space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
                 👑 管理員儀表板
               </h1>
-              <p className="text-lg lg:text-xl text-gray-600">
+              <p className="text-lg lg:text-xl xl:text-2xl text-gray-600">
                 管理平台用戶和系統設定
               </p>
             </div>
@@ -159,7 +159,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
       </div>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white border-b border-gray-200 shadow-sm sticky top-16 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav className="flex space-x-1 lg:space-x-2 overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => (

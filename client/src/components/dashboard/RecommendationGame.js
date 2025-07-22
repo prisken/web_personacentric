@@ -220,8 +220,8 @@ const RecommendationGame = () => {
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold">
-              {language === 'zh-TW' ? '推薦遊戲' : 'Recommendation Game'}
+            <h2 className="text-2xl lg:text-3xl font-bold">
+              {language === 'zh-TW' ? '🎮 推薦遊戲' : '🎮 Recommendation Game'}
             </h2>
             <p className="mt-2 opacity-90">
               {language === 'zh-TW' 

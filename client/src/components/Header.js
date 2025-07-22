@@ -130,38 +130,38 @@ const Header = () => {
   return (
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-18">
+        <div className="flex justify-between items-center h-16 lg:h-20">
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center mr-3 transition-transform duration-200 group-hover:scale-110">
-                <i className="fas fa-chart-line text-white text-sm lg:text-base"></i>
+              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center mr-3 lg:mr-4 transition-transform duration-200 group-hover:scale-110 shadow-lg">
+                <span className="text-white text-sm lg:text-lg font-bold">📈</span>
               </div>
-              <span className={`text-xl lg:text-2xl font-bold ${textClasses} transition-colors duration-200`}>
+              <span className={`text-xl lg:text-2xl xl:text-3xl font-bold ${textClasses} transition-colors duration-200`}>
                 Persona Centric
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
             {navItems.map((item) => (
               <Link
                 key={item.key}
                 to={item.path}
-                className={`font-medium text-base ${textClasses} ${hoverClasses} relative group`}
+                className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             ))}
             {user && (
               <Link
                 to="/dashboard"
-                className={`font-medium text-base ${textClasses} ${hoverClasses} relative group`}
+                className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
                 📊 儀表板
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
+                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             )}
           </nav>
@@ -171,19 +171,19 @@ const Header = () => {
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className={`text-sm lg:text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
+              className={`text-sm lg:text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
             >
               {language === 'zh-TW' ? 'EN' : '中文'}
             </button>
 
             {/* User Info & Auth Buttons */}
             {user ? (
-              <div className="hidden md:flex items-center space-x-4">
+              <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
                 {user.role === 'agent' && agentProfileImage && (
                   <img
                     src={agentProfileImage}
                     alt="Profile"
-                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-blue-500 shadow-lg transition-transform duration-200 hover:scale-110"
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-blue-500 shadow-lg transition-transform duration-200 hover:scale-110 ring-2 ring-white/20"
                   />
                 )}
                 <div className="text-right">
@@ -196,27 +196,27 @@ const Header = () => {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
                 >
                   登出
                 </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-3">
+              <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
                 <Link
                   to="/login"
-                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className={`px-4 py-2 lg:px-6 lg:py-3 rounded-lg font-medium text-sm lg:text-base transition-all duration-200 transform hover:scale-105 ${
+                  className={`px-4 py-2 lg:px-6 lg:py-3 rounded-lg font-medium text-sm lg:text-base transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl ${
                     isScrolled 
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg' 
+                      ? 'bg-blue-600 text-white hover:bg-blue-700' 
                       : isOverHero && hasDarkTopSection && !isDashboardPage
-                        ? 'bg-white text-gray-900 hover:bg-gray-100 shadow-lg' 
-                        : 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg'
+                        ? 'bg-white text-gray-900 hover:bg-gray-100' 
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}
                 >
                   {t('nav.register')}
@@ -230,7 +230,13 @@ const Header = () => {
               className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
               aria-label="Toggle mobile menu"
             >
-              <i className={`fas ${isMobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
             </button>
           </div>
         </div>
