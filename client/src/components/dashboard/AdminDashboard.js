@@ -86,6 +86,22 @@ const AdminDashboard = ({ data, onRefresh }) => {
     }
   };
 
+  const handleSeedData = async () => {
+    try {
+      setLoading(true);
+      if (window.confirm('確定要添加示例數據嗎？這將創建多個示例用戶和代理。')) {
+        await apiService.post('/admin/seed-data');
+        alert('示例數據已成功添加！');
+        await fetchUsers(); // Refresh users list
+      }
+    } catch (error) {
+      console.error('Seed data error:', error);
+      alert('添加示例數據失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleUserAction = async (userId, action, newRole = null) => {
     try {
       setLoading(true);
@@ -148,6 +164,13 @@ const AdminDashboard = ({ data, onRefresh }) => {
               </p>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={handleSeedData}
+                disabled={loading}
+                className="bg-green-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl hover:bg-green-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-base lg:text-lg"
+              >
+                {loading ? '添加中...' : '添加示例數據'}
+              </button>
               <button
                 onClick={onRefresh}
                 disabled={loading}

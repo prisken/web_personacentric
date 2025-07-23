@@ -77,6 +77,27 @@ router.put('/users/:userId/role', authenticateToken, requireAdmin, async (req, r
   }
 });
 
+// Seed placeholder data (admin only)
+router.post('/seed-data', authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    console.log('Manual seeding triggered by admin...');
+    const seedData = require('../seedData');
+    await seedData();
+    
+    res.json({
+      success: true,
+      message: 'Placeholder data seeded successfully'
+    });
+  } catch (error) {
+    console.error('Manual seeding error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to seed data',
+      details: error.message
+    });
+  }
+});
+
 // Delete user (admin only)
 router.delete('/users/:userId', authenticateToken, requireAdmin, async (req, res) => {
   try {
