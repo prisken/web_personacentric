@@ -34,7 +34,14 @@ const AllAgentsPage = () => {
       setLoading(true);
       const response = await apiService.get('/agents?in_matching_pool=true&status=active');
       if (response.success && Array.isArray(response.data)) {
-        setAgents(response.data);
+        // Map agents to flatten user fields for display
+        setAgents(response.data.map(agent => ({
+          ...agent,
+          name: agent.user ? `${agent.user.first_name} ${agent.user.last_name}` : '',
+          email: agent.user?.email || '',
+          first_name: agent.user?.first_name || '',
+          last_name: agent.user?.last_name || ''
+        })));
         // Extract unique languages and locations for filters
         const langs = new Set();
         const locs = new Set();

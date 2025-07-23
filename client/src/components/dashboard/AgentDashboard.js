@@ -519,7 +519,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
                   <label className="block text-sm lg:text-base font-medium text-gray-700">姓名</label>
                   <input
                     type="text"
-                    defaultValue={data.user?.name || ''}
+                    defaultValue={`${data.user?.first_name || ''} ${data.user?.last_name || ''}`}
                     className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
                   />
                 </div>

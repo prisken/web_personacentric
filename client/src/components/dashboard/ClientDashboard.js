@@ -479,7 +479,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
                   <label className="block text-sm font-medium text-gray-700">姓名</label>
                   <input
                     type="text"
-                    defaultValue={data.user?.name || ''}
+                    defaultValue={`${data.user?.first_name || ''} ${data.user?.last_name || ''}`}
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
@@ -494,7 +494,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">投資目標</label>
                   <select className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                    <option>退休規劃</option>
+                    <option>{data.client?.primary_goal || ''}</option>
                     <option>子女教育</option>
                     <option>購屋置產</option>
                     <option>財富增值</option>
@@ -503,15 +503,14 @@ const ClientDashboard = ({ data, onRefresh }) => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">風險承受度</label>
                   <select className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                    <option>保守型</option>
-                    <option>穩健型</option>
+                    <option>{data.client?.risk_tolerance || ''}</option>
                     <option>積極型</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">投資經驗</label>
                   <select className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2">
-                    <option>初學者</option>
+                    <option>{data.client?.investment_experience || ''}</option>
                     <option>有經驗</option>
                     <option>專業投資者</option>
                   </select>
