@@ -26,6 +26,13 @@ const Recommendation = require('./Recommendation');
 const RecommendationEngagement = require('./RecommendationEngagement');
 const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
+const Client = require('./Client');
+
+// Debug model loading
+console.log('Loading models...');
+console.log('User model loaded:', !!User);
+console.log('Agent model loaded:', !!Agent);
+console.log('Client model loaded:', !!Client);
 
 // Define associations
 // User associations
@@ -48,6 +55,7 @@ User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
 User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
 User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
+User.hasOne(Client, { foreignKey: 'user_id', as: 'client' });
 
 // Agent associations
 Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -166,5 +174,6 @@ module.exports = {
   Recommendation,
   RecommendationEngagement,
   Badge,
-  UserBadge
+  UserBadge,
+  Client
 }; 
