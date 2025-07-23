@@ -7,28 +7,28 @@ const ContestsPage = () => {
   const [activeTab, setActiveTab] = useState('current');
 
   const currentContest = {
-    title: 'Financial Content Creation Challenge',
-    description: 'Create compelling financial content that educates and inspires. Share your expertise and win amazing prizes!',
+    title: t('contest.financialChallenge'),
+    description: t('contest.challengeDescription'),
     deadline: 'March 31, 2024',
     prizes: [
-      { place: '1st Place', reward: '$1,000 + Featured on Platform' },
-      { place: '2nd Place', reward: '$500 + Recognition Badge' },
-      { place: '3rd Place', reward: '$250 + Premium Membership' }
+      { place: t('contest.firstPlace'), reward: '$1,000 + ' + t('contest.featuredOnPlatform') },
+      { place: t('contest.secondPlace'), reward: '$500 + ' + t('contest.recognitionBadge') },
+      { place: t('contest.thirdPlace'), reward: '$250 + ' + t('contest.premiumMembership') }
     ],
     categories: [
-      'Social Media Post',
-      'Blog Article',
-      'Infographic',
-      'Video Content',
-      'Email Campaign',
-      'Podcast Script'
+      t('contest.category.social_media'),
+      t('contest.category.blog_article'),
+      t('contest.category.infographic'),
+      t('contest.category.video_content'),
+      t('contest.category.email_campaign'),
+      t('contest.category.podcast_script')
     ],
     rules: [
-      'Content must be original and not previously published',
-      'Must be related to financial topics',
-      'Maximum 1000 words for written content',
-      'Videos must be under 5 minutes',
-      'All content must be family-friendly'
+      t('contest.rule1'),
+      t('contest.rule2'),
+      t('contest.rule3'),
+      t('contest.rule4'),
+      t('contest.rule5')
     ]
   };
 
@@ -125,13 +125,13 @@ const ContestsPage = () => {
 
                 {/* Deadline */}
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold text-orange-800 mb-2">Deadline</h3>
+                  <h3 className="text-lg font-semibold text-orange-800 mb-2">{t('contest.deadline')}</h3>
                   <p className="text-orange-700">{currentContest.deadline}</p>
                 </div>
 
                 {/* Prizes */}
                 <div className="mb-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">{t('contest.prizes')}</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{t('contest.prizeInfo')}</h3>
                   <div className="space-y-3">
                     {currentContest.prizes.map((prize, index) => (
                       <div key={index} className="flex items-center justify-between bg-white rounded-lg p-4 shadow-sm">
@@ -144,7 +144,7 @@ const ContestsPage = () => {
 
                 {/* Member Benefits */}
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold text-blue-800 mb-4">{t('contest.memberBenefits')}</h3>
+                  <h3 className="text-lg font-semibold text-blue-800 mb-4">{t('contest.memberExclusive')}</h3>
                   <ul className="space-y-2 text-blue-700">
                     <li className="flex items-center">
                       <i className="fas fa-check mr-2"></i>
@@ -152,11 +152,11 @@ const ContestsPage = () => {
                     </li>
                     <li className="flex items-center">
                       <i className="fas fa-check mr-2"></i>
-                      {t('contest.winPoints')}
+                      {t('contest.earnPoints')}
                     </li>
                     <li className="flex items-center">
                       <i className="fas fa-check mr-2"></i>
-                      Build your professional portfolio
+                      {t('contest.buildPortfolio')}
                     </li>
                   </ul>
                 </div>
@@ -182,7 +182,7 @@ const ContestsPage = () => {
               <div className="space-y-8">
                 {/* Categories */}
                 <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Contest Categories</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-4">{t('contest.categories')}</h3>
                   <div className="grid grid-cols-2 gap-4">
                     {currentContest.categories.map((category, index) => (
                       <div key={index} className="bg-white rounded-lg p-4 shadow-sm border border-gray-200">

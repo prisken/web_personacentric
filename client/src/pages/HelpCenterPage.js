@@ -9,61 +9,49 @@ const HelpCenterPage = () => {
 
   const faqData = [
     {
-      question: language === 'zh-TW' ? '如何開始使用 Persona Centric 平台？' : 'How do I get started with Persona Centric?',
-      answer: language === 'zh-TW' 
-        ? '註冊帳戶後，您可以瀏覽我們的服務，包括 AI 內容生成、代理匹配和活動參與。我們建議先完成個人資料設置以獲得最佳體驗。'
-        : 'After registering an account, you can explore our services including AI content generation, agent matching, and event participation. We recommend completing your profile setup for the best experience.'
+      question: t('help.getStarted'),
+      answer: t('help.getStartedAnswer')
     },
     {
-      question: language === 'zh-TW' ? 'AI 內容生成器如何運作？' : 'How does the AI content generator work?',
-      answer: language === 'zh-TW'
-        ? '我們的 AI 工具會分析您的行業和需求，生成專業的金融內容。只需選擇您的行業，輸入關鍵詞，AI 就會創建適合的內容。'
-        : 'Our AI tool analyzes your industry and needs to generate professional financial content. Simply select your industry, input keywords, and the AI will create suitable content.'
+      question: t('help.aiContent'),
+      answer: t('help.aiContentAnswer')
     },
     {
-      question: language === 'zh-TW' ? '代理匹配服務的費用是多少？' : 'What are the costs for agent matching services?',
-      answer: language === 'zh-TW'
-        ? '我們提供多種會員計劃，從基本到高級。請查看定價頁面了解詳細的費用結構和功能比較。'
-        : 'We offer various membership plans from basic to premium. Please check our pricing page for detailed cost structures and feature comparisons.'
+      question: t('help.agentCost'),
+      answer: t('help.agentCostAnswer')
     },
     {
-      question: language === 'zh-TW' ? '如何參加競賽？' : 'How can I participate in contests?',
-      answer: language === 'zh-TW'
-        ? '註冊後，您可以在競賽頁面查看當前和即將舉行的競賽。提交您的作品並有機會贏得獎勵。'
-        : 'After registration, you can view current and upcoming contests on the contests page. Submit your work and have a chance to win rewards.'
+      question: t('help.contests'),
+      answer: t('help.contestsAnswer')
     },
     {
-      question: language === 'zh-TW' ? '平台是否安全可靠？' : 'Is the platform secure and reliable?',
-      answer: language === 'zh-TW'
-        ? '我們採用最先進的安全措施保護您的數據。所有交易都經過加密，我們嚴格遵守隱私政策和使用條款。'
-        : 'We use state-of-the-art security measures to protect your data. All transactions are encrypted and we strictly follow our privacy policy and terms of use.'
+      question: t('help.security'),
+      answer: t('help.securityAnswer')
     },
     {
-      question: language === 'zh-TW' ? '如何聯繫客戶支持？' : 'How can I contact customer support?',
-      answer: language === 'zh-TW'
-        ? '您可以通過多種方式聯繫我們：電子郵件、電話或使用此頁面的聯繫表單。我們的團隊會在24小時內回覆。'
-        : 'You can contact us through multiple channels: email, phone, or using the contact form on this page. Our team will respond within 24 hours.'
+      question: t('help.support'),
+      answer: t('help.supportAnswer')
     }
   ];
 
   const supportChannels = [
     {
       icon: 'fas fa-envelope',
-      title: language === 'zh-TW' ? '電子郵件支持' : 'Email Support',
-      description: language === 'zh-TW' ? '24小時內回覆' : 'Response within 24 hours',
+      title: t('help.emailSupport'),
+      description: t('help.responseTime'),
       contact: 'support@personacentric.com'
     },
     {
       icon: 'fas fa-phone',
-      title: language === 'zh-TW' ? '電話支持' : 'Phone Support',
-      description: language === 'zh-TW' ? '週一至週五 9AM-6PM' : 'Mon-Fri 9AM-6PM',
+      title: t('help.phoneSupport'),
+      description: t('help.workingHours'),
       contact: '+1 (555) 123-4567'
     },
     {
       icon: 'fas fa-comments',
-      title: language === 'zh-TW' ? '即時聊天' : 'Live Chat',
-      description: language === 'zh-TW' ? '即時回應' : 'Instant response',
-      contact: language === 'zh-TW' ? '點擊開始聊天' : 'Click to start chat'
+      title: t('help.liveChat'),
+      description: t('help.instantResponse'),
+      contact: t('help.clickToStartChat')
     }
   ];
 
@@ -74,10 +62,10 @@ const HelpCenterPage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {language === 'zh-TW' ? '幫助中心' : 'Help Center'}
+              {t('help.title')}
             </h1>
             <p className="text-xl opacity-90">
-              {language === 'zh-TW' ? '我們隨時為您提供支持' : 'We\'re here to help you anytime'}
+              {t('help.subtitle')}
             </p>
           </div>
         </div>
@@ -94,7 +82,7 @@ const HelpCenterPage = () => {
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            {language === 'zh-TW' ? '常見問題' : 'FAQ'}
+            {t('help.faq')}
           </button>
           <button
             onClick={() => setActiveTab('contact')}
@@ -104,7 +92,7 @@ const HelpCenterPage = () => {
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            {language === 'zh-TW' ? '聯繫支持' : 'Contact Support'}
+            {t('help.contactSupport')}
           </button>
           <button
             onClick={() => setActiveTab('legal')}
@@ -114,7 +102,7 @@ const HelpCenterPage = () => {
                 : 'bg-white text-gray-700 hover:bg-gray-100'
             }`}
           >
-            {language === 'zh-TW' ? '法律條款' : 'Legal'}
+            {t('help.legal')}
           </button>
         </div>
 

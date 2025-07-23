@@ -297,7 +297,7 @@ const HomePage = () => {
       <section className="py-16 lg:py-20 bg-gradient-to-r from-blue-50 to-green-50">
         <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6 lg:mb-8 leading-tight">
-            Get the right agent and double your investment!
+            {t('home.getRightAgent')}
           </h2>
           <Link
             to="/agent-matching"
@@ -313,10 +313,10 @@ const HomePage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 lg:mb-8">
-              Proof of Concept
+              {t('home.proofOfConcept')}
             </h2>
             <p className="text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto">
-              Real results from our platform
+              {t('home.realResults')}
             </p>
           </div>
           

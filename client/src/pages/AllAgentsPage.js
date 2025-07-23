@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
 
 // All possible filterable fields (should match backend data)
@@ -19,6 +20,7 @@ const COMMUNICATION_MODES = [
 ];
 
 const AllAgentsPage = () => {
+  const { t } = useLanguage();
   const [agents, setAgents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -107,35 +109,35 @@ const AllAgentsPage = () => {
   return (
     <div className="pt-16 bg-gray-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">All Available Agents</h1>
+        <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">{t('all_available_agents')}</h1>
         {/* Search & Filter UI */}
         <div className="flex flex-wrap gap-4 mb-8 justify-center">
           <input
             type="text"
-            placeholder="Search by name, expertise, or bio..."
+            placeholder={t('search_by_name_expertise_bio')}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="border rounded px-3 py-2 w-64"
           />
           <select value={selectedExpertise} onChange={e => setSelectedExpertise(e.target.value)} className="border rounded px-3 py-2">
-            <option value="">All Expertise</option>
+            <option value="">{t('all_expertise')}</option>
             {[...AREAS_OF_EXPERTISE, 'General'].map(area => <option key={area} value={area}>{area}</option>)}
           </select>
           <select value={selectedLanguage} onChange={e => setSelectedLanguage(e.target.value)} className="border rounded px-3 py-2">
-            <option value="">All Languages</option>
+            <option value="">{t('all_languages')}</option>
             {languages.map(lang => <option key={lang} value={lang}>{lang}</option>)}
           </select>
           <select value={selectedCommMode} onChange={e => setSelectedCommMode(e.target.value)} className="border rounded px-3 py-2">
-            <option value="">All Communication Modes</option>
+            <option value="">{t('all_communication_modes')}</option>
             {COMMUNICATION_MODES.map(mode => <option key={mode} value={mode}>{mode}</option>)}
           </select>
           <select value={selectedLocation} onChange={e => setSelectedLocation(e.target.value)} className="border rounded px-3 py-2">
-            <option value="">All Locations</option>
+            <option value="">{t('all_locations')}</option>
             {locations.map(loc => <option key={loc} value={loc}>{loc}</option>)}
           </select>
         </div>
         {loading ? (
-          <div className="text-center text-lg text-gray-500 py-12">Loading agents...</div>
+          <div className="text-center text-lg text-gray-500 py-12">{t('loading_agents')}</div>
         ) : (
           [...AREAS_OF_EXPERTISE, 'General'].map(category => (
             categorized[category] && categorized[category].length > 0 && (
@@ -227,10 +229,10 @@ const AllAgentsPage = () => {
                         {/* Action Buttons */}
                         <div className="space-y-3">
                           <a href={`mailto:${agent.email}`} className="block w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-bold text-center hover:from-green-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                            Contact Now
+                            {t('contact_now')}
                           </a>
                           <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-sm">
-                            View Full Profile
+                            {t('view_full_profile')}
                           </button>
                         </div>
                       </div>
