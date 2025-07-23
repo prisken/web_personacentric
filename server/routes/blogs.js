@@ -167,21 +167,8 @@ router.post('/', authenticateToken, async (req, res) => {
       await BlogPostCategory.bulkCreate(categoryAssociations);
     }
 
-    // Fetch the created blog with associations
-    const createdBlog = await BlogPost.findByPk(blog.id, {
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'first_name', 'last_name', 'email', 'profile_image_url']
-        },
-        {
-          model: BlogCategory,
-          as: 'categories',
-          through: { attributes: [] }
-        }
-      ]
-    });
+    // Fetch the created blog
+    const createdBlog = await BlogPost.findByPk(blog.id);
 
     res.status(201).json({
       success: true,
@@ -270,21 +257,8 @@ router.put('/:id', authenticateToken, async (req, res) => {
       }
     }
 
-    // Fetch updated blog with associations
-    const updatedBlog = await BlogPost.findByPk(id, {
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'first_name', 'last_name', 'email', 'profile_image_url']
-        },
-        {
-          model: BlogCategory,
-          as: 'categories',
-          through: { attributes: [] }
-        }
-      ]
-    });
+    // Fetch updated blog
+    const updatedBlog = await BlogPost.findByPk(id);
 
     res.json({
       success: true,
