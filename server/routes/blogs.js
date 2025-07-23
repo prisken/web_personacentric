@@ -56,7 +56,12 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Get blogs error:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch blogs' });
+    console.error('Error details:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to fetch blogs',
+      error: error.message 
+    });
   }
 });
 
@@ -73,24 +78,7 @@ router.get('/:identifier', async (req, res) => {
     }
 
     const blog = await BlogPost.findOne({
-      where: whereClause,
-      include: [
-        {
-          model: User,
-          as: 'author',
-          attributes: ['id', 'first_name', 'last_name', 'email', 'profile_image_url']
-        },
-        {
-          model: BlogCategory,
-          as: 'categories',
-          through: { attributes: [] }
-        },
-        {
-          model: BlogImage,
-          as: 'images',
-          order: [['display_order', 'ASC']]
-        }
-      ]
+      where: whereClause
     });
 
     if (!blog) {
