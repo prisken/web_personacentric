@@ -81,7 +81,8 @@ app.get('/api/health', (req, res) => {
   res.json({ 
     status: 'OK', 
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime()
   });
 });
 
@@ -111,15 +112,24 @@ app.use('*', (req, res) => {
 // Database connection and server start
 async function startServer() {
   try {
+    console.log('Starting server...');
+    console.log('Connecting to database...');
     await sequelize.authenticate();
+    console.log('Database connected successfully');
     
     // Sync database (create tables if they don't exist)
     // Use force: false to prevent conflicts with existing schema
+    console.log('Syncing database...');
     await sequelize.sync({ force: false, alter: false });
+    console.log('Database synced successfully');
+    
+    console.log('Running migrations...');
     await runMigrations();
+    console.log('Migrations completed');
     
     // Start server first, then seed data in background
     app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
     });
     
     // Seed data if no users exist (in background)
