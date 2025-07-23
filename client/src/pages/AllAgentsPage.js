@@ -32,26 +32,26 @@ const AllAgentsPage = () => {
   useEffect(() => {
     const fetchAgents = async () => {
       setLoading(true);
-      const response = await apiService.get('/agents?in_matching_pool=true&status=active');
-      if (response.success && Array.isArray(response.data)) {
-        // Map agents to flatten user fields for display
-        setAgents(response.data.map(agent => ({
-          ...agent,
-          name: agent.user ? `${agent.user.first_name} ${agent.user.last_name}` : '',
-          email: agent.user?.email || '',
-          first_name: agent.user?.first_name || '',
-          last_name: agent.user?.last_name || ''
-        })));
-        // Extract unique languages and locations for filters
-        const langs = new Set();
-        const locs = new Set();
-        response.data.forEach(agent => {
-          (agent.languages || []).forEach(l => langs.add(l));
-          if (agent.location) locs.add(agent.location);
-        });
-        setLanguages(Array.from(langs));
-        setLocations(Array.from(locs));
-      } else {
+      try {
+        const response = await apiService.get('/agents?in_matching_pool=true&status=active');
+        if (response.success && Array.isArray(response.data)) {
+          setAgents(response.data);
+          // Extract unique languages and locations for filters
+          const langs = new Set();
+          const locs = new Set();
+          response.data.forEach(agent => {
+            (agent.languages || []).forEach(l => langs.add(l));
+            if (agent.location) locs.add(agent.location);
+          });
+          setLanguages(Array.from(langs));
+          setLocations(Array.from(locs));
+        } else {
+          setAgents([]);
+          setLanguages([]);
+          setLocations([]);
+        }
+      } catch (error) {
+        console.error('Error fetching agents:', error);
         setAgents([]);
         setLanguages([]);
         setLocations([]);
@@ -70,7 +70,9 @@ const AllAgentsPage = () => {
       (agent.name && agent.name.toLowerCase().includes(searchLower)) ||
       (agent.bio && agent.bio.toLowerCase().includes(searchLower)) ||
       (agent.areas_of_expertise && agent.areas_of_expertise.some(area => area.toLowerCase().includes(searchLower)));
-    const matchesExpertise = !selectedExpertise || (agent.areas_of_expertise || []).includes(selectedExpertise);
+    const matchesExpertise = !selectedExpertise || 
+      (selectedExpertise === 'General' && (!agent.areas_of_expertise || agent.areas_of_expertise.length === 0)) ||
+      (selectedExpertise !== 'General' && (agent.areas_of_expertise || []).includes(selectedExpertise));
     const matchesLanguage = !selectedLanguage || (agent.languages || []).includes(selectedLanguage);
     const matchesCommMode = !selectedCommMode || (agent.communication_modes || []).includes(selectedCommMode);
     const matchesLocation = !selectedLocation || agent.location === selectedLocation;
@@ -80,12 +82,26 @@ const AllAgentsPage = () => {
   // Categorize by area of expertise
   const categorized = {};
   AREAS_OF_EXPERTISE.forEach(cat => { categorized[cat] = []; });
+  
+  // Add "General" category for agents without specific expertise
+  categorized['General'] = [];
+  
   filteredAgents.forEach(agent => {
-    (agent.areas_of_expertise || []).forEach(area => {
-      if (AREAS_OF_EXPERTISE.includes(area)) {
-        categorized[area].push(agent);
-      }
-    });
+    const areas = agent.areas_of_expertise || [];
+    if (areas.length === 0) {
+      // If no specific expertise, add to General category
+      categorized['General'].push(agent);
+    } else {
+      // Add to specific expertise categories
+      areas.forEach(area => {
+        if (AREAS_OF_EXPERTISE.includes(area)) {
+          categorized[area].push(agent);
+        } else {
+          // If expertise not in predefined list, add to General
+          categorized['General'].push(agent);
+        }
+      });
+    }
   });
 
   return (
@@ -103,7 +119,7 @@ const AllAgentsPage = () => {
           />
           <select value={selectedExpertise} onChange={e => setSelectedExpertise(e.target.value)} className="border rounded px-3 py-2">
             <option value="">All Expertise</option>
-            {AREAS_OF_EXPERTISE.map(area => <option key={area} value={area}>{area}</option>)}
+            {[...AREAS_OF_EXPERTISE, 'General'].map(area => <option key={area} value={area}>{area}</option>)}
           </select>
           <select value={selectedLanguage} onChange={e => setSelectedLanguage(e.target.value)} className="border rounded px-3 py-2">
             <option value="">All Languages</option>
@@ -121,8 +137,8 @@ const AllAgentsPage = () => {
         {loading ? (
           <div className="text-center text-lg text-gray-500 py-12">Loading agents...</div>
         ) : (
-          AREAS_OF_EXPERTISE.map(category => (
-            categorized[category].length > 0 && (
+          [...AREAS_OF_EXPERTISE, 'General'].map(category => (
+            categorized[category] && categorized[category].length > 0 && (
               <section key={category} className="mb-12">
                 <h2 className="text-2xl font-bold text-blue-700 mb-6">{category}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
