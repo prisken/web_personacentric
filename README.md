@@ -1,3 +1,4 @@
+Last redeploy test: July 23, 2025
 # Persona Centric Financial Platform
 
 AI-powered financial advisory platform connecting clients with professional advisors.
