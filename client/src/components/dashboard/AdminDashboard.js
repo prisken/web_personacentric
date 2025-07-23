@@ -371,6 +371,9 @@ const AdminDashboard = ({ data, onRefresh }) => {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       操作
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Profile Details
+                    </th>
                   </tr>
                 </thead>
                                   <tbody className="bg-white divide-y divide-gray-200">
@@ -417,6 +420,28 @@ const AdminDashboard = ({ data, onRefresh }) => {
                           >
                             刪除
                           </button>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {/* Profile Details */}
+                          {user.role === 'agent' && user.agent ? (
+                            <div>
+                              <div><b>專長:</b> {user.agent.areas_of_expertise?.join(', ')}</div>
+                              <div><b>證書:</b> {user.agent.certifications}</div>
+                              <div><b>經驗:</b> {user.agent.experience_years} 年</div>
+                              <div><b>語言:</b> {user.agent.languages?.join(', ')}</div>
+                              <div><b>地點:</b> {user.agent.location}</div>
+                            </div>
+                          ) : user.role === 'client' && user.client ? (
+                            <div>
+                              <div><b>目標:</b> {user.client.primary_goal}</div>
+                              <div><b>投資時長:</b> {user.client.investment_timeline}</div>
+                              <div><b>風險承受:</b> {user.client.risk_tolerance}</div>
+                              <div><b>財務狀況:</b> {user.client.financial_situation}</div>
+                              <div><b>地點:</b> {user.client.location}</div>
+                            </div>
+                          ) : (
+                            <span className="text-gray-400">—</span>
+                          )}
                         </td>
                       </tr>
                     ))}

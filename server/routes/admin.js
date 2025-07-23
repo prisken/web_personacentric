@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
-const { User } = require('../models');
+const { User, Agent, Client } = require('../models');
 
 // Middleware to check if user is admin
 const requireAdmin = (req, res, next) => {
@@ -19,6 +19,10 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     const users = await User.findAll({
       attributes: ['id', 'first_name', 'last_name', 'email', 'role', 'created_at', 'subscription_status'],
+      include: [
+        { model: Agent, as: 'agent' },
+        { model: Client, as: 'client' }
+      ],
       order: [['created_at', 'DESC']]
     });
 
