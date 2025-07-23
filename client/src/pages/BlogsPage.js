@@ -27,24 +27,44 @@ const BlogsPage = () => {
     try {
       setLoading(true);
       let url = `/blogs?page=${page}&limit=12&status=published`;
-      if (category && category !== 'All' && category !== '全部') {
-        // For now, we'll filter client-side since the API doesn't support category filtering yet
-      }
       
       const response = await apiService.get(url);
-      if (response.success) {
-        setBlogPosts(response.data);
+      if (response.success && response.data) {
+        // Ensure all blog posts have required fields
+        const processedBlogs = response.data.map(blog => ({
+          id: blog.id || '1',
+          title: blog.title || 'Untitled',
+          slug: blog.slug || 'untitled',
+          excerpt: blog.excerpt || '',
+          content: blog.content || '',
+          author_id: blog.author_id || 'admin-user',
+          status: blog.status || 'published',
+          featured_image_url: blog.featured_image_url || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800',
+          meta_title: blog.meta_title || blog.title || 'Untitled',
+          meta_description: blog.meta_description || blog.excerpt || '',
+          reading_time: blog.reading_time || 5,
+          view_count: blog.view_count || 0,
+          like_count: blog.like_count || 0,
+          share_count: blog.share_count || 0,
+          published_at: blog.published_at || new Date().toISOString(),
+          created_at: blog.created_at || new Date().toISOString(),
+          updated_at: blog.updated_at || new Date().toISOString()
+        }));
+        
+        setBlogPosts(processedBlogs);
         setPagination(response.pagination || {
           current_page: 1,
           total_pages: 1,
-          total_items: response.data.length,
+          total_items: processedBlogs.length,
           items_per_page: 12
         });
+      } else {
+        console.error('Invalid response format:', response);
+        setBlogPosts([]);
       }
     } catch (error) {
       console.error('Fetch blogs error:', error);
-      // Fallback to dummy data if API fails
-      setBlogPosts(getDummyBlogPosts());
+      setBlogPosts([]);
     } finally {
       setLoading(false);
     }
@@ -53,8 +73,14 @@ const BlogsPage = () => {
   const fetchCategories = async () => {
     try {
       const response = await apiService.get('/blogs/categories/all');
-      if (response.success) {
-        setCategories(response.data);
+      if (response.success && response.data) {
+        // Ensure categories are in the right format
+        const processedCategories = response.data.map(cat => ({
+          id: cat.id || 1,
+          name: cat.name || 'Category',
+          slug: cat.slug || 'category'
+        }));
+        setCategories(processedCategories);
       } else {
         // Fallback to default categories
         setCategories(language === 'zh-TW' 
@@ -72,92 +98,7 @@ const BlogsPage = () => {
     }
   };
 
-  const getDummyBlogPosts = () => [
-    {
-      id: 1,
-      title: '2024年投資策略：您需要知道的',
-      excerpt: '探索2024年最有效的投資策略，包括股票、債券、房地產和另類投資的完整指南。',
-      content: '詳細的投資策略內容...',
-      author: { first_name: '張', last_name: '理財師' },
-      published_at: '2024-01-15',
-      reading_time: 8,
-      featured_image_url: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      category: '投資',
-      slug: '2024-investment-strategies',
-      featured: true,
-      view_count: 1250
-    },
-    {
-      id: 2,
-      title: '了解保險政策：完整指南',
-      excerpt: '深入了解各種保險類型，幫助您做出明智的保險決策。',
-      content: '保險政策詳細內容...',
-      author: { first_name: '李', last_name: '保險顧問' },
-      published_at: '2024-01-10',
-      reading_time: 6,
-      featured_image_url: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      category: '保險',
-      slug: 'insurance-policy-guide',
-      featured: false,
-      view_count: 890
-    },
-    {
-      id: 3,
-      title: '退休規劃要點：早開始，好退休',
-      excerpt: '制定有效的退休計劃，確保您的黃金歲月財務安全。',
-      content: '退休規劃詳細內容...',
-      author: { first_name: '王', last_name: '退休專家' },
-      published_at: '2024-01-05',
-      reading_time: 10,
-      featured_image_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      category: '退休',
-      slug: 'retirement-planning-essentials',
-      featured: false,
-      view_count: 1100
-    },
-    {
-      id: 4,
-      title: '小企業主的稅務規劃策略',
-      excerpt: '為小企業主提供實用的稅務規劃建議，最大化稅收優惠。',
-      content: '稅務規劃詳細內容...',
-      author: { first_name: '陳', last_name: '稅務顧問' },
-      published_at: '2024-01-01',
-      reading_time: 7,
-      featured_image_url: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      category: '稅務規劃',
-      slug: 'small-business-tax-strategies',
-      featured: false,
-      view_count: 750
-    },
-    {
-      id: 5,
-      title: '房地產投資：2024年的機遇',
-      excerpt: '分析2024年房地產市場趨勢，識別最佳投資機會。',
-      content: '房地產投資詳細內容...',
-      author: { first_name: '林', last_name: '房地產專家' },
-      published_at: '2023-12-28',
-      reading_time: 9,
-      featured_image_url: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80',
-      category: '房地產',
-      slug: 'real-estate-investment-2024',
-      featured: false,
-      view_count: 980
-    },
-    {
-      id: 6,
-      title: '市場分析：2024年第一季度回顧',
-      excerpt: '深入分析2024年第一季度的市場表現和未來趨勢預測。',
-      content: '市場分析詳細內容...',
-      author: { first_name: '黃', last_name: '市場分析師' },
-      published_at: '2023-12-25',
-      reading_time: 5,
-      featured_image_url: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      category: '市場分析',
-      slug: 'market-analysis-q1-2024',
-      featured: false,
-      view_count: 650
-    }
-  ];
+
 
   const filteredPosts = selectedCategory === 'All' || selectedCategory === '全部'
     ? blogPosts
