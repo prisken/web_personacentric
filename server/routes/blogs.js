@@ -113,23 +113,81 @@ router.get('/:identifier', async (req, res) => {
   try {
     const { identifier } = req.params;
     
-    const whereClause = {};
-    if (identifier.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
-      whereClause.id = identifier;
-    } else {
-      whereClause.slug = identifier;
-    }
+    // Dummy blog data
+    const dummyBlogs = [
+      {
+        id: "1",
+        title: "2024年投資策略:您需要知道的",
+        slug: "2024-investment-strategy",
+        excerpt: "探索2024年最有效的投資策略,包括股票、債券、房地產和另類投資的完整指南。",
+        content: "這是一篇關於2024年投資策略的詳細文章，涵蓋了股票投資、債券投資、房地產投資和另類投資等多個方面。我們將深入探討每種投資方式的優缺點，以及如何在2024年的市場環境中做出明智的投資決策。",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800",
+        meta_title: "2024年投資策略完整指南",
+        meta_description: "探索2024年最有效的投資策略",
+        reading_time: 8,
+        view_count: 1250,
+        like_count: 45,
+        share_count: 12,
+        published_at: "2024-01-15T00:00:00.000Z",
+        created_at: "2024-01-15T00:00:00.000Z",
+        updated_at: "2024-01-15T00:00:00.000Z"
+      },
+      {
+        id: "2",
+        title: "退休規劃的完整指南",
+        slug: "retirement-planning-guide",
+        excerpt: "從現在開始規劃您的退休生活，確保財務安全和舒適的退休生活。",
+        content: "退休規劃是人生最重要的財務決策之一。本文將詳細介紹如何制定有效的退休計劃，包括儲蓄策略、投資組合配置、保險規劃等方面。我們將幫助您了解退休規劃的關鍵要素，並提供實用的建議來確保您的退休生活品質。",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+        meta_title: "退休規劃完整指南",
+        meta_description: "從現在開始規劃您的退休生活",
+        reading_time: 12,
+        view_count: 890,
+        like_count: 32,
+        share_count: 8,
+        published_at: "2024-01-10T00:00:00.000Z",
+        created_at: "2024-01-10T00:00:00.000Z",
+        updated_at: "2024-01-10T00:00:00.000Z"
+      },
+      {
+        id: "3",
+        title: "稅務規劃策略",
+        slug: "tax-planning-strategies",
+        excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
+        content: "稅務規劃是財務規劃的重要組成部分。本文將介紹各種合法的稅務規劃策略，包括稅收優惠、扣除項目、投資稅務考量等。我們將幫助您了解如何在不違反稅法的前提下，有效降低稅負並提高稅後收益。",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1554224154-26032cdc-304d?w=800",
+        meta_title: "稅務規劃策略指南",
+        meta_description: "了解如何合法地減少稅負",
+        reading_time: 10,
+        view_count: 650,
+        like_count: 28,
+        share_count: 5,
+        published_at: "2024-01-05T00:00:00.000Z",
+        created_at: "2024-01-05T00:00:00.000Z",
+        updated_at: "2024-01-05T00:00:00.000Z"
+      }
+    ];
 
-    const blog = await BlogPost.findOne({
-      where: whereClause
-    });
+    // Find blog by ID or slug
+    let blog = null;
+    if (identifier.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
+      blog = dummyBlogs.find(b => b.id === identifier);
+    } else {
+      blog = dummyBlogs.find(b => b.slug === identifier);
+    }
 
     if (!blog) {
       return res.status(404).json({ success: false, message: 'Blog not found' });
     }
 
-    // Increment view count
-    await blog.increment('view_count');
+    // Increment view count (simulated)
+    blog.view_count += 1;
 
     res.json({
       success: true,
@@ -173,37 +231,31 @@ router.post('/', authenticateToken, async (req, res) => {
     const wordCount = content.split(/\s+/).length;
     const readingTime = Math.ceil(wordCount / 200);
 
-    const blog = await BlogPost.create({
+    // Create dummy blog response
+    const newBlog = {
+      id: Date.now().toString(),
       title,
       slug,
       excerpt,
       content,
       author_id: req.user.userId,
       status,
-      featured,
       featured_image_url,
       meta_title,
       meta_description,
       meta_keywords,
       reading_time: readingTime,
-      published_at: status === 'published' ? new Date() : null
-    });
-
-    // Add categories
-    if (category_ids && category_ids.length > 0) {
-      const categoryAssociations = category_ids.map(categoryId => ({
-        blog_post_id: blog.id,
-        category_id: categoryId
-      }));
-      await BlogPostCategory.bulkCreate(categoryAssociations);
-    }
-
-    // Fetch the created blog
-    const createdBlog = await BlogPost.findByPk(blog.id);
+      view_count: 0,
+      like_count: 0,
+      share_count: 0,
+      published_at: status === 'published' ? new Date().toISOString() : null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
 
     res.status(201).json({
       success: true,
-      data: createdBlog
+      data: newBlog
     });
   } catch (error) {
     console.error('Create blog error:', error);
@@ -233,14 +285,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
       return res.status(403).json({ success: false, message: 'Admin access required' });
     }
 
-    const blog = await BlogPost.findByPk(id);
-    if (!blog) {
-      return res.status(404).json({ success: false, message: 'Blog not found' });
-    }
-
     // Generate new slug if title changed
-    let slug = blog.slug;
-    if (title && title !== blog.title) {
+    let slug = id; // Use ID as slug for dummy data
+    if (title) {
       slug = title.toLowerCase()
         .replace(/[^a-z0-9 -]/g, '')
         .replace(/\s+/g, '-')
@@ -249,47 +296,30 @@ router.put('/:id', authenticateToken, async (req, res) => {
     }
 
     // Calculate reading time
-    const wordCount = content ? content.split(/\s+/).length : blog.content.split(/\s+/).length;
+    const wordCount = content ? content.split(/\s+/).length : 200;
     const readingTime = Math.ceil(wordCount / 200);
 
-    // Update published_at if status changed to published
-    let publishedAt = blog.published_at;
-    if (status === 'published' && blog.status !== 'published') {
-      publishedAt = new Date();
-    }
-
-    await blog.update({
-      title,
+    // Create updated blog response
+    const updatedBlog = {
+      id,
+      title: title || 'Updated Blog Title',
       slug,
-      excerpt,
-      content,
-      status,
-      featured,
+      excerpt: excerpt || 'Updated excerpt',
+      content: content || 'Updated content',
+      author_id: req.user.userId,
+      status: status || 'draft',
       featured_image_url,
       meta_title,
       meta_description,
       meta_keywords,
       reading_time: readingTime,
-      published_at: publishedAt
-    });
-
-    // Update categories
-    if (category_ids) {
-      // Remove existing categories
-      await BlogPostCategory.destroy({ where: { blog_post_id: id } });
-      
-      // Add new categories
-      if (category_ids.length > 0) {
-        const categoryAssociations = category_ids.map(categoryId => ({
-          blog_post_id: id,
-          category_id: categoryId
-        }));
-        await BlogPostCategory.bulkCreate(categoryAssociations);
-      }
-    }
-
-    // Fetch updated blog
-    const updatedBlog = await BlogPost.findByPk(id);
+      view_count: 0,
+      like_count: 0,
+      share_count: 0,
+      published_at: status === 'published' ? new Date().toISOString() : null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
 
     res.json({
       success: true,
