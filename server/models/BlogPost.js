@@ -71,6 +71,10 @@ const BlogPost = sequelize.define('BlogPost', {
   published_at: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  featured: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   tableName: 'blog_posts',

@@ -1,15 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import apiService from '../services/api';
 
 const BlogsPage = () => {
   const { t, language } = useLanguage();
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current_page: 1,
+    total_pages: 1,
+    total_items: 0,
+    items_per_page: 10
+  });
 
-  const categories = language === 'zh-TW' 
-    ? ['全部', '投資', '退休', '稅務規劃', '保險', '房地產', '財務規劃', '市場分析']
-    : ['All', 'Investment', 'Retirement', 'Tax Planning', 'Insurance', 'Real Estate', 'Financial Planning', 'Market Analysis'];
+  useEffect(() => {
+    fetchBlogs();
+    fetchCategories();
+  }, []);
 
-  const blogPosts = [
+  const fetchBlogs = async (page = 1, category = null) => {
+    try {
+      setLoading(true);
+      let url = `/blogs?page=${page}&limit=12&status=published`;
+      if (category && category !== 'All' && category !== '全部') {
+        // For now, we'll filter client-side since the API doesn't support category filtering yet
+      }
+      
+      const response = await apiService.get(url);
+      if (response.success) {
+        setBlogPosts(response.data);
+        setPagination(response.pagination || {
+          current_page: 1,
+          total_pages: 1,
+          total_items: response.data.length,
+          items_per_page: 12
+        });
+      }
+    } catch (error) {
+      console.error('Fetch blogs error:', error);
+      // Fallback to dummy data if API fails
+      setBlogPosts(getDummyBlogPosts());
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await apiService.get('/blogs/categories/all');
+      if (response.success) {
+        setCategories(response.data);
+      } else {
+        // Fallback to default categories
+        setCategories(language === 'zh-TW' 
+          ? ['全部', '投資', '退休', '稅務規劃', '保險', '房地產', '財務規劃', '市場分析']
+          : ['All', 'Investment', 'Retirement', 'Tax Planning', 'Insurance', 'Real Estate', 'Financial Planning', 'Market Analysis']
+        );
+      }
+    } catch (error) {
+      console.error('Fetch categories error:', error);
+      // Fallback to default categories
+      setCategories(language === 'zh-TW' 
+        ? ['全部', '投資', '退休', '稅務規劃', '保險', '房地產', '財務規劃', '市場分析']
+        : ['All', 'Investment', 'Retirement', 'Tax Planning', 'Insurance', 'Real Estate', 'Financial Planning', 'Market Analysis']
+      );
+    }
+  };
+
+  const getDummyBlogPosts = () => [
     {
       id: 1,
       title: language === 'zh-TW' 
@@ -128,7 +190,14 @@ const BlogsPage = () => {
 
   const filteredPosts = selectedCategory === 'All' || selectedCategory === '全部'
     ? blogPosts
-    : blogPosts.filter(post => post.category === selectedCategory);
+    : blogPosts.filter(post => {
+        // Check if post has categories array and if any category name matches
+        if (post.categories && post.categories.length > 0) {
+          return post.categories.some(cat => cat.name === selectedCategory);
+        }
+        // Fallback to old category field
+        return post.category === selectedCategory;
+      });
 
   const featuredPost = blogPosts.find(post => post.featured);
   const regularPosts = filteredPosts.filter(post => !post.featured);
@@ -191,10 +260,12 @@ const BlogsPage = () => {
                 <div className="p-6 lg:p-8 flex flex-col justify-center">
                   <div className="flex items-center mb-4 lg:mb-6">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
-                      {featuredPost.category}
+                      {featuredPost.categories && featuredPost.categories.length > 0 
+                        ? featuredPost.categories[0].name 
+                        : featuredPost.category || '未分類'}
                     </span>
                     <span className="ml-4 text-sm lg:text-base text-gray-500">
-                      {featuredPost.readTime}
+                      {featuredPost.reading_time ? `${featuredPost.reading_time} 分鐘閱讀` : featuredPost.readTime || '5 分鐘閱讀'}
                     </span>
                   </div>
                   <h3 className="text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
@@ -204,18 +275,25 @@ const BlogsPage = () => {
                     {featuredPost.excerpt}
                   </p>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center">
-                      <img 
-                        src={featuredPost.authorImage} 
-                        alt={featuredPost.author}
-                        className="w-10 h-10 lg:w-12 lg:h-12 rounded-full mr-3 lg:mr-4"
-                      />
-                      <div>
-                        <p className="text-sm lg:text-base font-medium text-gray-900">{featuredPost.author}</p>
-                        <p className="text-xs lg:text-sm text-gray-500">{featuredPost.date}</p>
-                      </div>
+                                      <div className="flex items-center">
+                    <img 
+                      src={featuredPost.author?.profile_image_url || featuredPost.authorImage} 
+                      alt={featuredPost.author?.first_name || featuredPost.author}
+                      className="w-10 h-10 lg:w-12 lg:h-12 rounded-full mr-3 lg:mr-4"
+                    />
+                    <div>
+                      <p className="text-sm lg:text-base font-medium text-gray-900">
+                        {featuredPost.author ? `${featuredPost.author.first_name} ${featuredPost.author.last_name}` : featuredPost.author}
+                      </p>
+                      <p className="text-xs lg:text-sm text-gray-500">
+                        {featuredPost.published_at ? new Date(featuredPost.published_at).toLocaleDateString('zh-TW') : featuredPost.date}
+                      </p>
                     </div>
-                    <button className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl">
+                  </div>
+                    <button 
+                      onClick={() => navigate(`/blogs/${featuredPost.slug}`)}
+                      className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
                       {language === 'zh-TW' ? '閱讀全文' : 'Read More'}
                     </button>
                   </div>
@@ -232,7 +310,7 @@ const BlogsPage = () => {
               {/* Post Image */}
               <div className="h-48 lg:h-56 overflow-hidden">
                 <img 
-                  src={post.image} 
+                  src={post.featured_image_url || post.image} 
                   alt={post.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
@@ -243,10 +321,12 @@ const BlogsPage = () => {
                 {/* Category and Read Time */}
                 <div className="flex items-center justify-between mb-4 lg:mb-6">
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
-                    {post.category}
+                    {post.categories && post.categories.length > 0 
+                      ? post.categories[0].name 
+                      : post.category || '未分類'}
                   </span>
                   <span className="text-xs lg:text-sm text-gray-500">
-                    {post.readTime}
+                    {post.reading_time ? `${post.reading_time} 分鐘閱讀` : post.readTime || '5 分鐘閱讀'}
                   </span>
                 </div>
 
@@ -264,16 +344,23 @@ const BlogsPage = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <img 
-                      src={post.authorImage} 
-                      alt={post.author}
+                      src={post.author?.profile_image_url || post.authorImage} 
+                      alt={post.author?.first_name || post.author}
                       className="w-8 h-8 lg:w-10 lg:h-10 rounded-full mr-3"
                     />
                     <div>
-                      <p className="text-sm lg:text-base font-medium text-gray-900">{post.author}</p>
-                      <p className="text-xs lg:text-sm text-gray-500">{post.date}</p>
+                      <p className="text-sm lg:text-base font-medium text-gray-900">
+                        {post.author ? `${post.author.first_name} ${post.author.last_name}` : post.author}
+                      </p>
+                      <p className="text-xs lg:text-sm text-gray-500">
+                        {post.published_at ? new Date(post.published_at).toLocaleDateString('zh-TW') : post.date}
+                      </p>
                     </div>
                   </div>
-                  <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm lg:text-base transition-all duration-200 hover:translate-x-1">
+                  <button 
+                    onClick={() => navigate(`/blogs/${post.slug}`)}
+                    className="text-blue-600 hover:text-blue-700 font-semibold text-sm lg:text-base transition-all duration-200 hover:translate-x-1"
+                  >
                     {language === 'zh-TW' ? '閱讀更多' : 'Read More'} →
                   </button>
                 </div>

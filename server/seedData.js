@@ -1,6 +1,7 @@
 const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
         Subscription, Notification, EventRegistration, AgentClientRelationship, 
         ContestSubmission, ClientUpgrade } = require('./models');
+const seedBlogData = require('./seedBlogData');
 // const { User, Agent, Event, BlogPost, Contest, PointTransaction, PaymentTransaction, 
 //         Subscription, Notification, EventRegistration, AgentClientRelationship, 
 //         ContestSubmission, ClientUpgrade, Badge, Recommendation } = require('./models');
@@ -185,26 +186,12 @@ async function seedData() {
       status: 'registered'
     });
 
-    // Create blog posts
-    const blog1 = await BlogPost.create({
-      title: '2024年投資趨勢分析',
-      slug: '2024-investment-trends',
-      content: '隨著全球經濟的變化，投資者需要重新評估他們的投資策略...',
-      author_id: agent1.id,
-      status: 'published',
-      views: 150,
-      likes: 25
-    });
-
-    const blog2 = await BlogPost.create({
-      title: '保險規劃的重要性',
-      slug: 'importance-of-insurance',
-      content: '在現代社會中，適當的保險規劃是財務安全的重要組成部分...',
-      author_id: agent2.id,
-      status: 'published',
-      views: 120,
-      likes: 18
-    });
+    // Seed blog data
+    try {
+      await seedBlogData();
+    } catch (error) {
+      console.log('⚠️ Blog seeding failed:', error.message);
+    }
 
     // Create contests
     const contest1 = await Contest.create({

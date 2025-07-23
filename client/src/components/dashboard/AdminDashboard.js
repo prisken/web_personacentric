@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
+import BlogManagement from './BlogManagement';
 
 const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -126,6 +127,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
     { id: 'overview', label: '總覽', icon: '📊' },
     { id: 'users', label: '用戶管理', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
+    { id: 'blogs', label: '部落格管理', icon: '📝' },
     { id: 'accessCodes', label: '訪問碼', icon: '🔑' },
     { id: 'analytics', label: '數據分析', icon: '📈' },
     { id: 'settings', label: '系統設定', icon: '⚙️' }
@@ -637,6 +639,11 @@ const AdminDashboard = ({ data, onRefresh }) => {
               )}
             </div>
           </div>
+        )}
+
+        {/* Blogs Management Tab */}
+        {activeTab === 'blogs' && (
+          <BlogManagement />
         )}
 
         {/* Settings Tab */}
