@@ -64,43 +64,43 @@ const Agent = sequelize.define('Agent', {
     comment: 'Cloudinary URL for agent profile image'
   },
   // New fields for matching system
-  areas_of_expertise: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    comment: 'Array of areas of expertise (Retirement, Investment, Tax, etc.)'
-  },
-  languages: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    comment: 'Array of languages spoken'
-  },
-  preferred_client_types: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    comment: 'Array of preferred client types (Young professionals, Families, etc.)'
-  },
-  communication_modes: {
-    type: DataTypes.JSON,
-    allowNull: true,
-    comment: 'Array of communication modes (In-person, Video, Phone, Digital)'
-  },
-  availability: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-    comment: 'Availability schedule (JSON string or text)'
-  },
-  location: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  status: {
-    type: DataTypes.ENUM('pending', 'approved', 'active', 'inactive'),
-    defaultValue: 'pending'
-  },
-  in_matching_pool: {
-    type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
+  // areas_of_expertise: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  //   comment: 'Array of areas of expertise (Retirement, Investment, Tax, etc.)'
+  // },
+  // languages: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  //   comment: 'Array of languages spoken'
+  // },
+  // preferred_client_types: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  //   comment: 'Array of preferred client types (Young professionals, Families, etc.)'
+  // },
+  // communication_modes: {
+  //   type: DataTypes.JSON,
+  //   allowNull: true,
+  //   comment: 'Array of communication modes (In-person, Video, Phone, Digital)'
+  // },
+  // availability: {
+  //   type: DataTypes.TEXT,
+  //   allowNull: true,
+  //   comment: 'Availability schedule (JSON string or text)'
+  // },
+  // location: {
+  //   type: DataTypes.STRING(255),
+  //   allowNull: true
+  // },
+  // status: {
+  //   type: DataTypes.ENUM('pending', 'approved', 'active', 'inactive'),
+  //   defaultValue: 'pending'
+  // },
+  // in_matching_pool: {
+  //   type: DataTypes.BOOLEAN,
+  //   defaultValue: false
+  // }
 }, {
   tableName: 'agents',
   timestamps: true,
