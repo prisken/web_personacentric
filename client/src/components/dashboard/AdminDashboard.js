@@ -72,7 +72,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
     try {
       setLoading(true);
       if (action === 'delete') {
-        if (window.confirm('確定要刪除此活動嗎？此操作無法撤銷。')) {
+        if (window.confirm(t('common.confirmDelete'))) {
           await apiService.deleteEvent(eventId);
           await fetchEvents(); // Refresh events list
         }
@@ -80,7 +80,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
       onRefresh();
     } catch (error) {
       console.error('Event action error:', error);
-      alert('操作失敗，請重試');
+      alert(t('common.operationFailed'));
     } finally {
       setLoading(false);
     }
@@ -89,14 +89,14 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const handleSeedData = async () => {
     try {
       setLoading(true);
-      if (window.confirm('確定要添加示例數據嗎？這將創建多個示例用戶和代理。')) {
+      if (window.confirm(t('dashboard.actions.confirmSeedData'))) {
         await apiService.post('/admin/seed-data');
-        alert('示例數據已成功添加！');
+        alert(t('dashboard.actions.seedDataSuccess'));
         await fetchUsers(); // Refresh users list
       }
     } catch (error) {
       console.error('Seed data error:', error);
-      alert('添加示例數據失敗，請重試');
+      alert(t('dashboard.actions.seedDataFailed'));
     } finally {
       setLoading(false);
     }

@@ -136,9 +136,9 @@ const Header = () => {
   const getUserRoleLabel = () => {
     if (!user) return '';
     switch (user.role) {
-      case 'admin': return '👑 管理員';
-      case 'agent': return '👨‍💼 顧問';
-      case 'client': return '👤 客戶';
+      case 'admin': return t('roles.admin.emoji');
+      case 'agent': return t('roles.agent.emoji');
+      case 'client': return t('roles.client.emoji');
       default: return user.role;
     }
   };
@@ -175,7 +175,7 @@ const Header = () => {
               href="/all-agents"
               className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
             >
-              {language === 'zh-TW' ? '所有顧問' : 'All Agents'}
+              {t('actions.allAgents')}
               <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
             </a>
             {user && (
@@ -183,7 +183,7 @@ const Header = () => {
                 to="/dashboard"
                 className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
-                📊 儀表板
+                {t('actions.dashboard')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             )}
@@ -221,7 +221,7 @@ const Header = () => {
                   onClick={handleLogout}
                   className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
                 >
-                  登出
+                  {t('actions.logout')}
                 </button>
               </div>
             ) : (
@@ -289,7 +289,7 @@ const Header = () => {
                 className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {language === 'zh-TW' ? '所有顧問' : 'All Agents'}
+                {t('actions.allAgents')}
               </a>
               {user && (
                 <Link
@@ -297,7 +297,7 @@ const Header = () => {
                   className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  📊 儀表板
+                  {t('actions.dashboard')}
                 </Link>
               )}
               <div className="pt-4 border-t border-gray-300/30">
@@ -311,7 +311,7 @@ const Header = () => {
                       onClick={handleLogout}
                       className={`block w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                     >
-                      登出
+                      {t('actions.logout')}
                     </button>
                   </>
                 ) : (

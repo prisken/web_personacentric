@@ -248,6 +248,88 @@ export const LanguageProvider = ({ children }) => {
       'dashboard.client.noAvailableEvents': '沒有可用活動',
       'dashboard.client.noAvailableEventsDescription': '稍後再來查看新活動',
 
+      // Dashboard Tabs
+      'dashboard.tabs.overview': '總覽',
+      'dashboard.tabs.userManagement': '用戶管理',
+      'dashboard.tabs.activityManagement': '活動管理',
+      'dashboard.tabs.blogManagement': '部落格管理',
+      'dashboard.tabs.accessCode': '訪問碼',
+      'dashboard.tabs.dataAnalysis': '數據分析',
+      'dashboard.tabs.systemSettings': '系統設定',
+      'dashboard.tabs.agentConnection': '顧問連接',
+      'dashboard.tabs.events': '活動管理',
+      'dashboard.tabs.recommendations': '推薦遊戲',
+      'dashboard.tabs.points': '積分管理',
+      'dashboard.tabs.contests': '競賽參與',
+      'dashboard.tabs.profile': '個人資料',
+
+      // Dashboard Actions
+      'dashboard.actions.addSampleData': '添加示例數據',
+      'dashboard.actions.refreshData': '刷新數據',
+      'dashboard.actions.newActivity': '新增活動',
+      'dashboard.actions.newUser': '新增用戶',
+      'dashboard.actions.newBlog': '新增部落格',
+      'dashboard.actions.newAccessCode': '新增訪問碼',
+      'dashboard.actions.confirmSeedData': '確定要添加示例數據嗎？這將創建多個示例用戶和代理。',
+      'dashboard.actions.seedDataSuccess': '示例數據已成功添加！',
+      'dashboard.actions.seedDataFailed': '添加示例數據失敗，請重試',
+
+      // User Roles
+      'roles.admin': '管理員',
+      'roles.agent': '顧問',
+      'roles.client': '客戶',
+      'roles.admin.emoji': '👑 管理員',
+      'roles.agent.emoji': '👨‍💼 顧問',
+      'roles.client.emoji': '👤 客戶',
+
+      // Actions
+      'actions.logout': '登出',
+      'actions.dashboard': '📊 儀表板',
+      'actions.allAgents': '所有顧問',
+
+      // HomePage Content
+      'home.hero.slide1.title': '找到最適合您的財務顧問',
+      'home.hero.slide1.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
+      'home.hero.slide2.title': '找到最適合您的財務顧問',
+      'home.hero.slide2.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
+      'home.hero.slide3.title': 'AI內容創作只需2分鐘',
+      'home.hero.slide3.subtitle': '立即生成專業財務內容',
+
+      // Statistics
+      'stats.activeAdvisors': '活躍財務顧問',
+      'stats.successfulClients': '成功服務的客戶',
+      'stats.averageGrowth': '平均投資成長率',
+
+      // Contest Winners
+      'contest.winners.socialMedia': '社群媒體貼文',
+      'contest.winners.blogArticle': '部落格文章',
+      'contest.winners.posterDesign': '海報設計',
+      'contest.winners.videoContent': '影片內容',
+      'contest.winners.bestViralPost': '關於財務素養的最佳病毒貼文',
+      'contest.winners.insightfulBlog': '關於投資策略的深入部落格',
+      'contest.winners.creativePoster': '退休規劃創意海報',
+      'contest.winners.engagingVideo': '保險基礎知識吸引影片',
+
+      // Events
+      'events.financialPlanning': '財務規劃工作坊',
+      'events.investmentStrategy': '投資策略研討會',
+      'events.retirementPlanning': '退休規劃大師班',
+
+      // Blog Posts
+      'blogs.investmentStrategies2024': '2024年投資策略',
+      'blogs.investmentStrategiesExcerpt': '發現今年將主導金融格局的頂級投資策略。',
+      'blogs.insurancePolicies': '了解保險政策',
+      'blogs.insurancePoliciesExcerpt': '選擇適合您需求的保險保障的綜合指南。',
+      'blogs.retirementEssentials': '退休規劃要點',
+      'blogs.retirementEssentialsExcerpt': '從今天開始規劃您的退休生活，使用這些基本策略和技巧。',
+
+      // Footer Content
+      'footer.description': '您值得信賴的財務平台，提供顧問配對、AI內容創作和投資成長服務。',
+      'footer.copyright': '© 2024 Persona Centric. 保留所有權利。',
+      'footer.privacyPolicy': '隱私政策',
+      'footer.termsOfService': '使用條款',
+      'footer.cookiePolicy': 'Cookie政策',
+
       // Common
       'common.refresh': '重新整理',
       'common.register': '註冊',
@@ -266,11 +348,8 @@ export const LanguageProvider = ({ children }) => {
       'common.submit': '提交',
       'common.confirm': '確認',
       'common.close': '關閉',
-
-      // Roles
-      'roles.admin': '管理員',
-      'roles.agent': '顧問',
-      'roles.client': '客戶',
+      'common.confirmDelete': '確定要刪除此項目嗎？此操作無法撤銷。',
+      'common.operationFailed': '操作失敗，請重試',
 
       // Payment Status
       'payment.status.completed': '已完成',
@@ -673,6 +752,27 @@ export const LanguageProvider = ({ children }) => {
       'register.google': 'Register with Google',
       'register.facebook': 'Register with Facebook',
 
+      // Common
+      'common.refresh': 'Refresh',
+      'common.register': 'Register',
+      'common.retry': 'Retry',
+      'common.loading': 'Loading...',
+      'common.error': 'Error',
+      'common.success': 'Success',
+      'common.cancel': 'Cancel',
+      'common.save': 'Save',
+      'common.edit': 'Edit',
+      'common.delete': 'Delete',
+      'common.view': 'View',
+      'common.back': 'Back',
+      'common.next': 'Next',
+      'common.previous': 'Previous',
+      'common.submit': 'Submit',
+      'common.confirm': 'Confirm',
+      'common.close': 'Close',
+      'common.confirmDelete': 'Are you sure you want to delete this item? This action cannot be undone.',
+      'common.operationFailed': 'Operation failed, please try again',
+
       // Help Center
       'help.title': 'Help Center',
       'help.subtitle': 'We\'re here to help you anytime',
@@ -722,6 +822,139 @@ export const LanguageProvider = ({ children }) => {
       'lifestyle.finance': 'Finance Savvy',
       'lifestyle.student': 'Student',
       'lifestyle.retiree': 'Retiree',
+
+      // Dashboard
+      'dashboard.admin.title': 'Administrator Dashboard',
+      'dashboard.admin.subtitle': 'Platform Management and Monitoring',
+      'dashboard.admin.totalUsers': 'Total Users',
+      'dashboard.admin.totalAgents': 'Total Agents',
+      'dashboard.admin.monthlyRevenue': 'Monthly Revenue',
+      'dashboard.admin.pendingApprovals': 'Pending Approvals',
+      'dashboard.admin.recentUsers': 'Recent Users',
+      'dashboard.admin.recentPayments': 'Recent Payments',
+      'dashboard.admin.notifications': 'Notifications',
+      'dashboard.admin.noRecentUsers': 'No recent users',
+      'dashboard.admin.noRecentPayments': 'No recent payments',
+
+      'dashboard.agent.title': 'Agent Dashboard',
+      'dashboard.agent.subtitle': 'Manage Your Clients and Business',
+      'dashboard.agent.totalCommission': 'Total Commission',
+      'dashboard.agent.activeClients': 'Active Clients',
+      'dashboard.agent.hostedEvents': 'Hosted Events',
+      'dashboard.agent.pointsBalance': 'Points Balance',
+      'dashboard.agent.clientRelationships': 'Client Relationships',
+      'dashboard.agent.recentEvents': 'Recent Events',
+      'dashboard.agent.recentPointTransactions': 'Recent Point Transactions',
+      'dashboard.agent.notifications': 'Notifications',
+      'dashboard.agent.noClients': 'No clients',
+      'dashboard.agent.noClientsDescription': 'Start building your client network',
+      'dashboard.agent.noEvents': 'No events',
+      'dashboard.agent.noEventsDescription': 'Create your first event',
+
+      'dashboard.client.title': 'Client Dashboard',
+      'dashboard.client.subtitle': 'Manage Your Events and Points',
+      'dashboard.client.eventsAttended': 'Events Attended',
+      'dashboard.client.pointsEarned': 'Points Earned',
+      'dashboard.client.pointsBalance': 'Points Balance',
+      'dashboard.client.contestsParticipated': 'Contests Participated',
+      'dashboard.client.registeredEvents': 'Registered Events',
+      'dashboard.client.availableEvents': 'Available Events',
+      'dashboard.client.upgradeApplication': 'Upgrade Application',
+      'dashboard.client.applicationStatus': 'Application Status',
+      'dashboard.client.recentPointTransactions': 'Recent Point Transactions',
+      'dashboard.client.contestParticipations': 'Contest Participations',
+      'dashboard.client.notifications': 'Notifications',
+      'dashboard.client.noRegisteredEvents': 'No registered events',
+      'dashboard.client.noRegisteredEventsDescription': 'Register for your first event',
+      'dashboard.client.noAvailableEvents': 'No available events',
+      'dashboard.client.noAvailableEventsDescription': 'Check back later for new events',
+
+      // Dashboard Tabs
+      'dashboard.tabs.overview': 'Overview',
+      'dashboard.tabs.userManagement': 'User Management',
+      'dashboard.tabs.activityManagement': 'Activity Management',
+      'dashboard.tabs.blogManagement': 'Blog Management',
+      'dashboard.tabs.accessCode': 'Access Code',
+      'dashboard.tabs.dataAnalysis': 'Data Analysis',
+      'dashboard.tabs.systemSettings': 'System Settings',
+      'dashboard.tabs.agentConnection': 'Agent Connection',
+      'dashboard.tabs.events': 'Events',
+      'dashboard.tabs.recommendations': 'Recommendations',
+      'dashboard.tabs.points': 'Points',
+      'dashboard.tabs.contests': 'Contests',
+      'dashboard.tabs.profile': 'Profile',
+
+      // Dashboard Actions
+      'dashboard.actions.addSampleData': 'Add Sample Data',
+      'dashboard.actions.refreshData': 'Refresh Data',
+      'dashboard.actions.newActivity': 'New Activity',
+      'dashboard.actions.newUser': 'New User',
+      'dashboard.actions.newBlog': 'New Blog',
+      'dashboard.actions.newAccessCode': 'New Access Code',
+      'dashboard.actions.confirmSeedData': 'Are you sure you want to add sample data? This will create multiple sample users and agents.',
+      'dashboard.actions.seedDataSuccess': 'Sample data successfully added!',
+      'dashboard.actions.seedDataFailed': 'Failed to add sample data, please try again',
+
+      // User Roles
+      'roles.admin': 'Admin',
+      'roles.agent': 'Agent',
+      'roles.client': 'Client',
+      'roles.admin.emoji': '👑 Admin',
+      'roles.agent.emoji': '👨‍💼 Agent',
+      'roles.client.emoji': '👤 Client',
+
+      // Actions
+      'actions.logout': 'Logout',
+      'actions.dashboard': '📊 Dashboard',
+      'actions.allAgents': 'All Agents',
+
+      // HomePage Content
+      'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
+      'home.hero.slide1.subtitle': 'AI-powered matching to connect you with the right professional',
+      'home.hero.slide2.title': 'Find Your Perfect Financial Advisor',
+      'home.hero.slide2.subtitle': 'AI-powered matching to connect you with the right professional',
+      'home.hero.slide3.title': 'AI Content Creation in 2 Minutes',
+      'home.hero.slide3.subtitle': 'Generate professional financial content instantly',
+
+      // Statistics
+      'stats.activeAdvisors': 'Active financial advisors',
+      'stats.successfulClients': 'Successful clients served',
+      'stats.averageGrowth': 'Average investment growth',
+
+      // Contest Winners
+      'contest.winners.socialMedia': 'Social Media Post',
+      'contest.winners.blogArticle': 'Blog Article',
+      'contest.winners.posterDesign': 'Poster Design',
+      'contest.winners.videoContent': 'Video Content',
+      'contest.winners.bestViralPost': 'Best viral post about financial literacy',
+      'contest.winners.insightfulBlog': 'Insightful blog on investment strategies',
+      'contest.winners.creativePoster': 'Creative poster for retirement planning',
+      'contest.winners.engagingVideo': 'Engaging video on insurance basics',
+
+      // Events
+      'events.financialPlanning': 'Financial Planning Workshop',
+      'events.investmentStrategy': 'Investment Strategy Seminar',
+      'events.retirementPlanning': 'Retirement Planning Masterclass',
+
+      // Blog Posts
+      'blogs.investmentStrategies2024': 'Investment Strategies for 2024',
+      'blogs.investmentStrategiesExcerpt': 'Discover the top investment strategies that will dominate the financial landscape this year.',
+      'blogs.insurancePolicies': 'Understanding Insurance Policies',
+      'blogs.insurancePoliciesExcerpt': 'A comprehensive guide to choosing the right insurance coverage for your needs.',
+      'blogs.retirementEssentials': 'Retirement Planning Essentials',
+      'blogs.retirementEssentialsExcerpt': 'Start planning your retirement today with these essential strategies and tips.',
+
+      // Footer Content
+      'footer.description': 'Your trusted financial platform for agent matching, AI content creation, and investment growth.',
+      'footer.copyright': '© 2024 Persona Centric. All rights reserved.',
+      'footer.privacyPolicy': 'Privacy Policy',
+      'footer.termsOfService': 'Terms of Service',
+      'footer.cookiePolicy': 'Cookie Policy',
+
+      // Dashboard Error Messages
+      'dashboard.error': 'Error loading dashboard',
+      'dashboard.noData': 'No dashboard data available',
+      'dashboard.unknownRole': 'Unknown user role',
     }
   };
 

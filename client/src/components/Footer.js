@@ -62,7 +62,7 @@ const Footer = () => {
               <span className="text-2xl lg:text-3xl font-bold">Persona Centric</span>
             </div>
             <p className="text-gray-300 text-base lg:text-lg mb-6 lg:mb-8 leading-relaxed">
-              Your trusted financial platform for agent matching, AI content creation, and investment growth.
+              {t('footer.description')}
             </p>
             <div className="flex space-x-4 lg:space-x-6">
               {socialIcons.map((social) => (
@@ -114,26 +114,26 @@ const Footer = () => {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-12 lg:mt-16 pt-8 lg:pt-12 flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
           <p className="text-gray-400 text-sm lg:text-base text-center lg:text-left">
-            © 2024 Persona Centric. All rights reserved.
+            {t('footer.copyright')}
           </p>
           <div className="flex flex-wrap justify-center lg:justify-end space-x-6 lg:space-x-8">
             <Link 
               to="/help" 
               className="text-gray-400 hover:text-white transition-all duration-200 text-sm lg:text-base hover:translate-x-1 inline-block group"
             >
-              <span className="group-hover:underline">Privacy Policy</span>
+              <span className="group-hover:underline">{t('footer.privacyPolicy')}</span>
             </Link>
             <Link 
               to="/help" 
               className="text-gray-400 hover:text-white transition-all duration-200 text-sm lg:text-base hover:translate-x-1 inline-block group"
             >
-              <span className="group-hover:underline">Terms of Service</span>
+              <span className="group-hover:underline">{t('footer.termsOfService')}</span>
             </Link>
             <Link 
               to="/help" 
               className="text-gray-400 hover:text-white transition-all duration-200 text-sm lg:text-base hover:translate-x-1 inline-block group"
             >
-              <span className="group-hover:underline">Cookie Policy</span>
+              <span className="group-hover:underline">{t('footer.cookiePolicy')}</span>
             </Link>
           </div>
         </div>

@@ -9,28 +9,28 @@ const HomePage = () => {
   // Hero carousel data with single CTAs
   const heroSlides = [
     {
-      title: t('hero.title'),
-      subtitle: t('hero.subtitle'),
+      id: 1,
+      title: t('home.hero.slide1.title'),
+      subtitle: t('home.hero.slide1.subtitle'),
       cta: t('hero.eventCTA'),
       ctaLink: '/events',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
-      bgColor: 'from-blue-600 to-purple-600'
+      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
     },
     {
-      title: 'Find Your Perfect Financial Advisor',
-      subtitle: 'AI-powered matching to connect you with the right professional',
+      id: 2,
+      title: t('home.hero.slide2.title'),
+      subtitle: t('home.hero.slide2.subtitle'),
       cta: t('hero.pairingCTA'),
-      ctaLink: '/pricing',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      bgColor: 'from-green-600 to-blue-600'
+      ctaLink: '/agent-matching',
+      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
     },
     {
-      title: 'AI Content Creation in 2 Minutes',
-      subtitle: 'Generate professional financial content instantly',
+      id: 3,
+      title: t('home.hero.slide3.title'),
+      subtitle: t('home.hero.slide3.subtitle'),
       cta: t('hero.aiCTA'),
       ctaLink: '/ai-trial',
-      image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      bgColor: 'from-orange-600 to-red-600'
+      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
     }
   ];
 
@@ -44,9 +44,9 @@ const HomePage = () => {
 
   // Statistics data
   const stats = [
-    { number: '30', label: t('stats.agents'), description: 'Active financial advisors' },
-    { number: '1,250+', label: t('stats.clients'), description: 'Successful clients served' },
-    { number: '85%', label: t('stats.growth'), description: 'Average investment growth' }
+    { number: '30', label: t('stats.agents'), description: t('stats.activeAdvisors') },
+    { number: '1,250+', label: t('stats.clients'), description: t('stats.successfulClients') },
+    { number: '85%', label: t('stats.growth'), description: t('stats.averageGrowth') }
   ];
 
   // Add carousel state for contest winners and testimonials
@@ -56,33 +56,33 @@ const HomePage = () => {
   // Contest winners data (replace with real data as needed)
   const contestWinners = [
     {
-      type: 'Social Media Post',
+      id: 1,
+      type: t('contest.winners.socialMedia'),
       icon: 'fas fa-share-alt',
-      bg: 'from-blue-500 to-purple-600',
-      content: 'Best viral post about financial literacy',
-      image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80',
+      winner: 'Sarah Chen',
+      content: t('contest.winners.bestViralPost'),
     },
     {
-      type: 'Blog Article',
+      id: 2,
+      type: t('contest.winners.blogArticle'),
       icon: 'fas fa-blog',
-      bg: 'from-green-500 to-blue-600',
-      content: 'Insightful blog on investment strategies',
-      image: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80',
+      winner: 'Michael Wong',
+      content: t('contest.winners.insightfulBlog'),
     },
     {
-      type: 'Poster Design',
+      id: 3,
+      type: t('contest.winners.posterDesign'),
       icon: 'fas fa-image',
-      bg: 'from-orange-500 to-red-600',
-      content: 'Creative poster for retirement planning',
-      image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80',
+      winner: 'Emily Liu',
+      content: t('contest.winners.creativePoster'),
     },
     {
-      type: 'Video Content',
+      id: 4,
+      type: t('contest.winners.videoContent'),
       icon: 'fas fa-video',
-      bg: 'from-purple-500 to-pink-600',
-      content: 'Engaging video on insurance basics',
-      image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=400&q=80',
-    },
+      winner: 'David Kim',
+      content: t('contest.winners.engagingVideo'),
+    }
   ];
 
   // Expand testimonials to 10
@@ -178,44 +178,53 @@ const HomePage = () => {
   // Events data
   const events = [
     {
-      title: 'Financial Planning Workshop',
-      date: 'March 15, 2024',
-      image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      status: 'upcoming'
+      id: 1,
+      title: t('events.financialPlanning'),
+      date: '2024-03-15',
+      location: 'Hong Kong',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     },
     {
-      title: 'Investment Strategy Seminar',
-      date: 'March 10, 2024',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      status: 'past'
+      id: 2,
+      title: t('events.investmentStrategy'),
+      date: '2024-03-20',
+      location: 'Hong Kong',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     },
     {
-      title: 'Retirement Planning Masterclass',
-      date: 'March 20, 2024',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      status: 'upcoming'
+      id: 3,
+      title: t('events.retirementPlanning'),
+      date: '2024-03-25',
+      location: 'Hong Kong',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     }
   ];
 
   // Blog posts data
   const blogPosts = [
     {
-      title: 'Investment Strategies for 2024',
-      excerpt: 'Discover the top investment strategies that will dominate the financial landscape this year.',
-      image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
-      date: 'March 12, 2024'
+      id: 1,
+      title: t('blogs.investmentStrategies2024'),
+      excerpt: t('blogs.investmentStrategiesExcerpt'),
+      author: 'Financial Expert',
+      date: '2024-03-01',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     },
     {
-      title: 'Understanding Insurance Policies',
-      excerpt: 'A comprehensive guide to choosing the right insurance coverage for your needs.',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80',
-      date: 'March 10, 2024'
+      id: 2,
+      title: t('blogs.insurancePolicies'),
+      excerpt: t('blogs.insurancePoliciesExcerpt'),
+      author: 'Insurance Specialist',
+      date: '2024-02-28',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     },
     {
-      title: 'Retirement Planning Essentials',
-      excerpt: 'Start planning your retirement today with these essential strategies and tips.',
-      image: 'https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80',
-      date: 'March 8, 2024'
+      id: 3,
+      title: t('blogs.retirementEssentials'),
+      excerpt: t('blogs.retirementEssentialsExcerpt'),
+      author: 'Retirement Planner',
+      date: '2024-02-25',
+      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     }
   ];
 
@@ -240,7 +249,7 @@ const HomePage = () => {
         {/* Background Image */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroSlides[currentSlide].image})` }}
+          style={{ backgroundImage: `url(${heroSlides[currentSlide].bgImage})` }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-60"></div>
         </div>
@@ -459,7 +468,7 @@ const HomePage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {events.map((event, index) => (
-              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
+              <div key={event.id} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
                 <div className="h-48 lg:h-56 overflow-hidden">
                   <img 
                     src={event.image} 
@@ -528,7 +537,7 @@ const HomePage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
             {blogPosts.map((post, index) => (
-              <div key={index} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
+              <div key={post.id} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
                 <div className="h-48 lg:h-56 overflow-hidden">
                   <img 
                     src={post.image} 
