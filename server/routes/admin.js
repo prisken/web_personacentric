@@ -18,6 +18,8 @@ const requireAdmin = (req, res, next) => {
 router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
     // Log model definitions for debugging
+    if (!Agent) console.error('Agent model is undefined!');
+    if (!Client) console.error('Client model is undefined!');
     console.log('Agent model:', Agent);
     console.log('Client model:', Client);
     const users = await User.findAll({
