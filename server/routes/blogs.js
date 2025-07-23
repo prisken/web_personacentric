@@ -35,33 +35,14 @@ router.get('/', async (req, res) => {
       ];
     }
 
-    const include = [
-      {
-        model: User,
-        as: 'author',
-        attributes: ['id', 'first_name', 'last_name', 'email', 'profile_image_url']
-      },
-      {
-        model: BlogCategory,
-        as: 'categories',
-        through: { attributes: [] }
-      },
-      {
-        model: BlogImage,
-        as: 'images',
-        where: { image_type: 'featured' },
-        required: false
-      }
-    ];
-
-    const { count, rows: blogs } = await BlogPost.findAndCountAll({
+    const blogs = await BlogPost.findAll({
       where: whereClause,
-      include,
       order: [['created_at', 'DESC']],
       limit: parseInt(limit),
-      offset: parseInt(offset),
-      distinct: true
+      offset: parseInt(offset)
     });
+
+    const count = await BlogPost.count({ where: whereClause });
 
     res.json({
       success: true,
