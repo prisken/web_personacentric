@@ -155,6 +155,12 @@ const Header = () => {
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
             ))}
+            <a
+              href="/all-agents"
+              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+            >
+              {language === 'zh-TW' ? '所有顧問' : 'All Agents'}
+            </a>
             {user && (
               <Link
                 to="/dashboard"
@@ -261,6 +267,13 @@ const Header = () => {
                   {item.label}
                 </Link>
               ))}
+              <a
+                href="/all-agents"
+                className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {language === 'zh-TW' ? '所有顧問' : 'All Agents'}
+              </a>
               {user && (
                 <Link
                   to="/dashboard"

@@ -22,6 +22,7 @@ import HelpCenterPage from './pages/HelpCenterPage';
 import DashboardPage from './pages/DashboardPage';
 import AdminEventPage from './pages/AdminEventPage';
 import RecommendationViewPage from './pages/RecommendationViewPage';
+import AllAgentsPage from './pages/AllAgentsPage';
 
 function App() {
   return (
@@ -54,6 +55,7 @@ function App() {
                 <Route path="/admin/events" element={<AdminEventPage />} />
                 <Route path="/admin/events/:id" element={<AdminEventPage />} />
                 <Route path="/recommendation/:shareCode" element={<RecommendationViewPage />} />
+                <Route path="/all-agents" element={<AllAgentsPage />} />
               </Routes>
             </main>
             <Footer />

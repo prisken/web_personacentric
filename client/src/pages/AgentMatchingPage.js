@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
+import apiService from '../services/api';
 
 const AgentMatchingPage = () => {
   const { t, language } = useLanguage();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
+  const [matchedAgents, setMatchedAgents] = useState([]);
+  const [loadingResults, setLoadingResults] = useState(false);
 
   const questions = language === 'zh-TW' ? [
     {
@@ -111,45 +114,6 @@ const AgentMatchingPage = () => {
     }
   ];
 
-  const matchedAgents = [
-    {
-      id: 1,
-      name: 'Sarah Johnson',
-      specialty: language === 'zh-TW' ? '退休規劃' : 'Retirement Planning',
-      experience: '15+ years',
-      rating: 4.9,
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-      matchScore: 95,
-      description: language === 'zh-TW' 
-        ? '退休規劃專家，專注於稅務效率策略。'
-        : 'Expert in retirement planning with a focus on tax-efficient strategies.'
-    },
-    {
-      id: 2,
-      name: 'Michael Chen',
-      specialty: language === 'zh-TW' ? '投資管理' : 'Investment Management',
-      experience: '12+ years',
-      rating: 4.8,
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-      matchScore: 92,
-      description: language === 'zh-TW'
-        ? '專精於長期財富建設的成長導向投資策略。'
-        : 'Specializes in growth-oriented investment strategies for long-term wealth building.'
-    },
-    {
-      id: 3,
-      name: 'Emily Rodriguez',
-      specialty: language === 'zh-TW' ? '稅務規劃' : 'Tax Planning',
-      experience: '10+ years',
-      rating: 4.7,
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
-      matchScore: 88,
-      description: language === 'zh-TW'
-        ? '稅務優化專家，幫助客戶最大化財務效率。'
-        : 'Tax optimization expert helping clients maximize their financial efficiency.'
-    }
-  ];
-
   const handleAnswer = (answer) => {
     setAnswers({ ...answers, [currentQuestion]: answer });
   };
@@ -174,6 +138,69 @@ const AgentMatchingPage = () => {
     setShowResults(false);
   };
 
+  // Matching algorithm: score agent based on quiz answers
+  const matchAgents = async () => {
+    setLoadingResults(true);
+    try {
+      // Fetch all agents in the matching pool
+      const response = await apiService.get('/agents?in_matching_pool=true&status=active');
+      if (!response.success || !Array.isArray(response.data)) {
+        setMatchedAgents([]);
+        setLoadingResults(false);
+        return;
+      }
+      const agents = response.data;
+      // Map quiz answers to agent fields
+      const quiz = {
+        goal: answers[0],
+        timeline: answers[1],
+        risk: answers[2],
+        situation: answers[3],
+        communication: answers[4],
+        // Add more if quiz is expanded
+      };
+      // Scoring weights
+      const weights = {
+        goal: 0.3,
+        communication: 0.2,
+        language: 0.2,
+        timeline: 0.1,
+        risk: 0.1,
+        situation: 0.1
+      };
+      // Score each agent
+      const scored = agents.map(agent => {
+        let score = 0;
+        // Goal/expertise match
+        if (agent.areas_of_expertise?.map(x => x.toLowerCase()).includes(quiz.goal)) score += weights.goal;
+        // Communication mode match
+        if (agent.communication_modes?.map(x => x.toLowerCase()).includes(quiz.communication)) score += weights.communication;
+        // Language match (assume client language preference is current UI language)
+        if (agent.languages?.map(x => x.toLowerCase()).includes(language === 'zh-TW' ? 'chinese' : 'english')) score += weights.language;
+        // Timeline, risk, situation (optional, simple match)
+        score += weights.timeline * 0.5; // Placeholder, can expand
+        score += weights.risk * 0.5;
+        score += weights.situation * 0.5;
+        // Convert to percentage
+        return { ...agent, matchScore: Math.round(score * 100) };
+      });
+      // Sort by match score descending
+      scored.sort((a, b) => b.matchScore - a.matchScore);
+      setMatchedAgents(scored.slice(0, 6));
+    } catch (error) {
+      setMatchedAgents([]);
+    }
+    setLoadingResults(false);
+  };
+
+  // On showResults, run matching
+  React.useEffect(() => {
+    if (showResults) {
+      matchAgents();
+    }
+    // eslint-disable-next-line
+  }, [showResults]);
+
   if (showResults) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -195,46 +222,59 @@ const AgentMatchingPage = () => {
         {/* Results */}
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {matchedAgents.map((agent) => (
-                <div key={agent.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
-                  <div className="relative">
-                    <div className="h-48 overflow-hidden">
-                      <img 
-                        src={agent.image} 
-                        alt={agent.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      {agent.matchScore}% {language === 'zh-TW' ? '配對' : 'Match'}
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{agent.name}</h3>
-                    <p className="text-blue-600 font-semibold mb-2">{agent.specialty}</p>
-                    <p className="text-gray-600 mb-4">{agent.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <i key={i} className={`fas fa-star ${i < Math.floor(agent.rating) ? 'text-yellow-400' : 'text-gray-300'}`}></i>
-                          ))}
-                        </div>
-                        <span className="ml-2 text-sm text-gray-600">{agent.rating}</span>
+            {loadingResults ? (
+              <div className="text-center py-12 text-lg text-gray-500">配對中...</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {matchedAgents.map((agent) => (
+                  <div key={agent.id} className="bg-white rounded-lg shadow-lg overflow-hidden">
+                    <div className="relative">
+                      <div className="h-48 overflow-hidden">
+                        <img 
+                          src={agent.profile_image || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(agent.name || agent.first_name || 'Agent')}
+                          alt={agent.name || agent.first_name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      <span className="text-sm text-gray-500">{agent.experience}</span>
+                      <div className="absolute top-4 right-4 bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {agent.matchScore}% {language === 'zh-TW' ? '配對' : 'Match'}
+                      </div>
                     </div>
-                    
-                    <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200">
-                      {t('matching.contact')}
-                    </button>
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{agent.name || agent.first_name + ' ' + agent.last_name}</h3>
+                      <p className="text-blue-600 font-semibold mb-2">{agent.areas_of_expertise?.join(', ')}</p>
+                      <p className="text-gray-600 mb-4">{agent.bio}</p>
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <i key={i} className={`fas fa-star ${i < Math.floor(agent.rating || 4.5) ? 'text-yellow-400' : 'text-gray-300'}`}></i>
+                            ))}
+                          </div>
+                          <span className="ml-2 text-sm text-gray-600">{agent.rating || 4.5}</span>
+                        </div>
+                        <span className="text-sm text-gray-500">{agent.experience_years || 'N/A'} {language === 'zh-TW' ? '年經驗' : 'years exp.'}</span>
+                      </div>
+                      <div className="mb-2 text-sm text-gray-500">
+                        <span className="mr-2">{language === 'zh-TW' ? '語言:' : 'Languages:'}</span>
+                        {agent.languages?.join(', ')}
+                      </div>
+                      <div className="mb-2 text-sm text-gray-500">
+                        <span className="mr-2">{language === 'zh-TW' ? '溝通:' : 'Communication:'}</span>
+                        {agent.communication_modes?.join(', ')}
+                      </div>
+                      <div className="mb-2 text-sm text-gray-500">
+                        <span className="mr-2">{language === 'zh-TW' ? '地區:' : 'Location:'}</span>
+                        {agent.location}
+                      </div>
+                      <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 mt-4">
+                        {t('matching.contact')}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-
+                ))}
+              </div>
+            )}
             {/* CTA */}
             <div className="text-center mt-12">
               <button
@@ -243,9 +283,12 @@ const AgentMatchingPage = () => {
               >
                 {t('matching.retake')}
               </button>
-              <button className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200">
-                {language === 'zh-TW' ? '查看所有顧問' : 'View All Advisors'}
-              </button>
+              <a
+                href="/all-agents"
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
+              >
+                {language === 'zh-TW' ? '查看所有顧問' : 'View All Agents'}
+              </a>
             </div>
           </div>
         </section>
@@ -333,6 +376,14 @@ const AgentMatchingPage = () => {
               >
                 {currentQuestion === questions.length - 1 ? t('matching.finish') : t('matching.next')}
               </button>
+            </div>
+            <div className="text-center mt-8">
+              <a
+                href="/all-agents"
+                className="inline-block bg-blue-100 text-blue-700 px-6 py-2 rounded-lg font-semibold hover:bg-blue-200 transition-colors duration-200"
+              >
+                {language === 'zh-TW' ? '查看所有顧問' : 'View All Agents'}
+              </a>
             </div>
           </div>
         </div>

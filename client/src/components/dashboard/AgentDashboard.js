@@ -532,28 +532,81 @@ const AgentDashboard = ({ data, onRefresh }) => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm lg:text-base font-medium text-gray-700">專業領域</label>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">專業領域 (多個以逗號分隔)</label>
                   <input
                     type="text"
-                    defaultValue="投資規劃"
+                    defaultValue={data.agent?.areas_of_expertise?.join(', ') || ''}
+                    placeholder="投資規劃, 退休, 稅務..."
                     className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm lg:text-base font-medium text-gray-700">認證</label>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">語言 (多個以逗號分隔)</label>
                   <input
                     type="text"
-                    defaultValue="CFP, CFA"
+                    defaultValue={data.agent?.languages?.join(', ') || ''}
+                    placeholder="中文, 英文, 粵語..."
                     className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm lg:text-base font-medium text-gray-700">個人簡介</label>
-                  <textarea
-                    rows={4}
-                    defaultValue="專注於個人投資規劃和退休規劃"
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">偏好客戶類型 (多個以逗號分隔)</label>
+                  <input
+                    type="text"
+                    defaultValue={data.agent?.preferred_client_types?.join(', ') || ''}
+                    placeholder="年輕專業人士, 家庭, 企業主..."
                     className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">溝通方式 (多選)</label>
+                  <div className="flex flex-wrap gap-4 mt-1">
+                    {['面對面', '視訊', '電話', '數位/文字'].map((mode) => (
+                      <label key={mode} className="flex items-center">
+                        <input
+                          type="checkbox"
+                          defaultChecked={data.agent?.communication_modes?.includes(mode)}
+                          className="mr-2"
+                        />
+                        {mode}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">可預約時段</label>
+                  <input
+                    type="text"
+                    defaultValue={data.agent?.availability || ''}
+                    placeholder="Mon-Fri 9am-5pm"
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">地區/城市</label>
+                  <input
+                    type="text"
+                    defaultValue={data.agent?.location || ''}
+                    placeholder="Hong Kong, Taipei..."
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm lg:text-base font-medium text-gray-700">狀態</label>
+                  <input
+                    type="text"
+                    value={data.agent?.status || 'pending'}
+                    readOnly
+                    className="mt-1 block w-full border border-gray-300 rounded-lg px-3 py-2 lg:px-4 lg:py-2 bg-gray-100"
+                  />
+                </div>
+                <div className="flex items-center mt-4">
+                  <input
+                    type="checkbox"
+                    defaultChecked={data.agent?.in_matching_pool}
+                    className="mr-2"
+                  />
+                  <span className="text-sm lg:text-base font-medium text-gray-700">加入配對池 (可被客戶配對)</span>
                 </div>
                 <div className="flex justify-end">
                   <button className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-base lg:text-lg">
