@@ -4,6 +4,21 @@ const { BlogPost, BlogCategory, BlogImage, BlogPostCategory, User } = require('.
 const { authenticateToken } = require('../middleware/auth');
 const { Op } = require('sequelize');
 
+// Test endpoint to check basic functionality
+router.get('/test', async (req, res) => {
+  try {
+    console.log('Test endpoint called');
+    res.json({ 
+      success: true, 
+      message: 'Blogs test endpoint working',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Test error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Get all published blogs with pagination and filtering
 router.get('/', async (req, res) => {
   try {
