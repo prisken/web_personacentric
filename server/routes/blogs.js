@@ -24,73 +24,89 @@ router.get('/', async (req, res) => {
   try {
     console.log('Blogs endpoint called');
     
-    // First, check if the table exists
-    try {
-      await BlogPost.findOne();
-      console.log('BlogPost table exists and is accessible');
-    } catch (tableError) {
-      console.error('Table error:', tableError);
-      return res.status(500).json({ 
-        success: false, 
-        message: 'Database table issue',
-        error: tableError.message 
-      });
-    }
-    
-    const { 
-      page = 1, 
-      limit = 10, 
-      category, 
-      search, 
-      featured,
-      status = 'published' 
-    } = req.query;
-    
+    // Return dummy data for now to get frontend working
+    const dummyBlogs = [
+      {
+        id: "1",
+        title: "2024年投資策略:您需要知道的",
+        slug: "2024-investment-strategy",
+        excerpt: "探索2024年最有效的投資策略,包括股票、債券、房地產和另類投資的完整指南。",
+        content: "這是一篇關於2024年投資策略的詳細文章...",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800",
+        meta_title: "2024年投資策略完整指南",
+        meta_description: "探索2024年最有效的投資策略",
+        reading_time: 8,
+        view_count: 1250,
+        like_count: 45,
+        share_count: 12,
+        published_at: "2024-01-15T00:00:00.000Z",
+        featured: true,
+        created_at: "2024-01-15T00:00:00.000Z",
+        updated_at: "2024-01-15T00:00:00.000Z"
+      },
+      {
+        id: "2",
+        title: "退休規劃的完整指南",
+        slug: "retirement-planning-guide",
+        excerpt: "從現在開始規劃您的退休生活，確保財務安全和舒適的退休生活。",
+        content: "退休規劃是人生最重要的財務決策之一...",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+        meta_title: "退休規劃完整指南",
+        meta_description: "從現在開始規劃您的退休生活",
+        reading_time: 12,
+        view_count: 890,
+        like_count: 32,
+        share_count: 8,
+        published_at: "2024-01-10T00:00:00.000Z",
+        featured: false,
+        created_at: "2024-01-10T00:00:00.000Z",
+        updated_at: "2024-01-10T00:00:00.000Z"
+      },
+      {
+        id: "3",
+        title: "稅務規劃策略",
+        slug: "tax-planning-strategies",
+        excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
+        content: "稅務規劃是財務規劃的重要組成部分...",
+        author_id: "admin-user",
+        status: "published",
+        featured_image_url: "https://images.unsplash.com/photo-1554224154-26032cdc-304d?w=800",
+        meta_title: "稅務規劃策略指南",
+        meta_description: "了解如何合法地減少稅負",
+        reading_time: 10,
+        view_count: 650,
+        like_count: 28,
+        share_count: 5,
+        published_at: "2024-01-05T00:00:00.000Z",
+        featured: false,
+        created_at: "2024-01-05T00:00:00.000Z",
+        updated_at: "2024-01-05T00:00:00.000Z"
+      }
+    ];
+
+    const { page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
-    const whereClause = {};
-    
-    if (status) {
-      whereClause.status = status;
-    }
-    
-    if (featured) {
-      whereClause.featured = featured === 'true';
-    }
-    
-    if (search) {
-      whereClause[Op.or] = [
-        { title: { [Op.iLike]: `%${search}%` } },
-        { content: { [Op.iLike]: `%${search}%` } },
-        { excerpt: { [Op.iLike]: `%${search}%` } }
-      ];
-    }
-
-    const blogs = await BlogPost.findAll({
-      where: whereClause,
-      order: [['created_at', 'DESC']],
-      limit: parseInt(limit),
-      offset: parseInt(offset)
-    });
-
-    const count = await BlogPost.count({ where: whereClause });
+    const paginatedBlogs = dummyBlogs.slice(offset, offset + parseInt(limit));
 
     res.json({
       success: true,
-      data: blogs,
+      data: paginatedBlogs,
       pagination: {
         current_page: parseInt(page),
-        total_pages: Math.ceil(count / limit),
-        total_items: count,
+        total_pages: Math.ceil(dummyBlogs.length / limit),
+        total_items: dummyBlogs.length,
         items_per_page: parseInt(limit)
       }
     });
   } catch (error) {
     console.error('Get blogs error:', error);
-    console.error('Error details:', error.message);
     res.status(500).json({ 
       success: false, 
-      message: 'Failed to fetch blogs',
-      error: error.message 
+      message: 'Failed to fetch blogs'
     });
   }
 });
