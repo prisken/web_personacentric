@@ -41,10 +41,8 @@ const BlogDetailPage = () => {
         // Increment view count
         await apiService.post(`/blogs/${response.data.id}/view`);
         
-        // Fetch related blogs
-        if (response.data.categories && response.data.categories.length > 0) {
-          await fetchRelatedBlogs(response.data.categories);
-        }
+        // Fetch related blogs (simplified for now)
+        await fetchRelatedBlogs();
       } else {
         setError('Blog not found');
       }
@@ -56,12 +54,13 @@ const BlogDetailPage = () => {
     }
   };
 
-  const fetchRelatedBlogs = async (categories) => {
+  const fetchRelatedBlogs = async () => {
     try {
-      const categoryIds = categories.map(cat => cat.id);
-      const response = await apiService.get(`/blogs?category_ids=${categoryIds.join(',')}&limit=3&exclude=${blog?.id}`);
+      const response = await apiService.get(`/blogs?limit=3`);
       if (response.success) {
-        setRelatedBlogs(response.data);
+        // Filter out the current blog
+        const filteredBlogs = response.data.filter(b => b.slug !== slug);
+        setRelatedBlogs(filteredBlogs.slice(0, 3));
       }
     } catch (error) {
       console.error('Fetch related blogs error:', error);
@@ -79,15 +78,11 @@ const BlogDetailPage = () => {
       "image": blog.featured_image_url,
       "author": {
         "@type": "Person",
-        "name": blog.author ? `${blog.author.first_name} ${blog.author.last_name}` : "Financial Advisor"
+        "name": "Financial Advisor"
       },
       "publisher": {
         "@type": "Organization",
-        "name": "PersonaCentric Financial",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://your-domain.com/logo.png"
-        }
+        "name": "PersonaCentric Financial"
       },
       "datePublished": blog.published_at,
       "dateModified": blog.updated_at || blog.published_at,
@@ -95,7 +90,6 @@ const BlogDetailPage = () => {
         "@type": "WebPage",
         "@id": `https://your-domain.com/blogs/${blog.slug}`
       },
-      "articleSection": blog.categories?.map(cat => cat.name).join(', '),
       "keywords": blog.meta_keywords,
       "wordCount": blog.content.split(' ').length,
       "timeRequired": `PT${blog.reading_time}M`
