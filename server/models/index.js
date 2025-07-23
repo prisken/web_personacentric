@@ -47,9 +47,11 @@ User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
 
 // Agent associations
 Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+Agent.hasMany(Event, { foreignKey: 'agent_id', as: 'events' });
 
 // Event associations
 Event.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+Event.belongsTo(Agent, { foreignKey: 'agent_id', as: 'agent' });
 Event.hasMany(EventRegistration, { foreignKey: 'event_id', as: 'registrations' });
 
 // Blog associations
