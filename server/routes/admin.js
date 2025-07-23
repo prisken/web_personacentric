@@ -17,6 +17,9 @@ const requireAdmin = (req, res, next) => {
 // Get all users (admin only)
 router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
   try {
+    // Log model definitions for debugging
+    console.log('Agent model:', Agent);
+    console.log('Client model:', Client);
     const users = await User.findAll({
       attributes: ['id', 'first_name', 'last_name', 'email', 'role', 'created_at', 'subscription_status'],
       include: [
