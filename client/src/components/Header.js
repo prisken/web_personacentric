@@ -76,35 +76,42 @@ const Header = () => {
     '/help-center'
   ].includes(location.pathname);
 
-  const headerClasses = `
-    fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-sm
-    ${isScrolled 
-      ? 'bg-gray-900/95 shadow-lg' 
-      : isOverHero && hasDarkTopSection && !isDashboardPage
-        ? 'bg-transparent' 
-        : 'bg-white/95 shadow-sm border-b border-gray-200'
+  // Improved header background logic
+  const getHeaderBackground = () => {
+    if (isScrolled) {
+      return 'bg-gray-900/95 shadow-lg';
     }
-  `;
+    if (isOverHero && hasDarkTopSection && !isDashboardPage) {
+      return 'bg-transparent';
+    }
+    return 'bg-white/95 shadow-sm border-b border-gray-200';
+  };
 
-  const textClasses = `
-    transition-colors duration-300
-    ${isScrolled 
-      ? 'text-white' 
-      : isOverHero && hasDarkTopSection && !isDashboardPage
-        ? 'text-white' 
-        : 'text-gray-700'
+  // Improved text color logic with better contrast
+  const getTextColor = () => {
+    if (isScrolled) {
+      return 'text-white';
     }
-  `;
+    if (isOverHero && hasDarkTopSection && !isDashboardPage) {
+      return 'text-white';
+    }
+    return 'text-gray-800';
+  };
 
-  const hoverClasses = `
-    transition-colors duration-200
-    ${isScrolled 
-      ? 'hover:text-blue-300' 
-      : isOverHero && hasDarkTopSection && !isDashboardPage
-        ? 'hover:text-blue-200' 
-        : 'hover:text-blue-600'
+  // Improved hover color logic
+  const getHoverColor = () => {
+    if (isScrolled) {
+      return 'hover:text-blue-300';
     }
-  `;
+    if (isOverHero && hasDarkTopSection && !isDashboardPage) {
+      return 'hover:text-blue-200';
+    }
+    return 'hover:text-blue-600';
+  };
+
+  const headerClasses = `fixed top-0 w-full z-50 transition-all duration-300 backdrop-blur-sm ${getHeaderBackground()}`;
+  const textClasses = `transition-colors duration-300 ${getTextColor()}`;
+  const hoverClasses = `transition-colors duration-200 ${getHoverColor()}`;
 
   const handleLogout = () => {
     logout();
@@ -157,9 +164,10 @@ const Header = () => {
             ))}
             <a
               href="/all-agents"
-              className="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
+              className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
             >
               {language === 'zh-TW' ? '所有顧問' : 'All Agents'}
+              <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
             </a>
             {user && (
               <Link
@@ -196,7 +204,7 @@ const Header = () => {
                   <div className={`text-sm lg:text-base font-semibold ${textClasses}`}>
                     {getUserDisplayName()}
                   </div>
-                  <div className="text-xs lg:text-sm text-gray-400">
+                  <div className={`text-xs lg:text-sm ${isScrolled ? 'text-gray-300' : 'text-gray-500'}`}>
                     {getUserRoleLabel()}
                   </div>
                 </div>
@@ -254,7 +262,7 @@ const Header = () => {
               isScrolled 
                 ? 'bg-gray-900/95 border-gray-700' 
                 : isOverHero && hasDarkTopSection && !isDashboardPage
-                  ? 'bg-black/50 border-gray-600' 
+                  ? 'bg-black/80 backdrop-blur-sm border-gray-600' 
                   : 'bg-white/95 border-gray-200'
             }`}>
               {navItems.map((item) => (
@@ -288,7 +296,7 @@ const Header = () => {
                   <>
                     <div className={`px-4 py-3 text-sm ${textClasses}`}>
                       <div className="font-semibold text-base">{getUserDisplayName()}</div>
-                      <div className="text-xs text-gray-400 mt-1">{getUserRoleLabel()}</div>
+                      <div className={`text-xs mt-1 ${isScrolled ? 'text-gray-300' : 'text-gray-500'}`}>{getUserRoleLabel()}</div>
                     </div>
                     <button
                       onClick={handleLogout}

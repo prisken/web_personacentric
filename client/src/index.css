@@ -42,6 +42,8 @@ body {
   line-height: 1.6;
   color: var(--gray-900);
   background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Custom Animations */
@@ -102,11 +104,134 @@ body {
   @apply border-2 border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 hover:text-white transition-colors duration-200;
 }
 
-/* Responsive Design */
+/* Mobile-First Responsive Design */
 @media (max-width: 768px) {
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
+  }
+  
+  /* Improved touch targets for mobile */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better mobile navigation spacing */
+  .mobile-nav-item {
+    padding: 0.75rem 1rem;
+    margin: 0.25rem 0;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  /* Mobile-friendly text sizes */
+  h1 {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  /* Improved mobile spacing */
+  .mobile-section {
+    padding: 2rem 1rem;
+  }
+  
+  .mobile-section-lg {
+    padding: 3rem 1rem;
+  }
+}
+
+/* Tablet Responsive Design */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .tablet-section {
+    padding: 3rem 2rem;
+  }
+}
+
+/* Desktop Responsive Design */
+@media (min-width: 1025px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .desktop-section {
+    padding: 4rem 2rem;
+  }
+}
+
+/* Enhanced Mobile Navigation */
+.mobile-menu-overlay {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Improved Header Mobile Styles */
+@media (max-width: 1024px) {
+  .header-mobile {
+    padding: 0 1rem;
+  }
+  
+  .header-logo {
+    font-size: 1.25rem;
+  }
+  
+  .header-nav-item {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    margin: 0.25rem 0;
+  }
+}
+
+/* Better Mobile Form Elements */
+@media (max-width: 768px) {
+  input, textarea, select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .mobile-form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .mobile-button {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+  }
+}
+
+/* Improved Mobile Cards */
+@media (max-width: 768px) {
+  .mobile-card {
+    margin: 0.75rem 0;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-card-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 
@@ -116,5 +241,33 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    border: 2px solid currentColor;
+  }
+  
+  .btn-outline {
+    border-width: 3px;
+  }
+}
+
+/* Dark mode support (if needed in future) */
+@media (prefers-color-scheme: dark) {
+  /* Dark mode styles can be added here */
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
   }
 } 
