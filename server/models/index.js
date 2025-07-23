@@ -2,6 +2,7 @@ const sequelize = require('../config/database');
 
 // Import models
 const User = require('./User');
+const Agent = require('./Agent');
 const Event = require('./Event');
 const BlogPost = require('./BlogPost');
 const BlogImage = require('./BlogImage');
@@ -26,6 +27,7 @@ const UserBadge = require('./UserBadge');
 
 // Define associations
 // User associations
+User.hasOne(Agent, { foreignKey: 'user_id', as: 'agent' });
 User.hasMany(Event, { foreignKey: 'created_by', as: 'createdEvents' });
 User.hasMany(BlogPost, { foreignKey: 'author_id', as: 'blogPosts' });
 User.hasMany(Contest, { foreignKey: 'created_by', as: 'createdContests' });
@@ -42,6 +44,9 @@ User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
 User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
 User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
+
+// Agent associations
+Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Event associations
 Event.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
@@ -124,6 +129,7 @@ UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
 module.exports = {
   sequelize,
   User,
+  Agent,
   Event,
   BlogPost,
   BlogImage,

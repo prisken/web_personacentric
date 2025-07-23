@@ -64,16 +64,24 @@ const Header = () => {
   const isDashboardPage = location.pathname === '/dashboard';
 
   // Check if we're on a page with dark/gradient sections at the top
+  // Only include pages that actually have dark hero sections
   const hasDarkTopSection = [
     '/',
     '/about',
     '/pricing',
-    '/blogs',
-    '/ai-trial',
-    '/contests',
-    '/events',
-    '/agent-matching',
     '/help-center'
+  ].includes(location.pathname);
+
+  // Check if we're on a page with light background (most pages)
+  const hasLightBackground = [
+    '/events',
+    '/agent-matching', 
+    '/ai-trial',
+    '/blogs',
+    '/contests',
+    '/login',
+    '/register',
+    '/dashboard'
   ].includes(location.pathname);
 
   // Improved header background logic
@@ -95,6 +103,7 @@ const Header = () => {
     if (isOverHero && hasDarkTopSection && !isDashboardPage) {
       return 'text-white';
     }
+    // Default to dark text for light backgrounds
     return 'text-gray-800';
   };
 
