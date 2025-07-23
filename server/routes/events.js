@@ -287,7 +287,7 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
     // Handle image upload if provided
     let imageUrl = null;
     if (req.file) {
-      console.log('=== Uploading event image ===');
+      // Uploading event image
       const result = await uploadImage(req.file, 'events');
       
       if (!result.success) {
@@ -298,7 +298,7 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
       }
       
       imageUrl = result.url;
-      console.log('Event image uploaded:', imageUrl);
+              // Event image uploaded successfully
     }
 
     const event = await Event.create({
@@ -347,7 +347,7 @@ router.put('/:id', authenticateToken, requireAdmin, upload.single('image'), asyn
 
     // Handle image upload if provided
     if (req.file) {
-      console.log('=== Uploading updated event image ===');
+      // Uploading updated event image
       const result = await uploadImage(req.file, 'events');
       
       if (!result.success) {
@@ -358,7 +358,7 @@ router.put('/:id', authenticateToken, requireAdmin, upload.single('image'), asyn
       }
       
       updateData.image = result.url;
-      console.log('Updated event image uploaded:', result.url);
+              // Updated event image uploaded successfully
     }
 
     await event.update(updateData);

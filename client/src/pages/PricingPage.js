@@ -66,7 +66,7 @@ const PricingPage = () => {
   const handleAccessCodeSubmit = (e) => {
     e.preventDefault();
     // Handle access code validation and activation
-    console.log('Access code submitted:', accessCode);
+    // Access code submitted
   };
 
   return (

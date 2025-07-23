@@ -113,7 +113,7 @@ router.get('/', async (req, res) => {
       status = 'published' 
     } = req.query;
     
-        // Filter blogs by status
+    // Filter blogs by status
     let filteredBlogs = blogData;
     if (status && status !== 'all') {
       filteredBlogs = blogData.filter(blog => blog.status === status);
@@ -146,7 +146,7 @@ router.get('/:identifier', async (req, res) => {
   try {
     const { identifier } = req.params;
     
-        // Find blog by ID or slug
+    // Find blog by ID or slug
     let blog = null;
     if (identifier.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)) {
       blog = blogData.find(b => b.id === identifier);

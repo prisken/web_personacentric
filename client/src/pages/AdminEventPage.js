@@ -307,7 +307,7 @@ const AdminEventPage = () => {
                     }));
                     setShowImageSuccess(true);
                     setTimeout(() => setShowImageSuccess(false), 3000);
-                    console.log('Event image uploaded:', imageData.url);
+                    // Event image uploaded successfully
                   }}
                 />
               </div>
