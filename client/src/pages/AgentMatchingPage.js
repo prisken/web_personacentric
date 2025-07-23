@@ -60,6 +60,16 @@ const AgentMatchingPage = () => {
         { value: 'phone', label: '電話通話', icon: '📞' },
         { value: 'digital', label: '數位/文字', icon: '💬' }
       ]
+    },
+    {
+      id: 6,
+      question: "您希望顧問在哪個地區？",
+      options: [
+        { value: 'hong kong', label: '香港', icon: '🇭🇰' },
+        { value: 'taipei', label: '台北', icon: '🇹🇼' },
+        { value: 'singapore', label: '新加坡', icon: '🇸🇬' },
+        { value: 'anywhere', label: '任何地方', icon: '🌍' }
+      ]
     }
   ] : [
     {
@@ -111,6 +121,16 @@ const AgentMatchingPage = () => {
         { value: 'phone', label: 'Phone Calls', icon: '📞' },
         { value: 'digital', label: 'Digital/Text', icon: '💬' }
       ]
+    },
+    {
+      id: 6,
+      question: "Where would you prefer your advisor to be located?",
+      options: [
+        { value: 'hong kong', label: 'Hong Kong', icon: '🇭🇰' },
+        { value: 'taipei', label: 'Taipei', icon: '🇹🇼' },
+        { value: 'singapore', label: 'Singapore', icon: '🇸🇬' },
+        { value: 'anywhere', label: 'Anywhere', icon: '🌍' }
+      ]
     }
   ];
 
@@ -138,56 +158,30 @@ const AgentMatchingPage = () => {
     setShowResults(false);
   };
 
-  // Matching algorithm: score agent based on quiz answers
+  // Matching algorithm: use backend matching endpoint
   const matchAgents = async () => {
     setLoadingResults(true);
     try {
-      // Fetch all agents in the matching pool
-      const response = await apiService.get('/agents?in_matching_pool=true&status=active');
-      if (!response.success || !Array.isArray(response.data)) {
+      // Map quiz answers to the format expected by the backend
+      const quizAnswers = {
+        primary_goal: answers[0],
+        investment_timeline: answers[1],
+        risk_tolerance: answers[2],
+        financial_situation: answers[3],
+        communication_pref: answers[4],
+        language_preference: language,
+        location: answers[5] || 'anywhere'
+      };
+
+      // Call the backend matching endpoint
+      const response = await apiService.post('/agents/match', quizAnswers);
+      if (response.success && Array.isArray(response.data)) {
+        setMatchedAgents(response.data);
+      } else {
         setMatchedAgents([]);
-        setLoadingResults(false);
-        return;
       }
-      const agents = response.data;
-      // Map quiz answers to agent fields
-      const quiz = {
-        goal: answers[0],
-        timeline: answers[1],
-        risk: answers[2],
-        situation: answers[3],
-        communication: answers[4],
-        // Add more if quiz is expanded
-      };
-      // Scoring weights
-      const weights = {
-        goal: 0.3,
-        communication: 0.2,
-        language: 0.2,
-        timeline: 0.1,
-        risk: 0.1,
-        situation: 0.1
-      };
-      // Score each agent
-      const scored = agents.map(agent => {
-        let score = 0;
-        // Goal/expertise match
-        if (agent.areas_of_expertise?.map(x => x.toLowerCase()).includes(quiz.goal)) score += weights.goal;
-        // Communication mode match
-        if (agent.communication_modes?.map(x => x.toLowerCase()).includes(quiz.communication)) score += weights.communication;
-        // Language match (assume client language preference is current UI language)
-        if (agent.languages?.map(x => x.toLowerCase()).includes(language === 'zh-TW' ? 'chinese' : 'english')) score += weights.language;
-        // Timeline, risk, situation (optional, simple match)
-        score += weights.timeline * 0.5; // Placeholder, can expand
-        score += weights.risk * 0.5;
-        score += weights.situation * 0.5;
-        // Convert to percentage
-        return { ...agent, matchScore: Math.round(score * 100) };
-      });
-      // Sort by match score descending
-      scored.sort((a, b) => b.matchScore - a.matchScore);
-      setMatchedAgents(scored.slice(0, 6));
     } catch (error) {
+      console.error('Error matching agents:', error);
       setMatchedAgents([]);
     }
     setLoadingResults(false);
@@ -267,6 +261,18 @@ const AgentMatchingPage = () => {
                         <span className="mr-2">{language === 'zh-TW' ? '地區:' : 'Location:'}</span>
                         {agent.location}
                       </div>
+                      {agent.matchDetails && (
+                        <div className="mt-3 p-3 bg-green-50 rounded-lg">
+                          <h4 className="text-sm font-semibold text-green-800 mb-2">
+                            {language === 'zh-TW' ? '配對詳情:' : 'Match Details:'}
+                          </h4>
+                          {Object.entries(agent.matchDetails).map(([key, value]) => (
+                            <div key={key} className="text-xs text-green-700">
+                              <span className="font-medium">{key}:</span> {value}
+                            </div>
+                          ))}
+                        </div>
+                      )}
                       <button className="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200 mt-4">
                         {t('matching.contact')}
                       </button>
