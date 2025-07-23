@@ -146,26 +146,26 @@ const Header = () => {
   return (
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
+        <div className="flex justify-between items-center h-14 lg:h-16">
           {/* Logo */}
           <div className="flex items-center">
             <Link to="/" className="flex items-center group">
-              <div className="w-8 h-8 lg:w-12 lg:h-12 bg-gradient-to-r from-blue-600 to-green-600 rounded-xl flex items-center justify-center mr-3 lg:mr-4 transition-transform duration-200 group-hover:scale-110 shadow-lg">
-                <span className="text-white text-sm lg:text-lg font-bold">📈</span>
+              <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center mr-2 lg:mr-3 transition-transform duration-200 group-hover:scale-110 shadow-lg">
+                <span className="text-white text-xs lg:text-sm font-bold">📈</span>
               </div>
-              <span className={`text-xl lg:text-2xl xl:text-3xl font-bold ${textClasses} transition-colors duration-200`}>
+              <span className={`text-lg lg:text-xl xl:text-2xl font-bold ${textClasses} transition-colors duration-200`}>
                 Persona Centric
               </span>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
             {navItems.map((item) => (
               <Link
                 key={item.key}
                 to={item.path}
-                className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
                 {item.label}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
@@ -173,7 +173,7 @@ const Header = () => {
             ))}
             <a
               href="/all-agents"
-              className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+              className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
             >
               {t('actions.allAgents')}
               <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
@@ -181,7 +181,7 @@ const Header = () => {
             {user && (
               <Link
                 to="/dashboard"
-                className={`font-medium text-base lg:text-lg ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
                 {t('actions.dashboard')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
@@ -190,51 +190,53 @@ const Header = () => {
           </nav>
 
           {/* Language Switcher & Auth Buttons */}
-          <div className="flex items-center space-x-3 lg:space-x-6">
+          <div className="flex items-center space-x-2 lg:space-x-4">
             {/* Language Toggle */}
             <button
               onClick={toggleLanguage}
-              className={`text-sm lg:text-base font-medium px-3 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
+              className={`text-xs lg:text-sm font-medium px-2 py-1.5 rounded-md transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
             >
               {language === 'zh-TW' ? 'EN' : '中文'}
             </button>
 
             {/* User Info & Auth Buttons */}
             {user ? (
-              <div className="hidden md:flex items-center space-x-4 lg:space-x-6">
+              <div className="hidden md:flex items-center space-x-3">
                 {user.role === 'agent' && agentProfileImage && (
                   <img
                     src={agentProfileImage}
                     alt="Profile"
-                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full object-cover border-2 border-blue-500 shadow-lg transition-transform duration-200 hover:scale-110 ring-2 ring-white/20"
+                    className="w-8 h-8 lg:w-9 lg:h-9 rounded-full object-cover border-2 border-blue-500 shadow-lg transition-transform duration-200 hover:scale-110 ring-1 ring-white/20"
                   />
                 )}
-                <div className="text-right">
-                  <div className={`text-sm lg:text-base font-semibold ${textClasses}`}>
-                    {getUserDisplayName()}
+                <div className="flex items-center space-x-2">
+                  <div className="text-right">
+                    <div className={`text-xs lg:text-sm font-semibold ${textClasses} leading-tight`}>
+                      {getUserDisplayName()}
+                    </div>
+                    <div className={`text-xs ${isScrolled ? 'text-gray-300' : 'text-gray-500'} leading-tight`}>
+                      {getUserRoleLabel()}
+                    </div>
                   </div>
-                  <div className={`text-xs lg:text-sm ${isScrolled ? 'text-gray-300' : 'text-gray-500'}`}>
-                    {getUserRoleLabel()}
-                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className={`font-medium text-xs lg:text-sm px-2 py-1.5 rounded-md transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
+                  >
+                    {t('actions.logout')}
+                  </button>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
-                >
-                  {t('actions.logout')}
-                </button>
               </div>
             ) : (
-              <div className="hidden md:flex items-center space-x-3 lg:space-x-4">
+              <div className="hidden md:flex items-center space-x-2 lg:space-x-3">
                 <Link
                   to="/login"
-                  className={`font-medium text-sm lg:text-base px-4 py-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
+                  className={`font-medium text-xs lg:text-sm px-2 py-1.5 rounded-md transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10 border border-transparent hover:border-current/20`}
                 >
                   {t('nav.login')}
                 </Link>
                 <Link
                   to="/register"
-                  className={`px-4 py-2 lg:px-6 lg:py-3 rounded-lg font-medium text-sm lg:text-base transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl ${
+                  className={`px-2 py-1.5 lg:px-3 lg:py-2 rounded-md font-medium text-xs lg:text-sm transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl ${
                     isScrolled 
                       ? 'bg-blue-600 text-white hover:bg-blue-700' 
                       : isOverHero && hasDarkTopSection && !isDashboardPage
@@ -250,10 +252,10 @@ const Header = () => {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
+              className={`lg:hidden p-1.5 rounded-md transition-all duration-200 ${textClasses} ${hoverClasses} hover:bg-white/10`}
               aria-label="Toggle mobile menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isMobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -267,7 +269,7 @@ const Header = () => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="lg:hidden">
-            <div className={`px-4 pt-4 pb-6 space-y-2 border-t transition-all duration-300 ${
+            <div className={`px-3 pt-3 pb-4 space-y-1 border-t transition-all duration-300 ${
               isScrolled 
                 ? 'bg-gray-900/95 border-gray-700' 
                 : isOverHero && hasDarkTopSection && !isDashboardPage
@@ -278,7 +280,7 @@ const Header = () => {
                 <Link
                   key={item.key}
                   to={item.path}
-                  className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
@@ -286,7 +288,7 @@ const Header = () => {
               ))}
               <a
                 href="/all-agents"
-                className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t('actions.allAgents')}
@@ -294,22 +296,22 @@ const Header = () => {
               {user && (
                 <Link
                   to="/dashboard"
-                  className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {t('actions.dashboard')}
                 </Link>
               )}
-              <div className="pt-4 border-t border-gray-300/30">
+              <div className="pt-3 border-t border-gray-300/30">
                 {user ? (
                   <>
-                    <div className={`px-4 py-3 text-sm ${textClasses}`}>
-                      <div className="font-semibold text-base">{getUserDisplayName()}</div>
-                      <div className={`text-xs mt-1 ${isScrolled ? 'text-gray-300' : 'text-gray-500'}`}>{getUserRoleLabel()}</div>
+                    <div className={`px-3 py-2 text-xs ${textClasses}`}>
+                      <div className="font-semibold text-sm">{getUserDisplayName()}</div>
+                      <div className={`text-xs mt-0.5 ${isScrolled ? 'text-gray-300' : 'text-gray-500'}`}>{getUserRoleLabel()}</div>
                     </div>
                     <button
                       onClick={handleLogout}
-                      className={`block w-full text-left px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                      className={`block w-full text-left px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                     >
                       {t('actions.logout')}
                     </button>
@@ -318,14 +320,14 @@ const Header = () => {
                   <>
                     <Link
                       to="/login"
-                      className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                      className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
                       {t('nav.login')}
                     </Link>
                     <Link
                       to="/register"
-                      className={`block px-4 py-3 rounded-lg transition-all duration-200 text-base font-medium ${
+                      className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${
                         isScrolled 
                           ? 'text-blue-400 hover:text-blue-300 hover:bg-white/10' 
                           : isOverHero && hasDarkTopSection && !isDashboardPage
