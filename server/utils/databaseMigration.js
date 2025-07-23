@@ -26,6 +26,16 @@ const runMigrations = async () => {
       }
     }
     
+    // Check if featured column exists in blog_posts table
+    try {
+      await sequelize.query(`SELECT featured FROM blog_posts LIMIT 1`);
+    } catch (error) {
+      if (error.message.includes('no such column')) {
+        await sequelize.query(`ALTER TABLE blog_posts ADD COLUMN featured BOOLEAN DEFAULT FALSE`);
+        console.log('Added featured column to blog_posts table');
+      }
+    }
+    
     console.log('Database migrations completed successfully.');
   } catch (error) {
     console.error('Migration error:', error);
