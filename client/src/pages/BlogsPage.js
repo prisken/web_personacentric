@@ -264,6 +264,9 @@ const BlogsPage = () => {
                       src={featuredPost.featured_image_url} 
                       alt={featuredPost.title}
                       className="w-full h-64 lg:h-full object-cover"
+                      onError={(e) => {
+                        e.target.src = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800';
+                      }}
                     />
                   </div>
                   <div className="lg:w-1/2 p-8 lg:p-12">
@@ -341,6 +344,9 @@ const BlogsPage = () => {
                         src={post.featured_image_url} 
                         alt={post.title}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.target.src = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800';
+                        }}
                       />
                       <div className="absolute top-4 left-4">
                         <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">

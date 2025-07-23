@@ -54,25 +54,25 @@ router.get('/', async (req, res) => {
         created_at: "2024-01-10T00:00:00.000Z",
         updated_at: "2024-01-10T00:00:00.000Z"
       },
-      {
-        id: "3",
-        title: "稅務規劃策略",
-        slug: "tax-planning-strategies",
-        excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
-        content: "稅務規劃是財務規劃的重要組成部分...",
-        author_id: "admin-user",
-        status: "published",
-        featured_image_url: "https://images.unsplash.com/photo-1554224154-26032cdc-304d?w=800",
-        meta_title: "稅務規劃策略指南",
-        meta_description: "了解如何合法地減少稅負",
-        reading_time: 10,
-        view_count: 650,
-        like_count: 28,
-        share_count: 5,
-        published_at: "2024-01-05T00:00:00.000Z",
-        created_at: "2024-01-05T00:00:00.000Z",
-        updated_at: "2024-01-05T00:00:00.000Z"
-      }
+              {
+          id: "3",
+          title: "稅務規劃策略",
+          slug: "tax-planning-strategies",
+          excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
+          content: "稅務規劃是財務規劃的重要組成部分...",
+          author_id: "admin-user",
+          status: "published",
+          featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+          meta_title: "稅務規劃策略指南",
+          meta_description: "了解如何合法地減少稅負",
+          reading_time: 10,
+          view_count: 650,
+          like_count: 28,
+          share_count: 5,
+          published_at: "2024-01-05T00:00:00.000Z",
+          created_at: "2024-01-05T00:00:00.000Z",
+          updated_at: "2024-01-05T00:00:00.000Z"
+        }
     ];
 
     const offset = (page - 1) * limit;
@@ -142,25 +142,25 @@ router.get('/:identifier', async (req, res) => {
         created_at: "2024-01-10T00:00:00.000Z",
         updated_at: "2024-01-10T00:00:00.000Z"
       },
-      {
-        id: "3",
-        title: "稅務規劃策略",
-        slug: "tax-planning-strategies",
-        excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
-        content: "稅務規劃是財務規劃的重要組成部分。本文將介紹各種合法的稅務規劃策略，包括稅收優惠、扣除項目、投資稅務考量等。我們將幫助您了解如何在不違反稅法的前提下，有效降低稅負並提高稅後收益。",
-        author_id: "admin-user",
-        status: "published",
-        featured_image_url: "https://images.unsplash.com/photo-1554224154-26032cdc-304d?w=800",
-        meta_title: "稅務規劃策略指南",
-        meta_description: "了解如何合法地減少稅負",
-        reading_time: 10,
-        view_count: 650,
-        like_count: 28,
-        share_count: 5,
-        published_at: "2024-01-05T00:00:00.000Z",
-        created_at: "2024-01-05T00:00:00.000Z",
-        updated_at: "2024-01-05T00:00:00.000Z"
-      }
+              {
+          id: "3",
+          title: "稅務規劃策略",
+          slug: "tax-planning-strategies",
+          excerpt: "了解如何合法地減少稅負，最大化您的稅後收入。",
+          content: "稅務規劃是財務規劃的重要組成部分。本文將介紹各種合法的稅務規劃策略，包括稅收優惠、扣除項目、投資稅務考量等。我們將幫助您了解如何在不違反稅法的前提下，有效降低稅負並提高稅後收益。",
+          author_id: "admin-user",
+          status: "published",
+          featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+          meta_title: "稅務規劃策略指南",
+          meta_description: "了解如何合法地減少稅負",
+          reading_time: 10,
+          view_count: 650,
+          like_count: 28,
+          share_count: 5,
+          published_at: "2024-01-05T00:00:00.000Z",
+          created_at: "2024-01-05T00:00:00.000Z",
+          updated_at: "2024-01-05T00:00:00.000Z"
+        }
     ];
 
     // Find blog by ID or slug
