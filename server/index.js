@@ -20,6 +20,7 @@ const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
 const recommendationRoutes = require('./routes/recommendations');
 const uploadRoutes = require('./routes/upload');
+const agentRoutes = require('./routes/agents');
 
 // Import database
 const sequelize = require('./config/database');
@@ -73,6 +74,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/agents', agentRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
