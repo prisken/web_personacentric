@@ -42,7 +42,6 @@ router.get('/', async (req, res) => {
         like_count: 45,
         share_count: 12,
         published_at: "2024-01-15T00:00:00.000Z",
-        featured: true,
         created_at: "2024-01-15T00:00:00.000Z",
         updated_at: "2024-01-15T00:00:00.000Z"
       },
@@ -62,7 +61,6 @@ router.get('/', async (req, res) => {
         like_count: 32,
         share_count: 8,
         published_at: "2024-01-10T00:00:00.000Z",
-        featured: false,
         created_at: "2024-01-10T00:00:00.000Z",
         updated_at: "2024-01-10T00:00:00.000Z"
       },
@@ -82,7 +80,6 @@ router.get('/', async (req, res) => {
         like_count: 28,
         share_count: 5,
         published_at: "2024-01-05T00:00:00.000Z",
-        featured: false,
         created_at: "2024-01-05T00:00:00.000Z",
         updated_at: "2024-01-05T00:00:00.000Z"
       }
