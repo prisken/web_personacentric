@@ -174,19 +174,25 @@ const BlogsPage = () => {
         <div className="bg-white border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex flex-wrap gap-3">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                    selectedCategory === category
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+              {categories.map((category) => {
+                // Handle both string categories and object categories
+                const categoryName = typeof category === 'string' ? category : category.name;
+                const categoryKey = typeof category === 'string' ? category : category.id;
+                
+                return (
+                  <button
+                    key={categoryKey}
+                    onClick={() => setSelectedCategory(categoryName)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      selectedCategory === categoryName
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {categoryName}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
