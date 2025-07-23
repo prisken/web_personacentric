@@ -183,6 +183,10 @@ class ApiService {
     return this.put('/users/agent/profile', profileData);
   }
 
+  async getMyAgentProfile() {
+    return this.get('/users/agent/me');
+  }
+
   // Event endpoints
   async getEvents(params = {}) {
     const queryString = new URLSearchParams(params).toString();
