@@ -1,100 +1,164 @@
-Last redeploy test: July 23, 2025
-# Persona Centric Financial Platform
+# PersonaCentric - Financial Advisor Matching Platform
 
-AI-powered financial advisory platform connecting clients with professional advisors.
+A modern web platform that connects clients with financial advisors through intelligent matching algorithms and comprehensive profiles.
 
-## 🚀 Deployment
+## 🚀 Features
 
-- **Frontend**: Deployed on Vercel
-- **Backend**: Deployed on Railway
-- **Database**: PostgreSQL (Railway)
+### Core Functionality
+- **Agent-Client Matching System**: AI-powered quiz-based matching algorithm
+- **Agent Profiles**: Comprehensive financial advisor profiles with expertise areas
+- **User Management**: Role-based access control (Admin, Agent, Client)
+- **Event Management**: Financial events and webinars
+- **Blog System**: Educational content and financial insights
+- **Contest System**: Interactive financial challenges
+- **Multi-language Support**: English and Traditional Chinese
 
-## 📁 Project Structure
+### Technical Features
+- **Modern UI/UX**: Beautiful, responsive design with Tailwind CSS
+- **Real-time Matching**: Weighted algorithm for optimal agent-client pairing
+- **Image Upload**: Cloudinary integration for profile and event images
+- **Database Management**: Sequelize ORM with SQLite/PostgreSQL support
+- **Authentication**: JWT-based secure authentication
+- **Admin Dashboard**: Comprehensive management interface
+
+## 🏗️ Project Structure
 
 ```
 web_PersonaCentric/
-├── client/                 # React frontend (Vercel deployment)
-│   ├── public/
+├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/     # Reusable UI components
 │   │   ├── pages/         # Page components
 │   │   ├── contexts/      # React contexts
 │   │   ├── services/      # API services
 │   │   └── utils/         # Utility functions
-│   └── package.json
-├── server/                 # Node.js backend (Railway deployment)
-│   ├── config/            # Database configuration
-│   ├── controllers/       # Route controllers
-│   ├── middleware/        # Express middleware
-│   ├── models/           # Sequelize models
-│   ├── routes/           # API routes
-│   └── utils/            # Utility functions
-├── package.json           # Root package.json (backend dependencies)
-└── railway.json          # Railway deployment config
+├── server/                # Node.js backend
+│   ├── config/           # Configuration files
+│   ├── controllers/      # Route controllers
+│   ├── middleware/       # Express middleware
+│   ├── models/          # Sequelize models
+│   ├── routes/          # API routes
+│   └── utils/           # Utility functions
+├── docs/                # Documentation
+├── migrations/          # Database migrations
+└── config/             # Global configuration
 ```
 
-## 🛠️ Development
-
-### Backend Setup
-```bash
-npm install
-npm run dev
-```
-
-### Frontend Setup
-```bash
-cd client
-npm install
-npm start
-```
-
-## 🔧 Environment Variables
-
-### Backend (.env)
-```
-PORT=5001
-DATABASE_URL=your_database_url
-JWT_SECRET=your_jwt_secret
-NODE_ENV=production
-```
+## 🛠️ Tech Stack
 
 ### Frontend
-- API proxy configured to Railway backend
-- No additional environment variables needed
+- **React.js** - UI framework
+- **Tailwind CSS** - Styling
+- **React Router** - Navigation
+- **Axios** - HTTP client
+
+### Backend
+- **Node.js** - Runtime environment
+- **Express.js** - Web framework
+- **Sequelize** - ORM
+- **SQLite/PostgreSQL** - Database
+- **JWT** - Authentication
+- **Cloudinary** - Image storage
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/prisken/web_personacentric.git
+   cd web_personacentric
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   cd client && npm install
+   cd ../server && npm install
+   ```
+
+3. **Environment setup**
+   ```bash
+   cp env.example .env
+   # Configure your environment variables
+   ```
+
+4. **Database setup**
+   ```bash
+   cd server
+   npm run migrate
+   npm run seed
+   ```
+
+5. **Start development servers**
+   ```bash
+   # Terminal 1 - Backend
+   cd server && npm run dev
+   
+   # Terminal 2 - Frontend
+   cd client && npm start
+   ```
+
+## 📱 Key Pages
+
+- **Home**: Landing page with platform overview
+- **Agent Matching**: Quiz-based agent matching system
+- **All Agents**: Browse all available financial advisors
+- **Admin Dashboard**: User and content management
+- **Events**: Financial events and webinars
+- **Blogs**: Educational content
+- **Contests**: Interactive challenges
+
+## 🔧 Configuration
+
+### Environment Variables
+- `DATABASE_URL` - Database connection string
+- `JWT_SECRET` - JWT signing secret
+- `CLOUDINARY_URL` - Cloudinary configuration
+- `PORT` - Server port (default: 5000)
+
+### Database
+- **Development**: SQLite (file-based)
+- **Production**: PostgreSQL (Railway deployment)
+
+## 🚀 Deployment
+
+### Railway Deployment
+The project is configured for Railway deployment with:
+- Automatic database migrations
+- Health check endpoints
+- Environment variable management
+
+### Manual Deployment
+1. Set up production environment variables
+2. Run database migrations
+3. Build frontend: `cd client && npm run build`
+4. Start production server: `npm start`
 
 ## 📚 Documentation
 
-- `DATABASE_SCHEMA.md` - Database structure and relationships
-- `WEBSITE_OVERVIEW.md` - Platform features and functionality
-- `ROLE_SYSTEM.md` - User roles and permissions
-- `SUBSCRIPTION_SYSTEM.md` - Subscription management
-- `PAYMENT_SYSTEM.md` - Payment processing
-- `CONTEST_SYSTEM.md` - Contest and rewards system
-- `ACCESS_CODE_SYSTEM.md` - Access code management
+Comprehensive documentation is available in the `docs/` directory:
+- System architecture overview
+- Database schema documentation
+- API documentation
+- Feature specifications
 
-## 🔐 Security
+## 🤝 Contributing
 
-- JWT authentication
-- Role-based access control
-- Rate limiting
-- Input validation
-- CORS configuration
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## 🎨 Frontend Features
+## 📄 License
 
-- Responsive design with Tailwind CSS
-- Multi-language support (Chinese/English)
-- Role-based dashboards
-- Real-time notifications
-- Interactive components
+This project is licensed under the MIT License.
 
-## 🔌 API Endpoints
+## 🆘 Support
 
-- Authentication: `/api/auth/*`
-- Dashboard: `/api/dashboard`
-- Users: `/api/users/*`
-- Payments: `/api/payments/*`
-- Events: `/api/events/*`
-- Contests: `/api/contests/*`
-- Blogs: `/api/blogs/*`
-- AI Services: `/api/ai/*` 
+For support and questions, please contact the development team or create an issue in the repository. 

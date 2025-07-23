@@ -2,7 +2,6 @@ const sequelize = require('../config/database');
 
 // Import models
 const User = require('./User');
-const Agent = require('./Agent');
 const Event = require('./Event');
 const BlogPost = require('./BlogPost');
 const BlogImage = require('./BlogImage');
@@ -19,18 +18,14 @@ const Subscription = require('./Subscription');
 const AccessCode = require('./AccessCode');
 const Notification = require('./Notification');
 const EventRegistration = require('./EventRegistration');
-const AgentReview = require('./AgentReview');
-const AgentClientRelationship = require('./AgentClientRelationship');
 const ClientUpgrade = require('./ClientUpgrade');
 const Recommendation = require('./Recommendation');
 const RecommendationEngagement = require('./RecommendationEngagement');
 const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
-// const Client = require('./Client');
 
 // Define associations
 // User associations
-User.hasOne(Agent, { foreignKey: 'user_id', as: 'agent' });
 User.hasMany(Event, { foreignKey: 'created_by', as: 'createdEvents' });
 User.hasMany(BlogPost, { foreignKey: 'author_id', as: 'blogPosts' });
 User.hasMany(Contest, { foreignKey: 'created_by', as: 'createdContests' });
@@ -42,24 +37,14 @@ User.hasMany(AccessCode, { foreignKey: 'user_id', as: 'accessCodes' });
 User.hasMany(AccessCode, { foreignKey: 'created_by', as: 'createdAccessCodes' });
 User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
 User.hasMany(EventRegistration, { foreignKey: 'user_id', as: 'eventRegistrations' });
-User.hasMany(AgentReview, { foreignKey: 'reviewer_id', as: 'reviews' });
-User.hasMany(AgentClientRelationship, { foreignKey: 'client_id', as: 'clientRelationships' });
 User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
 User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
 User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
 User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
-// User.hasOne(Client, { foreignKey: 'user_id', as: 'client' });
-
-// Agent associations
-Agent.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-Agent.hasMany(Event, { foreignKey: 'agent_id', as: 'events' });
-Agent.hasMany(AgentReview, { foreignKey: 'agent_id', as: 'reviews' });
-Agent.hasMany(AgentClientRelationship, { foreignKey: 'agent_id', as: 'clientRelationships' });
 
 // Event associations
 Event.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
-Event.belongsTo(Agent, { foreignKey: 'agent_id', as: 'agent' });
 Event.hasMany(EventRegistration, { foreignKey: 'event_id', as: 'registrations' });
 
 // Blog associations
@@ -116,13 +101,7 @@ Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 EventRegistration.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
 EventRegistration.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-// Agent reviews
-AgentReview.belongsTo(Agent, { foreignKey: 'agent_id', as: 'agent' });
-AgentReview.belongsTo(User, { foreignKey: 'reviewer_id', as: 'reviewer' });
 
-// Agent client relationships
-AgentClientRelationship.belongsTo(Agent, { foreignKey: 'agent_id', as: 'agent' });
-AgentClientRelationship.belongsTo(User, { foreignKey: 'client_id', as: 'client' });
 
 // Client upgrade
 ClientUpgrade.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
@@ -145,7 +124,6 @@ UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
 module.exports = {
   sequelize,
   User,
-  Agent,
   Event,
   BlogPost,
   BlogImage,
@@ -162,12 +140,9 @@ module.exports = {
   AccessCode,
   Notification,
   EventRegistration,
-  AgentReview,
-  AgentClientRelationship,
   ClientUpgrade,
   Recommendation,
   RecommendationEngagement,
   Badge,
   UserBadge
-  // Client
 }; 
