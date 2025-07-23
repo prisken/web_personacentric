@@ -113,26 +113,26 @@ async function startServer() {
     
     // Sync database (create tables if they don't exist)
     // Use force: false to prevent conflicts with existing schema
-    // await sequelize.sync({ force: false, alter: false });
-    // await runMigrations();
+    await sequelize.sync({ force: false, alter: false });
+    await runMigrations();
     
     // Start server first, then seed data in background
     app.listen(PORT, () => {
     });
     
     // Seed data if no users exist (in background)
-    // setTimeout(async () => {
-    //   try {
-    //     const { User } = require('./models');
-    //     const userCount = await User.count();
-    //     if (userCount === 0) {
-    //       const seedData = require('./seedData');
-    //       await seedData();
-    //     }
-    //   } catch (error) {
-    //     console.error('Seeding error:', error);
-    //   }
-    // }, 5000); // Wait 5 seconds before seeding
+    setTimeout(async () => {
+      try {
+        const { User } = require('./models');
+        const userCount = await User.count();
+        if (userCount === 0) {
+          const seedData = require('./seedData');
+          await seedData();
+        }
+      } catch (error) {
+        console.error('Seeding error:', error);
+      }
+    }, 5000); // Wait 5 seconds before seeding
   } catch (error) {
     console.error('Unable to start server:', error);
     process.exit(1);

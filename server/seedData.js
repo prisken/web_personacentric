@@ -313,14 +313,14 @@ async function seedData() {
         bio: agentSeed.bio,
         commission_rate: agentSeed.commission_rate,
         is_verified: agentSeed.is_verified,
-        // areas_of_expertise: agentSeed.areas_of_expertise,
-        // languages: agentSeed.languages,
-        // preferred_client_types: agentSeed.preferred_client_types,
-        // communication_modes: agentSeed.communication_modes,
-        // availability: agentSeed.availability,
-        // location: agentSeed.location,
-        // status: agentSeed.status,
-        // in_matching_pool: agentSeed.in_matching_pool
+        areas_of_expertise: agentSeed.areas_of_expertise,
+        languages: agentSeed.languages,
+        preferred_client_types: agentSeed.preferred_client_types,
+        communication_modes: agentSeed.communication_modes,
+        availability: agentSeed.availability,
+        location: agentSeed.location,
+        status: agentSeed.status,
+        in_matching_pool: agentSeed.in_matching_pool
       });
     }
 
