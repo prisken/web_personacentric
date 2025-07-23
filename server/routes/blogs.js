@@ -347,6 +347,68 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   }
 });
 
+// Increment view count
+router.post('/:id/view', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const blog = await BlogPost.findByPk(id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+
+    // Increment view count
+    await blog.increment('view_count');
+    
+    res.json({ success: true, message: 'View count updated' });
+  } catch (error) {
+    console.error('Update view count error:', error);
+    res.status(500).json({ success: false, message: 'Failed to update view count' });
+  }
+});
+
+// Generate XML sitemap
+router.get('/sitemap.xml', async (req, res) => {
+  try {
+    const blogs = await BlogPost.findAll({
+      where: { status: 'published' },
+      attributes: ['slug', 'updated_at'],
+      order: [['updated_at', 'DESC']]
+    });
+
+    const baseUrl = process.env.FRONTEND_URL || 'https://your-domain.com';
+    
+    let sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    sitemap += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    
+    // Add blog listing page
+    sitemap += `  <url>\n`;
+    sitemap += `    <loc>${baseUrl}/blogs</loc>\n`;
+    sitemap += `    <lastmod>${new Date().toISOString()}</lastmod>\n`;
+    sitemap += `    <changefreq>daily</changefreq>\n`;
+    sitemap += `    <priority>0.8</priority>\n`;
+    sitemap += `  </url>\n`;
+    
+    // Add individual blog posts
+    blogs.forEach(blog => {
+      sitemap += `  <url>\n`;
+      sitemap += `    <loc>${baseUrl}/blogs/${blog.slug}</loc>\n`;
+      sitemap += `    <lastmod>${blog.updated_at.toISOString()}</lastmod>\n`;
+      sitemap += `    <changefreq>weekly</changefreq>\n`;
+      sitemap += `    <priority>0.6</priority>\n`;
+      sitemap += `  </url>\n`;
+    });
+    
+    sitemap += '</urlset>';
+
+    res.header('Content-Type', 'application/xml');
+    res.send(sitemap);
+  } catch (error) {
+    console.error('Generate sitemap error:', error);
+    res.status(500).json({ success: false, message: 'Failed to generate sitemap' });
+  }
+});
+
 // Get blog categories
 router.get('/categories/all', async (req, res) => {
   try {

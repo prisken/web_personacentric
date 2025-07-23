@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
+import { Helmet } from 'react-helmet';
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
@@ -11,18 +12,39 @@ const BlogDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [relatedBlogs, setRelatedBlogs] = useState([]);
+  const [activeHeading, setActiveHeading] = useState('');
 
   useEffect(() => {
     fetchBlog();
   }, [slug]);
 
+  useEffect(() => {
+    if (blog) {
+      // Update document title
+      document.title = blog.meta_title || blog.title;
+      
+      // Add schema markup
+      addSchemaMarkup();
+      
+      // Setup table of contents scrolling
+      setupTableOfContents();
+    }
+  }, [blog]);
+
   const fetchBlog = async () => {
     try {
       setLoading(true);
       const response = await apiService.get(`/blogs/${slug}`);
+      
       if (response.success) {
         setBlog(response.data);
-        fetchRelatedBlogs(response.data.categories);
+        // Increment view count
+        await apiService.post(`/blogs/${response.data.id}/view`);
+        
+        // Fetch related blogs
+        if (response.data.categories && response.data.categories.length > 0) {
+          await fetchRelatedBlogs(response.data.categories);
+        }
       } else {
         setError('Blog not found');
       }
@@ -36,20 +58,102 @@ const BlogDetailPage = () => {
 
   const fetchRelatedBlogs = async (categories) => {
     try {
-      if (categories && categories.length > 0) {
-        const categoryId = categories[0].id;
-        const response = await apiService.get(`/blogs?category=${categoryId}&limit=3&exclude=${blog?.id}`);
-        if (response.success) {
-          setRelatedBlogs(response.data.filter(b => b.id !== blog?.id));
-        }
+      const categoryIds = categories.map(cat => cat.id);
+      const response = await apiService.get(`/blogs?category_ids=${categoryIds.join(',')}&limit=3&exclude=${blog?.id}`);
+      if (response.success) {
+        setRelatedBlogs(response.data);
       }
     } catch (error) {
       console.error('Fetch related blogs error:', error);
     }
   };
 
+  const addSchemaMarkup = () => {
+    if (!blog) return;
+
+    const schema = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": blog.title,
+      "description": blog.meta_description || blog.excerpt,
+      "image": blog.featured_image_url,
+      "author": {
+        "@type": "Person",
+        "name": blog.author ? `${blog.author.first_name} ${blog.author.last_name}` : "Financial Advisor"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "PersonaCentric Financial",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://your-domain.com/logo.png"
+        }
+      },
+      "datePublished": blog.published_at,
+      "dateModified": blog.updated_at || blog.published_at,
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": `https://your-domain.com/blogs/${blog.slug}`
+      },
+      "articleSection": blog.categories?.map(cat => cat.name).join(', '),
+      "keywords": blog.meta_keywords,
+      "wordCount": blog.content.split(' ').length,
+      "timeRequired": `PT${blog.reading_time}M`
+    };
+
+    // Remove existing schema
+    const existingSchema = document.querySelector('script[type="application/ld+json"]');
+    if (existingSchema) {
+      existingSchema.remove();
+    }
+
+    // Add new schema
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(schema);
+    document.head.appendChild(script);
+  };
+
+  const setupTableOfContents = () => {
+    const headings = document.querySelectorAll('h2, h3');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHeading(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    headings.forEach(heading => {
+      if (heading.id) {
+        observer.observe(heading);
+      }
+    });
+
+    return () => observer.disconnect();
+  };
+
+  const generateTableOfContents = () => {
+    if (!blog?.content) return [];
+
+    const headings = blog.content.match(/<h[23][^>]*>(.*?)<\/h[23]>/g);
+    if (!headings) return [];
+
+    return headings.map((heading, index) => {
+      const level = heading.match(/<h([23])/)[1];
+      const text = heading.replace(/<[^>]*>/g, '');
+      const id = `heading-${index}`;
+      
+      return { level: parseInt(level), text, id };
+    });
+  };
+
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('zh-TW', {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString(language === 'zh-TW' ? 'zh-TW' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -60,10 +164,25 @@ const BlogDetailPage = () => {
     return language === 'zh-TW' ? `${minutes} 分鐘閱讀` : `${minutes} min read`;
   };
 
+  const shareBlog = (platform) => {
+    const url = window.location.href;
+    const title = blog.title;
+    const text = blog.excerpt;
+
+    const shareUrls = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+      whatsapp: `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`
+    };
+
+    window.open(shareUrls[platform], '_blank', 'width=600,height=400');
+  };
+
   if (loading) {
     return (
       <div className="pt-16 bg-gray-50 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="animate-pulse">
             <div className="h-8 bg-gray-200 rounded w-3/4 mb-4"></div>
             <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
@@ -82,244 +201,279 @@ const BlogDetailPage = () => {
   if (error || !blog) {
     return (
       <div className="pt-16 bg-gray-50 min-h-screen">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {language === 'zh-TW' ? '文章未找到' : 'Article Not Found'}
-            </h1>
-            <p className="text-gray-600 mb-8">
-              {language === 'zh-TW' ? '抱歉，您要查找的文章不存在。' : 'Sorry, the article you are looking for does not exist.'}
-            </p>
-            <button
-              onClick={() => navigate('/blogs')}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-all duration-300"
-            >
-              {language === 'zh-TW' ? '返回部落格' : 'Back to Blog'}
-            </button>
-          </div>
+        <div className="max-w-4xl mx-auto px-4 py-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {language === 'zh-TW' ? '找不到文章' : 'Article Not Found'}
+          </h1>
+          <p className="text-gray-600 mb-8">
+            {language === 'zh-TW' ? '抱歉，您要找的文章不存在。' : 'Sorry, the article you are looking for does not exist.'}
+          </p>
+          <button
+            onClick={() => navigate('/blogs')}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {language === 'zh-TW' ? '返回部落格' : 'Back to Blog'}
+          </button>
         </div>
       </div>
     );
   }
 
+  const tableOfContents = generateTableOfContents();
+
   return (
-    <div className="pt-16 bg-gray-50 min-h-screen">
-      {/* Hero Section */}
-      <div className="bg-white shadow-lg">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Breadcrumb */}
-          <nav className="flex mb-8" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-3">
-              <li className="inline-flex items-center">
-                <button
-                  onClick={() => navigate('/blogs')}
-                  className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600"
-                >
-                  <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
-                  </svg>
+    <>
+      <Helmet>
+        <title>{blog.meta_title || blog.title}</title>
+        <meta name="description" content={blog.meta_description || blog.excerpt} />
+        <meta name="keywords" content={blog.meta_keywords} />
+        <meta property="og:title" content={blog.meta_title || blog.title} />
+        <meta property="og:description" content={blog.meta_description || blog.excerpt} />
+        <meta property="og:image" content={blog.featured_image_url} />
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blog.meta_title || blog.title} />
+        <meta name="twitter:description" content={blog.meta_description || blog.excerpt} />
+        <meta name="twitter:image" content={blog.featured_image_url} />
+        <link rel="canonical" href={window.location.href} />
+      </Helmet>
+
+      <div className="pt-16 bg-gray-50 min-h-screen">
+        {/* Breadcrumb */}
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <nav className="text-sm text-gray-500 mb-4">
+            <ol className="flex items-center space-x-2">
+              <li>
+                <button onClick={() => navigate('/')} className="hover:text-blue-600">
+                  {language === 'zh-TW' ? '首頁' : 'Home'}
+                </button>
+              </li>
+              <li>/</li>
+              <li>
+                <button onClick={() => navigate('/blogs')} className="hover:text-blue-600">
                   {language === 'zh-TW' ? '部落格' : 'Blog'}
                 </button>
               </li>
-              <li>
-                <div className="flex items-center">
-                  <svg className="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                  <span className="ml-1 text-sm font-medium text-gray-500 md:ml-2">
-                    {blog.title}
-                  </span>
-                </div>
-              </li>
+              <li>/</li>
+              <li className="text-gray-900">{blog.title}</li>
             </ol>
           </nav>
+        </div>
 
+        <div className="max-w-4xl mx-auto px-4">
           {/* Article Header */}
-          <div className="mb-8">
-            {/* Categories */}
-            <div className="flex flex-wrap gap-2 mb-4">
-              {blog.categories?.map((category) => (
-                <span
-                  key={category.id}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                >
+          <header className="mb-8">
+            <div className="flex items-center space-x-2 mb-4">
+              {blog.categories && blog.categories.map((category, index) => (
+                <span key={category.id} className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
                   {category.name}
                 </span>
               ))}
             </div>
-
-            {/* Title */}
-            <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+            
+            <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               {blog.title}
             </h1>
+            
+            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+              {blog.excerpt}
+            </p>
 
-            {/* Meta Information */}
-            <div className="flex items-center justify-between mb-8">
+            {/* Meta Info */}
+            <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
               <div className="flex items-center space-x-4">
                 <div className="flex items-center">
-                  <img
-                    src={blog.author?.profile_image_url || 'https://via.placeholder.com/40'}
-                    alt={blog.author?.first_name || 'Author'}
+                  <img 
+                    src={blog.author?.profile_image_url || '/default-avatar.png'} 
+                    alt={blog.author ? `${blog.author.first_name} ${blog.author.last_name}` : 'Author'}
                     className="w-10 h-10 rounded-full mr-3"
                   />
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {blog.author ? `${blog.author.first_name} ${blog.author.last_name}` : 'Unknown Author'}
+                    <p className="font-medium text-gray-900">
+                      {blog.author ? `${blog.author.first_name} ${blog.author.last_name}` : 'Financial Advisor'}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {blog.published_at ? formatDate(blog.published_at) : 'Unknown Date'}
+                    <p className="text-sm text-gray-500">
+                      {formatDate(blog.published_at)}
                     </p>
                   </div>
                 </div>
               </div>
+              
               <div className="flex items-center space-x-4 text-sm text-gray-500">
                 <span>{formatReadingTime(blog.reading_time || 5)}</span>
+                <span>•</span>
                 <span>{blog.view_count || 0} {language === 'zh-TW' ? '次瀏覽' : 'views'}</span>
               </div>
             </div>
-          </div>
+          </header>
 
           {/* Featured Image */}
           {blog.featured_image_url && (
             <div className="mb-8">
-              <img
-                src={blog.featured_image_url}
+              <img 
+                src={blog.featured_image_url} 
                 alt={blog.title}
-                className="w-full h-64 lg:h-96 object-cover rounded-2xl shadow-lg"
+                className="w-full h-64 lg:h-96 object-cover rounded-lg shadow-lg"
               />
             </div>
           )}
-        </div>
-      </div>
 
-      {/* Article Content */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8 lg:p-12">
-          {/* Excerpt */}
-          {blog.excerpt && (
-            <div className="mb-8 p-6 bg-blue-50 rounded-xl border-l-4 border-blue-500">
-              <p className="text-lg text-gray-700 italic">
-                {blog.excerpt}
-              </p>
-            </div>
-          )}
+          <div className="flex gap-8">
+            {/* Table of Contents */}
+            {tableOfContents.length > 0 && (
+              <aside className="hidden lg:block w-64 flex-shrink-0">
+                <div className="sticky top-24 bg-white rounded-lg shadow-sm border p-4">
+                  <h3 className="font-semibold text-gray-900 mb-3">
+                    {language === 'zh-TW' ? '目錄' : 'Table of Contents'}
+                  </h3>
+                  <nav className="space-y-2">
+                    {tableOfContents.map((item, index) => (
+                      <a
+                        key={index}
+                        href={`#${item.id}`}
+                        className={`block text-sm py-1 px-2 rounded transition-colors ${
+                          activeHeading === item.id
+                            ? 'bg-blue-50 text-blue-700 font-medium'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                        }`}
+                        style={{ paddingLeft: `${(item.level - 2) * 12 + 8}px` }}
+                      >
+                        {item.text}
+                      </a>
+                    ))}
+                  </nav>
+                </div>
+              </aside>
+            )}
 
-          {/* Content */}
-          <div className="prose prose-lg max-w-none">
-            <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">
-              {blog.content}
-            </div>
-          </div>
+            {/* Article Content */}
+            <article className="flex-1">
+              <div 
+                className="prose prose-lg max-w-none"
+                dangerouslySetInnerHTML={{ __html: blog.content }}
+              />
 
-          {/* Article Footer */}
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                  <span>{language === 'zh-TW' ? '喜歡' : 'Like'}</span>
-                </button>
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                  </svg>
-                  <span>{language === 'zh-TW' ? '分享' : 'Share'}</span>
-                </button>
-              </div>
-              <div className="text-sm text-gray-500">
-                {language === 'zh-TW' ? '最後更新' : 'Last updated'}: {formatDate(blog.updated_at)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Related Articles */}
-        {relatedBlogs.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              {language === 'zh-TW' ? '相關文章' : 'Related Articles'}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedBlogs.map((relatedBlog) => (
-                <div
-                  key={relatedBlog.id}
-                  className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer"
-                  onClick={() => navigate(`/blogs/${relatedBlog.slug}`)}
-                >
-                  {relatedBlog.featured_image_url && (
-                    <img
-                      src={relatedBlog.featured_image_url}
-                      alt={relatedBlog.title}
-                      className="w-full h-48 object-cover"
-                    />
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center mb-3">
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {relatedBlog.categories?.[0]?.name || '未分類'}
-                      </span>
-                      <span className="ml-auto text-xs text-gray-500">
-                        {formatReadingTime(relatedBlog.reading_time || 5)}
-                      </span>
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
-                      {relatedBlog.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 line-clamp-3">
-                      {relatedBlog.excerpt}
-                    </p>
-                    <div className="flex items-center mt-4">
-                      <img
-                        src={relatedBlog.author?.profile_image_url || 'https://via.placeholder.com/32'}
-                        alt={relatedBlog.author?.first_name || 'Author'}
-                        className="w-8 h-8 rounded-full mr-3"
-                      />
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {relatedBlog.author ? `${relatedBlog.author.first_name} ${relatedBlog.author.last_name}` : 'Unknown Author'}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {relatedBlog.published_at ? formatDate(relatedBlog.published_at) : 'Unknown Date'}
-                        </p>
-                      </div>
+              {/* Article Footer */}
+              <div className="mt-12 pt-8 border-t border-gray-200">
+                <div className="flex items-center justify-between flex-wrap gap-4">
+                  <div className="flex items-center space-x-4">
+                    <span className="text-sm text-gray-500">
+                      {language === 'zh-TW' ? '分享這篇文章：' : 'Share this article:'}
+                    </span>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => shareBlog('facebook')}
+                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                        aria-label="Share on Facebook"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => shareBlog('twitter')}
+                        className="p-2 text-blue-400 hover:bg-blue-50 rounded-full transition-colors"
+                        aria-label="Share on Twitter"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                      </button>
+                      <button
+                        onClick={() => shareBlog('linkedin')}
+                        className="p-2 text-blue-700 hover:bg-blue-50 rounded-full transition-colors"
+                        aria-label="Share on LinkedIn"
+                      >
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                      </button>
                     </div>
                   </div>
+                  
+                  <div className="text-sm text-gray-500">
+                    {language === 'zh-TW' ? '最後更新：' : 'Last updated: '}
+                    {formatDate(blog.updated_at || blog.published_at)}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Newsletter Signup */}
-        <div className="mt-16">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl shadow-xl p-8 lg:p-12 text-white">
-            <div className="text-center max-w-2xl mx-auto">
-              <h3 className="text-2xl lg:text-3xl xl:text-4xl font-bold mb-4 lg:mb-6">
-                {language === 'zh-TW' ? '保持更新' : 'Stay Updated'}
-              </h3>
-              <p className="text-lg lg:text-xl mb-8 lg:mb-10 opacity-90">
-                {language === 'zh-TW'
-                  ? '獲取最新的財務見解和獨家內容'
-                  : 'Get the latest financial insights and exclusive content'
-                }
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
-                  className="flex-1 px-6 py-4 lg:px-8 lg:py-5 rounded-xl text-gray-900 focus:ring-4 focus:ring-white focus:outline-none text-base lg:text-lg"
-                />
-                <button className="bg-white text-blue-600 px-8 py-4 lg:px-10 lg:py-5 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-base lg:text-lg">
-                  {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
-                </button>
               </div>
-            </div>
+            </article>
           </div>
+
+          {/* Related Articles */}
+          {relatedBlogs.length > 0 && (
+            <section className="mt-16">
+              <h2 className="text-2xl font-bold text-gray-900 mb-8">
+                {language === 'zh-TW' ? '相關文章' : 'Related Articles'}
+              </h2>
+              <div className="grid md:grid-cols-3 gap-6">
+                {relatedBlogs.map((relatedBlog) => (
+                  <article key={relatedBlog.id} className="bg-white rounded-lg shadow-sm border overflow-hidden hover:shadow-md transition-shadow">
+                    {relatedBlog.featured_image_url && (
+                      <img 
+                        src={relatedBlog.featured_image_url} 
+                        alt={relatedBlog.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
+                    <div className="p-6">
+                      <div className="flex items-center space-x-2 mb-3">
+                        {relatedBlog.categories && relatedBlog.categories.map((category) => (
+                          <span key={category.id} className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {category.name}
+                          </span>
+                        ))}
+                      </div>
+                      <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                        {relatedBlog.title}
+                      </h3>
+                      <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                        {relatedBlog.excerpt}
+                      </p>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-500">
+                          {formatDate(relatedBlog.published_at)}
+                        </span>
+                        <button
+                          onClick={() => navigate(`/blogs/${relatedBlog.slug}`)}
+                          className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                        >
+                          {language === 'zh-TW' ? '閱讀更多' : 'Read More'} →
+                        </button>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Newsletter Signup */}
+          <section className="mt-16 bg-blue-50 rounded-lg p-8 text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              {language === 'zh-TW' ? '訂閱我們的財務專欄' : 'Subscribe to Our Financial Newsletter'}
+            </h2>
+            <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
+              {language === 'zh-TW' 
+                ? '獲取最新的投資策略、退休規劃建議和財務管理技巧，直接發送到您的收件箱。'
+                : 'Get the latest investment strategies, retirement planning tips, and financial management advice delivered to your inbox.'
+              }
+            </p>
+            <div className="flex max-w-md mx-auto">
+              <input
+                type="email"
+                placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
+                className="flex-1 px-4 py-3 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button className="bg-blue-600 text-white px-6 py-3 rounded-r-lg hover:bg-blue-700 transition-colors">
+                {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
+              </button>
+            </div>
+          </section>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

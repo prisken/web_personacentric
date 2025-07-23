@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://your-domain.com/api/blogs/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /api/
+
+# Allow blog content
+Allow: /blogs/
+Allow: /about/
+Allow: /contact/
+
+# Crawl delay (optional)
+Crawl-delay: 1 
