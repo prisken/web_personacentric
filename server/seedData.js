@@ -324,34 +324,73 @@ async function seedData() {
       });
     }
 
-    // Create client users
-    const client1Password = await bcrypt.hash('client123', 10);
-    const client1 = await User.create({
-      email: 'client1@personacentric.com',
-      password_hash: client1Password,
-      first_name: '王',
-      last_name: '客戶',
-      phone: '+852-4567-8901',
-      role: 'client',
-      language_preference: 'zh-TW',
-      points: 800,
-      subscription_status: 'active',
-      is_verified: true
-    });
-
-    const client2Password = await bcrypt.hash('client123', 10);
-    const client2 = await User.create({
-      email: 'client2@personacentric.com',
-      password_hash: client2Password,
-      first_name: '陳',
-      last_name: '客戶',
-      phone: '+852-5678-9012',
-      role: 'client',
-      language_preference: 'zh-TW',
-      points: 1200,
-      subscription_status: 'active',
-      is_verified: true
-    });
+    // Create client users and client profiles
+    let client1 = null;
+    let client2 = null;
+    const clientSeeds = [
+      {
+        email: 'client1@personacentric.com',
+        password: 'client123',
+        first_name: '王',
+        last_name: '客戶',
+        phone: '+852-4567-8901',
+        language_preference: 'zh-TW',
+        points: 800,
+        subscription_status: 'active',
+        is_verified: true,
+        primary_goal: 'Retirement',
+        investment_timeline: '10+y',
+        risk_tolerance: 'Moderate',
+        financial_situation: 'Established',
+        communication_pref: 'Video',
+        location: 'Hong Kong'
+      },
+      {
+        email: 'client2@personacentric.com',
+        password: 'client123',
+        first_name: '陳',
+        last_name: '客戶',
+        phone: '+852-5678-9012',
+        language_preference: 'zh-TW',
+        points: 1200,
+        subscription_status: 'active',
+        is_verified: true,
+        primary_goal: 'Investment',
+        investment_timeline: '3-10y',
+        risk_tolerance: 'Aggressive',
+        financial_situation: 'Advanced',
+        communication_pref: 'In-person',
+        location: 'Taipei'
+      }
+    ];
+    for (let i = 0; i < clientSeeds.length; i++) {
+      const clientSeed = clientSeeds[i];
+      const passwordHash = await bcrypt.hash(clientSeed.password, 10);
+      const user = await User.create({
+        email: clientSeed.email,
+        password_hash: passwordHash,
+        first_name: clientSeed.first_name,
+        last_name: clientSeed.last_name,
+        phone: clientSeed.phone,
+        role: 'client',
+        language_preference: clientSeed.language_preference,
+        points: clientSeed.points,
+        subscription_status: clientSeed.subscription_status,
+        is_verified: clientSeed.is_verified
+      });
+      await require('./models/Client').create({
+        user_id: user.id,
+        primary_goal: clientSeed.primary_goal,
+        investment_timeline: clientSeed.investment_timeline,
+        risk_tolerance: clientSeed.risk_tolerance,
+        financial_situation: clientSeed.financial_situation,
+        communication_pref: clientSeed.communication_pref,
+        language_preference: clientSeed.language_preference,
+        location: clientSeed.location
+      });
+      if (i === 0) client1 = user;
+      if (i === 1) client2 = user;
+    }
 
     // Create agent profiles
     const agent1Profile = await Agent.create({
@@ -435,24 +474,36 @@ async function seedData() {
       status: 'published'
     });
 
-    // Create some event registrations
-    await EventRegistration.create({
-      event_id: event1.id,
-      user_id: client1.id,
-      status: 'registered'
-    });
+    // Helper for safe event registration
+    async function safeCreateEventRegistration(reg) {
+      const existing = await EventRegistration.findOne({
+        where: { event_id: reg.event_id, user_id: reg.user_id }
+      });
+      if (existing) {
+        console.log('Duplicate event registration found in DB, skipped:', reg);
+        return null;
+      }
+      try {
+        return await EventRegistration.create(reg);
+      } catch (err) {
+        if (err.name === 'SequelizeUniqueConstraintError') {
+          console.log('Duplicate event registration skipped (DB constraint):', reg);
+          return null;
+        } else {
+          throw err;
+        }
+      }
+    }
 
-    await EventRegistration.create({
-      event_id: event2.id,
-      user_id: client1.id,
-      status: 'registered'
-    });
-
-    await EventRegistration.create({
-      event_id: event1.id,
-      user_id: client2.id,
-      status: 'registered'
-    });
+    // Create some event registrations (ensure uniqueness)
+    const eventRegistrations = [
+      { event_id: event1.id, user_id: client1.id, status: 'registered' },
+      { event_id: event2.id, user_id: client1.id, status: 'registered' },
+      { event_id: event1.id, user_id: client2.id, status: 'registered' }
+    ];
+    for (const reg of eventRegistrations) {
+      await safeCreateEventRegistration(reg);
+    }
 
     // Seed blog data
     try {
@@ -486,7 +537,7 @@ async function seedData() {
       transaction_type: 'earned',
       points_amount: 1000,
       description: '內容創作獎勵',
-      content_id: blog1.id
+      // content_id: blog1.id // Removed invalid reference
     });
 
     await PointTransaction.create({
@@ -561,14 +612,14 @@ async function seedData() {
     });
 
     // Create event registrations
-    await EventRegistration.create({
+    await safeCreateEventRegistration({
       event_id: event1.id,
       user_id: client1.id,
       status: 'registered',
       registration_date: new Date('2024-01-10T00:00:00')
     });
 
-    await EventRegistration.create({
+    await safeCreateEventRegistration({
       event_id: event2.id,
       user_id: client2.id,
       status: 'registered',
@@ -619,6 +670,9 @@ async function seedData() {
     console.log('Agent 2: agent2@personacentric.com / agent123');
     console.log('Client 1: client1@personacentric.com / client123');
     console.log('Client 2: client2@personacentric.com / client123');
+
+    const agentUsers = await User.findAll({ where: { role: 'agent' } });
+    console.log('Seeded agent users:', agentUsers.map(u => u.email));
 
   } catch (error) {
     console.error('Error seeding data:', error);
