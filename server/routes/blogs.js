@@ -60,6 +60,44 @@ let blogData = [
     published_at: "2024-01-05T00:00:00.000Z",
     created_at: "2024-01-05T00:00:00.000Z",
     updated_at: "2024-01-05T00:00:00.000Z"
+  },
+  {
+    id: "4",
+    title: "保險規劃指南",
+    slug: "insurance-planning-guide",
+    excerpt: "選擇適合的保險產品，保護您和家人的財務安全。",
+    content: "保險是財務規劃中不可或缺的一部分...",
+    author_id: "admin-user",
+    status: "draft",
+    featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+    meta_title: "保險規劃完整指南",
+    meta_description: "選擇適合的保險產品",
+    reading_time: 8,
+    view_count: 0,
+    like_count: 0,
+    share_count: 0,
+    published_at: null,
+    created_at: "2024-01-20T00:00:00.000Z",
+    updated_at: "2024-01-20T00:00:00.000Z"
+  },
+  {
+    id: "5",
+    title: "房地產投資策略",
+    slug: "real-estate-investment-strategies",
+    excerpt: "了解房地產投資的各種策略和風險管理方法。",
+    content: "房地產投資是許多投資者的首選...",
+    author_id: "admin-user",
+    status: "draft",
+    featured_image_url: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800",
+    meta_title: "房地產投資策略指南",
+    meta_description: "了解房地產投資的各種策略",
+    reading_time: 15,
+    view_count: 0,
+    like_count: 0,
+    share_count: 0,
+    published_at: null,
+    created_at: "2024-01-18T00:00:00.000Z",
+    updated_at: "2024-01-18T00:00:00.000Z"
   }
 ];
 
@@ -77,7 +115,7 @@ router.get('/', async (req, res) => {
     
         // Filter blogs by status
     let filteredBlogs = blogData;
-    if (status) {
+    if (status && status !== 'all') {
       filteredBlogs = blogData.filter(blog => blog.status === status);
     }
 
@@ -306,6 +344,30 @@ router.delete('/:id', authenticateToken, async (req, res) => {
   } catch (error) {
     console.error('Delete blog error:', error);
     res.status(500).json({ success: false, message: 'Failed to delete blog' });
+  }
+});
+
+// Increment blog view count
+router.post('/:id/view', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find the blog in in-memory storage
+    const blog = blogData.find(b => b.id === id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+
+    // Increment view count
+    blog.view_count = (blog.view_count || 0) + 1;
+
+    res.json({
+      success: true,
+      data: { view_count: blog.view_count }
+    });
+  } catch (error) {
+    console.error('Increment view count error:', error);
+    res.status(500).json({ success: false, message: 'Failed to increment view count' });
   }
 });
 
