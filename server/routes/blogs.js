@@ -322,6 +322,24 @@ router.post('/:id/view', async (req, res) => {
   }
 });
 
+// Seed blog data (Admin only)
+router.post('/seed', authenticateToken, async (req, res) => {
+  try {
+    // Check if user is admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Admin access required' });
+    }
+
+    const seedBlogData = require('../seedBlogData');
+    await seedBlogData();
+    
+    res.json({ success: true, message: 'Blog data seeded successfully' });
+  } catch (error) {
+    console.error('Seed blog error:', error);
+    res.status(500).json({ success: false, message: 'Failed to seed blog data' });
+  }
+});
+
 // Generate XML sitemap
 router.get('/sitemap.xml', async (req, res) => {
   try {
