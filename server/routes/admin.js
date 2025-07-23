@@ -20,18 +20,21 @@ router.get('/users', authenticateToken, requireAdmin, async (req, res) => {
     const users = await User.findAll({
       attributes: ['id', 'first_name', 'last_name', 'email', 'role', 'created_at', 'subscription_status'],
       include: [
-        { model: Agent, as: 'agent' },
-        { model: Client, as: 'client' }
+        { model: Agent, as: 'agent', required: false },
+        { model: Client, as: 'client', required: false }
       ],
       order: [['created_at', 'DESC']]
     });
 
+    // Convert to plain objects to avoid serialization issues
+    const plainUsers = users.map(u => u.get({ plain: true }));
+
     res.json({
       success: true,
-      users: users
+      users: plainUsers
     });
   } catch (error) {
-    console.error('Get users error:', error);
+    console.error('Get users error:', error.stack || error);
     res.status(500).json({
       success: false,
       error: 'Failed to fetch users'
