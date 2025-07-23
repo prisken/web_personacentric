@@ -7,6 +7,21 @@ const { Op } = require('sequelize');
 // Get all published blogs with pagination and filtering
 router.get('/', async (req, res) => {
   try {
+    console.log('Blogs endpoint called');
+    
+    // First, check if the table exists
+    try {
+      await BlogPost.findOne();
+      console.log('BlogPost table exists and is accessible');
+    } catch (tableError) {
+      console.error('Table error:', tableError);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Database table issue',
+        error: tableError.message 
+      });
+    }
+    
     const { 
       page = 1, 
       limit = 10, 
