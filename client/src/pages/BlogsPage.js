@@ -146,22 +146,22 @@ const BlogsPage = () => {
       </Helmet>
 
       <div className="pt-16 bg-gray-50 min-h-screen">
-        {/* Hero Section */}
+        {/* Hero Section - Mobile Optimized */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
             <div className="text-center">
-              <h1 className="text-4xl lg:text-5xl font-bold mb-6">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-6">
                 {language === 'zh-TW' ? '財務知識專欄' : 'Financial Knowledge Hub'}
               </h1>
-              <p className="text-xl lg:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
+              <p className="text-base sm:text-lg lg:text-xl xl:text-2xl mb-6 sm:mb-8 max-w-3xl mx-auto opacity-90">
                 {language === 'zh-TW' 
                   ? '由專業財務顧問撰寫的深度文章，助您掌握投資理財要訣'
                   : 'In-depth articles written by professional financial advisors to help you master investment and financial planning'
                 }
               </p>
               <div className="flex justify-center">
-                <div className="bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
-                  <span className="text-lg">
+                <div className="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 sm:px-6 sm:py-3">
+                  <span className="text-sm sm:text-lg">
                     {language === 'zh-TW' ? `${blogPosts.length} 篇專業文章` : `${blogPosts.length} Professional Articles`}
                   </span>
                 </div>
@@ -170,10 +170,10 @@ const BlogsPage = () => {
           </div>
         </div>
 
-        {/* Category Filter */}
+        {/* Category Filter - Mobile Optimized */}
         <div className="bg-white border-b">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-wrap gap-3">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+            <div className="flex flex-wrap gap-2 sm:gap-3 overflow-x-auto scrollbar-hide pb-2">
               {categories.map((category) => {
                 // Handle both string categories and object categories
                 const categoryName = typeof category === 'string' ? category : category.name;
@@ -183,7 +183,7 @@ const BlogsPage = () => {
                   <button
                     key={categoryKey}
                     onClick={() => setSelectedCategory(categoryName)}
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                       selectedCategory === categoryName
                         ? 'bg-blue-600 text-white shadow-lg'
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -197,51 +197,51 @@ const BlogsPage = () => {
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          {/* Featured Post */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          {/* Featured Post - Mobile Optimized */}
           {featuredPost && selectedCategory === 'All' && (
-            <section className="mb-16">
-              <h2 className="text-2xl font-bold text-gray-900 mb-8">
+            <section className="mb-12 sm:mb-16">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
                 {language === 'zh-TW' ? '精選文章' : 'Featured Article'}
               </h2>
-              <article className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+              <article className="bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
                 <div className="lg:flex">
                   <div className="lg:w-1/2">
                     <img 
                       src={featuredPost.featured_image_url} 
                       alt={featuredPost.title}
-                      className="w-full h-64 lg:h-full object-cover"
+                      className="w-full h-48 sm:h-56 lg:h-full object-cover"
                       onError={(e) => {
                         e.target.src = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800';
                       }}
                     />
                   </div>
-                  <div className="lg:w-1/2 p-8 lg:p-12">
-                    <div className="flex items-center mb-4">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
+                  <div className="lg:w-1/2 p-4 sm:p-6 lg:p-8 xl:p-12">
+                    <div className="flex items-center mb-3 sm:mb-4">
+                      <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs lg:text-sm font-medium bg-blue-100 text-blue-800">
                         投資理財
                       </span>
-                      <span className="ml-4 text-sm lg:text-base text-gray-500">
+                      <span className="ml-3 sm:ml-4 text-xs sm:text-sm lg:text-base text-gray-500">
                         {featuredPost.reading_time ? `${featuredPost.reading_time} 分鐘閱讀` : '5 分鐘閱讀'}
                       </span>
                     </div>
                     
-                    <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4 leading-tight">
+                    <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-3 sm:mb-4 leading-tight">
                       {featuredPost.title}
                     </h3>
                     
-                    <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-600 mb-4 sm:mb-6 leading-relaxed">
                       {featuredPost.excerpt}
                     </p>
                     
-                    <div className="flex items-center mb-8">
-                      <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full mr-3 lg:mr-4 bg-blue-600 flex items-center justify-center">
-                        <span className="text-white font-bold text-sm lg:text-base">
+                    <div className="flex items-center mb-6 sm:mb-8">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full mr-2 sm:mr-3 lg:mr-4 bg-blue-600 flex items-center justify-center">
+                        <span className="text-white font-bold text-xs sm:text-sm lg:text-base">
                           {featuredPost.author_id ? featuredPost.author_id.charAt(0).toUpperCase() : 'A'}
                         </span>
                       </div>
                       <div>
-                        <p className="text-sm lg:text-base font-medium text-gray-900">
+                        <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-900">
                           {featuredPost.author_id || 'Admin User'}
                         </p>
                         <p className="text-xs lg:text-sm text-gray-500">
@@ -252,7 +252,7 @@ const BlogsPage = () => {
                     
                     <button 
                       onClick={() => navigate(`/blogs/${featuredPost.slug}`)}
-                      className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      className="bg-blue-600 text-white px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
                     >
                       {language === 'zh-TW' ? '閱讀全文' : 'Read More'}
                     </button>
@@ -262,73 +262,73 @@ const BlogsPage = () => {
             </section>
           )}
 
-          {/* Regular Posts Grid */}
+          {/* Regular Posts Grid - Mobile Optimized */}
           <section>
-            <h2 className="text-2xl font-bold text-gray-900 mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8">
               {language === 'zh-TW' ? '最新文章' : 'Latest Articles'}
             </h2>
             
             {loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="bg-white rounded-xl shadow-lg overflow-hidden animate-pulse">
-                    <div className="h-48 bg-gray-200"></div>
-                    <div className="p-6">
-                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-3"></div>
-                      <div className="h-6 bg-gray-200 rounded w-full mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-5/6 mb-4"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  <div key={i} className="bg-white rounded-lg sm:rounded-xl shadow-lg overflow-hidden animate-pulse">
+                    <div className="h-32 sm:h-40 lg:h-48 bg-gray-200"></div>
+                    <div className="p-4 sm:p-6">
+                      <div className="h-3 bg-gray-200 rounded w-1/3 mb-2 sm:mb-3"></div>
+                      <div className="h-4 sm:h-6 bg-gray-200 rounded w-full mb-1 sm:mb-2"></div>
+                      <div className="h-3 sm:h-4 bg-gray-200 rounded w-5/6 mb-3 sm:mb-4"></div>
+                      <div className="h-3 sm:h-4 bg-gray-200 rounded w-1/2"></div>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {regularPosts.map((post) => (
-                  <article key={post.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
+                  <article key={post.id} className="bg-white rounded-lg sm:rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group">
                     <div className="relative overflow-hidden">
                       <img 
                         src={post.featured_image_url} 
                         alt={post.title}
-                        className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                        className="w-full h-32 sm:h-40 lg:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           e.target.src = 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800';
                         }}
                       />
-                      <div className="absolute top-4 left-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      <div className="absolute top-2 left-2 sm:top-4 sm:left-4">
+                        <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                           投資理財
                         </span>
                       </div>
                     </div>
                     
-                    <div className="p-6">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-sm text-gray-500">
+                    <div className="p-4 sm:p-6">
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
+                        <span className="text-xs sm:text-sm text-gray-500">
                           {post.reading_time ? `${post.reading_time} 分鐘閱讀` : post.readTime || '5 分鐘閱讀'}
                         </span>
-                        <span className="text-sm text-gray-500">
+                        <span className="text-xs sm:text-sm text-gray-500">
                           {post.view_count || 0} {language === 'zh-TW' ? '次瀏覽' : 'views'}
                         </span>
                       </div>
                       
-                      <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-2 group-hover:text-blue-600 transition-colors">
                         {post.title}
                       </h3>
                       
-                      <p className="text-gray-600 mb-4 line-clamp-3">
+                      <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3">
                         {post.excerpt}
                       </p>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center">
-                          <div className="w-8 h-8 rounded-full mr-3 bg-blue-600 flex items-center justify-center">
+                          <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full mr-2 sm:mr-3 bg-blue-600 flex items-center justify-center">
                             <span className="text-white font-bold text-xs">
                               {post.author_id ? post.author_id.charAt(0).toUpperCase() : 'A'}
                             </span>
                           </div>
                           <div>
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-xs sm:text-sm font-medium text-gray-900">
                               {post.author_id || 'Admin User'}
                             </p>
                             <p className="text-xs text-gray-500">
@@ -339,7 +339,7 @@ const BlogsPage = () => {
                         
                         <button 
                           onClick={() => navigate(`/blogs/${post.slug}`)}
-                          className="text-blue-600 hover:text-blue-700 font-semibold text-sm lg:text-base transition-all duration-200 hover:translate-x-1"
+                          className="text-blue-600 hover:text-blue-700 font-semibold text-xs sm:text-sm lg:text-base transition-all duration-200 hover:translate-x-1"
                         >
                           {language === 'zh-TW' ? '閱讀更多' : 'Read More'} →
                         </button>
@@ -351,24 +351,24 @@ const BlogsPage = () => {
             )}
           </section>
 
-          {/* Newsletter Signup */}
-          <section className="mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 lg:p-12 text-white text-center">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+          {/* Newsletter Signup - Mobile Optimized */}
+          <section className="mt-12 sm:mt-16 lg:mt-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg sm:rounded-xl lg:rounded-2xl p-6 sm:p-8 lg:p-12 text-white text-center">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold mb-3 sm:mb-4">
               {language === 'zh-TW' ? '訂閱財務專欄' : 'Subscribe to Financial Insights'}
             </h2>
-            <p className="text-lg lg:text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            <p className="text-sm sm:text-base lg:text-lg xl:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto opacity-90">
               {language === 'zh-TW' 
                 ? '獲取最新的投資策略、退休規劃建議和財務管理技巧，直接發送到您的收件箱。'
                 : 'Get the latest investment strategies, retirement planning tips, and financial management advice delivered to your inbox.'
               }
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center max-w-md mx-auto">
               <input
                 type="email"
                 placeholder={language === 'zh-TW' ? '輸入您的電子郵件' : 'Enter your email'}
-                className="flex-1 px-6 py-4 rounded-xl text-gray-900 focus:ring-4 focus:ring-white focus:outline-none text-base"
+                className="flex-1 px-4 py-3 sm:px-6 sm:py-4 rounded-lg sm:rounded-xl text-gray-900 focus:ring-4 focus:ring-white focus:outline-none text-sm sm:text-base"
               />
-              <button className="bg-white text-blue-600 px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-base">
+              <button className="bg-white text-blue-600 px-6 py-3 sm:px-8 sm:py-4 rounded-lg sm:rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl text-sm sm:text-base">
                 {language === 'zh-TW' ? '訂閱' : 'Subscribe'}
               </button>
             </div>
