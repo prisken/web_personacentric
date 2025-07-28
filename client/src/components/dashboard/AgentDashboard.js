@@ -51,15 +51,17 @@ const AgentDashboard = ({ data, onRefresh }) => {
     }
   };
 
+  const { t } = useTranslation();
+  
   const tabs = [
-    { id: 'overview', label: '總覽', icon: '📊' },
-    { id: 'clients', label: '客戶管理', icon: '👥' },
-    { id: 'events', label: '活動管理', icon: '📅' },
-    { id: 'content', label: '內容創作', icon: '📝' },
-    { id: 'analytics', label: '積分管理', icon: '🎯' },
-    { id: 'contests', label: '競賽參與', icon: '🏆' },
-    { id: 'financial_planning', label: '理財產品配', icon: '💰' },
-    { id: 'profile', label: '個人資料', icon: '👤' }
+    { id: 'overview', label: t('dashboard.tabs.overview'), icon: '📊' },
+    { id: 'clients', label: t('dashboard.tabs.agentConnection'), icon: '👥' },
+    { id: 'events', label: t('dashboard.tabs.events'), icon: '📅' },
+    { id: 'content', label: t('dashboard.tabs.blogManagement'), icon: '📝' },
+    { id: 'analytics', label: t('dashboard.tabs.points'), icon: '🎯' },
+    { id: 'contests', label: t('dashboard.tabs.contests'), icon: '🏆' },
+    { id: 'financial_planning', label: t('financialPlanning.tab'), icon: '💰' },
+    { id: 'profile', label: t('dashboard.tabs.profile'), icon: '👤' }
   ];
 
   // Utility to notify other components (like Header) of profile image update

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from '../../contexts/LanguageContext';
 import ProductCard from './ProductCard';
 import CreateProductModal from './CreateProductModal';
 import LoadUserModal from './LoadUserModal';
@@ -19,6 +20,7 @@ const ProductConfigurationPage = ({
   loadUser,
   currentUser
 }) => {
+  const { t } = useTranslation();
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
       style: 'currency',
@@ -30,25 +32,25 @@ const ProductConfigurationPage = ({
     <div className="space-y-6">
       {/* Header with action buttons */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-gray-900">理財產品配置</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{t('financialPlanning.title')}</h2>
         <div className="flex space-x-4">
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
           >
-            ➕ 創建
+            ➕ {t('financialPlanning.create')}
           </button>
           <button
             onClick={() => setShowLoadModal(true)}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
           >
-            📂 載入已保存
+            📂 {t('financialPlanning.loadSaved')}
           </button>
           <button
             onClick={saveCurrentUser}
             className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
           >
-            💾 保存
+            💾 {t('financialPlanning.save')}
           </button>
         </div>
       </div>
@@ -66,13 +68,13 @@ const ProductConfigurationPage = ({
       {products.length === 0 ? (
         <div className="text-center py-12">
           <div className="text-gray-400 text-6xl mb-4">💰</div>
-          <h3 className="text-xl font-medium text-gray-900 mb-2">開始配置理財產品</h3>
-          <p className="text-gray-500 mb-6">點擊「創建」按鈕開始添加您的第一個理財產品</p>
+          <h3 className="text-xl font-medium text-gray-900 mb-2">{t('financialPlanning.noProducts')}</h3>
+          <p className="text-gray-500 mb-6">{t('financialPlanning.noProductsDescription')}</p>
           <button
             onClick={() => setShowCreateModal(true)}
             className="bg-green-600 text-white px-8 py-4 rounded-lg hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-lg"
           >
-            ➕ 創建第一個產品
+            ➕ {t('financialPlanning.create')}
           </button>
         </div>
       ) : (

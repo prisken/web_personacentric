@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title } from 'chart.js';
 import { Pie, Line, Bar } from 'react-chartjs-2';
+import { useTranslation } from '../../contexts/LanguageContext';
 import ProductConfigurationPage from './ProductConfigurationPage';
 import FinancialAnalysisPage from './FinancialAnalysisPage';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title);
 
 const FinancialPlanningTab = () => {
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(1);
   const [currentUser, setCurrentUser] = useState(null);
   const [products, setProducts] = useState([]);
@@ -23,18 +25,18 @@ const FinancialPlanningTab = () => {
   // Product types and their options
   const productTypes = {
     investment: [
-      { id: 'funds', name: '基金', icon: '📈' },
-      { id: 'mpf', name: '強積金', icon: '🏦' }
+      { id: 'funds', name: t('financialPlanning.funds'), icon: '📈' },
+      { id: 'mpf', name: t('financialPlanning.mpf'), icon: '🏦' }
     ],
     saving: [
-      { id: 'saving_plans', name: '儲蓄計劃', icon: '💰' },
-      { id: 'bank', name: '銀行', icon: '🏛️' },
-      { id: 'retirement_funds', name: '退休基金', icon: '🎯' }
+      { id: 'saving_plans', name: t('financialPlanning.savingPlans'), icon: '💰' },
+      { id: 'bank', name: t('financialPlanning.bank'), icon: '🏛️' },
+      { id: 'retirement_funds', name: t('financialPlanning.retirementFunds'), icon: '🎯' }
     ],
     real_estate: [
-      { id: 'own_living', name: '自住', icon: '🏠' },
-      { id: 'renting', name: '租賃', icon: '🏢' },
-      { id: 'owner', name: '出租', icon: '🏘️' }
+      { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
+      { id: 'renting', name: t('financialPlanning.renting'), icon: '🏢' },
+      { id: 'owner', name: t('financialPlanning.ownerToRentOut'), icon: '🏘️' }
     ]
   };
 
@@ -254,7 +256,7 @@ const FinancialPlanningTab = () => {
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
-          產品配置
+          {t('financialPlanning.page1')}
         </button>
         <button
           onClick={() => setCurrentPage(2)}
@@ -264,7 +266,7 @@ const FinancialPlanningTab = () => {
               : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
           }`}
         >
-          財務分析
+          {t('financialPlanning.page2')}
         </button>
       </div>
 

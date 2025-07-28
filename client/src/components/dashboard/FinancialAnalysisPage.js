@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Line, Bar, Pie } from 'react-chartjs-2';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 const FinancialAnalysisPage = ({
   products,
@@ -21,6 +22,7 @@ const FinancialAnalysisPage = ({
   const [isCalculating, setIsCalculating] = useState(false);
   const [showFormulaDialog, setShowFormulaDialog] = useState(false);
   const [currentFormula, setCurrentFormula] = useState({ title: '', formula: '', description: '' });
+  const { t } = useTranslation();
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -563,24 +565,24 @@ const FinancialAnalysisPage = ({
 
   const chartData = {
     line: {
-      labels: financialData.map(d => `${d.age}歲`),
+      labels: financialData.map(d => `${d.age}${t('financialPlanning.yearsOld')}`),
       datasets: [
         {
-          label: '淨資產',
+          label: t('financialPlanning.netWorth'),
           data: financialData.map(d => d.netWorth),
           borderColor: 'rgb(59, 130, 246)',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
           tension: 0.1
         },
         {
-          label: '被動收入',
+          label: t('financialPlanning.passiveIncome'),
           data: financialData.map(d => d.monthlyPassiveIncome * 12),
           borderColor: 'rgb(34, 197, 94)',
           backgroundColor: 'rgba(34, 197, 94, 0.1)',
           tension: 0.1
         },
         {
-          label: '年開支',
+          label: t('financialPlanning.monthlyExpenses'),
           data: financialData.map(d => d.totalExpenses * 12),
           borderColor: 'rgb(239, 68, 68)',
           backgroundColor: 'rgba(239, 68, 68, 0.1)',
@@ -589,7 +591,7 @@ const FinancialAnalysisPage = ({
       ]
     },
     pie: {
-      labels: ['物業', '現金', '投資', '其他'],
+      labels: [t('financialPlanning.property'), t('financialPlanning.cash'), t('financialPlanning.investments'), t('financialPlanning.other')],
       datasets: [{
         data: Object.values(calculateAssetAllocation(selectedAge)),
         backgroundColor: [
@@ -601,9 +603,9 @@ const FinancialAnalysisPage = ({
       }]
     },
     bar: {
-      labels: ['工作收入', '基金收益', '強積金', '儲蓄計劃', '銀行利息', '退休基金', '租金收入'],
+      labels: [t('financialPlanning.workIncome'), t('financialPlanning.fundIncome'), t('financialPlanning.mpfIncome'), t('financialPlanning.savingIncome'), t('financialPlanning.bankIncome'), t('financialPlanning.retirementIncome'), t('financialPlanning.rentalIncome')],
       datasets: [{
-        label: '收入來源 (HKD)',
+        label: t('financialPlanning.incomeSources'),
         data: calculateIncomeSources(selectedAge),
         backgroundColor: [
           'rgba(59, 130, 246, 0.8)',
@@ -623,19 +625,19 @@ const FinancialAnalysisPage = ({
       {/* Configuration Section */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">財務分析設定</h2>
+          <h2 className="text-xl font-bold text-gray-900">{t('financialPlanning.financialAnalysis')}</h2>
           <button
             onClick={calculateFinancialProjection}
             disabled={isCalculating}
             className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
           >
-            {isCalculating ? '計算中...' : '🔄 重新計算'}
+            {isCalculating ? t('financialPlanning.calculating') : `🔄 ${t('financialPlanning.recalculate')}`}
           </button>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">退休年齡</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.retirementAge')}</label>
             <input
               type="number"
               value={retirementAge}
@@ -644,7 +646,7 @@ const FinancialAnalysisPage = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">通脹率 (%)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.inflationRate')}</label>
             <input
               type="number"
               value={inflationRate}
@@ -653,7 +655,7 @@ const FinancialAnalysisPage = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">當前資產 (HKD)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.currentAssets')}</label>
             <input
               type="number"
               value={currentAssets}
@@ -662,7 +664,7 @@ const FinancialAnalysisPage = ({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">分析期間</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.analysisPeriod')}</label>
             <div className="space-y-2">
               <div className="flex space-x-2">
                 <input
@@ -673,7 +675,7 @@ const FinancialAnalysisPage = ({
                   min="18"
                   max="120"
                 />
-                <span className="self-center">至</span>
+                <span className="self-center">{t('financialPlanning.to')}</span>
                 <input
                   type="number"
                   value={analysisPeriod.end}
@@ -688,19 +690,19 @@ const FinancialAnalysisPage = ({
                   onClick={() => setAnalysisPeriod({start: 65, end: 75})}
                   className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
                 >
-                  退休期
+                  {t('financialPlanning.retirementPeriod')}
                 </button>
                 <button
                   onClick={() => setAnalysisPeriod({start: 60, end: 90})}
                   className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
                 >
-                  長期
+                  {t('financialPlanning.longTerm')}
                 </button>
                 <button
                   onClick={() => setAnalysisPeriod({start: 30, end: 65})}
                   className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
                 >
-                  工作期
+                  {t('financialPlanning.workingPeriod')}
                 </button>
               </div>
             </div>
