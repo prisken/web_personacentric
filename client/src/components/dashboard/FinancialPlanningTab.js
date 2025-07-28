@@ -5,6 +5,7 @@ import { useTranslation } from '../../contexts/LanguageContext';
 import ProductConfigurationPage from './ProductConfigurationPage';
 import FinancialAnalysisPage from './FinancialAnalysisPage';
 import FinancialPlanningPDFReport from './FinancialPlanningPDFReport';
+import RecommendationsEditor from './RecommendationsEditor';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title);
 
@@ -24,7 +25,14 @@ const FinancialPlanningTab = () => {
   const [analysisPeriod, setAnalysisPeriod] = useState({ start: 65, end: 75 });
   const [showFormula, setShowFormula] = useState({});
   const [showPDFReport, setShowPDFReport] = useState(false);
+  const [showRecommendationsEditor, setShowRecommendationsEditor] = useState(false);
   const [financialData, setFinancialData] = useState([]);
+  const [recommendations, setRecommendations] = useState([
+    '定期檢視和調整您的投資組合以符合市場變化',
+    '考慮增加退休儲蓄以確保退休後的生活品質',
+    '多元化投資以分散風險並提高回報潛力',
+    '定期與財務顧問會面以檢討和優化您的財務計劃'
+  ]);
 
   // Product types and their options
   const productTypes = {
@@ -222,6 +230,7 @@ const FinancialPlanningTab = () => {
       currentAssets,
       expenses,
       analysisPeriod,
+      recommendations,
       savedAt: new Date().toISOString()
     };
 
@@ -240,6 +249,12 @@ const FinancialPlanningTab = () => {
     setCurrentAssets(userData.currentAssets || 0);
     setExpenses(userData.expenses || []);
     setAnalysisPeriod(userData.analysisPeriod || { start: 65, end: 75 });
+    setRecommendations(userData.recommendations || [
+      '定期檢視和調整您的投資組合以符合市場變化',
+      '考慮增加退休儲蓄以確保退休後的生活品質',
+      '多元化投資以分散風險並提高回報潛力',
+      '定期與財務顧問會面以檢討和優化您的財務計劃'
+    ]);
     setShowLoadModal(false);
   };
 
@@ -272,6 +287,12 @@ const FinancialPlanningTab = () => {
             />
           </div>
           <div className="flex space-x-3">
+            <button
+              onClick={() => setShowRecommendationsEditor(true)}
+              className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+            >
+              ✏️ {t('financialPlanning.editRecommendationsButton')}
+            </button>
             <button
               onClick={() => setShowPDFReport(true)}
               disabled={!clientName.trim() || products.length === 0}
@@ -353,8 +374,17 @@ const FinancialPlanningTab = () => {
         expenses={expenses}
         analysisPeriod={analysisPeriod}
         financialData={financialData}
+        recommendations={recommendations}
         isVisible={showPDFReport}
         onClose={() => setShowPDFReport(false)}
+      />
+
+      {/* Recommendations Editor Modal */}
+      <RecommendationsEditor
+        recommendations={recommendations}
+        onRecommendationsChange={setRecommendations}
+        isVisible={showRecommendationsEditor}
+        onClose={() => setShowRecommendationsEditor(false)}
       />
     </div>
   );

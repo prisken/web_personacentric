@@ -12,6 +12,7 @@ const FinancialPlanningPDFReport = ({
   expenses,
   analysisPeriod,
   financialData,
+  recommendations,
   isVisible,
   onClose
 }) => {
@@ -397,22 +398,12 @@ const FinancialPlanningPDFReport = ({
             </h2>
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
               <ul className="space-y-3 text-sm">
-                <li className="flex items-start">
-                  <span className="text-yellow-600 mr-2">•</span>
-                  {t('financialPlanning.recommendation1')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-yellow-600 mr-2">•</span>
-                  {t('financialPlanning.recommendation2')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-yellow-600 mr-2">•</span>
-                  {t('financialPlanning.recommendation3')}
-                </li>
-                <li className="flex items-start">
-                  <span className="text-yellow-600 mr-2">•</span>
-                  {t('financialPlanning.recommendation4')}
-                </li>
+                {recommendations.map((recommendation, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="text-yellow-600 mr-2">•</span>
+                    {recommendation}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

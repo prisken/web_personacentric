@@ -730,6 +730,17 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.generateReport': '生成報告',
       'financialPlanning.reportGenerated': '報告已生成',
       'financialPlanning.reportGenerationFailed': '報告生成失敗',
+
+      // Recommendations Editor
+      'financialPlanning.editRecommendations': '編輯建議',
+      'financialPlanning.resetToDefault': '重置為預設',
+      'financialPlanning.recommendationsDescription': '自定義您的財務規劃建議。這些建議將顯示在PDF報告中，為客戶提供專業的財務指導。',
+      'financialPlanning.enterRecommendation': '輸入建議內容...',
+      'financialPlanning.removeRecommendation': '移除建議',
+      'financialPlanning.addRecommendation': '添加建議',
+      'financialPlanning.recommendationsPreview': '建議預覽',
+      'financialPlanning.emptyRecommendation': '（空建議）',
+      'financialPlanning.editRecommendationsButton': '編輯建議',
     },
     'en': {
       // Navigation
@@ -1257,6 +1268,17 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.generateReport': 'Generate Report',
       'financialPlanning.reportGenerated': 'Report generated successfully',
       'financialPlanning.reportGenerationFailed': 'Report generation failed',
+
+      // Recommendations Editor
+      'financialPlanning.editRecommendations': 'Edit Recommendations',
+      'financialPlanning.resetToDefault': 'Reset to Default',
+      'financialPlanning.recommendationsDescription': 'Customize your financial planning recommendations. These recommendations will appear in the PDF report to provide professional financial guidance to clients.',
+      'financialPlanning.enterRecommendation': 'Enter recommendation content...',
+      'financialPlanning.removeRecommendation': 'Remove Recommendation',
+      'financialPlanning.addRecommendation': 'Add Recommendation',
+      'financialPlanning.recommendationsPreview': 'Recommendations Preview',
+      'financialPlanning.emptyRecommendation': '(Empty recommendation)',
+      'financialPlanning.editRecommendationsButton': 'Edit Recommendations',
 
       // Dashboard
       'dashboard.admin.title': 'Administrator Dashboard',
