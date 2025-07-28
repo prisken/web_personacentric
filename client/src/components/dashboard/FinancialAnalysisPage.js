@@ -19,6 +19,8 @@ const FinancialAnalysisPage = ({
   const [financialData, setFinancialData] = useState([]);
   const [selectedAge, setSelectedAge] = useState(65);
   const [isCalculating, setIsCalculating] = useState(false);
+  const [showFormulaDialog, setShowFormulaDialog] = useState(false);
+  const [currentFormula, setCurrentFormula] = useState({ title: '', formula: '', description: '' });
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -291,20 +293,57 @@ const FinancialAnalysisPage = ({
     }
   };
 
-  const getFormulaInfo = (field) => {
+  const showFormulaInfo = (field) => {
     const formulas = {
-      totalMonthlyIncome: '工作收入 + 投資收益 + 租金收入 + 其他被動收入',
-      monthlyPassiveIncome: '投資收益 + 租金收入 + 退休金收入',
-      totalExpenses: '基本開支 × (1 + 通脹率)^年數',
-      netCashFlow: '總月收入 - 總月開支',
-      totalAssets: '當前資產 + 投資增長 + 物業增值',
-      totalLiabilities: '剩餘按揭 + 其他債務',
-      netWorth: '總資產 - 總負債',
-      cashReserve: '總資產 ÷ 月開支 (月數)',
-      withdrawalRate: '(年開支 ÷ 總資產) × 100%',
-      probabilityOfOutliving: '基於現金儲備月數評估'
+      totalMonthlyIncome: {
+        title: '總月收入計算公式',
+        formula: '工作收入 + 投資收益 + 租金收入 + 其他被動收入',
+        description: '包括所有收入來源：工作薪資（退休前）、基金提取、強積金、租金收入等'
+      },
+      monthlyPassiveIncome: {
+        title: '月被動收入計算公式',
+        formula: '投資收益 + 租金收入 + 退休金收入',
+        description: '無需工作即可獲得的收入，包括投資分紅、租金、退休金等'
+      },
+      totalExpenses: {
+        title: '月開支計算公式',
+        formula: '基本開支 × (1 + 通脹率)^年數',
+        description: '考慮通脹因素調整後的月開支，通脹率會逐年累積影響'
+      },
+      netCashFlow: {
+        title: '淨現金流計算公式',
+        formula: '總月收入 - 總月開支',
+        description: '每月實際可支配的現金，正值表示有盈餘，負值表示需要動用儲蓄'
+      },
+      totalAssets: {
+        title: '總資產計算公式',
+        formula: '當前資產 + 投資增長 + 物業增值',
+        description: '包括現金、投資組合、物業價值等所有資產的總和'
+      },
+      totalLiabilities: {
+        title: '總負債計算公式',
+        formula: '剩餘按揭 + 其他債務',
+        description: '包括未償還的按揭貸款、個人貸款等所有債務'
+      },
+      netWorth: {
+        title: '淨資產計算公式',
+        formula: '總資產 - 總負債',
+        description: '實際擁有的財富總額，是財務狀況的重要指標'
+      },
+      cashReserve: {
+        title: '現金儲備計算公式',
+        formula: '總資產 ÷ 月開支 (月數)',
+        description: '在不增加收入的情況下，現有資產可以維持生活開支的月數'
+      },
+      withdrawalRate: {
+        title: '提取率計算公式',
+        formula: '(年開支 ÷ 總資產) × 100%',
+        description: '每年從資產中提取的百分比，4%是常用的安全提取率'
+      }
     };
-    return formulas[field] || '';
+    
+    setCurrentFormula(formulas[field] || { title: '未知', formula: '無公式', description: '無描述' });
+    setShowFormulaDialog(true);
   };
 
   useEffect(() => {
@@ -525,13 +564,90 @@ const FinancialAnalysisPage = ({
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">年齡</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">總月收入</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">被動收入</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">月開支</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">淨現金流</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">淨資產</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">現金儲備</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">提取率</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>總月收入</span>
+                        <button
+                          onClick={() => showFormulaInfo('totalMonthlyIncome')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>被動收入</span>
+                        <button
+                          onClick={() => showFormulaInfo('monthlyPassiveIncome')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>月開支</span>
+                        <button
+                          onClick={() => showFormulaInfo('totalExpenses')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>淨現金流</span>
+                        <button
+                          onClick={() => showFormulaInfo('netCashFlow')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>淨資產</span>
+                        <button
+                          onClick={() => showFormulaInfo('netWorth')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>現金儲備</span>
+                        <button
+                          onClick={() => showFormulaInfo('cashReserve')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>提取率</span>
+                        <button
+                          onClick={() => showFormulaInfo('withdrawalRate')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -611,6 +727,37 @@ const FinancialAnalysisPage = ({
             >
               🚀 開始分析
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Formula Dialog */}
+      {showFormulaDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-900">{currentFormula.title}</h3>
+                <button
+                  onClick={() => setShowFormulaDialog(false)}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">計算公式：</h4>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <p className="text-blue-800 font-mono text-sm">{currentFormula.formula}</p>
+                </div>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">說明：</h4>
+                <p className="text-gray-600 text-sm leading-relaxed">{currentFormula.description}</p>
+              </div>
+            </div>
           </div>
         </div>
       )}
