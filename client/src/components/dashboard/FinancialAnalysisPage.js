@@ -15,7 +15,8 @@ const FinancialAnalysisPage = ({
   analysisPeriod,
   setAnalysisPeriod,
   showFormula,
-  setShowFormula
+  setShowFormula,
+  onFinancialDataUpdate
 }) => {
   const [financialData, setFinancialData] = useState([]);
   const [selectedAge, setSelectedAge] = useState(65);
@@ -86,6 +87,9 @@ const FinancialAnalysisPage = ({
     }
 
     setFinancialData(data);
+    if (onFinancialDataUpdate) {
+      onFinancialDataUpdate(data);
+    }
     setIsCalculating(false);
     }, 100);
   };
