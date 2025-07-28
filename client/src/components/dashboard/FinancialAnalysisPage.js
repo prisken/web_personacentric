@@ -257,16 +257,204 @@ const FinancialAnalysisPage = ({
       other: 0
     };
 
-    // This is a simplified calculation
-    const totalAssets = calculateTotalAssets(age);
-    if (totalAssets > 0) {
-      allocation.property = 0.4; // 40% property
-      allocation.cash = 0.2; // 20% cash
-      allocation.investments = 0.35; // 35% investments
-      allocation.other = 0.05; // 5% other
+    // Calculate real asset allocation based on products
+    products.forEach(product => {
+      const productValue = calculateProductValueAtAge(product, age);
+      
+      switch (product.subType) {
+        case 'funds':
+        case 'mpf':
+          allocation.investments += productValue;
+          break;
+        case 'saving_plans':
+        case 'bank':
+        case 'retirement_funds':
+          allocation.cash += productValue;
+          break;
+        case 'own_living':
+        case 'rental':
+        case 'owner_to_rent_out':
+          allocation.property += productValue;
+          break;
+        default:
+          allocation.other += productValue;
+      }
+    });
+
+    // Add current assets to cash
+    allocation.cash += currentAssets;
+
+    // Calculate total and convert to percentages
+    const total = allocation.property + allocation.cash + allocation.investments + allocation.other;
+    
+    if (total > 0) {
+      allocation.property = allocation.property / total;
+      allocation.cash = allocation.cash / total;
+      allocation.investments = allocation.investments / total;
+      allocation.other = allocation.other / total;
     }
 
     return allocation;
+  };
+
+  const calculateIncomeSources = (age) => {
+    const incomeSources = {
+      workIncome: 0,
+      fundIncome: 0,
+      mpfIncome: 0,
+      savingIncome: 0,
+      bankIncome: 0,
+      retirementIncome: 0,
+      rentalIncome: 0
+    };
+
+    // Calculate income from each product type
+    products.forEach(product => {
+      const data = product.data;
+      
+      switch (product.subType) {
+        case 'funds':
+          if (age >= data.expectedWithdrawalAge) {
+            // Start withdrawing from funds
+            const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, data.expectedWithdrawalAge - data.startAge);
+            incomeSources.fundIncome += fundValue * 0.04; // 4% withdrawal rate
+          }
+          break;
+          
+        case 'mpf':
+          if (age >= 65) {
+            // Start MPF withdrawal
+            const monthlyContribution = (data.monthlySalary * data.employerContribution / 100) + 
+                                       (data.monthlySalary * data.employeeContribution / 100);
+            const mpfValue = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, 65 - data.currentAge);
+            incomeSources.mpfIncome += mpfValue * 0.04; // 4% withdrawal rate
+          }
+          break;
+          
+        case 'saving_plans':
+          if (age >= data.surrenderAge) {
+            // Start receiving from saving plans
+            const savingValue = data.contribution * 12 * (data.surrenderAge - data.startAge);
+            incomeSources.savingIncome += savingValue / 12; // Monthly payout
+          }
+          break;
+          
+        case 'bank':
+          if (age >= data.withdrawalAge) {
+            // Start bank interest income
+            const bankValue = data.contribution * 12 * (data.withdrawalAge - data.startAge) * (1 + data.interestRate / 100);
+            incomeSources.bankIncome += bankValue * (data.interestRate / 100) / 12; // Monthly interest
+          }
+          break;
+          
+        case 'retirement_funds':
+          if (age >= data.targetRetirementAge) {
+            // Start retirement fund income
+            const retirementValue = data.contributionAmount * 12 * (data.targetRetirementAge - data.startAge) * (1 + data.expectedReturn / 100);
+            incomeSources.retirementIncome += retirementValue * 0.04; // 4% withdrawal rate
+          }
+          break;
+          
+        case 'rental':
+          // Rental income starts immediately
+          incomeSources.rentalIncome += data.rentalExpenses * 12;
+          break;
+          
+        case 'owner_to_rent_out':
+          // Rental income from owned property
+          incomeSources.rentalIncome += data.rentAmount * 12;
+          break;
+      }
+    });
+
+    // Work income (before retirement)
+    if (age < retirementAge) {
+      incomeSources.workIncome = 50000 * 12; // Example salary, should be configurable
+    }
+
+    return [
+      incomeSources.workIncome,
+      incomeSources.fundIncome,
+      incomeSources.mpfIncome,
+      incomeSources.savingIncome,
+      incomeSources.bankIncome,
+      incomeSources.retirementIncome,
+      incomeSources.rentalIncome
+    ];
+  };
+
+  const calculateProductValueAtAge = (product, age) => {
+    const data = product.data;
+    
+    switch (product.subType) {
+      case 'funds':
+        const fundYears = data.expectedWithdrawalAge - data.startAge;
+        const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
+        // Calculate value at specific age
+        const yearsFromStart = age - data.startAge;
+        if (yearsFromStart <= 0) return 0;
+        if (yearsFromStart >= fundYears) return fundValue;
+        return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
+        
+      case 'mpf':
+        const mpfYears = 65 - data.currentAge;
+        const monthlyContribution = (data.monthlySalary * data.employerContribution / 100) + 
+                                   (data.monthlySalary * data.employeeContribution / 100);
+        const mpfValue = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears);
+        // Calculate value at specific age
+        const yearsFromCurrent = age - data.currentAge;
+        if (yearsFromCurrent <= 0) return 0;
+        if (yearsFromCurrent >= mpfYears) return mpfValue;
+        return monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, yearsFromCurrent);
+        
+      case 'saving_plans':
+        const savingYears = data.surrenderAge - data.startAge;
+        const savingValue = data.contribution * 12 * savingYears;
+        // Calculate value at specific age
+        const yearsFromSavingStart = age - data.startAge;
+        if (yearsFromSavingStart <= 0) return 0;
+        if (yearsFromSavingStart >= savingYears) return savingValue;
+        return data.contribution * 12 * yearsFromSavingStart;
+        
+      case 'bank':
+        const bankYears = data.withdrawalAge - data.startAge;
+        const bankValue = data.contribution * 12 * bankYears * (1 + data.interestRate / 100);
+        // Calculate value at specific age
+        const yearsFromBankStart = age - data.startAge;
+        if (yearsFromBankStart <= 0) return 0;
+        if (yearsFromBankStart >= bankYears) return bankValue;
+        return data.contribution * 12 * yearsFromBankStart * (1 + data.interestRate / 100);
+        
+      case 'retirement_funds':
+        const retirementYears = data.targetRetirementAge - data.startAge;
+        const retirementValue = data.contributionAmount * 12 * retirementYears * (1 + data.expectedReturn / 100);
+        // Calculate value at specific age
+        const yearsFromRetirementStart = age - data.startAge;
+        if (yearsFromRetirementStart <= 0) return 0;
+        if (yearsFromRetirementStart >= retirementYears) return retirementValue;
+        return data.contributionAmount * 12 * yearsFromRetirementStart * (1 + data.expectedReturn / 100);
+        
+      case 'own_living':
+        // Property value with appreciation
+        const propertyYears = age - data.purchaseAge;
+        if (propertyYears <= 0) return 0;
+        const propertyAppreciation = 0.03; // 3% annual appreciation
+        return data.purchasePrice * Math.pow(1 + propertyAppreciation, propertyYears);
+        
+      case 'rental':
+        // Rental doesn't contribute to asset value, only income
+        return 0;
+        
+      case 'owner_to_rent_out':
+        // Property value with appreciation
+        const ownerPropertyYears = age - data.ownershipStartAge;
+        if (ownerPropertyYears <= 0) return 0;
+        const ownerPropertyAppreciation = 0.03; // 3% annual appreciation
+        return data.purchasePrice * Math.pow(1 + ownerPropertyAppreciation, ownerPropertyYears);
+        
+      default:
+        return 0;
+    }
   };
 
   const calculateCashReserve = (yearData) => {
@@ -386,6 +574,22 @@ const FinancialAnalysisPage = ({
           'rgba(59, 130, 246, 0.8)',
           'rgba(34, 197, 94, 0.8)',
           'rgba(251, 146, 60, 0.8)'
+        ]
+      }]
+    },
+    bar: {
+      labels: ['工作收入', '基金收益', '強積金', '儲蓄計劃', '銀行利息', '退休基金', '租金收入'],
+      datasets: [{
+        label: '收入來源 (HKD)',
+        data: calculateIncomeSources(selectedAge),
+        backgroundColor: [
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(147, 51, 234, 0.8)',
+          'rgba(251, 146, 60, 0.8)',
+          'rgba(16, 185, 129, 0.8)',
+          'rgba(245, 158, 11, 0.8)',
+          'rgba(239, 68, 68, 0.8)'
         ]
       }]
     }
@@ -671,8 +875,8 @@ const FinancialAnalysisPage = ({
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
               <h3 className="text-lg font-bold text-gray-900 mb-4">財務趨勢圖</h3>
               <Line data={chartData.line} options={{
                 responsive: true,
@@ -711,6 +915,45 @@ const FinancialAnalysisPage = ({
                 }
               }} />
             </div>
+          </div>
+
+          {/* Income Sources Chart */}
+          <div className="bg-white rounded-xl shadow-lg p-6">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">收入來源分析</h3>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">選擇年齡</label>
+              <select
+                value={selectedAge}
+                onChange={(e) => setSelectedAge(parseInt(e.target.value))}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                {financialData.map(data => (
+                  <option key={data.age} value={data.age}>{data.age}歲</option>
+                ))}
+              </select>
+            </div>
+            <Bar data={chartData.bar} options={{
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: '各收入來源年度金額'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  ticks: {
+                    callback: function(value) {
+                      return formatCurrency(value);
+                    }
+                  }
+                }
+              }
+            }} />
           </div>
         </div>
       )}
