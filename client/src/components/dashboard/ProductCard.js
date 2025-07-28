@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTranslation } from '../../contexts/LanguageContext';
 
 const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }) => {
+  const { t } = useTranslation();
+  
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
       style: 'currency',
@@ -24,16 +27,16 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
 
   const getProductName = (subType) => {
     const names = {
-      funds: '基金',
-      mpf: '強積金',
-      saving_plans: '儲蓄計劃',
-      bank: '銀行',
-      retirement_funds: '退休基金',
-      own_living: '自住',
-      renting: '租賃',
-      owner: '出租'
+      funds: t('financialPlanning.funds'),
+      mpf: t('financialPlanning.mpf'),
+      saving_plans: t('financialPlanning.savingPlans'),
+      bank: t('financialPlanning.bank'),
+      retirement_funds: t('financialPlanning.retirementFunds'),
+      own_living: t('financialPlanning.ownLiving'),
+      renting: t('financialPlanning.renting'),
+      owner: t('financialPlanning.ownerToRentOut')
     };
-    return names[subType] || '產品';
+    return names[subType] || t('financialPlanning.product');
   };
 
   const renderFormFields = () => {
@@ -44,18 +47,18 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">基金配置</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.fundAllocation')}</label>
               <select
                 value={data.fundAllocation}
                 onChange={(e) => updateProduct(product.id, 'fundAllocation', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="growth">增長型</option>
-                <option value="dividends">股息型</option>
+                <option value="growth">{t('productCard.growth')}</option>
+                <option value="dividends">{t('productCard.dividends')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">投資金額 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.investmentAmount')}</label>
               <input
                 type="number"
                 value={data.investmentAmount}
@@ -64,7 +67,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">開始年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
               <input
                 type="number"
                 value={data.startAge}
@@ -73,17 +76,17 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期年回報率 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedReturn')}</label>
               <input
                 type="number"
                 value={data.expectedReturn}
                 onChange={(e) => updateProduct(product.id, 'expectedReturn', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                placeholder="例如: 8 表示年回報率 8%"
+                placeholder={t('productCard.expectedReturnPlaceholder')}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期提取年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedWithdrawalAge')}</label>
               <input
                 type="number"
                 value={data.expectedWithdrawalAge}
