@@ -101,7 +101,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">月薪 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlySalary')}</label>
               <input
                 type="number"
                 value={data.monthlySalary}
@@ -110,7 +110,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">年薪增幅 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.salaryIncrement')}</label>
               <input
                 type="number"
                 value={data.salaryIncrement}
@@ -119,7 +119,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">僱主供款 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.employerContribution')}</label>
               <input
                 type="number"
                 value={data.employerContribution}
@@ -128,7 +128,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">僱員供款 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.employeeContribution')}</label>
               <input
                 type="number"
                 value={data.employeeContribution}
@@ -137,7 +137,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">當前年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentAge')}</label>
               <input
                 type="number"
                 value={data.currentAge}
@@ -146,7 +146,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期回報 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedReturn')}</label>
               <input
                 type="number"
                 value={data.expectedReturn}
@@ -161,7 +161,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">計劃名稱</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.planName')}</label>
               <input
                 type="text"
                 value={data.planName}
@@ -170,7 +170,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款金額</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
               <input
                 type="number"
                 value={data.contribution}
@@ -179,18 +179,18 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款頻率</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionType')}</label>
               <select
                 value={data.contributionType}
                 onChange={(e) => updateProduct(product.id, 'contributionType', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="monthly">每月</option>
-                <option value="yearly">每年</option>
+                <option value="monthly">{t('productCard.monthly')}</option>
+                <option value="yearly">{t('productCard.yearly')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款年期</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionDuration')}</label>
               <input
                 type="number"
                 value={data.contributionDuration}
@@ -199,7 +199,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">開始年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
               <input
                 type="number"
                 value={data.startAge}
@@ -208,7 +208,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">退保年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.surrenderAge')}</label>
               <input
                 type="number"
                 value={data.surrenderAge}
@@ -223,18 +223,18 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">計劃類型</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.planType')}</label>
               <select
                 value={data.planType}
                 onChange={(e) => updateProduct(product.id, 'planType', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="saving">儲蓄</option>
-                <option value="fixed_deposit">定期存款</option>
+                <option value="saving">{t('productCard.saving')}</option>
+                <option value="fixed_deposit">{t('productCard.fixedDeposit')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款金額</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
               <input
                 type="number"
                 value={data.contribution}
@@ -243,18 +243,18 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款頻率</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionType')}</label>
               <select
                 value={data.contributionType}
                 onChange={(e) => updateProduct(product.id, 'contributionType', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="monthly">每月</option>
-                <option value="yearly">每年</option>
+                <option value="monthly">{t('productCard.monthly')}</option>
+                <option value="yearly">{t('productCard.yearly')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">年期</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.duration')}</label>
               <input
                 type="number"
                 value={data.duration}
@@ -263,18 +263,18 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">年期單位</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.durationType')}</label>
               <select
                 value={data.durationType}
                 onChange={(e) => updateProduct(product.id, 'durationType', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="years">年</option>
-                <option value="months">月</option>
+                <option value="years">{t('productCard.years')}</option>
+                <option value="months">{t('productCard.months')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">利率 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.interestRate')}</label>
               <input
                 type="number"
                 value={data.interestRate}
@@ -283,7 +283,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">開始年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
               <input
                 type="number"
                 value={data.startAge}
@@ -292,7 +292,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">提取年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.withdrawalAge')}</label>
               <input
                 type="number"
                 value={data.withdrawalAge}
@@ -307,7 +307,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">供款金額</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionAmount')}</label>
               <input
                 type="number"
                 value={data.contributionAmount}
@@ -316,19 +316,19 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">頻率</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.frequency')}</label>
               <select
                 value={data.frequency}
                 onChange={(e) => updateProduct(product.id, 'frequency', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="monthly">每月</option>
-                <option value="quarterly">每季</option>
-                <option value="yearly">每年</option>
+                <option value="monthly">{t('productCard.monthly')}</option>
+                <option value="quarterly">{t('productCard.quarterly')}</option>
+                <option value="yearly">{t('productCard.yearly')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">開始日期</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startDate')}</label>
               <input
                 type="date"
                 value={data.startDate}
@@ -337,7 +337,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">目標退休年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.targetRetirementAge')}</label>
               <input
                 type="number"
                 value={data.targetRetirementAge}
@@ -346,7 +346,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期回報 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedReturn')}</label>
               <input
                 type="number"
                 value={data.expectedReturn}
@@ -361,19 +361,19 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">類型</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
               <select
                 value={data.type}
                 onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="Apartment">公寓</option>
-                <option value="House">獨立屋</option>
-                <option value="Condo">共管公寓</option>
+                <option value="Apartment">{t('productCard.apartment')}</option>
+                <option value="House">{t('productCard.house')}</option>
+                <option value="Condo">{t('productCard.condo')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">購買價格 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchasePrice')}</label>
               <input
                 type="number"
                 value={data.purchasePrice}
@@ -382,7 +382,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">首期 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.downPayment')}</label>
               <input
                 type="number"
                 value={data.downPayment}
@@ -391,7 +391,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">按揭金額 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.mortgageAmount')}</label>
               <input
                 type="number"
                 value={data.mortgageAmount}
@@ -400,7 +400,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">月供 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlyPayment')}</label>
               <input
                 type="number"
                 value={data.monthlyPayment}
@@ -409,7 +409,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">購買年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchaseAge')}</label>
               <input
                 type="number"
                 value={data.purchaseAge}
@@ -424,19 +424,19 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">類型</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
               <select
                 value={data.type}
                 onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="Apartment">公寓</option>
-                <option value="House">獨立屋</option>
-                <option value="Condo">共管公寓</option>
+                <option value="Apartment">{t('productCard.apartment')}</option>
+                <option value="House">{t('productCard.house')}</option>
+                <option value="Condo">{t('productCard.condo')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">月租 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentalExpenses')}</label>
               <input
                 type="number"
                 value={data.rentalExpenses}
@@ -445,7 +445,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">開始租賃年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
               <input
                 type="number"
                 value={data.startAge}
@@ -454,7 +454,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">租金年增幅 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentalIncrement')}</label>
               <input
                 type="number"
                 value={data.rentalIncrement}
@@ -463,7 +463,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期結束年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedEndAge')}</label>
               <input
                 type="number"
                 value={data.expectedEndAge}
@@ -478,19 +478,19 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">類型</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
               <select
                 value={data.type}
                 onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="Apartment">公寓</option>
-                <option value="House">獨立屋</option>
-                <option value="Land">土地</option>
+                <option value="Apartment">{t('productCard.apartment')}</option>
+                <option value="House">{t('productCard.house')}</option>
+                <option value="Land">{t('productCard.land')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">購買價格 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchasePrice')}</label>
               <input
                 type="number"
                 value={data.purchasePrice}
@@ -499,7 +499,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">現值 (HKD)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentValue')}</label>
               <input
                 type="number"
                 value={data.currentValue}
@@ -508,20 +508,20 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">狀態</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.status')}</label>
               <select
                 value={data.status}
                 onChange={(e) => updateProduct(product.id, 'status', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="renting">出租中</option>
-                <option value="vacant">空置</option>
+                <option value="renting">{t('productCard.renting')}</option>
+                <option value="vacant">{t('productCard.vacant')}</option>
               </select>
             </div>
             {data.status === 'renting' && (
               <>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">月租 (HKD)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentAmount')}</label>
                   <input
                     type="number"
                     value={data.rentAmount}
@@ -530,7 +530,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">租金年增幅 (%)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentIncrement')}</label>
                   <input
                     type="number"
                     value={data.rentIncrement}
@@ -541,7 +541,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               </>
             )}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">擁有開始年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.ownershipStartAge')}</label>
               <input
                 type="number"
                 value={data.ownershipStartAge}
@@ -550,7 +550,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">擁有結束年齡</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.ownershipEndAge')}</label>
               <input
                 type="number"
                 value={data.ownershipEndAge}
@@ -562,7 +562,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         );
 
       default:
-        return <div>未知產品類型</div>;
+        return <div>{t('productCard.unknownProductType')}</div>;
     }
   };
 
@@ -575,21 +575,21 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
             <span className="text-2xl">{getProductIcon(product.subType)}</span>
             <div>
               <h3 className="text-lg font-semibold text-white">{getProductName(product.subType)}</h3>
-              <p className="text-blue-100 text-sm">產品 #{product.id}</p>
+              <p className="text-blue-100 text-sm">{t('productCard.productNumber')}{product.id}</p>
             </div>
           </div>
           <div className="flex space-x-2">
             <button
               onClick={() => duplicateProduct(product.id)}
               className="text-white hover:text-blue-200 transition-colors"
-              title="複製產品"
+              title={t('productCard.copyProduct')}
             >
               📋
             </button>
             <button
               onClick={() => removeProduct(product.id)}
               className="text-white hover:text-red-200 transition-colors"
-              title="刪除產品"
+              title={t('productCard.deleteProduct')}
             >
               🗑️
             </button>
