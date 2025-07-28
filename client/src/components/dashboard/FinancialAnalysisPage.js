@@ -534,6 +534,29 @@ const FinancialAnalysisPage = ({
     setShowFormulaDialog(true);
   };
 
+  const showChartFormulaInfo = (chartType) => {
+    const chartFormulas = {
+      financialTrend: {
+        title: '財務趨勢圖說明',
+        formula: '淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入\n年開支 = 月開支 × 12',
+        description: '此圖表顯示隨年齡變化的財務狀況趨勢。淨資產反映總體財富，被動收入顯示無需工作的收入來源，年開支則反映生活成本。通過觀察這些線條的變化，可以評估財務規劃的有效性和退休準備度。'
+      },
+      assetAllocation: {
+        title: '資產配置說明',
+        formula: '物業 = 自住物業 + 投資物業價值\n現金 = 當前資產 + 儲蓄計劃 + 銀行存款 + 退休基金\n投資 = 基金 + 強積金\n其他 = 其他資產',
+        description: '此圖表顯示在選定年齡時的資產分配比例。物業包括自住和投資物業的價值，現金包括流動資產和儲蓄，投資包括基金和強積金，其他則包括其他類型的資產。良好的資產配置有助於分散風險和優化回報。'
+      },
+      incomeSources: {
+        title: '收入來源分析說明',
+        formula: '工作收入 = 退休前薪資\n基金收益 = 基金價值 × 4% 提取率\n強積金 = MPF餘額 × 4% 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率\n退休基金 = 退休儲蓄 × 4% 提取率\n租金收入 = 月租金 × 12',
+        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取和租金收入。4%提取率是常用的安全提取比例，確保資金可持續使用。'
+      }
+    };
+    
+    setCurrentFormula(chartFormulas[chartType] || { title: '未知', formula: '無公式', description: '無描述' });
+    setShowFormulaDialog(true);
+  };
+
   useEffect(() => {
     calculateFinancialProjection();
   }, [products, retirementAge, inflationRate, currentAssets, expenses, analysisPeriod]);
@@ -877,7 +900,16 @@ const FinancialAnalysisPage = ({
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">財務趨勢圖</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">財務趨勢圖</h3>
+                <button
+                  onClick={() => showChartFormulaInfo('financialTrend')}
+                  className="text-blue-500 hover:text-blue-700 transition-colors"
+                  title="查看圖表說明"
+                >
+                  ℹ️
+                </button>
+              </div>
               <Line data={chartData.line} options={{
                 responsive: true,
                 plugins: {
@@ -893,7 +925,16 @@ const FinancialAnalysisPage = ({
             </div>
             
             <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">資產配置</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-bold text-gray-900">資產配置</h3>
+                <button
+                  onClick={() => showChartFormulaInfo('assetAllocation')}
+                  className="text-blue-500 hover:text-blue-700 transition-colors"
+                  title="查看圖表說明"
+                >
+                  ℹ️
+                </button>
+              </div>
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">選擇年齡</label>
                 <select
@@ -919,7 +960,16 @@ const FinancialAnalysisPage = ({
 
           {/* Income Sources Chart */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">收入來源分析</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900">收入來源分析</h3>
+              <button
+                onClick={() => showChartFormulaInfo('incomeSources')}
+                className="text-blue-500 hover:text-blue-700 transition-colors"
+                title="查看圖表說明"
+              >
+                ℹ️
+              </button>
+            </div>
             <div className="mb-4">
               <label className="block text-sm font-medium text-gray-700 mb-2">選擇年齡</label>
               <select
@@ -993,7 +1043,7 @@ const FinancialAnalysisPage = ({
               <div className="mb-4">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">計算公式：</h4>
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <p className="text-blue-800 font-mono text-sm">{currentFormula.formula}</p>
+                  <div className="text-blue-800 font-mono text-sm whitespace-pre-line">{currentFormula.formula}</div>
                 </div>
               </div>
               <div>
