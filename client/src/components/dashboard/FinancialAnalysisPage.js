@@ -18,6 +18,7 @@ const FinancialAnalysisPage = ({
 }) => {
   const [financialData, setFinancialData] = useState([]);
   const [selectedAge, setSelectedAge] = useState(65);
+  const [isCalculating, setIsCalculating] = useState(false);
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -47,11 +48,15 @@ const FinancialAnalysisPage = ({
   };
 
   const calculateFinancialProjection = () => {
-    const data = [];
-    const startYear = analysisPeriod.start;
-    const endYear = analysisPeriod.end;
+    setIsCalculating(true);
+    
+    // Use setTimeout to allow UI to update before heavy calculation
+    setTimeout(() => {
+      const data = [];
+      const startYear = analysisPeriod.start;
+      const endYear = analysisPeriod.end;
 
-    for (let age = startYear; age <= endYear; age++) {
+      for (let age = startYear; age <= endYear; age++) {
       const yearData = {
         age,
         totalMonthlyIncome: calculateTotalIncome(age),
@@ -77,6 +82,8 @@ const FinancialAnalysisPage = ({
     }
 
     setFinancialData(data);
+    setIsCalculating(false);
+    }, 100);
   };
 
   const calculateTotalIncome = (age) => {
@@ -349,7 +356,16 @@ const FinancialAnalysisPage = ({
     <div className="space-y-6">
       {/* Configuration Section */}
       <div className="bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">財務分析設定</h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900">財務分析設定</h2>
+          <button
+            onClick={calculateFinancialProjection}
+            disabled={isCalculating}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+          >
+            {isCalculating ? '計算中...' : '🔄 重新計算'}
+          </button>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div>
@@ -381,20 +397,46 @@ const FinancialAnalysisPage = ({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">分析期間</label>
-            <div className="flex space-x-2">
-              <input
-                type="number"
-                value={analysisPeriod.start}
-                onChange={(e) => setAnalysisPeriod({...analysisPeriod, start: parseInt(e.target.value) || 65})}
-                className="w-20 border border-gray-300 rounded-lg px-2 py-2"
-              />
-              <span className="self-center">至</span>
-              <input
-                type="number"
-                value={analysisPeriod.end}
-                onChange={(e) => setAnalysisPeriod({...analysisPeriod, end: parseInt(e.target.value) || 75})}
-                className="w-20 border border-gray-300 rounded-lg px-2 py-2"
-              />
+            <div className="space-y-2">
+              <div className="flex space-x-2">
+                <input
+                  type="number"
+                  value={analysisPeriod.start}
+                  onChange={(e) => setAnalysisPeriod({...analysisPeriod, start: parseInt(e.target.value) || 65})}
+                  className="w-20 border border-gray-300 rounded-lg px-2 py-2"
+                  min="18"
+                  max="120"
+                />
+                <span className="self-center">至</span>
+                <input
+                  type="number"
+                  value={analysisPeriod.end}
+                  onChange={(e) => setAnalysisPeriod({...analysisPeriod, end: parseInt(e.target.value) || 75})}
+                  className="w-20 border border-gray-300 rounded-lg px-2 py-2"
+                  min="18"
+                  max="120"
+                />
+              </div>
+              <div className="flex space-x-1">
+                <button
+                  onClick={() => setAnalysisPeriod({start: 65, end: 75})}
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                >
+                  退休期
+                </button>
+                <button
+                  onClick={() => setAnalysisPeriod({start: 60, end: 90})}
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                >
+                  長期
+                </button>
+                <button
+                  onClick={() => setAnalysisPeriod({start: 30, end: 65})}
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                >
+                  工作期
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -459,11 +501,25 @@ const FinancialAnalysisPage = ({
       </div>
 
       {/* Financial Analysis Results */}
-      {financialData.length > 0 && (
+      {isCalculating && (
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">正在計算財務分析結果...</p>
+          </div>
+        </div>
+      )}
+
+      {financialData.length > 0 && !isCalculating && (
         <div className="space-y-6">
           {/* Yearly Financial Status */}
           <div className="bg-white rounded-xl shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">年度財務狀況</h2>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-900">年度財務狀況</h2>
+              <div className="text-sm text-gray-500">
+                分析期間: {analysisPeriod.start}歲 - {analysisPeriod.end}歲 ({analysisPeriod.end - analysisPeriod.start + 1}年)
+              </div>
+            </div>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
@@ -539,6 +595,22 @@ const FinancialAnalysisPage = ({
                 }
               }} />
             </div>
+          </div>
+        </div>
+      )}
+
+      {financialData.length === 0 && !isCalculating && (
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="text-center py-12">
+            <div className="text-gray-400 text-6xl mb-4">📊</div>
+            <h3 className="text-xl font-medium text-gray-900 mb-2">開始財務分析</h3>
+            <p className="text-gray-500 mb-6">設定您的財務參數並點擊「重新計算」開始分析</p>
+            <button
+              onClick={calculateFinancialProjection}
+              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+            >
+              🚀 開始分析
+            </button>
           </div>
         </div>
       )}
