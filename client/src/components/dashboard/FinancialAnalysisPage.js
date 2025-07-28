@@ -96,7 +96,7 @@ const FinancialAnalysisPage = ({
           if (age >= data.expectedWithdrawalAge) {
             const years = age - data.startAge;
             const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-            income += totalValue * 0.04 / 12; // 4% withdrawal rate
+            income += totalValue * 0.04 / 12; // 4% annual withdrawal rate
           }
           break;
         case 'mpf':
@@ -131,7 +131,7 @@ const FinancialAnalysisPage = ({
           if (age >= data.expectedWithdrawalAge) {
             const years = age - data.startAge;
             const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-            passiveIncome += totalValue * 0.04 / 12;
+            passiveIncome += totalValue * 0.04 / 12; // 4% annual withdrawal rate
           }
           break;
         case 'mpf':
@@ -179,7 +179,7 @@ const FinancialAnalysisPage = ({
         case 'funds':
           const fundYears = age - data.startAge;
           if (fundYears > 0) {
-            assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
+            assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears); // Compound annual growth
           }
           break;
         case 'saving_plans':

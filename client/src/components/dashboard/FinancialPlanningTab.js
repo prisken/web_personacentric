@@ -152,8 +152,9 @@ const FinancialPlanningTab = () => {
     switch (subType) {
       case 'funds':
         const years = data.expectedWithdrawalAge - data.startAge;
-        const totalDividend = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years) - data.investmentAmount;
-        return `預計股息收入: ${formatCurrency(totalDividend)}`;
+        const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
+        const totalDividend = totalValue - data.investmentAmount;
+        return `預計總收益: ${formatCurrency(totalDividend)} (總值: ${formatCurrency(totalValue)})`;
       case 'mpf':
         const mpfYears = 65 - data.currentAge;
         const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;

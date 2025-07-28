@@ -73,12 +73,13 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">預期回報 (%)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">預期年回報率 (%)</label>
               <input
                 type="number"
                 value={data.expectedReturn}
                 onChange={(e) => updateProduct(product.id, 'expectedReturn', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder="例如: 8 表示年回報率 8%"
               />
             </div>
             <div>
