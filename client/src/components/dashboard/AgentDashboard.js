@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
+import FinancialPlanningTab from './FinancialPlanningTab';
 
 const AgentDashboard = ({ data, onRefresh }) => {
   // Persist activeTab in localStorage
@@ -57,6 +58,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'content', label: '內容創作', icon: '📝' },
     { id: 'analytics', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
+    { id: 'financial_planning', label: '理財產品配', icon: '💰' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
@@ -482,6 +484,11 @@ const AgentDashboard = ({ data, onRefresh }) => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Financial Planning Tab */}
+        {activeTab === 'financial_planning' && (
+          <FinancialPlanningTab />
         )}
 
         {/* Profile Tab */}
