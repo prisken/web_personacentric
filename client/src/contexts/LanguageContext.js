@@ -741,6 +741,13 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.recommendationsPreview': '建議預覽',
       'financialPlanning.emptyRecommendation': '（空建議）',
       'financialPlanning.editRecommendationsButton': '編輯建議',
+
+      // Report Generation Section
+      'financialPlanning.reportGeneration': '報告生成',
+      'financialPlanning.reportGenerationDescription': '生成包含所有財務規劃數據的專業PDF報告。請確保所有必要信息已完成。',
+      'financialPlanning.completed': '已完成',
+      'financialPlanning.required': '需要完成',
+      'financialPlanning.products': '產品配置',
     },
     'en': {
       // Navigation
@@ -1279,6 +1286,13 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.recommendationsPreview': 'Recommendations Preview',
       'financialPlanning.emptyRecommendation': '(Empty recommendation)',
       'financialPlanning.editRecommendationsButton': 'Edit Recommendations',
+
+      // Report Generation Section
+      'financialPlanning.reportGeneration': 'Report Generation',
+      'financialPlanning.reportGenerationDescription': 'Generate a professional PDF report containing all financial planning data. Please ensure all required information is completed.',
+      'financialPlanning.completed': 'Completed',
+      'financialPlanning.required': 'Required',
+      'financialPlanning.products': 'Product Configuration',
 
       // Dashboard
       'dashboard.admin.title': 'Administrator Dashboard',

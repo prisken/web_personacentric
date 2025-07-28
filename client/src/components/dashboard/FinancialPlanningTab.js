@@ -271,7 +271,7 @@ const FinancialPlanningTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Client Name and Report Generation */}
+      {/* Client Name */}
       <div className="bg-white rounded-xl shadow-lg p-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
           <div className="flex-1">
@@ -292,13 +292,6 @@ const FinancialPlanningTab = () => {
               className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
             >
               ✏️ {t('financialPlanning.editRecommendationsButton')}
-            </button>
-            <button
-              onClick={() => setShowPDFReport(true)}
-              disabled={!clientName.trim() || products.length === 0}
-              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
-            >
-              📄 {t('financialPlanning.generateReport')}
             </button>
           </div>
         </div>
@@ -361,6 +354,9 @@ const FinancialPlanningTab = () => {
           showFormula={showFormula}
           setShowFormula={setShowFormula}
           onFinancialDataUpdate={handleFinancialDataUpdate}
+          clientName={clientName}
+          recommendations={recommendations}
+          onShowPDFReport={() => setShowPDFReport(true)}
         />
       )}
 

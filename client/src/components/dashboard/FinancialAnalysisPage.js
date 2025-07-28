@@ -16,7 +16,10 @@ const FinancialAnalysisPage = ({
   setAnalysisPeriod,
   showFormula,
   setShowFormula,
-  onFinancialDataUpdate
+  onFinancialDataUpdate,
+  clientName,
+  recommendations,
+  onShowPDFReport
 }) => {
   const [financialData, setFinancialData] = useState([]);
   const [selectedAge, setSelectedAge] = useState(65);
@@ -769,6 +772,43 @@ const FinancialAnalysisPage = ({
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Report Generation Section */}
+      <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-gray-900">{t('financialPlanning.reportGeneration')}</h2>
+        </div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+          <div className="flex-1">
+            <p className="text-gray-600 mb-4">
+              {t('financialPlanning.reportGenerationDescription')}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <div className="flex items-center space-x-2">
+                <span className={`w-3 h-3 rounded-full ${clientName.trim() ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                <span className="text-sm text-gray-600">{t('financialPlanning.clientName')}: {clientName.trim() ? t('financialPlanning.completed') : t('financialPlanning.required')}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className={`w-3 h-3 rounded-full ${products.length > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                <span className="text-sm text-gray-600">{t('financialPlanning.products')}: {products.length > 0 ? t('financialPlanning.completed') : t('financialPlanning.required')}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className={`w-3 h-3 rounded-full ${financialData.length > 0 ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                <span className="text-sm text-gray-600">{t('financialPlanning.financialAnalysis')}: {financialData.length > 0 ? t('financialPlanning.completed') : t('financialPlanning.required')}</span>
+              </div>
+            </div>
+          </div>
+          <div className="flex space-x-3">
+            <button
+              onClick={onShowPDFReport}
+              disabled={!clientName.trim() || products.length === 0 || financialData.length === 0}
+              className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+            >
+              📄 {t('financialPlanning.generateReport')}
+            </button>
+          </div>
         </div>
       </div>
 
