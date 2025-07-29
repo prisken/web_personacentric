@@ -125,6 +125,34 @@ const FinancialAnalysisPage = ({
       const yearExpenses = calculateTotalExpenses(year);
       const yearNetCashFlow = yearIncome - yearExpenses;
       flexibleFunds += yearNetCashFlow * 12; // Convert monthly to annual
+      
+      // Add dividends from funds as liquid cash (until expected withdrawal age)
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'funds' && year < data.expectedWithdrawalAge) {
+          if (data.fundCategory === 'dividend') {
+            // 派息基金：每月派息計入流動資金
+            const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
+            flexibleFunds += monthlyDividend * 12; // Annual dividend
+          }
+        }
+      });
+      
+      // Add fund withdrawal at expected withdrawal age
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'funds' && year === data.expectedWithdrawalAge) {
+          if (data.fundCategory === 'growth') {
+            // 增長基金：提取時將總價值轉為流動資金
+            const yearsInvested = data.expectedWithdrawalAge - data.startAge;
+            const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsInvested);
+            flexibleFunds += totalValue;
+          } else {
+            // 派息基金：提取時將本金轉為流動資金
+            flexibleFunds += data.investmentAmount;
+          }
+        }
+      });
     }
     
     return Math.max(0, flexibleFunds); // Ensure non-negative
@@ -196,8 +224,8 @@ const FinancialAnalysisPage = ({
       switch (subType) {
         case 'funds':
           if (data.fundCategory === 'dividend') {
-            // 派息基金：從第一年開始每月派息，計入投資收益
-            if (age >= data.startAge) {
+            // 派息基金：從第一年開始每月派息，計入投資收益，直到預期提取年齡
+            if (age >= data.startAge && age < data.expectedWithdrawalAge) {
               const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
               passiveIncome += monthlyDividend;
             }
@@ -338,16 +366,20 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'funds':
-          const fundYears = age - data.startAge;
-          if (fundYears > 0) {
-            if (data.fundCategory === 'growth') {
-              // 增長基金：投資金額 + 累積收益 = 總資產
-              assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
-            } else {
-              // 派息基金：投資金額 = 總資產（收益以派息形式發放）
-              assets += data.investmentAmount;
+          // Only include fund value if before expected withdrawal age
+          if (age < data.expectedWithdrawalAge) {
+            const fundYears = age - data.startAge;
+            if (fundYears > 0) {
+              if (data.fundCategory === 'growth') {
+                // 增長基金：投資金額 + 累積收益 = 總資產
+                assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
+              } else {
+                // 派息基金：投資金額 = 總資產（收益以派息形式發放）
+                assets += data.investmentAmount;
+              }
             }
           }
+          // After expected withdrawal age, fund value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
           break;
         case 'saving_plans':
           if (age >= data.surrenderAge) {
@@ -544,8 +576,8 @@ const FinancialAnalysisPage = ({
       switch (product.subType) {
         case 'funds':
           if (data.fundCategory === 'dividend') {
-            // 派息基金：從第一年開始每月派息，計入投資收益
-            if (age >= data.startAge) {
+            // 派息基金：從第一年開始每月派息，計入投資收益，直到預期提取年齡
+            if (age >= data.startAge && age < data.expectedWithdrawalAge) {
               const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
               incomeSources.fundIncome += monthlyDividend * 12; // Annual dividend income
             }
@@ -673,6 +705,9 @@ const FinancialAnalysisPage = ({
     
     switch (product.subType) {
       case 'funds':
+        // Only return value if before expected withdrawal age
+        if (age >= data.expectedWithdrawalAge) return 0;
+        
         // Calculate value at specific age
         const yearsFromStart = age - data.startAge;
         if (yearsFromStart <= 0) return 0;
@@ -857,8 +892,8 @@ const FinancialAnalysisPage = ({
       },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，不包括投資產品中的資金`,
-        description: '可靈活使用的現金總額，包括當前資產和累積的淨現金流，不包含投資產品中的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息和提取的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息和提取的資金'
       },
 
     };
