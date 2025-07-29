@@ -613,8 +613,11 @@ const FinancialAnalysisPage = ({
           
           // Check if property is sold before mortgage completion
           if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
-            // Property sold early - calculate remaining mortgage balance at sale age
-            if (year === parseInt(data.sellAge)) {
+            // Property sold early - add monthly payments up to sale age, then add remaining balance
+            if (year >= data.mortgageStartAge && year < parseInt(data.sellAge)) {
+              // Add monthly payments made before sale
+              accumulatedLiabilities += monthlyPayment * 12;
+            } else if (year === parseInt(data.sellAge)) {
               // Calculate how many payments have been made
               const paymentsMade = (parseInt(data.sellAge) - data.mortgageStartAge) * 12;
               const remainingPayments = numberOfPayments - paymentsMade;
