@@ -98,6 +98,7 @@ const FinancialAnalysisPage = ({
   const calculateMPFValueAtAge = (data, targetAge) => {
     const mpfYears = targetAge - data.currentAge;
     
+    // At current age, return the current MPF amount
     if (mpfYears <= 0) {
       return data.currentMPFAmount || 0;
     }
@@ -470,7 +471,7 @@ const FinancialAnalysisPage = ({
                if (age < 65) {
                  // Calculate MPF value at current age using the actual MPF calculation logic
                  const yearsFromCurrentAge = age - data.currentAge;
-                 if (yearsFromCurrentAge > 0) {
+                 if (yearsFromCurrentAge >= 0) {
                    // Use the actual MPF calculation to get value at current age
                    const currentMPFValue = calculateMPFValueAtAge(data, age);
                    assets += currentMPFValue;
