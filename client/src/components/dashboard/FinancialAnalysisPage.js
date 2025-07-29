@@ -245,8 +245,8 @@ const FinancialAnalysisPage = ({
           totalExpenses: totalExpenses,
           netCashFlow: totalIncome - totalExpenses,
           totalAssets: totalAssets,
-          totalLiabilities: totalLiabilities,
-          netWorth: totalAssets - totalLiabilities,
+          totalLiabilities: calculateAccumulatedLiabilities(age),
+          netWorth: totalAssets - calculateAccumulatedLiabilities(age),
           accumulatedFlexibleFunds: calculateAccumulatedFlexibleFunds(age)
         };
 
@@ -541,6 +541,67 @@ const FinancialAnalysisPage = ({
     });
 
     return assets;
+  };
+
+  const calculateAccumulatedLiabilities = (age) => {
+    let accumulatedLiabilities = 0;
+    
+    // Track liabilities from start age to current age
+    const startAge = analysisPeriod.start;
+    for (let year = startAge; year <= age; year++) {
+      
+      products.forEach(product => {
+        const { subType, data } = product;
+        
+        if (subType === 'own_living') {
+          // Calculate mortgage amount and monthly payment based on down payment percentage
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          const mortgageAmount = data.purchasePrice - downPaymentAmount;
+          
+          // Use actual mortgage interest rate and completion age from data
+          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
+          const interestRate = data.mortgageInterestRate / 100;
+          const monthlyInterestRate = interestRate / 12;
+          const numberOfPayments = mortgageTerm * 12;
+          
+          // Calculate monthly payment using mortgage formula
+          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+          
+          const paidUpAge = data.mortgageCompletionAge;
+          if (year < paidUpAge) {
+            const remainingYears = paidUpAge - year;
+            accumulatedLiabilities += monthlyPayment * 12 * remainingYears;
+          }
+        }
+        
+        // Add bank fixed deposit contributions as liabilities if not already owned
+        if (subType === 'bank' && data.planType === 'fixed' && data.alreadyOwned === 'N') {
+          if (year === data.startAge) {
+            accumulatedLiabilities += data.contribution;
+          }
+        }
+
+        // Add annuity contributions as liabilities
+        if (subType === 'annuity') {
+          // For deferred annuity, add annual contributions as liabilities during contribution period
+          if (data.annuityType === 'deferred') {
+            const contributionStartAge = data.premiumAge;
+            const contributionEndAge = data.premiumAge + data.contributionPeriod;
+            
+            if (year >= contributionStartAge && year < contributionEndAge) {
+              accumulatedLiabilities += data.annualContribution;
+            }
+          } else {
+            // For immediate annuity, add one-time contribution as liability at premium age
+            if (year === data.premiumAge) {
+              accumulatedLiabilities += data.contributionAmount;
+            }
+          }
+        }
+      });
+    }
+
+    return accumulatedLiabilities;
   };
 
   const calculateTotalLiabilities = (age) => {
@@ -986,12 +1047,12 @@ const FinancialAnalysisPage = ({
       },
       totalLiabilities: {
         title: '總負債計算公式',
-        formula: `按揭餘額 + 其他債務 + 產品供款義務\n\n當前${currentAge}歲詳細計算：\n按揭餘額：剩餘按揭金額\n固定存款供款：${currentAge === 45 ? '一次性供款' : '無'}\n年金供款：${currentAge >= 45 && currentAge < 65 ? '年度供款' : '無'}`,
-        description: '包括未償還的按揭貸款、產品供款義務等所有債務'
+        formula: `累積負債總和（從開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n累積負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從開始年齡到當前年齡期間的所有負債累積`,
+        description: '從開始年齡到當前年齡期間累積的所有負債總和'
       },
       netWorth: {
         title: '淨資產計算公式',
-        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金）`,
+        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為累積負債總和`,
         description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
       },
       accumulatedFlexibleFunds: {
@@ -1013,7 +1074,7 @@ const FinancialAnalysisPage = ({
     const chartFormulas = {
       financialTrend: {
         title: '財務趨勢圖說明',
-        formula: `淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入 + 年金收入\n年開支 = 月開支 × 12\n\n當前${currentAge}歲詳細數據：\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}\n被動收入：${formatCurrency(calculatePassiveIncome(currentAge) * 12)}/年\n年開支：${formatCurrency(calculateTotalExpenses(currentAge) * 12)}/年`,
+        formula: `淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入 + 年金收入\n年開支 = 月開支 × 12\n\n當前${currentAge}歲詳細數據：\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n被動收入：${formatCurrency(calculatePassiveIncome(currentAge) * 12)}/年\n年開支：${formatCurrency(calculateTotalExpenses(currentAge) * 12)}/年`,
         description: '此圖表顯示隨年齡變化的財務狀況趨勢。淨資產反映總體財富，被動收入顯示無需工作的收入來源，年開支則反映生活成本。通過觀察這些線條的變化，可以評估財務規劃的有效性和退休準備度。'
       },
       assetAllocation: {
