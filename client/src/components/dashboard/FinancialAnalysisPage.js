@@ -217,6 +217,18 @@ const FinancialAnalysisPage = ({
           flexibleFunds += mpfResult.totalMPF;
         }
       });
+      
+      // Add property sale proceeds to flexible funds
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'own_living' && data.sellAge !== 'willNotSell' && year === parseInt(data.sellAge)) {
+          // Calculate property value at sale age with growth
+          const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
+          const yearsSincePurchase = year - data.mortgageStartAge;
+          const saleProceeds = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+          flexibleFunds += saleProceeds;
+        }
+      });
     }
     
     return Math.max(0, flexibleFunds); // Ensure non-negative
@@ -533,8 +545,19 @@ const FinancialAnalysisPage = ({
           const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
           
           const paidUpAge = data.mortgageCompletionAge;
-          if (age >= paidUpAge) {
-            assets += data.purchasePrice * Math.pow(1.03, age - data.mortgageStartAge); // 3% property appreciation
+          
+          // Check if property is sold at this age
+          if (data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
+            // Property is sold, no longer an asset (sale proceeds go to flexible funds)
+            break;
+          }
+          
+          // Property is still owned, calculate its value with growth
+          if (age >= data.mortgageStartAge) {
+            const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
+            const yearsSincePurchase = age - data.mortgageStartAge;
+            const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+            assets += currentPropertyValue;
           }
           break;
       }

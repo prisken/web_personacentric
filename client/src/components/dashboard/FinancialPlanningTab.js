@@ -192,6 +192,7 @@ const FinancialPlanningTab = () => {
           mortgageInterestRate: 3, // Added mortgage interest rate field
           mortgageStartAge: 30,
           mortgageCompletionAge: 60, // Added mortgage completion age field
+          propertyValueGrowth: 1, // Property value growth rate (1% default)
           sellAge: 'willNotSell',
           currentSituation: 'selfOccupied',
           monthlyRent: 0,

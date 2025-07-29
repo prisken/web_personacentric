@@ -638,6 +638,17 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.propertyValueGrowth')}</label>
+              <input
+                type="number"
+                step="0.1"
+                value={data.propertyValueGrowth}
+                onChange={(e) => updateProduct(product.id, 'propertyValueGrowth', parseFloat(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder={t('productCard.propertyValueGrowthPlaceholder')}
+              />
+            </div>
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.sellAge')}</label>
               <select
                 value={data.sellAge}

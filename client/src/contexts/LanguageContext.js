@@ -1864,6 +1864,10 @@ export const LanguageProvider = ({ children }) => {
       'productCard.monthlyAnnuity': '每月年金',
       'productCard.totalAnnuityIncome': '總年金收入',
       'productCard.internalRateOfReturn': '內部回報率',
+      'productCard.propertyValueGrowth': '物業價值增長 (%)',
+      'productCard.propertyValueGrowthPlaceholder': '例如: 1.0',
+      'productCard.propertyValueAtAge': '{age}歲時物業價值',
+      'productCard.saleProceeds': '售樓收益',
       // Annuity
       'productCard.annuityType': 'Annuity Type',
       'productCard.deferred': 'Deferred',
@@ -1882,6 +1886,10 @@ export const LanguageProvider = ({ children }) => {
       'productCard.monthlyAnnuity': 'Monthly Annuity',
       'productCard.totalAnnuityIncome': 'Total Annuity Income',
       'productCard.internalRateOfReturn': 'Internal Rate of Return',
+      'productCard.propertyValueGrowth': 'Property Value Growth (%)',
+      'productCard.propertyValueGrowthPlaceholder': 'e.g., 1.0',
+      'productCard.propertyValueAtAge': 'Property Value at Age {age}',
+      'productCard.saleProceeds': 'Sale Proceeds',
     }
   };
 
