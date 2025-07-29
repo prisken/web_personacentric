@@ -236,26 +236,53 @@ const FinancialAnalysisPage = ({
         if (subType === 'bank' && data.planType === 'saving' && year >= data.startAge) {
           const yearsSinceStart = year - data.startAge;
           if (yearsSinceStart >= 0) {
-            // Calculate total contributions over the period
-            const totalContributions = data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            // Calculate the target savings amount for this year
+            const targetSavingsThisYear = data.contribution * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            
+            // Calculate net cash flow for this year to see if there's enough money to save
+            const yearIncome = calculateTotalIncome(year);
+            const yearExpenses = calculateTotalExpenses(year);
+            const yearNetCashFlow = yearIncome - yearExpenses;
+            const annualNetCashFlow = yearNetCashFlow * 12;
+            
+            // Only save if there's enough money left over
+            const actualSavingsThisYear = Math.min(targetSavingsThisYear, Math.max(0, annualNetCashFlow));
             
             // Calculate compound interest on existing amount
             const existingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
             
-            // Calculate compound interest on contributions (simplified - assume contributions are made at the start)
-            const contributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+            // Calculate compound interest on actual savings made so far
+            let totalActualSavings = 0;
+            for (let i = 0; i <= yearsSinceStart; i++) {
+              const previousYear = year - yearsSinceStart + i;
+              const previousYearIncome = calculateTotalIncome(previousYear);
+              const previousYearExpenses = calculateTotalExpenses(previousYear);
+              const previousYearNetCashFlow = (previousYearIncome - previousYearExpenses) * 12;
+              const previousYearSavings = Math.min(targetSavingsThisYear, Math.max(0, previousYearNetCashFlow));
+              totalActualSavings += previousYearSavings * Math.pow(1 + data.interestRate / 100, yearsSinceStart - i);
+            }
             
             // Add to flexible funds (only add the growth for this year to avoid double counting)
             if (yearsSinceStart === 0) {
-              flexibleFunds += existingAmountWithInterest + contributionsWithInterest;
+              flexibleFunds += existingAmountWithInterest + actualSavingsThisYear;
             } else {
               // For subsequent years, add only the interest earned this year
               const previousYear = year - 1;
               const previousYearsSinceStart = previousYear - data.startAge;
               const previousExistingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, previousYearsSinceStart);
-              const previousContributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, previousYearsSinceStart);
-              const interestEarnedThisYear = (existingAmountWithInterest + contributionsWithInterest) - (previousExistingAmountWithInterest + previousContributionsWithInterest);
-              flexibleFunds += interestEarnedThisYear;
+              
+              let previousTotalActualSavings = 0;
+              for (let i = 0; i <= previousYearsSinceStart; i++) {
+                const previousYearForSavings = previousYear - previousYearsSinceStart + i;
+                const previousYearForSavingsIncome = calculateTotalIncome(previousYearForSavings);
+                const previousYearForSavingsExpenses = calculateTotalExpenses(previousYearForSavings);
+                const previousYearForSavingsNetCashFlow = (previousYearForSavingsIncome - previousYearForSavingsExpenses) * 12;
+                const previousYearForSavingsSavings = Math.min(targetSavingsThisYear, Math.max(0, previousYearForSavingsNetCashFlow));
+                previousTotalActualSavings += previousYearForSavingsSavings * Math.pow(1 + data.interestRate / 100, previousYearsSinceStart - i);
+              }
+              
+              const interestEarnedThisYear = (existingAmountWithInterest + totalActualSavings) - (previousExistingAmountWithInterest + previousTotalActualSavings);
+              flexibleFunds += interestEarnedThisYear + actualSavingsThisYear;
             }
           }
         }
@@ -434,12 +461,10 @@ const FinancialAnalysisPage = ({
           
         case 'bank':
           if (data.planType === 'saving') {
-            // For saving accounts: add monthly/yearly contributions as expenses
-            if (age >= data.startAge && age < data.startAge + data.contributionPeriod) {
-              const contributionAmount = data.contribution * (data.contributionFrequency === 'monthly' ? 12 : 1);
-              totalExpenses += contributionAmount;
-              expenseBreakdown.bankContributions += contributionAmount;
-            }
+            // Saving accounts are not expenses - they are savings goals
+            // The contribution amount represents money the user wants to save if they have enough left over
+            // This is handled in flexible funds calculation, not as an expense
+            break;
           } else {
             // For fixed deposits: add one-time contribution as expense if not already owned
             if (age === data.startAge && data.alreadyOwned === 'N') {
@@ -1195,8 +1220,8 @@ const FinancialAnalysisPage = ({
         },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取 + 儲蓄戶口利息\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取、強積金提取（65歲時全額轉入）和儲蓄戶口（靈活資金）的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取、強積金提取和儲蓄戶口的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取 + 儲蓄戶口（目標儲蓄金額，如有足夠剩餘資金）\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取、強積金提取（65歲時全額轉入）和儲蓄戶口（僅在有足夠剩餘資金時儲蓄目標金額）的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取、強積金提取和儲蓄戶口的資金（儲蓄金額取決於剩餘資金）'
       },
 
     };
