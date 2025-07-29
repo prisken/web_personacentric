@@ -318,9 +318,9 @@ const FinancialPlanningTab = () => {
         const totalAmountPaid = monthlyPayment * numberOfPayments;
         const totalInterestPaid = totalAmountPaid - mortgageAmount;
         
-        // Calculate property value at completion age (assuming 3% annual appreciation)
+        // Calculate property value at completion age (assuming 1% annual appreciation)
         const propertyAppreciationYears = data.mortgageCompletionAge - data.mortgageStartAge;
-        const propertyValueAtCompletion = data.purchasePrice * Math.pow(1.03, propertyAppreciationYears);
+        const propertyValueAtCompletion = data.purchasePrice * Math.pow(1.01, propertyAppreciationYears);
         
         return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.totalInterestPaid')}: ${formatCurrency(totalInterestPaid)}\n${t('productCard.propertyValueAtCompletion')}: ${formatCurrency(propertyValueAtCompletion)}`;
       case 'rental':
