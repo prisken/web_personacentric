@@ -254,13 +254,13 @@ const FinancialAnalysisPage = ({
       // Add mortgage payments from own_living products
       if (product.subType === 'own_living') {
         const data = product.data;
-        if (age >= data.mortgageStartAge && age < data.mortgageStartAge + 30) {
+        if (age >= data.mortgageStartAge && age < data.mortgageCompletionAge) {
           // Calculate mortgage amount and monthly payment
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-          // Use actual mortgage interest rate from data
-          const mortgageTerm = 30;
+          // Use actual mortgage interest rate and completion age from data
+          const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
           const interestRate = data.mortgageInterestRate / 100;
           const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
@@ -352,8 +352,8 @@ const FinancialAnalysisPage = ({
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-          // Use actual mortgage interest rate from data
-          const mortgageTerm = 30;
+          // Use actual mortgage interest rate and completion age from data
+          const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
           const interestRate = data.mortgageInterestRate / 100;
           const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
@@ -361,8 +361,7 @@ const FinancialAnalysisPage = ({
           // Calculate monthly payment using mortgage formula
           const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
           
-          const mortgageYears = mortgageTerm;
-          const paidUpAge = data.mortgageStartAge + mortgageYears;
+          const paidUpAge = data.mortgageCompletionAge;
           if (age >= paidUpAge) {
             assets += data.purchasePrice * Math.pow(1.03, age - data.mortgageStartAge); // 3% property appreciation
           }
@@ -389,8 +388,8 @@ const FinancialAnalysisPage = ({
         const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
         const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
-        // Use actual mortgage interest rate from data
-        const mortgageTerm = 30;
+        // Use actual mortgage interest rate and completion age from data
+        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
         const interestRate = data.mortgageInterestRate / 100;
         const monthlyInterestRate = interestRate / 12;
         const numberOfPayments = mortgageTerm * 12;
@@ -398,8 +397,7 @@ const FinancialAnalysisPage = ({
         // Calculate monthly payment using mortgage formula
         const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
         
-        const mortgageYears = mortgageTerm;
-        const paidUpAge = data.mortgageStartAge + mortgageYears;
+        const paidUpAge = data.mortgageCompletionAge;
         if (age < paidUpAge) {
           const remainingYears = paidUpAge - age;
           liabilities += monthlyPayment * 12 * remainingYears;

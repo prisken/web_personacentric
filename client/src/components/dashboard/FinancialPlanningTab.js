@@ -191,6 +191,7 @@ const FinancialPlanningTab = () => {
           downPayment: 30, // Changed to percentage
           mortgageInterestRate: 3, // Added mortgage interest rate field
           mortgageStartAge: 30,
+          mortgageCompletionAge: 60, // Added mortgage completion age field
           sellAge: 'willNotSell',
           currentSituation: 'selfOccupied',
           monthlyRent: 0,
@@ -290,7 +291,7 @@ const FinancialPlanningTab = () => {
         const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
         // Assume 30-year mortgage term and 3% interest rate for calculation
-        const mortgageTerm = 30;
+        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge; // Use user-specified completion age
         const interestRate = data.mortgageInterestRate / 100; // Use the input interest rate
         const monthlyInterestRate = interestRate / 12;
         const numberOfPayments = mortgageTerm * 12;
@@ -298,11 +299,8 @@ const FinancialPlanningTab = () => {
         // Calculate monthly payment using mortgage formula
         const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
         
-        const mortgageYears = mortgageTerm;
-        const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
-        
         const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
-        return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲`;
+        return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.mortgageCompletionAge')}: ${Math.round(data.mortgageCompletionAge)}歲`;
       case 'rental':
         const rentalYears = data.expectedEndAge - data.leaseStartAge;
         // Calculate total rent with annual increase

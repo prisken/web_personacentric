@@ -88,10 +88,11 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           description: '香港年金計劃提供保證終身收入，回報率與投保人壽命掛鈎。投保人愈長壽，內部回報率愈高。'
         };
       case 'own_living':
+        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
         return {
           title: t('productCard.mortgageCompletionAge'),
-          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（30年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = 30年 × 12 = 360期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^360) ÷ ((1 + 月利率)^360 - 1)\n\n供完樓年齡 = 開始供樓年紀 + 30年\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
-          description: '自住物業按揭計算基於30年期固定利率，首期付款以百分比計算，每月供款根據實際按揭利率自動計算。'
+          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n供完樓年齡 = 開始供樓年紀 + ${mortgageTerm}年 = ${data.mortgageCompletionAge}歲\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
+          description: '自住物業按揭計算基於用戶指定的供款年期和按揭利率，首期付款以百分比計算，每月供款根據實際按揭利率和年期自動計算。'
         };
       case 'renting':
         return {
@@ -581,6 +582,16 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 onChange={(e) => updateProduct(product.id, 'mortgageInterestRate', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
                 placeholder={t('productCard.mortgageInterestRatePlaceholder')}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.mortgageCompletionAge')}</label>
+              <input
+                type="number"
+                value={data.mortgageCompletionAge}
+                onChange={(e) => updateProduct(product.id, 'mortgageCompletionAge', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder={t('productCard.mortgageCompletionAgePlaceholder')}
               />
             </div>
             <div>

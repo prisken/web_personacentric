@@ -932,6 +932,11 @@ export const LanguageProvider = ({ children }) => {
       'productCard.monthlyReturn': '每月年金',
       'productCard.totalPayments': '總年金收入',
       'productCard.internalRateOfReturn': '內部回報率',
+      'productCard.mortgageInterestRate': '按揭利率 (%)',
+      'productCard.mortgageInterestRatePlaceholder': '例如: 3.5',
+      'productCard.mortgageCompletionAge': '供完樓年齡',
+      'productCard.mortgageCompletionAgePlaceholder': '例如: 60',
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
     },
     'en': {
       // Navigation
@@ -1782,6 +1787,11 @@ export const LanguageProvider = ({ children }) => {
       'contest.category.email_campaign': 'Email Campaign',
       'contest.category.infographic': 'Infographic',
       'contest.category.podcast_script': 'Podcast Script',
+      'productCard.mortgageInterestRate': 'Mortgage Interest Rate (%)',
+      'productCard.mortgageInterestRatePlaceholder': 'e.g., 3.5',
+      'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
+      'productCard.mortgageCompletionAgePlaceholder': 'e.g., 60',
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
     }
   };
 
