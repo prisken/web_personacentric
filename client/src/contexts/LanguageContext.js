@@ -635,6 +635,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.monthlyExpenses': '月開支',
       'financialPlanning.netCashFlow': '淨現金流',
       'financialPlanning.netWorth': '淨資產',
+      'financialPlanning.accumulatedFlexibleFunds': '年度靈活資金',
 
       'financialPlanning.withdrawalRate': '提取率',
       'financialPlanning.months': '個月',
@@ -1417,6 +1418,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.monthlyExpenses': 'Monthly Expenses',
       'financialPlanning.netCashFlow': 'Net Cash Flow',
       'financialPlanning.netWorth': 'Net Worth',
+      'financialPlanning.accumulatedFlexibleFunds': 'Annual Flexible Funds',
 
       'financialPlanning.withdrawalRate': 'Withdrawal Rate',
       'financialPlanning.months': 'months',

@@ -114,6 +114,22 @@ const FinancialAnalysisPage = ({
     setExpenses(expenses.filter(expense => expense.id !== expenseId));
   };
 
+  const calculateAccumulatedFlexibleFunds = (age) => {
+    // Start with current assets (liquid cash)
+    let flexibleFunds = currentAssets;
+    
+    // Add accumulated net cash flow from start age to current age
+    const startAge = analysisPeriod.start;
+    for (let year = startAge; year <= age; year++) {
+      const yearIncome = calculateTotalIncome(year);
+      const yearExpenses = calculateTotalExpenses(year);
+      const yearNetCashFlow = yearIncome - yearExpenses;
+      flexibleFunds += yearNetCashFlow * 12; // Convert monthly to annual
+    }
+    
+    return Math.max(0, flexibleFunds); // Ensure non-negative
+  };
+
   const calculateFinancialProjection = () => {
     setIsCalculating(true);
     
@@ -138,7 +154,8 @@ const FinancialAnalysisPage = ({
           netCashFlow: totalIncome - totalExpenses,
           totalAssets: totalAssets,
           totalLiabilities: totalLiabilities,
-          netWorth: totalAssets - totalLiabilities
+          netWorth: totalAssets - totalLiabilities,
+          accumulatedFlexibleFunds: calculateAccumulatedFlexibleFunds(age)
         };
 
         data.push(yearData);
@@ -838,6 +855,11 @@ const FinancialAnalysisPage = ({
         formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}`,
         description: '實際擁有的財富總額，是財務狀況的重要指標'
       },
+      accumulatedFlexibleFunds: {
+        title: '年度靈活資金計算公式',
+        formula: `當前資產 + 累積淨現金流\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，不包括投資產品中的資金`,
+        description: '可靈活使用的現金總額，包括當前資產和累積的淨現金流，不包含投資產品中的資金'
+      },
 
     };
     
@@ -1202,6 +1224,18 @@ const FinancialAnalysisPage = ({
                         </button>
                       </div>
                     </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
+                        <span>年度靈活資金</span>
+                        <button
+                          onClick={() => showFormulaInfo('accumulatedFlexibleFunds')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -1215,6 +1249,7 @@ const FinancialAnalysisPage = ({
                         {formatCurrency(data.netCashFlow)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.netWorth)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.accumulatedFlexibleFunds)}</td>
                     </tr>
                   ))}
                 </tbody>
