@@ -47,7 +47,7 @@ const FinancialPlanningTab = () => {
     ],
     real_estate: [
       { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
-      { id: 'rental', name: t('financialPlanning.renting'), icon: '🏢' }
+      { id: 'rental', name: t('financialPlanning.rental'), icon: '🏢' }
     ]
   };
 
