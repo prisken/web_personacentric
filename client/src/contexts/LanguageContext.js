@@ -20,7 +20,7 @@ export const LanguageProvider = ({ children }) => {
 
   const translations = {
     'zh-TW': {
-      // Financial Planning
+      // Financial Planning - Main
       'financialPlanning.title': '理財產品配置',
       'financialPlanning.tab': '理財產品配置',
       'financialPlanning.page1': '產品配置',
@@ -28,6 +28,14 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.create': '創建',
       'financialPlanning.loadSaved': '載入已保存',
       'financialPlanning.save': '保存',
+      'financialPlanning.cancel': '取消',
+      'financialPlanning.close': '關閉',
+      'financialPlanning.back': '返回',
+      'financialPlanning.next': '下一步',
+      'financialPlanning.previous': '上一步',
+      'financialPlanning.load': '載入',
+
+      // Product Categories
       'financialPlanning.selectCategory': '選擇產品類別',
       'financialPlanning.investment': '投資',
       'financialPlanning.saving': '儲蓄',
@@ -40,38 +48,42 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.annuity': '年金',
       'financialPlanning.ownLiving': '自住',
       'financialPlanning.rental': '租賃',
+
+      // Product Management
       'financialPlanning.product': '產品',
       'financialPlanning.addProduct': '添加產品',
       'financialPlanning.removeProduct': '移除產品',
       'financialPlanning.duplicateProduct': '複製產品',
       'financialPlanning.noProducts': '尚未添加任何產品',
       'financialPlanning.noProductsDescription': '點擊「創建」開始添加理財產品',
+
+      // User Management
       'financialPlanning.loadUser': '載入用戶',
       'financialPlanning.noSavedUsers': '沒有保存的用戶',
       'financialPlanning.noSavedUsersDescription': '請先創建並保存用戶的理財產品配置',
-      'financialPlanning.load': '載入',
-      'financialPlanning.cancel': '取消',
-      'financialPlanning.close': '關閉',
-      'financialPlanning.back': '返回',
-      'financialPlanning.next': '下一步',
-      'financialPlanning.previous': '上一步',
+
+      // Financial Analysis
       'financialPlanning.financialAnalysis': '財務分析設定',
       'financialPlanning.retirementAge': '退休年齡',
       'financialPlanning.inflationRate': '通脹率 (%)',
       'financialPlanning.currentAssets': '當前資產 (HKD)',
       'financialPlanning.analysisPeriod': '分析期間',
       'financialPlanning.to': '至',
+      'financialPlanning.recalculate': '重新計算',
+      'financialPlanning.calculating': '計算中...',
+      'financialPlanning.startAnalysis': '開始財務分析',
+      'financialPlanning.startAnalysisDescription': '設定您的財務參數並點擊「重新計算」開始分析',
+      'financialPlanning.startAnalysisButton': '開始分析',
+
+      // Expenses
       'financialPlanning.expenses': '開支設定',
       'financialPlanning.addExpenseStage': '添加開支階段',
       'financialPlanning.ageFrom': '年齡從',
       'financialPlanning.ageTo': '年齡至',
       'financialPlanning.monthlyExpenses': '月開支',
       'financialPlanning.removeExpense': '移除開支',
-      'financialPlanning.recalculate': '重新計算',
-      'financialPlanning.calculating': '計算中...',
-      'financialPlanning.startAnalysis': '開始財務分析',
-      'financialPlanning.startAnalysisDescription': '設定您的財務參數並點擊「重新計算」開始分析',
-      'financialPlanning.startAnalysisButton': '開始分析',
+
+      // Results Table
       'financialPlanning.annualFinancialStatus': '年度財務狀況',
       'financialPlanning.age': '年齡',
       'financialPlanning.totalMonthlyIncome': '總月收入',
@@ -82,6 +94,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.totalLiabilities': '總負債',
       'financialPlanning.netWorth': '淨資產',
       'financialPlanning.accumulatedFlexibleFunds': '年度靈活資金',
+
+      // Charts
       'financialPlanning.financialTrendChart': '財務趨勢圖',
       'financialPlanning.assetAllocation': '資產配置',
       'financialPlanning.incomeSourcesAnalysis': '收入來源分析',
@@ -101,6 +115,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.incomeSources': '收入來源 (HKD)',
       'financialPlanning.annualIncomeSources': '各收入來源年度金額',
       'financialPlanning.netWorthPassiveIncomeExpenses': '淨資產、被動收入與開支趨勢',
+
+      // Formula Info
       'financialPlanning.viewChartExplanation': '查看圖表說明',
       'financialPlanning.viewCalculationFormula': '查看計算公式',
       'financialPlanning.formulaExplanation': '計算公式：',
@@ -164,7 +180,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.required': '需要完成',
       'financialPlanning.products': '產品配置',
 
-      // Product Card Fields
+      // Product Card Fields - Funds
       'productCard.fundAllocation': '基金配置',
       'productCard.growth': '增長型',
       'productCard.dividends': '股息型',
@@ -184,6 +200,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.compoundCalculation': '複式計算',
       'productCard.simpleCalculation': '單利計算',
 
+      // Product Card Fields - MPF
       'productCard.monthlySalary': '月薪 (HKD)',
       'productCard.salaryIncrement': '年薪增幅 (%)',
       'productCard.employerContribution': '僱主供款 (%)',
@@ -195,6 +212,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.mpfWithoutDividends': '無派息時強積金價值',
       'productCard.employeeContributionDeduction': '僱員供款扣除',
 
+      // Product Card Fields - Saving Plans
       'productCard.planName': '計劃名稱',
       'productCard.contribution': '供款金額',
       'productCard.contributionType': '供款頻率',
@@ -217,6 +235,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.surrenderValue': '退保金額',
       'productCard.contributionPeriod': '供款年期',
 
+      // Product Card Fields - Bank
       'productCard.existingAmount': '現存金額',
       'productCard.contributionFrequency': '供款頻率',
       'productCard.alreadyOwned': '已擁有金額',
@@ -226,6 +245,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.totalSavings': '總儲蓄金額',
       'productCard.totalAmount': '總金額',
 
+      // Product Card Fields - Own Living
       'productCard.purchasePrice': '購買價格 (HKD)',
       'productCard.downPayment': '首期付款 (%)',
       'productCard.downPaymentPlaceholder': '例如: 30',
@@ -234,59 +254,9 @@ export const LanguageProvider = ({ children }) => {
       'productCard.willNotSell': '不會賣',
       'productCard.willSell': '將會售樓',
       'productCard.sellAgePlaceholder': '例如: 65',
-      'productCard.currentSituation': '現時情況',
-      'productCard.selfOccupied': '自住',
-      'productCard.renting': '出租',
-      'productCard.monthlyRent': '每月租金 (HKD)',
-      'productCard.rentStartAge': '開始出租年紀',
-      'productCard.mortgageCompletionAge': '供完樓年齡',
-      'productCard.propertyValue': '樓價總值',
-      'productCard.mortgageAmount': '按揭金額 (HKD)',
-      'productCard.monthlyPayment': '每月供款',
-      'productCard.purchaseAge': '購買年齡',
-      'productCard.rentalExpenses': '租金開支 (HKD)',
-      'productCard.rentalIncrement': '租金增幅 (%)',
-      'productCard.expectedEndAge': '預期結束年齡',
-      'productCard.currentValue': '現值 (HKD)',
-      'productCard.status': '狀態',
-      'productCard.rentAmount': '租金收入 (HKD)',
-      'productCard.rentIncrement': '租金增幅 (%)',
-      'productCard.ownershipStartAge': '擁有開始年齡',
-      'productCard.ownershipEndAge': '擁有結束年齡',
-      'productCard.ownerOccupied': '自住',
-      'productCard.rented': '出租',
-      'productCard.saving': '儲蓄',
-      'productCard.fixedDeposit': '定期存款',
-      'productCard.durationType': '年期單位',
-      'productCard.years': '年',
-      'productCard.months': '月',
-      'productCard.quarterly': '每季',
-      'productCard.apartment': '公寓',
-      'productCard.house': '獨立屋',
-      'productCard.condo': '共管公寓',
-      'productCard.type': '類型',
-      'productCard.land': '土地',
-      'productCard.vacant': '空置',
-      'productCard.removeProduct': '移除產品',
-      'productCard.duplicateProduct': '複製產品',
-      'productCard.summary': '摘要',
-      'productCard.totalDividend': '預計總收益',
-      'productCard.totalValue': '總值',
-      'productCard.totalReceivable': '總可收款項',
-      'productCard.fundsAt70': '70歲時資金',
-      'productCard.fundsAt80': '80歲時資金',
-      'productCard.fundsAt90': '90歲時資金',
-      'productCard.fundsAt100': '100歲時資金',
-      'productCard.mortgagePaidUpAge': '按揭還清年齡',
-      'productCard.totalRentPaid': '總租金支出',
-      'productCard.totalRentIncome': '總租金收入',
-      'productCard.unknownProductType': '未知產品類型',
-      'productCard.productNumber': '產品 #',
-      'productCard.copyProduct': '複製產品',
-      'productCard.deleteProduct': '刪除產品',
-
       'productCard.mortgageInterestRate': '按揭利率 (%)',
       'productCard.mortgageInterestRatePlaceholder': '例如: 3.5',
+      'productCard.mortgageCompletionAge': '供完樓年齡',
       'productCard.mortgageCompletionAgePlaceholder': '例如: 60',
       'productCard.totalInterestPaid': '總利息支出',
       'productCard.propertyValueAtCompletion': '供完樓時物業價值',
@@ -295,11 +265,13 @@ export const LanguageProvider = ({ children }) => {
       'productCard.propertyValueAtAge': '{age}歲時物業價值',
       'productCard.saleProceeds': '售樓收益',
 
+      // Product Card Fields - Rental
       'productCard.monthlyRentExpense': '每月租金開支 (HKD)',
       'productCard.leaseStartAge': '租約開始年齡',
       'productCard.rentIncreaseRate': '租金增幅 (%)',
       'productCard.rentIncreaseRatePlaceholder': '例如: 3',
 
+      // Product Card Fields - Annuity
       'productCard.annuityType': '年金類型',
       'productCard.deferred': '延期',
       'productCard.immediate': '即期',
@@ -316,6 +288,15 @@ export const LanguageProvider = ({ children }) => {
       'productCard.totalAnnuityIncome': '總年金收入',
       'productCard.internalRateOfReturn': '內部回報率',
 
+      // Product Card - Common
+      'productCard.removeProduct': '移除產品',
+      'productCard.duplicateProduct': '複製產品',
+      'productCard.summary': '摘要',
+      'productCard.unknownProductType': '未知產品類型',
+      'productCard.productNumber': '產品 #',
+      'productCard.copyProduct': '複製產品',
+      'productCard.deleteProduct': '刪除產品',
+
       // Info Dialog
       'productCard.viewFormula': '查看計算公式',
       'productCard.calculationFormula': '計算公式',
@@ -325,7 +306,7 @@ export const LanguageProvider = ({ children }) => {
       'dashboard.tabs.financial_planning': '理財產品配置',
     },
     'en': {
-      // Financial Planning
+      // Financial Planning - Main
       'financialPlanning.title': 'Financial Product Planning',
       'financialPlanning.tab': 'Financial Planning',
       'financialPlanning.page1': 'Product Configuration',
@@ -333,6 +314,14 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.create': 'Create',
       'financialPlanning.loadSaved': 'Load Saved',
       'financialPlanning.save': 'Save',
+      'financialPlanning.cancel': 'Cancel',
+      'financialPlanning.close': 'Close',
+      'financialPlanning.back': 'Back',
+      'financialPlanning.next': 'Next',
+      'financialPlanning.previous': 'Previous',
+      'financialPlanning.load': 'Load',
+
+      // Product Categories
       'financialPlanning.selectCategory': 'Select Product Category',
       'financialPlanning.investment': 'Investment',
       'financialPlanning.saving': 'Saving',
@@ -345,38 +334,42 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.annuity': 'Annuity',
       'financialPlanning.ownLiving': 'Own Living',
       'financialPlanning.rental': 'Rental',
+
+      // Product Management
       'financialPlanning.product': 'Product',
       'financialPlanning.addProduct': 'Add Product',
       'financialPlanning.removeProduct': 'Remove Product',
       'financialPlanning.duplicateProduct': 'Duplicate Product',
       'financialPlanning.noProducts': 'No products added yet',
       'financialPlanning.noProductsDescription': 'Click "Create" to start adding financial products',
+
+      // User Management
       'financialPlanning.loadUser': 'Load User',
       'financialPlanning.noSavedUsers': 'No saved users',
       'financialPlanning.noSavedUsersDescription': 'Please create and save user financial product configurations first',
-      'financialPlanning.load': 'Load',
-      'financialPlanning.cancel': 'Cancel',
-      'financialPlanning.close': 'Close',
-      'financialPlanning.back': 'Back',
-      'financialPlanning.next': 'Next',
-      'financialPlanning.previous': 'Previous',
+
+      // Financial Analysis
       'financialPlanning.financialAnalysis': 'Financial Analysis Settings',
       'financialPlanning.retirementAge': 'Retirement Age',
       'financialPlanning.inflationRate': 'Inflation Rate (%)',
       'financialPlanning.currentAssets': 'Current Assets (HKD)',
       'financialPlanning.analysisPeriod': 'Analysis Period',
       'financialPlanning.to': 'to',
+      'financialPlanning.recalculate': 'Recalculate',
+      'financialPlanning.calculating': 'Calculating...',
+      'financialPlanning.startAnalysis': 'Start Financial Analysis',
+      'financialPlanning.startAnalysisDescription': 'Set your financial parameters and click "Recalculate" to start analysis',
+      'financialPlanning.startAnalysisButton': 'Start Analysis',
+
+      // Expenses
       'financialPlanning.expenses': 'Expense Settings',
       'financialPlanning.addExpenseStage': 'Add Expense Stage',
       'financialPlanning.ageFrom': 'Age From',
       'financialPlanning.ageTo': 'Age To',
       'financialPlanning.monthlyExpenses': 'Monthly Expenses',
       'financialPlanning.removeExpense': 'Remove Expense',
-      'financialPlanning.recalculate': 'Recalculate',
-      'financialPlanning.calculating': 'Calculating...',
-      'financialPlanning.startAnalysis': 'Start Financial Analysis',
-      'financialPlanning.startAnalysisDescription': 'Set your financial parameters and click "Recalculate" to start analysis',
-      'financialPlanning.startAnalysisButton': 'Start Analysis',
+
+      // Results Table
       'financialPlanning.annualFinancialStatus': 'Annual Financial Status',
       'financialPlanning.age': 'Age',
       'financialPlanning.totalMonthlyIncome': 'Total Monthly Income',
@@ -387,6 +380,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.totalLiabilities': 'Total Liabilities',
       'financialPlanning.netWorth': 'Net Worth',
       'financialPlanning.accumulatedFlexibleFunds': 'Annual Flexible Funds',
+
+      // Charts
       'financialPlanning.financialTrendChart': 'Financial Trend Chart',
       'financialPlanning.assetAllocation': 'Asset Allocation',
       'financialPlanning.incomeSourcesAnalysis': 'Income Sources Analysis',
@@ -406,6 +401,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.incomeSources': 'Income Sources (HKD)',
       'financialPlanning.annualIncomeSources': 'Annual Income Sources',
       'financialPlanning.netWorthPassiveIncomeExpenses': 'Net Worth, Passive Income & Expenses Trend',
+
+      // Formula Info
       'financialPlanning.viewChartExplanation': 'View Chart Explanation',
       'financialPlanning.viewCalculationFormula': 'View Calculation Formula',
       'financialPlanning.formulaExplanation': 'Calculation Formula:',
@@ -469,7 +466,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.required': 'Required',
       'financialPlanning.products': 'Product Configuration',
 
-      // Product Card Fields
+      // Product Card Fields - Funds
       'productCard.fundAllocation': 'Fund Allocation',
       'productCard.growth': 'Growth',
       'productCard.dividends': 'Dividends',
@@ -489,6 +486,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.compoundCalculation': 'Compound Calculation',
       'productCard.simpleCalculation': 'Simple Calculation',
 
+      // Product Card Fields - MPF
       'productCard.monthlySalary': 'Monthly Salary (HKD)',
       'productCard.salaryIncrement': 'Annual Salary Increment (%)',
       'productCard.employerContribution': 'Employer Contribution (%)',
@@ -500,6 +498,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.mpfWithoutDividends': 'MPF Value Without Dividends',
       'productCard.employeeContributionDeduction': 'Employee Contribution Deduction',
 
+      // Product Card Fields - Saving Plans
       'productCard.planName': 'Plan Name',
       'productCard.contribution': 'Contribution Amount',
       'productCard.contributionType': 'Contribution Frequency',
@@ -522,6 +521,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.surrenderValue': 'Surrender Value',
       'productCard.contributionPeriod': 'Contribution Period',
 
+      // Product Card Fields - Bank
       'productCard.existingAmount': 'Existing Amount',
       'productCard.contributionFrequency': 'Contribution Frequency',
       'productCard.alreadyOwned': 'Already Owned',
@@ -531,6 +531,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.totalSavings': 'Total Savings Amount',
       'productCard.totalAmount': 'Total Amount',
 
+      // Product Card Fields - Own Living
       'productCard.purchasePrice': 'Purchase Price (HKD)',
       'productCard.downPayment': 'Down Payment (%)',
       'productCard.downPaymentPlaceholder': 'e.g., 30',
@@ -539,59 +540,9 @@ export const LanguageProvider = ({ children }) => {
       'productCard.willNotSell': 'Will Not Sell',
       'productCard.willSell': 'Will Sell',
       'productCard.sellAgePlaceholder': 'e.g., 65',
-      'productCard.currentSituation': 'Current Situation',
-      'productCard.selfOccupied': 'Self-occupied',
-      'productCard.renting': 'Rented',
-      'productCard.monthlyRent': 'Monthly Rent (HKD)',
-      'productCard.rentStartAge': 'Rent Start Age',
-      'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
-      'productCard.propertyValue': 'Property Value',
-      'productCard.mortgageAmount': 'Mortgage Amount (HKD)',
-      'productCard.monthlyPayment': 'Monthly Payment (HKD)',
-      'productCard.purchaseAge': 'Purchase Age',
-      'productCard.rentalExpenses': 'Rental Expenses (HKD)',
-      'productCard.rentalIncrement': 'Rental Increment (%)',
-      'productCard.expectedEndAge': 'Expected End Age',
-      'productCard.currentValue': 'Current Value (HKD)',
-      'productCard.status': 'Status',
-      'productCard.rentAmount': 'Rent Amount (HKD)',
-      'productCard.rentIncrement': 'Rent Increment (%)',
-      'productCard.ownershipStartAge': 'Ownership Start Age',
-      'productCard.ownershipEndAge': 'Ownership End Age',
-      'productCard.ownerOccupied': 'Owner Occupied',
-      'productCard.rented': 'Rented',
-      'productCard.saving': 'Saving',
-      'productCard.fixedDeposit': 'Fixed Deposit',
-      'productCard.durationType': 'Duration Unit',
-      'productCard.years': 'Years',
-      'productCard.months': 'Months',
-      'productCard.quarterly': 'Quarterly',
-      'productCard.apartment': 'Apartment',
-      'productCard.house': 'House',
-      'productCard.condo': 'Condo',
-      'productCard.type': 'Type',
-      'productCard.land': 'Land',
-      'productCard.vacant': 'Vacant',
-      'productCard.removeProduct': 'Remove Product',
-      'productCard.duplicateProduct': 'Duplicate Product',
-      'productCard.summary': 'Summary',
-      'productCard.totalDividend': 'Expected Total Return',
-      'productCard.totalValue': 'Total Value',
-      'productCard.totalReceivable': 'Total Receivable',
-      'productCard.fundsAt70': 'Funds at Age 70',
-      'productCard.fundsAt80': 'Funds at Age 80',
-      'productCard.fundsAt90': 'Funds at Age 90',
-      'productCard.fundsAt100': 'Funds at Age 100',
-      'productCard.mortgagePaidUpAge': 'Mortgage Paid-up Age',
-      'productCard.totalRentPaid': 'Total Rent Paid',
-      'productCard.totalRentIncome': 'Total Rent Income',
-      'productCard.unknownProductType': 'Unknown Product Type',
-      'productCard.productNumber': 'Product #',
-      'productCard.copyProduct': 'Copy Product',
-      'productCard.deleteProduct': 'Delete Product',
-
       'productCard.mortgageInterestRate': 'Mortgage Interest Rate (%)',
       'productCard.mortgageInterestRatePlaceholder': 'e.g., 3.5',
+      'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
       'productCard.mortgageCompletionAgePlaceholder': 'e.g., 60',
       'productCard.totalInterestPaid': 'Total Interest Paid',
       'productCard.propertyValueAtCompletion': 'Property Value at Completion',
@@ -600,11 +551,13 @@ export const LanguageProvider = ({ children }) => {
       'productCard.propertyValueAtAge': 'Property Value at Age {age}',
       'productCard.saleProceeds': 'Sale Proceeds',
 
+      // Product Card Fields - Rental
       'productCard.monthlyRentExpense': 'Monthly Rent Expense',
       'productCard.leaseStartAge': 'Lease Start Age',
       'productCard.rentIncreaseRate': 'Rent Increase Rate (%)',
       'productCard.rentIncreaseRatePlaceholder': 'e.g., 3',
 
+      // Product Card Fields - Annuity
       'productCard.annuityType': 'Annuity Type',
       'productCard.deferred': 'Deferred',
       'productCard.immediate': 'Immediate',
@@ -620,6 +573,15 @@ export const LanguageProvider = ({ children }) => {
       'productCard.monthlyAnnuity': 'Monthly Annuity',
       'productCard.totalAnnuityIncome': 'Total Annuity Income',
       'productCard.internalRateOfReturn': 'Internal Rate of Return',
+
+      // Product Card - Common
+      'productCard.removeProduct': 'Remove Product',
+      'productCard.duplicateProduct': 'Duplicate Product',
+      'productCard.summary': 'Summary',
+      'productCard.unknownProductType': 'Unknown Product Type',
+      'productCard.productNumber': 'Product #',
+      'productCard.copyProduct': 'Copy Product',
+      'productCard.deleteProduct': 'Delete Product',
 
       // Info Dialog
       'productCard.viewFormula': 'View Calculation Formula',

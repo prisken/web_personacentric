@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
