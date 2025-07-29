@@ -371,6 +371,9 @@ const FinancialAnalysisPage = ({
             assets += data.currentValue * Math.pow(1.03, age - data.ownershipStartAge);
           }
           break;
+        case 'annuity':
+          // Annuities are income products, not assets
+          return 0;
       }
     });
 
@@ -410,6 +413,24 @@ const FinancialAnalysisPage = ({
           liabilities += data.contribution;
         }
       }
+
+      // Add annuity contributions as liabilities
+      if (subType === 'annuity') {
+        // For deferred annuity, add annual contributions as liabilities during contribution period
+        if (data.annuityType === 'deferred') {
+          const contributionStartAge = data.premiumAge;
+          const contributionEndAge = data.premiumAge + data.contributionPeriod;
+          
+          if (age >= contributionStartAge && age < contributionEndAge) {
+            liabilities += data.annualContribution;
+          }
+        } else {
+          // For immediate annuity, add one-time contribution as liability at premium age
+          if (age === data.premiumAge) {
+            liabilities += data.contributionAmount;
+          }
+        }
+      }
     });
 
     return liabilities;
@@ -434,7 +455,7 @@ const FinancialAnalysisPage = ({
           break;
         case 'saving_plans':
         case 'bank':
-        case 'retirement_funds':
+        case 'annuity':
           allocation.cash += productValue;
           break;
         case 'own_living':
@@ -532,6 +553,40 @@ const FinancialAnalysisPage = ({
             // Calculate monthly annuity
             const monthlyAnnuity = (premium / 1000000) * genderFactor * ageAdjustment;
             
+            incomeSources.retirementIncome += monthlyAnnuity;
+          }
+          break;
+          
+        case 'annuity':
+          // Hong Kong Annuity Plan calculation
+          let totalPremium;
+          
+          if (data.annuityType === 'deferred') {
+            // 延期年金：每年供款 × 供款年期
+            totalPremium = data.annualContribution * data.contributionPeriod;
+          } else {
+            // 即期年金：一次性供款
+            totalPremium = data.contributionAmount;
+          }
+          
+          const annuityStartAge = data.annuityStartAge;
+          const gender = data.gender || 'male';
+          
+          // Base rates per $1,000,000 premium at age 60 (Hong Kong Annuity Plan rates)
+          const baseRateMale = 5100; // $5,100 per month for male
+          const baseRateFemale = 4700; // $4,700 per month for female
+          
+          // Age adjustment factor (simplified - older age gets higher monthly payout)
+          const ageAdjustment = Math.pow(1.05, annuityStartAge - 60);
+          
+          // Gender factor
+          const genderFactor = gender === 'male' ? baseRateMale : baseRateFemale;
+          
+          // Calculate monthly annuity
+          const monthlyAnnuity = (totalPremium / 1000000) * genderFactor * ageAdjustment;
+          
+          // Add to retirement income if age is at or after annuity start age
+          if (age >= annuityStartAge) {
             incomeSources.retirementIncome += monthlyAnnuity;
           }
           break;
@@ -699,6 +754,10 @@ const FinancialAnalysisPage = ({
         if (ownerPropertyYears <= 0) return 0;
         const ownerPropertyAppreciation = 0.03; // 3% annual appreciation
         return data.purchasePrice * Math.pow(1 + ownerPropertyAppreciation, ownerPropertyYears);
+        
+      case 'annuity':
+        // Annuities are income products, not assets
+        return 0;
         
       default:
         return 0;

@@ -108,9 +108,16 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'renting':
         return {
           title: t('productCard.totalRentPaid'),
-          formula: `租賃年期 = 預期結束年齡 - 租約開始年齡\n\n每年租金計算：\n第1年：每月租金 × 12\n第2年：每月租金 × 12 × (1 + 租金增幅%)^1\n第3年：每月租金 × 12 × (1 + 租金增幅%)^2\n...\n第N年：每月租金 × 12 × (1 + 租金增幅%)^(N-1)\n\n總租金支出 = 所有年份租金總和`,
+          formula: `總租金支出計算：\n\n每年租金 = 每月租金 × 12\n\n考慮租金增幅：\n第1年：${data.monthlyRentExpense} × 12 = ${data.monthlyRentExpense * 12}\n第2年：${data.monthlyRentExpense} × 12 × (1 + ${data.rentIncreaseRate}%) = ${data.monthlyRentExpense * 12 * (1 + data.rentIncreaseRate / 100)}\n第3年：${data.monthlyRentExpense} × 12 × (1 + ${data.rentIncreaseRate}%)² = ${data.monthlyRentExpense * 12 * Math.pow(1 + data.rentIncreaseRate / 100, 2)}\n...\n\n總租金支出 = 各年租金總和（從${data.leaseStartAge}歲到${data.expectedEndAge}歲）`,
           description: '租金支出考慮年度增幅，反映實際租賃成本隨時間增長的情況。'
         };
+      case 'annuity':
+        return {
+          title: t('productCard.monthlyAnnuity'),
+          formula: `香港年金計劃計算公式：\n\n${data.annuityType === 'deferred' ? '延期年金：' : '即期年金：'}\n${data.annuityType === 'deferred' ? `總保費 = 每年供款額 × 供款年期 = ${data.annualContribution} × ${data.contributionPeriod} = ${data.annualContribution * data.contributionPeriod}` : `總保費 = 供款額 = ${data.contributionAmount}`}\n\n基礎月年金率（60歲）：\n- 男性：$5,100/月（每$1,000,000投保）\n- 女性：$4,700/月（每$1,000,000投保）\n\n年齡調整：\n月年金 = (總保費 ÷ 1,000,000) × 基礎月年金率 × (1.05)^(年金開始年齡 - 60)\n\n總年金收入：\n總收入 = 月年金 × 12 × (預期壽命 - 年金開始年齡)\n\n內部回報率：\nIRR = (總收入 ÷ 總保費)^(1/年金年期) - 1`,
+          description: '香港年金計劃提供保證終身收入，回報率與投保人壽命掛鈎。投保人愈長壽，內部回報率愈高。'
+        };
+
       default:
         return { title: '', formula: '', description: '' };
     }
@@ -663,6 +670,106 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 </div>
               </>
             )}
+          </div>
+        );
+
+      case 'annuity':
+        return (
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.annuityType')}</label>
+              <select
+                value={data.annuityType}
+                onChange={(e) => updateProduct(product.id, 'annuityType', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="deferred">{t('productCard.deferred')}</option>
+                <option value="immediate">{t('productCard.immediate')}</option>
+              </select>
+            </div>
+            
+            {data.annuityType === 'deferred' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.annualContribution')}</label>
+                  <input
+                    type="number"
+                    value={data.annualContribution}
+                    onChange={(e) => updateProduct(product.id, 'annualContribution', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                    placeholder={t('productCard.annualContributionPlaceholder')}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionPeriod')}</label>
+                  <select
+                    value={data.contributionPeriod}
+                    onChange={(e) => updateProduct(product.id, 'contributionPeriod', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  >
+                    <option value={10}>10年</option>
+                    <option value={15}>15年</option>
+                    <option value={20}>20年</option>
+                    <option value={25}>25年</option>
+                  </select>
+                </div>
+              </>
+            )}
+            
+            {data.annuityType === 'immediate' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionAmount')}</label>
+                <input
+                  type="number"
+                  value={data.contributionAmount}
+                  onChange={(e) => updateProduct(product.id, 'contributionAmount', parseFloat(e.target.value) || 0)}
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  placeholder={t('productCard.contributionAmountPlaceholder')}
+                />
+              </div>
+            )}
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.gender')}</label>
+              <select
+                value={data.gender}
+                onChange={(e) => updateProduct(product.id, 'gender', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="male">{t('productCard.male')}</option>
+                <option value="female">{t('productCard.female')}</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.annuityStartAge')}</label>
+              <input
+                type="number"
+                value={data.annuityStartAge}
+                onChange={(e) => updateProduct(product.id, 'annuityStartAge', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.premiumAge')}</label>
+              <input
+                type="number"
+                value={data.premiumAge}
+                onChange={(e) => updateProduct(product.id, 'premiumAge', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.lifeExpectancy')}</label>
+              <input
+                type="number"
+                value={data.lifeExpectancy}
+                onChange={(e) => updateProduct(product.id, 'lifeExpectancy', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
           </div>
         );
 

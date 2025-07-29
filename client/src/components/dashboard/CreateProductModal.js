@@ -86,7 +86,7 @@ const CreateProductModal = ({ productTypes, onClose, onAddProduct }) => {
                           {productType.id === 'mpf' && '強積金計劃'}
                           {productType.id === 'saving_plans' && '儲蓄保險計劃'}
                           {productType.id === 'bank' && '銀行儲蓄產品'}
-                          {productType.id === 'retirement_funds' && '退休基金計劃'}
+                          {productType.id === 'annuity' && '香港年金計劃'}
                           {productType.id === 'own_living' && '自住物業'}
                           {productType.id === 'rental' && '租賃物業'}
                         </p>

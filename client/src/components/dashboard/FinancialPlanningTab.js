@@ -48,6 +48,9 @@ const FinancialPlanningTab = () => {
     real_estate: [
       { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
       { id: 'rental', name: t('financialPlanning.renting'), icon: '🏢' }
+    ],
+    retirement: [
+      { id: 'annuity', name: t('financialPlanning.annuity'), icon: '💰' }
     ]
   };
 
@@ -173,17 +176,17 @@ const FinancialPlanningTab = () => {
           alreadyOwned: 'N',
           lockInPeriod: 12
         };
-      case 'retirement_funds':
+      case 'annuity':
         return {
-          contributionAmount: 1000000, // Premium amount
-          contributionFrequency: 'oneTime', // Annuity is typically one-time premium
-          startAge: 60, // Premium age
-          completionAge: 65, // Annuity start age
-          expectedReturn: 4, // Internal rate of return
-          gender: 'male', // Gender affects monthly payout
-          lifeExpectancy: 86, // Life expectancy for IRR calculation
-          guaranteedPeriod: 10, // Guaranteed payment period
-          annuityType: 'immediate' // Immediate or deferred annuity
+          annuityType: 'deferred', // 延期 or 即期
+          contributionMethod: 'deferred', // 供款方式
+          annualContribution: 100000, // 每年供款額 (for deferred)
+          contributionPeriod: 20, // 供款年期 (for deferred)
+          contributionAmount: 1000000, // 供款額 (for immediate)
+          gender: 'male',
+          annuityStartAge: 65, // 年金開始年齡
+          premiumAge: 45, // 投保年齡
+          lifeExpectancy: 86 // 預期壽命
         };
       case 'own_living':
         return {
@@ -256,11 +259,22 @@ const FinancialPlanningTab = () => {
           const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, data.lockInPeriod / 12);
           return `${t('productCard.totalAmount')}: ${formatCurrency(totalAmount)}`;
         }
-      case 'retirement_funds':
+      case 'annuity':
         // Hong Kong Annuity Plan calculation
-        const premium = data.contributionAmount;
-        const premiumAge = data.startAge;
-        const annuityStartAge = data.completionAge;
+        let totalPremium;
+        let premiumAge;
+        
+        if (data.annuityType === 'deferred') {
+          // 延期年金：每年供款 × 供款年期
+          totalPremium = data.annualContribution * data.contributionPeriod;
+          premiumAge = data.premiumAge;
+        } else {
+          // 即期年金：一次性供款
+          totalPremium = data.contributionAmount;
+          premiumAge = data.premiumAge;
+        }
+        
+        const annuityStartAge = data.annuityStartAge;
         const gender = data.gender || 'male';
         const lifeExpectancy = data.lifeExpectancy || 86;
         
@@ -275,16 +289,16 @@ const FinancialPlanningTab = () => {
         const genderFactor = gender === 'male' ? baseRateMale : baseRateFemale;
         
         // Calculate monthly annuity
-        const monthlyAnnuity = (premium / 1000000) * genderFactor * ageAdjustment;
+        const monthlyAnnuity = (totalPremium / 1000000) * genderFactor * ageAdjustment;
         
         // Calculate total payments over life expectancy
         const totalPayments = monthlyAnnuity * 12 * (lifeExpectancy - annuityStartAge);
         
         // Calculate internal rate of return
         const annuityYears = lifeExpectancy - annuityStartAge;
-        const irr = annuityYears > 0 ? (Math.pow(totalPayments / premium, 1/annuityYears) - 1) * 100 : 0;
+        const irr = annuityYears > 0 ? (Math.pow(totalPayments / totalPremium, 1/annuityYears) - 1) * 100 : 0;
         
-        return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyAnnuity)}\n${t('productCard.totalPayments')}: ${formatCurrency(totalPayments)}\n${t('productCard.internalRateOfReturn')}: ${irr.toFixed(2)}%`;
+        return `${t('productCard.monthlyAnnuity')}: ${formatCurrency(monthlyAnnuity)}\n${t('productCard.totalAnnuityIncome')}: ${formatCurrency(totalPayments)}\n${t('productCard.internalRateOfReturn')}: ${irr.toFixed(2)}%`;
       case 'own_living':
         // Calculate mortgage amount and monthly payment based on down payment percentage
         const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
