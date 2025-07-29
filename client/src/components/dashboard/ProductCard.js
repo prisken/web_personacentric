@@ -650,18 +650,42 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.sellAge')}</label>
-              <select
-                value={data.sellAge}
-                onChange={(e) => updateProduct(product.id, 'sellAge', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="willNotSell">{t('productCard.willNotSell')}</option>
-                <option value="65">65</option>
-                <option value="70">70</option>
-                <option value="75">75</option>
-                <option value="80">80</option>
-                <option value="85">85</option>
-              </select>
+              <div className="space-y-2">
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="willNotSell"
+                    name="sellOption"
+                    checked={data.sellAge === 'willNotSell'}
+                    onChange={() => updateProduct(product.id, 'sellAge', 'willNotSell')}
+                    className="mr-2"
+                  />
+                  <label htmlFor="willNotSell" className="text-sm text-gray-700">{t('productCard.willNotSell')}</label>
+                </div>
+                <div className="flex items-center">
+                  <input
+                    type="radio"
+                    id="willSell"
+                    name="sellOption"
+                    checked={data.sellAge !== 'willNotSell'}
+                    onChange={() => updateProduct(product.id, 'sellAge', data.mortgageStartAge + 1)}
+                    className="mr-2"
+                  />
+                  <label htmlFor="willSell" className="text-sm text-gray-700">{t('productCard.willSell')}</label>
+                </div>
+                {data.sellAge !== 'willNotSell' && (
+                  <div className="ml-6">
+                    <input
+                      type="number"
+                      value={data.sellAge === 'willNotSell' ? '' : data.sellAge}
+                      onChange={(e) => updateProduct(product.id, 'sellAge', parseInt(e.target.value) || data.mortgageStartAge + 1)}
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                      placeholder={t('productCard.sellAgePlaceholder')}
+                      min={data.mortgageStartAge + 1}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentSituation')}</label>

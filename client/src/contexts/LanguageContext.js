@@ -1868,6 +1868,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.propertyValueGrowthPlaceholder': '例如: 1.0',
       'productCard.propertyValueAtAge': '{age}歲時物業價值',
       'productCard.saleProceeds': '售樓收益',
+      'productCard.willSell': '將會售樓',
+      'productCard.sellAgePlaceholder': '例如: 65',
       // Annuity
       'productCard.annuityType': 'Annuity Type',
       'productCard.deferred': 'Deferred',
@@ -1890,6 +1892,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.propertyValueGrowthPlaceholder': 'e.g., 1.0',
       'productCard.propertyValueAtAge': 'Property Value at Age {age}',
       'productCard.saleProceeds': 'Sale Proceeds',
+      'productCard.willSell': 'Will Sell',
+      'productCard.sellAgePlaceholder': 'e.g., 65',
     }
   };
 
