@@ -154,12 +154,15 @@ const FinancialAnalysisPage = ({
         }
       });
       
-      // Add MPF withdrawal at age 65
+      // Add progressive MPF withdrawal starting from age 65
       products.forEach(product => {
         const { subType, data } = product;
-        if (subType === 'mpf' && year === 65) {
+        if (subType === 'mpf' && year >= 65) {
           const mpfResult = calculateMPF(data);
-          flexibleFunds += mpfResult.totalMPF;
+          // Progressive withdrawal: assume 20-year withdrawal period (65-85)
+          const withdrawalPeriod = 20; // years
+          const annualMPFWithdrawal = mpfResult.totalMPF / withdrawalPeriod;
+          flexibleFunds += annualMPFWithdrawal;
         }
       });
     }
@@ -933,8 +936,8 @@ const FinancialAnalysisPage = ({
       },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金提取的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金提取的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金漸進提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金漸進提取（65歲起分20年提取）的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金漸進提取的資金'
       },
 
     };
