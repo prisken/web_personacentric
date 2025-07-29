@@ -153,6 +153,15 @@ const FinancialAnalysisPage = ({
           }
         }
       });
+      
+      // Add MPF withdrawal at age 65
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'mpf' && year === 65) {
+          const mpfResult = calculateMPF(data);
+          flexibleFunds += mpfResult.totalMPF;
+        }
+      });
     }
     
     return Math.max(0, flexibleFunds); // Ensure non-negative
@@ -209,7 +218,20 @@ const FinancialAnalysisPage = ({
       // Apply salary increment from MPF card
       const yearsSinceStart = age - (mpfProduct ? mpfProduct.data.currentAge : age);
       const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, Math.max(0, yearsSinceStart));
-      income += salaryWithIncrement;
+      
+      // Deduct employee contribution percentage
+      const employeeContributionRate = mpfProduct ? mpfProduct.data.employeeContribution : 0;
+      const employeeContribution = salaryWithIncrement * (employeeContributionRate / 100);
+      
+      // Apply MPF contribution caps
+      let finalEmployeeContribution = employeeContribution;
+      if (salaryWithIncrement >= 30000) {
+        finalEmployeeContribution = 1500; // Cap at 1,500 HKD
+      } else if (salaryWithIncrement < 7100) {
+        finalEmployeeContribution = 0; // No contribution if below 7,100 HKD
+      }
+      
+      income += salaryWithIncrement - finalEmployeeContribution;
     }
 
     return income;
@@ -383,6 +405,14 @@ const FinancialAnalysisPage = ({
             }
           }
           // After expected withdrawal age, fund value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
+          break;
+        case 'mpf':
+          // Only include MPF value if before age 65
+          if (age < 65) {
+            const mpfResult = calculateMPF(data);
+            assets += mpfResult.totalMPF;
+          }
+          // After age 65, MPF value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
           break;
         case 'saving_plans':
           if (age >= data.surrenderAge) {
@@ -724,6 +754,9 @@ const FinancialAnalysisPage = ({
         }
         
       case 'mpf':
+        // Only return value if before age 65
+        if (age >= 65) return 0;
+        
         const mpfYears = 65 - data.currentAge;
         // Calculate value at specific age
         const yearsFromCurrent = age - data.currentAge;
@@ -860,8 +893,8 @@ const FinancialAnalysisPage = ({
     const formulas = {
       totalMonthlyIncome: {
         title: '總月收入計算公式',
-        formula: `工作收入（僅來自強積金卡月薪）\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n\n注意：總月收入僅包含工作薪資，其他收入來源（基金收益、租金收入、年金收入等）不計入總月收入`,
-        description: '僅包括工作薪資（來自強積金卡月薪，退休前），不包含其他被動收入來源'
+        formula: `(月薪 × (1 + 年薪增幅)^年數) - 僱員供款\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n僱員供款：${currentAge < retirementAge ? '月薪 × 僱員供款百分比（考慮供款上限）' : '無'}\n\n注意：已扣除僱員供款百分比，並應用強積金供款上限（月薪≥30,000時上限1,500，月薪<7,100時無供款）`,
+        description: '工作收入，已扣除僱員供款百分比，僅包括來自強積金卡片的月薪'
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
@@ -895,8 +928,8 @@ const FinancialAnalysisPage = ({
       },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息和提取的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息和提取的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金提取的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金提取的資金'
       },
 
     };
