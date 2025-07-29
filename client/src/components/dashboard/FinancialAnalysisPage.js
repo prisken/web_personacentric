@@ -426,6 +426,12 @@ const FinancialAnalysisPage = ({
         case 'mpf':
           // MPF does not provide passive income - it moves to liquid cash at age 65
           break;
+        case 'annuity':
+          // 年金：每月年金計入被動收入，從年金開始年齡到預期壽命
+          if (age >= data.annuityStartAge && age <= data.expectedLifespan) {
+            passiveIncome += data.monthlyAnnuity;
+          }
+          break;
         case 'owner':
           if (age >= data.ownershipStartAge && age <= data.ownershipEndAge && data.status === 'renting') {
             const ownershipYears = age - data.ownershipStartAge;
@@ -1230,8 +1236,8 @@ const FinancialAnalysisPage = ({
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
-        formula: `投資收益 + 租金收入 + 年金收入\n\n當前${currentAge}歲詳細計算：\n派息基金收益：基金本金 × 年回報率 ÷ 12\n強積金：MPF餘額 × 提取率\n銀行利息：存款餘額 × 年利率 ÷ 12\n租金收入：月租金收入\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n\n注意：增長基金不計入被動收入，收益累積在資產中`,
-        description: '無需工作即可獲得的收入，包括派息基金分紅、租金、退休金、年金等。增長基金收益不計入被動收入，而是累積在資產價值中。'
+        formula: `投資收益 + 租金收入 + 年金收入\n\n當前${currentAge}歲詳細計算：\n派息基金收益：基金本金 × 年回報率 ÷ 12\n強積金：MPF餘額 × 提取率\n銀行利息：存款餘額 × 年利率 ÷ 12\n租金收入：月租金收入\n年金收入：每月年金（從年金開始年齡到預期壽命）\n\n注意：增長基金不計入被動收入，收益累積在資產中。年金收入從年金開始年齡開始，持續到預期壽命`,
+        description: '無需工作即可獲得的收入，包括派息基金分紅、租金、退休金、年金等。增長基金收益不計入被動收入，而是累積在資產價值中。年金收入從年金開始年齡開始，持續到預期壽命。'
       },
       totalExpenses: {
         title: '月開支計算公式',
@@ -1287,7 +1293,7 @@ const FinancialAnalysisPage = ({
       },
       incomeSources: {
         title: '收入來源分析說明',
-        formula: `工作收入 = 強積金卡月薪 × (1 + 年薪增幅)^年數\n派息基金收益 = 基金本金 × 年回報率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n派息基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds', data: { fundCategory: 'dividend', investmentAmount: 100000, expectedReturn: 6 } }, currentAge) * 0.06 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月\n\n注意：增長基金不計入收入來源，收益累積在資產中`,
+        formula: `工作收入 = 強積金卡月薪 × (1 + 年薪增幅)^年數\n派息基金收益 = 基金本金 × 年回報率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 每月年金（從年金開始年齡到預期壽命）\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n派息基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds', data: { fundCategory: 'dividend', investmentAmount: 100000, expectedReturn: 6 } }, currentAge) * 0.06 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：每月年金（從年金開始年齡到預期壽命）\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月\n\n注意：增長基金不計入收入來源，收益累積在資產中`,
         description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入來自強積金卡的月薪（考慮年薪增幅），在退休前提供主要收入，退休後則依賴派息基金收益、儲蓄提取、年金收入和租金收入。增長基金收益不計入收入來源，而是累積在資產價值中。'
       }
     };
