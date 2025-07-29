@@ -58,6 +58,36 @@ const FinancialPlanningTab = () => {
     }).format(amount);
   };
 
+  // Helper function to calculate MPF with proper compound interest
+  const calculateMPF = (data) => {
+    const mpfYears = 65 - data.currentAge;
+    const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
+    
+    // Compound the current MPF amount for the full period
+    const currentMPFCompounded = data.currentMPFAmount * Math.pow(1 + data.expectedReturn / 100, mpfYears);
+    
+    // Calculate future contributions with proper compound interest
+    // Each monthly contribution compounds for different periods
+    let futureContributionsCompounded = 0;
+    for (let year = 0; year < mpfYears; year++) {
+      for (let month = 0; month < 12; month++) {
+        const monthsRemaining = (mpfYears - year) * 12 - month;
+        const contributionCompounded = monthlyContribution * Math.pow(1 + data.expectedReturn / 100, monthsRemaining / 12);
+        futureContributionsCompounded += contributionCompounded;
+      }
+    }
+    
+    const totalMPF = currentMPFCompounded + futureContributionsCompounded;
+    const mpfWithoutDividends = data.currentMPFAmount + (monthlyContribution * 12 * mpfYears);
+    const mpfTotalDividendsEarned = totalMPF - mpfWithoutDividends;
+    
+    return {
+      totalMPF,
+      mpfWithoutDividends,
+      mpfTotalDividendsEarned
+    };
+  };
+
   const addProduct = (productType, productSubType) => {
     const newProduct = {
       id: Date.now(),
@@ -174,12 +204,8 @@ const FinancialPlanningTab = () => {
           return `${t('productCard.monthlyDividends')}: ${formatCurrency(monthlyDividend)} | ${t('productCard.totalDividends')}: ${formatCurrency(totalDividends)}`;
         }
       case 'mpf':
-        const mpfYears = 65 - data.currentAge;
-        const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
-        const totalMPF = data.currentMPFAmount + (monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears));
-        const mpfWithoutDividends = data.currentMPFAmount + (monthlyContribution * 12 * mpfYears);
-        const mpfTotalDividendsEarned = totalMPF - mpfWithoutDividends;
-        return `${t('productCard.mpfAt65')}: ${formatCurrency(totalMPF)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(mpfTotalDividendsEarned)}`;
+        const mpfResult = calculateMPF(data);
+        return `${t('productCard.mpfAt65')}: ${formatCurrency(mpfResult.totalMPF)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(mpfResult.mpfTotalDividendsEarned)}`;
       case 'saving_plans':
         const savingTotalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
         const savingTotalDividendsEarned = data.surrenderValue - savingTotalContribution + data.withdrawalAmount;

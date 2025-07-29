@@ -35,6 +35,36 @@ const FinancialAnalysisPage = ({
     }).format(amount);
   };
 
+  // Helper function to calculate MPF with proper compound interest
+  const calculateMPF = (data) => {
+    const mpfYears = 65 - data.currentAge;
+    const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
+    
+    // Compound the current MPF amount for the full period
+    const currentMPFCompounded = data.currentMPFAmount * Math.pow(1 + data.expectedReturn / 100, mpfYears);
+    
+    // Calculate future contributions with proper compound interest
+    // Each monthly contribution compounds for different periods
+    let futureContributionsCompounded = 0;
+    for (let year = 0; year < mpfYears; year++) {
+      for (let month = 0; month < 12; month++) {
+        const monthsRemaining = (mpfYears - year) * 12 - month;
+        const contributionCompounded = monthlyContribution * Math.pow(1 + data.expectedReturn / 100, monthsRemaining / 12);
+        futureContributionsCompounded += contributionCompounded;
+      }
+    }
+    
+    const totalMPF = currentMPFCompounded + futureContributionsCompounded;
+    const mpfWithoutDividends = data.currentMPFAmount + (monthlyContribution * 12 * mpfYears);
+    const mpfTotalDividendsEarned = totalMPF - mpfWithoutDividends;
+    
+    return {
+      totalMPF,
+      mpfWithoutDividends,
+      mpfTotalDividendsEarned
+    };
+  };
+
   const addExpense = () => {
     const newExpense = {
       id: Date.now(),
@@ -119,10 +149,8 @@ const FinancialAnalysisPage = ({
           break;
         case 'mpf':
           if (age >= 65) {
-            const mpfYears = 65 - data.currentAge;
-            const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
-            const totalMPF = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears);
-            income += totalMPF / 240; // Assume 20 years of withdrawal
+            const mpfResult = calculateMPF(data);
+            income += mpfResult.totalMPF / 240; // Assume 20 years of withdrawal
           }
           break;
         case 'owner':
@@ -154,10 +182,8 @@ const FinancialAnalysisPage = ({
           break;
         case 'mpf':
           if (age >= 65) {
-            const mpfYears = 65 - data.currentAge;
-            const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
-            const totalMPF = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears);
-            passiveIncome += totalMPF / 240;
+            const mpfResult = calculateMPF(data);
+            passiveIncome += mpfResult.totalMPF / 240;
           }
           break;
         case 'owner':
@@ -333,10 +359,8 @@ const FinancialAnalysisPage = ({
         case 'mpf':
           if (age >= 65) {
             // Start MPF withdrawal
-            const monthlyContribution = (data.monthlySalary * data.employerContribution / 100) + 
-                                       (data.monthlySalary * data.employeeContribution / 100);
-            const mpfValue = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, 65 - data.currentAge);
-            incomeSources.mpfIncome += mpfValue * 0.04; // 4% withdrawal rate
+            const mpfResult = calculateMPF(data);
+            incomeSources.mpfIncome += mpfResult.totalMPF * 0.04; // 4% withdrawal rate
           }
           break;
           
@@ -407,14 +431,25 @@ const FinancialAnalysisPage = ({
         
       case 'mpf':
         const mpfYears = 65 - data.currentAge;
-        const monthlyContribution = (data.monthlySalary * data.employerContribution / 100) + 
-                                   (data.monthlySalary * data.employeeContribution / 100);
-        const mpfValue = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears);
         // Calculate value at specific age
         const yearsFromCurrent = age - data.currentAge;
         if (yearsFromCurrent <= 0) return 0;
-        if (yearsFromCurrent >= mpfYears) return mpfValue;
-        return monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, yearsFromCurrent);
+        if (yearsFromCurrent >= mpfYears) {
+          const mpfResult = calculateMPF(data);
+          return mpfResult.totalMPF;
+        }
+        // For intermediate ages, calculate partial MPF value
+        const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
+        const currentMPFCompounded = data.currentMPFAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromCurrent);
+        let futureContributionsCompounded = 0;
+        for (let year = 0; year < yearsFromCurrent; year++) {
+          for (let month = 0; month < 12; month++) {
+            const monthsRemaining = (yearsFromCurrent - year) * 12 - month;
+            const contributionCompounded = monthlyContribution * Math.pow(1 + data.expectedReturn / 100, monthsRemaining / 12);
+            futureContributionsCompounded += contributionCompounded;
+          }
+        }
+        return currentMPFCompounded + futureContributionsCompounded;
         
       case 'saving_plans':
         const savingYears = data.surrenderAge - data.startAge;

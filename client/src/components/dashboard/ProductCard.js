@@ -58,8 +58,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'mpf':
         return {
           title: t('productCard.mpfAt65'),
-          formula: `強積金總額 = 現有金額 + (月供款 × 12 × (1 + 年回報率)^(65 - 當前年齡))\n總派息收益 = 強積金總額 - (現有金額 + 月供款 × 12 × (65 - 當前年齡))`,
-          description: '強積金計算包含現有金額和未來供款，使用複式計算得出總額，派息收益為複利與單利的差額。'
+          formula: `現有金額複利 = 現有金額 × (1 + 年回報率)^(65 - 當前年齡)\n未來供款複利 = Σ(月供款 × (1 + 年回報率)^(剩餘月數/12))\n強積金總額 = 現有金額複利 + 未來供款複利\n總派息收益 = 強積金總額 - (現有金額 + 月供款 × 12 × (65 - 當前年齡))`,
+          description: '強積金計算將現有金額複利計算至65歲，未來每月供款按剩餘時間分別複利計算，總派息收益為複利與單利的差額。'
         };
       case 'saving_plans':
         return {
