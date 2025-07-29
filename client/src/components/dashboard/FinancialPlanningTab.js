@@ -136,8 +136,7 @@ const FinancialPlanningTab = () => {
           fundCategory: 'growth',
           investmentAmount: 0,
           startAge: 30,
-          expectedReturn: 8,
-          expectedWithdrawalAge: 65
+          expectedReturn: 8
         };
       case 'mpf':
         return {
@@ -223,16 +222,19 @@ const FinancialPlanningTab = () => {
   const calculateProductSummary = (subType, data) => {
     switch (subType) {
       case 'funds':
-        const years = data.expectedWithdrawalAge - data.startAge;
         if (data.fundCategory === 'growth') {
           // 增長基金：複式計算，總回報包含本金和收益
+          // Use a standard 35-year investment period (from start age to age 65)
+          const years = 65 - data.startAge;
           const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
           return `${t('productCard.totalReturn')}: ${formatCurrency(totalValue)}`;
         } else {
-          // 派息基金：單利計算，每月派息
+          // 派息基金：單利計算，每月派息（從第一年開始）
           const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
           const yearlyDividend = monthlyDividend * 12;
-          const totalDividends = yearlyDividend * years;
+          // Calculate dividends from start age to age 100 (lifetime)
+          const totalYears = 100 - data.startAge;
+          const totalDividends = yearlyDividend * totalYears;
           return `${t('productCard.monthlyDividends')}: ${formatCurrency(monthlyDividend)}\n${t('productCard.totalDividends')}: ${formatCurrency(totalDividends)}`;
         }
       case 'mpf':

@@ -175,10 +175,18 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'funds':
-          if (age >= data.expectedWithdrawalAge) {
-            const years = age - data.startAge;
-            const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-            income += totalValue * 0.04 / 12; // 4% annual withdrawal rate
+          if (data.fundCategory === 'growth') {
+            // 增長基金：從65歲開始提取
+            if (age >= 65) {
+              const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, age - data.startAge);
+              income += fundValue * 0.04; // 4% withdrawal rate
+            }
+          } else {
+            // 派息基金：從第一年開始每月派息
+            if (age >= data.startAge) {
+              const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
+              income += monthlyDividend * 12; // Annual dividend income
+            }
           }
           break;
         case 'mpf':
@@ -208,10 +216,19 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'funds':
-          if (age >= data.expectedWithdrawalAge) {
-            const years = age - data.startAge;
-            const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-            passiveIncome += totalValue * 0.04 / 12; // 4% annual withdrawal rate
+          if (data.fundCategory === 'growth') {
+            // 增長基金：從65歲開始提取
+            if (age >= 65) {
+              const years = age - data.startAge;
+              const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
+              passiveIncome += totalValue * 0.04 / 12; // 4% annual withdrawal rate
+            }
+          } else {
+            // 派息基金：從第一年開始每月派息
+            if (age >= data.startAge) {
+              const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
+              passiveIncome += monthlyDividend;
+            }
           }
           break;
         case 'mpf':
@@ -547,10 +564,18 @@ const FinancialAnalysisPage = ({
       
       switch (product.subType) {
         case 'funds':
-          if (age >= data.expectedWithdrawalAge) {
-            // Start withdrawing from funds
-            const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, data.expectedWithdrawalAge - data.startAge);
-            incomeSources.fundIncome += fundValue * 0.04; // 4% withdrawal rate
+          if (data.fundCategory === 'growth') {
+            // 增長基金：從65歲開始提取
+            if (age >= 65) {
+              const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, age - data.startAge);
+              incomeSources.fundIncome += fundValue * 0.04; // 4% withdrawal rate
+            }
+          } else {
+            // 派息基金：從第一年開始每月派息
+            if (age >= data.startAge) {
+              const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
+              incomeSources.fundIncome += monthlyDividend * 12; // Annual dividend income
+            }
           }
           break;
           
@@ -674,13 +699,17 @@ const FinancialAnalysisPage = ({
     
     switch (product.subType) {
       case 'funds':
-        const fundYears = data.expectedWithdrawalAge - data.startAge;
-        const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
         // Calculate value at specific age
         const yearsFromStart = age - data.startAge;
         if (yearsFromStart <= 0) return 0;
-        if (yearsFromStart >= fundYears) return fundValue;
-        return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
+        
+        if (data.fundCategory === 'growth') {
+          // 增長基金：複式計算，總回報包含本金和收益
+          return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
+        } else {
+          // 派息基金：本金保持不變，收益以派息形式發放
+          return data.investmentAmount;
+        }
         
       case 'mpf':
         const mpfYears = 65 - data.currentAge;
