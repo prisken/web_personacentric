@@ -893,7 +893,11 @@ export const LanguageProvider = ({ children }) => {
       'productCard.rentStartAge': '開始出租年紀',
       'productCard.mortgageCompletionAge': '供完樓年齡',
       'productCard.propertyValue': '樓價總值',
-      'productCard.downPayment': '首期付款 (HKD)',
+      'productCard.downPayment': '首期付款 (%)',
+      'productCard.downPaymentPlaceholder': '例如: 30',
+      'productCard.mortgageInterestRate': '按揭利率 (%)',
+      'productCard.mortgageInterestRatePlaceholder': '例如: 3.5',
+      'productCard.mortgageStartAge': '開始供樓年紀',
       
       // New Renting Fields
       'productCard.monthlyRentExpense': '每月租金開支 (HKD)',
@@ -1618,7 +1622,11 @@ export const LanguageProvider = ({ children }) => {
       'productCard.rentStartAge': 'Rent Start Age',
       'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
       'productCard.propertyValue': 'Property Value',
-      'productCard.downPayment': 'Down Payment (HKD)',
+      'productCard.downPayment': 'Down Payment (%)',
+      'productCard.downPaymentPlaceholder': 'e.g., 30',
+      'productCard.mortgageInterestRate': 'Mortgage Interest Rate (%)',
+      'productCard.mortgageInterestRatePlaceholder': 'e.g., 3.5',
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
       
       // New Renting Fields
       'productCard.monthlyRentExpense': 'Monthly Rent Expense',

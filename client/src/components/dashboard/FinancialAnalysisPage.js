@@ -259,10 +259,10 @@ const FinancialAnalysisPage = ({
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-          // Assume 30-year mortgage term and 3% interest rate
+          // Use actual mortgage interest rate from data
           const mortgageTerm = 30;
-          const interestRate = 3;
-          const monthlyInterestRate = interestRate / 100 / 12;
+          const interestRate = data.mortgageInterestRate / 100;
+          const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
           
           // Calculate monthly payment using mortgage formula
@@ -352,10 +352,10 @@ const FinancialAnalysisPage = ({
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-          // Assume 30-year mortgage term and 3% interest rate for calculation
+          // Use actual mortgage interest rate from data
           const mortgageTerm = 30;
-          const interestRate = 3;
-          const monthlyInterestRate = interestRate / 100 / 12;
+          const interestRate = data.mortgageInterestRate / 100;
+          const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
           
           // Calculate monthly payment using mortgage formula
@@ -389,10 +389,10 @@ const FinancialAnalysisPage = ({
         const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
         const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
-        // Assume 30-year mortgage term and 3% interest rate for calculation
+        // Use actual mortgage interest rate from data
         const mortgageTerm = 30;
-        const interestRate = 3;
-        const monthlyInterestRate = interestRate / 100 / 12;
+        const interestRate = data.mortgageInterestRate / 100;
+        const monthlyInterestRate = interestRate / 12;
         const numberOfPayments = mortgageTerm * 12;
         
         // Calculate monthly payment using mortgage formula
