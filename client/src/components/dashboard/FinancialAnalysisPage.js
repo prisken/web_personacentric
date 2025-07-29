@@ -413,9 +413,20 @@ const FinancialAnalysisPage = ({
         case 'retirement_funds':
           if (age >= data.completionAge) {
             // Start retirement fund income
-            const yearsToCompletion = data.completionAge - data.startAge;
-            const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : data.contributionFrequency === 'yearly' ? 1 : 1;
-            const retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
+            let retirementTotalContribution;
+            let yearsToCompletion;
+            
+            if (data.contributionFrequency === 'oneTime') {
+              // For one-time contribution, use the contribution amount directly
+              retirementTotalContribution = data.contributionAmount;
+              yearsToCompletion = data.completionAge - data.startAge;
+            } else {
+              // For monthly/yearly contributions, calculate based on frequency and years
+              yearsToCompletion = data.completionAge - data.startAge;
+              const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
+              retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
+            }
+            
             const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsToCompletion);
             incomeSources.retirementIncome += retirementValue * 0.04; // 4% withdrawal rate
           }
@@ -532,17 +543,36 @@ const FinancialAnalysisPage = ({
         return data.contribution * 12 * yearsFromBankStart * (1 + data.interestRate / 100);
         
       case 'retirement_funds':
-        const retirementYears = data.completionAge - data.startAge;
-        const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : data.contributionFrequency === 'yearly' ? 1 : 1;
-        const retirementTotalContribution = data.contributionAmount * frequencyMultiplier * retirementYears;
+        let retirementTotalContribution;
+        let retirementYears;
+        
+        if (data.contributionFrequency === 'oneTime') {
+          // For one-time contribution, use the contribution amount directly
+          retirementTotalContribution = data.contributionAmount;
+          retirementYears = data.completionAge - data.startAge;
+        } else {
+          // For monthly/yearly contributions, calculate based on frequency and years
+          retirementYears = data.completionAge - data.startAge;
+          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
+          retirementTotalContribution = data.contributionAmount * frequencyMultiplier * retirementYears;
+        }
+        
         const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, retirementYears);
         // Calculate value at specific age
         const yearsFromRetirementStart = age - data.startAge;
         if (yearsFromRetirementStart <= 0) return 0;
         if (yearsFromRetirementStart >= retirementYears) return retirementValue;
+        
         // For intermediate ages, calculate compound growth
-        const intermediateContribution = data.contributionAmount * frequencyMultiplier * yearsFromRetirementStart;
-        return intermediateContribution * Math.pow(1 + data.expectedReturn / 100, yearsFromRetirementStart);
+        if (data.contributionFrequency === 'oneTime') {
+          // For one-time contribution, calculate based on the single amount
+          return retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsFromRetirementStart);
+        } else {
+          // For monthly/yearly contributions, calculate proportional growth
+          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
+          const intermediateContribution = data.contributionAmount * frequencyMultiplier * yearsFromRetirementStart;
+          return intermediateContribution * Math.pow(1 + data.expectedReturn / 100, yearsFromRetirementStart);
+        }
         
       case 'own_living':
         // Property value with appreciation

@@ -253,9 +253,20 @@ const FinancialPlanningTab = () => {
           return `${t('productCard.totalAmount')}: ${formatCurrency(totalAmount)}`;
         }
       case 'retirement_funds':
-        const yearsToCompletion = data.completionAge - (data.startAge || 30);
-        const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : data.contributionFrequency === 'yearly' ? 1 : 1;
-        const retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
+        let retirementTotalContribution;
+        let yearsToCompletion;
+        
+        if (data.contributionFrequency === 'oneTime') {
+          // For one-time contribution, use the contribution amount directly
+          retirementTotalContribution = data.contributionAmount;
+          yearsToCompletion = data.completionAge - data.startAge;
+        } else {
+          // For monthly/yearly contributions, calculate based on frequency and years
+          yearsToCompletion = data.completionAge - (data.startAge || 30);
+          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
+          retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
+        }
+        
         const monthlyReturn = retirementTotalContribution * (data.expectedReturn / 100) / 12;
         return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyReturn)}`;
       case 'own_living':

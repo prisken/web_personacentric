@@ -82,11 +82,19 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           };
         }
       case 'retirement_funds':
-        return {
-          title: t('productCard.monthlyReturn'),
-          formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n退休基金總值 = 總供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
-          description: '退休基金使用複式計算，在完成供款後開始提供每月回報，回報基於複利增長的總值和年回報率。'
-        };
+        if (data.contributionFrequency === 'oneTime') {
+          return {
+            title: t('productCard.monthlyReturn'),
+            formula: `一次性供款 = 供款金額\n退休基金總值 = 一次性供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
+            description: '一次性退休基金供款使用複式計算，基於單次供款金額和投資年期計算複利增長。'
+          };
+        } else {
+          return {
+            title: t('productCard.monthlyReturn'),
+            formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n退休基金總值 = 總供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
+            description: '定期退休基金使用複式計算，在完成供款後開始提供每月回報，回報基於複利增長的總值和年回報率。'
+          };
+        }
       case 'own_living':
         return {
           title: t('productCard.mortgageCompletionAge'),
@@ -110,13 +118,13 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
     setShowInfoDialog(true);
   };
 
-  // Update info dialog content when fund category changes
+  // Update info dialog content when fund category or retirement fund frequency changes
   useEffect(() => {
-    if (showInfoDialog && product.subType === 'funds') {
+    if (showInfoDialog && (product.subType === 'funds' || product.subType === 'retirement_funds')) {
       const explanation = getFormulaExplanation(product.subType, product.data);
       setInfoContent(explanation);
     }
-  }, [product.data.fundCategory, showInfoDialog, product.subType]);
+  }, [product.data.fundCategory, product.data.contributionFrequency, showInfoDialog, product.subType]);
 
   const renderFormFields = () => {
     const { subType, data } = product;
