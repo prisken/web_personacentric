@@ -582,9 +582,9 @@ const FinancialAnalysisPage = ({
           const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
           
           const paidUpAge = data.mortgageCompletionAge;
-          if (year < paidUpAge) {
-            const remainingYears = paidUpAge - year;
-            accumulatedLiabilities += monthlyPayment * 12 * remainingYears;
+          // Only add to accumulated liabilities if this year is within the mortgage period
+          if (year >= data.mortgageStartAge && year < paidUpAge) {
+            accumulatedLiabilities += monthlyPayment * 12;
           }
         }
         
@@ -1061,8 +1061,8 @@ const FinancialAnalysisPage = ({
       },
               totalLiabilities: {
           title: '總負債計算公式',
-          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間的所有負債累積`,
-          description: '從最早產品開始年齡到當前年齡期間累積的所有負債總和'
+          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間已發生的負債，而非未來剩餘負債`,
+          description: '從最早產品開始年齡到當前年齡期間已發生的負債總和'
         },
               netWorth: {
           title: '淨資產計算公式',
