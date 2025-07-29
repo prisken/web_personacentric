@@ -204,6 +204,13 @@ const FinancialPlanningTab = () => {
           rentalIncrement: 3,
           expectedEndAge: 65
         };
+      case 'rental':
+        return {
+          monthlyRentExpense: 15000,
+          leaseStartAge: 30, // Changed from startAge to leaseStartAge
+          rentIncreaseRate: 3, // Added rent increase rate
+          expectedEndAge: 65
+        };
       default:
         return {};
     }
@@ -290,9 +297,14 @@ const FinancialPlanningTab = () => {
         const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
         const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
         return `${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲\n${t('productCard.propertyValue')}: ${formatCurrency(propertyValue)}`;
-      case 'renting':
-        const rentalYears = data.expectedEndAge - data.startAge;
-        const totalRent = data.monthlyRentExpense * 12 * rentalYears;
+      case 'rental':
+        const rentalYears = data.expectedEndAge - data.leaseStartAge;
+        // Calculate total rent with annual increase
+        let totalRent = 0;
+        for (let year = 0; year < rentalYears; year++) {
+          const annualRent = data.monthlyRentExpense * 12 * Math.pow(1 + data.rentIncreaseRate / 100, year);
+          totalRent += annualRent;
+        }
         return `${t('productCard.totalRentPaid')}: ${formatCurrency(totalRent)}`;
       default:
         return '';

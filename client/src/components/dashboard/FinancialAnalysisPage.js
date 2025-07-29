@@ -231,11 +231,24 @@ const FinancialAnalysisPage = ({
   const calculateTotalExpenses = (age) => {
     let totalExpenses = 0;
     
+    // Add manual expenses
     expenses.forEach(expense => {
       if (age >= expense.fromAge && age <= expense.toAge) {
         const yearsSinceStart = age - expense.fromAge;
         const inflatedExpenses = expense.monthlyExpenses * Math.pow(1 + inflationRate / 100, yearsSinceStart);
         totalExpenses += inflatedExpenses;
+      }
+    });
+
+    // Add rental expenses from products
+    products.forEach(product => {
+      if (product.subType === 'rental') {
+        const data = product.data;
+        if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
+          const rentalYears = age - data.leaseStartAge;
+          const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
+          totalExpenses += monthlyRentWithIncrease;
+        }
       }
     });
 
@@ -436,7 +449,11 @@ const FinancialAnalysisPage = ({
           
         case 'rental':
           // Rental income starts immediately
-          incomeSources.rentalIncome += data.rentalExpenses * 12;
+          const rentalYears = age - data.leaseStartAge;
+          if (rentalYears >= 0) {
+            const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
+            incomeSources.rentalIncome += monthlyRentWithIncrease;
+          }
           break;
           
         case 'owner_to_rent_out':

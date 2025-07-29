@@ -885,7 +885,12 @@ export const LanguageProvider = ({ children }) => {
       'productCard.downPayment': '首期付款 (HKD)',
       
       // New Renting Fields
-      'productCard.monthlyRentExpense': '每月租金開支',
+      'productCard.monthlyRentExpense': '每月租金開支 (HKD)',
+      'productCard.leaseStartAge': '租約開始年齡',
+      'productCard.rentIncreaseRate': '租金增幅 (%)',
+      'productCard.rentIncreaseRatePlaceholder': '例如: 3',
+      'productCard.expectedEndAge': '預期結束年齡',
+      'productCard.totalRentPaid': '總租金支出',
       
       // Info Dialog
       'productCard.viewFormula': '查看計算公式',
@@ -1595,6 +1600,11 @@ export const LanguageProvider = ({ children }) => {
       
       // New Renting Fields
       'productCard.monthlyRentExpense': 'Monthly Rent Expense',
+      'productCard.leaseStartAge': 'Lease Start Age',
+      'productCard.rentIncreaseRate': 'Rent Increase Rate (%)',
+      'productCard.rentIncreaseRatePlaceholder': 'e.g., 3',
+      'productCard.expectedEndAge': 'Expected End Age',
+      'productCard.totalRentPaid': 'Total Rent Paid',
       
       // Info Dialog
       'productCard.viewFormula': 'View Calculation Formula',

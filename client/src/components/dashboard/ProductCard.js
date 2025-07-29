@@ -96,8 +96,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'renting':
         return {
           title: t('productCard.totalRentPaid'),
-          formula: `總租金支出 = 每月租金 × 12 × (結束年齡 - 開始年齡)`,
-          description: '租賃支出為每月租金乘以租賃期間的總月數。'
+          formula: `租賃年期 = 預期結束年齡 - 租約開始年齡\n\n每年租金計算：\n第1年：每月租金 × 12\n第2年：每月租金 × 12 × (1 + 租金增幅%)^1\n第3年：每月租金 × 12 × (1 + 租金增幅%)^2\n...\n第N年：每月租金 × 12 × (1 + 租金增幅%)^(N-1)\n\n總租金支出 = 所有年份租金總和`,
+          description: '租金支出考慮年度增幅，反映實際租賃成本隨時間增長的情況。'
         };
       default:
         return { title: '', formula: '', description: '' };
@@ -650,7 +650,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           </div>
         );
 
-      case 'renting':
+      case 'rental':
         return (
           <div className="space-y-3">
             <div>
@@ -663,21 +663,22 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.leaseStartAge')}</label>
               <input
                 type="number"
-                value={data.startAge}
-                onChange={(e) => updateProduct(product.id, 'startAge', parseInt(e.target.value) || 0)}
+                value={data.leaseStartAge}
+                onChange={(e) => updateProduct(product.id, 'leaseStartAge', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentalIncrement')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentIncreaseRate')}</label>
               <input
                 type="number"
-                value={data.rentalIncrement}
-                onChange={(e) => updateProduct(product.id, 'rentalIncrement', parseFloat(e.target.value) || 0)}
+                value={data.rentIncreaseRate}
+                onChange={(e) => updateProduct(product.id, 'rentIncreaseRate', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder={t('productCard.rentIncreaseRatePlaceholder')}
               />
             </div>
             <div>

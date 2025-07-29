@@ -266,6 +266,7 @@ const FinancialPlanningPDFReport = ({
         return data.purchasePrice * Math.pow(1 + propertyAppreciation, propertyYears);
         
       case 'rental':
+        // Rental doesn't contribute to asset value, only expense
         return 0;
         
       case 'owner_to_rent_out':
