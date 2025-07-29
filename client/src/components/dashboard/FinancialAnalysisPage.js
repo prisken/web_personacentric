@@ -427,8 +427,11 @@ const FinancialAnalysisPage = ({
               retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
             }
             
+            // Calculate total fund value after compound growth
             const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsToCompletion);
-            incomeSources.retirementIncome += retirementValue * 0.04; // 4% withdrawal rate
+            // Calculate monthly return based on total fund value
+            const monthlyReturn = retirementValue * (data.expectedReturn / 100) / 12;
+            incomeSources.retirementIncome += monthlyReturn;
           }
           break;
           

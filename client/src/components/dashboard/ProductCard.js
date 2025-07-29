@@ -86,7 +86,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           return {
             title: t('productCard.monthlyReturn'),
             formula: `一次性供款 = 供款金額\n退休基金總值 = 一次性供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
-            description: '一次性退休基金供款使用複式計算，基於單次供款金額和投資年期計算複利增長。'
+            description: '一次性退休基金供款使用複式計算，基於單次供款金額和投資年期計算複利增長，然後根據總值計算每月回報。'
           };
         } else {
           return {

@@ -270,6 +270,7 @@ const FinancialPlanningPDFReport = ({
         }
         
         const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, retirementYears);
+        // Calculate value at specific age
         const yearsFromRetirementStart = age - data.startAge;
         if (yearsFromRetirementStart <= 0) return 0;
         if (yearsFromRetirementStart >= retirementYears) return retirementValue;

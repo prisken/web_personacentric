@@ -267,7 +267,10 @@ const FinancialPlanningTab = () => {
           retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
         }
         
-        const monthlyReturn = retirementTotalContribution * (data.expectedReturn / 100) / 12;
+        // Calculate total fund value after compound growth
+        const totalFundValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsToCompletion);
+        // Calculate monthly return based on total fund value
+        const monthlyReturn = totalFundValue * (data.expectedReturn / 100) / 12;
         return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyReturn)}`;
       case 'own_living':
         const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
