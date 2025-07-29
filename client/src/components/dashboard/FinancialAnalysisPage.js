@@ -600,6 +600,9 @@ const FinancialAnalysisPage = ({
       if (subType === 'rental' && data.leaseStartAge < earliestStartAge) {
         earliestStartAge = data.leaseStartAge;
       }
+      if (subType === 'funds' && data.startAge < earliestStartAge) {
+        earliestStartAge = data.startAge;
+      }
     });
     
     // Track liabilities from earliest product start age to current age
@@ -666,6 +669,13 @@ const FinancialAnalysisPage = ({
             const yearsSinceLeaseStart = year - data.leaseStartAge;
             const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
             accumulatedLiabilities += currentRent * 12;
+          }
+        }
+
+        // Add fund investment amount as liability at start age
+        if (subType === 'funds') {
+          if (year === data.startAge) {
+            accumulatedLiabilities += data.investmentAmount;
           }
         }
 
@@ -1155,8 +1165,8 @@ const FinancialAnalysisPage = ({
       },
               totalLiabilities: {
           title: '總負債計算公式',
-          formula: `累積負債總和（從最早產品開始年齡到當前年齡）- 物業售樓收益\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間已發生的負債，減去物業售樓收益（如適用）`,
-          description: '從最早產品開始年齡到當前年齡期間已發生的負債總和，減去物業售樓收益'
+          formula: `累積負債總和（從最早產品開始年齡到當前年齡）- 物業售樓收益\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n包括：\n- 基金投資金額（在開始年齡時）\n- 按揭供款（從開始年齡到供完樓年齡）\n- 租金開支（從租約開始到結束年齡）\n- 銀行供款（固定存款）\n- 年金供款（延期年金期間）\n- 物業售樓收益（如適用，用於抵消負債）`,
+          description: '從最早產品開始年齡到當前年齡期間已發生的負債總和，包括基金投資、按揭、租金、銀行供款、年金供款等，減去物業售樓收益'
         },
               netWorth: {
           title: '淨資產計算公式',
