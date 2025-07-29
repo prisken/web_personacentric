@@ -265,13 +265,6 @@ const FinancialAnalysisPage = ({
             // Fixed deposit matures, total amount (with interest) moves to flexible funds
             const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
             flexibleFunds += totalAmount;
-            
-            // For "Already Owned = No", also cancel out the original expense
-            if (data.alreadyOwned === 'N') {
-              // The original expense was already deducted, so we need to add it back
-              // to effectively void it, then add the maturity amount
-              flexibleFunds += data.contribution;
-            }
           }
         }
       });
