@@ -94,6 +94,59 @@ const FinancialAnalysisPage = ({
     };
   };
 
+  // Helper function to calculate MPF value at a specific age
+  const calculateMPFValueAtAge = (data, targetAge) => {
+    const mpfYears = targetAge - data.currentAge;
+    
+    if (mpfYears <= 0) {
+      return data.currentMPFAmount || 0;
+    }
+    
+    // Compound the current MPF amount for the period to target age
+    const currentMPFCompounded = data.currentMPFAmount * Math.pow(1 + data.expectedReturn / 100, mpfYears);
+    
+    // Calculate future contributions with proper compound interest and salary increments
+    // Each monthly contribution compounds for different periods
+    let futureContributionsCompounded = 0;
+    
+    for (let year = 0; year < mpfYears; year++) {
+      // Calculate salary for this year with increment
+      const currentYearSalary = data.monthlySalary * Math.pow(1 + data.salaryIncrement / 100, year);
+      
+      for (let month = 0; month < 12; month++) {
+        const monthsRemaining = (mpfYears - year) * 12 - month;
+        
+        // Calculate MPF contribution for this month based on salary
+        let monthlyContribution = 0;
+        
+        if (currentYearSalary >= 7100) {
+          // Calculate employer contribution
+          let employerContribution = 0;
+          if (currentYearSalary >= 30000) {
+            employerContribution = 1500; // Cap at 1,500
+          } else {
+            employerContribution = currentYearSalary * (data.employerContribution / 100);
+          }
+          
+          // Calculate employee contribution
+          let employeeContribution = 0;
+          if (currentYearSalary >= 30000) {
+            employeeContribution = 1500; // Cap at 1,500
+          } else {
+            employeeContribution = currentYearSalary * (data.employeeContribution / 100);
+          }
+          
+          monthlyContribution = employerContribution + employeeContribution;
+        }
+        
+        const contributionCompounded = monthlyContribution * Math.pow(1 + data.expectedReturn / 100, monthsRemaining / 12);
+        futureContributionsCompounded += contributionCompounded;
+      }
+    }
+    
+    return currentMPFCompounded + futureContributionsCompounded;
+  };
+
   const addExpense = () => {
     const newExpense = {
       id: Date.now(),
@@ -415,12 +468,11 @@ const FinancialAnalysisPage = ({
                      case 'mpf':
                // Only include MPF value if before age 65
                if (age < 65) {
-                 const mpfResult = calculateMPF(data);
-                 // Progressive MPF growth: calculate MPF value at current age, not final value
+                 // Calculate MPF value at current age using the actual MPF calculation logic
                  const yearsFromCurrentAge = age - data.currentAge;
                  if (yearsFromCurrentAge > 0) {
-                   // Calculate MPF value at current age (progressive growth)
-                   const currentMPFValue = mpfResult.totalMPF * (yearsFromCurrentAge / (65 - data.currentAge));
+                   // Use the actual MPF calculation to get value at current age
+                   const currentMPFValue = calculateMPFValueAtAge(data, age);
                    assets += currentMPFValue;
                  }
                }
