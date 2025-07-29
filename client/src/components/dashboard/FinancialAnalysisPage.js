@@ -450,22 +450,28 @@ const FinancialAnalysisPage = ({
       const { subType, data } = product;
       
       switch (subType) {
-        case 'funds':
-          // Only include fund value if before expected withdrawal age
-          if (age < data.expectedWithdrawalAge) {
-            const fundYears = age - data.startAge;
-            if (fundYears > 0) {
-              if (data.fundCategory === 'growth') {
-                // 增長基金：投資金額 + 累積收益 = 總資產
-                assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
-              } else {
-                // 派息基金：投資金額 = 總資產（收益以派息形式發放）
-                assets += data.investmentAmount;
-              }
-            }
-          }
-          // After expected withdrawal age, fund value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
-          break;
+                     case 'funds':
+               // Only include fund value if before expected withdrawal age
+               if (age < data.expectedWithdrawalAge) {
+                 const fundYears = age - data.startAge;
+                 if (fundYears >= 0) {
+                   if (data.fundCategory === 'growth') {
+                     // 增長基金：投資金額 + 累積收益 = 總資產
+                     if (fundYears === 0) {
+                       // At start age, show the initial investment amount
+                       assets += data.investmentAmount;
+                     } else {
+                       // After start age, show investment amount + accumulated returns
+                       assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
+                     }
+                   } else {
+                     // 派息基金：投資金額 = 總資產（收益以派息形式發放）
+                     assets += data.investmentAmount;
+                   }
+                 }
+               }
+               // After expected withdrawal age, fund value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
+               break;
                      case 'mpf':
                // Only include MPF value if before age 65
                if (age < 65) {
