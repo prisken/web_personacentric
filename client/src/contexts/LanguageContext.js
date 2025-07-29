@@ -827,6 +827,65 @@ export const LanguageProvider = ({ children }) => {
       'productCard.productNumber': '產品 #',
       'productCard.copyProduct': '複製產品',
       'productCard.deleteProduct': '刪除產品',
+      
+      // New Fund Fields
+      'productCard.fundCategory': '基金類別',
+      'productCard.growthFund': '增長基金',
+      'productCard.dividendFund': '派息基金',
+      'productCard.monthlyDividends': '每月派息',
+      'productCard.yearlyDividends': '年度累積派息',
+      'productCard.totalDividends': '累積派息至提取年齡',
+      'productCard.totalReturn': '退保時總回報',
+      'productCard.compoundCalculation': '複式計算',
+      'productCard.simpleCalculation': '單利計算',
+      
+      // New MPF Fields
+      'productCard.currentMPFAmount': '現有強積金金額',
+      'productCard.mpfAt65': '65歲時強積金總額',
+      'productCard.totalDividendsEarned': '總派息收益',
+      'productCard.mpfWithoutDividends': '無派息時強積金價值',
+      'productCard.employeeContributionDeduction': '僱員供款扣除',
+      
+      // New Saving Plans Fields
+      'productCard.expectedAnnualReturn': '預期年回報率 (%)',
+      'productCard.breakEvenPeriod': '回本期(年)',
+      'productCard.withdrawalAmount': '金額提取',
+      'productCard.withdrawalPeriod': '提取金額年期',
+      'productCard.surrenderValue': '退保金額',
+      'productCard.contributionPeriod': '供款年期',
+      'productCard.surrenderAge': '退保年齡',
+      
+      // New Bank Fields
+      'productCard.existingAmount': '現存金額',
+      'productCard.contributionFrequency': '供款頻率',
+      'productCard.contributionPeriod': '供款年期',
+      'productCard.alreadyOwned': '已擁有金額',
+      'productCard.yes': '是',
+      'productCard.no': '否',
+      'productCard.lockInPeriod': '資金鎖定時間(月)',
+      'productCard.totalSavings': '總儲蓄金額',
+      'productCard.totalAmount': '總金額',
+      
+      // New Retirement Funds Fields
+      'productCard.completionAge': '完成供款(年齡)',
+      'productCard.monthlyReturn': '完成供款後每月回報',
+      'productCard.oneTime': '一次性',
+      
+      // New Own Living Fields
+      'productCard.mortgageStartAge': '開始供樓年紀',
+      'productCard.sellAge': '賣樓年紀',
+      'productCard.willNotSell': '不會賣',
+      'productCard.currentSituation': '現時情況',
+      'productCard.selfOccupied': '自住',
+      'productCard.rented': '出租',
+      'productCard.monthlyRent': '每月租金(HKD)',
+      'productCard.rentStartAge': '開始出租年紀',
+      'productCard.mortgageCompletionAge': '供完樓年齡',
+      'productCard.propertyValue': '樓價總值',
+      'productCard.downPayment': '首期付款 (HKD)',
+      
+      // New Renting Fields
+      'productCard.monthlyRentExpense': '每月租金開支',
     },
     'en': {
       // Navigation
@@ -1451,6 +1510,65 @@ export const LanguageProvider = ({ children }) => {
       'productCard.productNumber': 'Product #',
       'productCard.copyProduct': 'Copy Product',
       'productCard.deleteProduct': 'Delete Product',
+      
+      // New Fund Fields
+      'productCard.fundCategory': 'Fund Category',
+      'productCard.growthFund': 'Growth Fund',
+      'productCard.dividendFund': 'Dividend Fund',
+      'productCard.monthlyDividends': 'Monthly Dividends',
+      'productCard.yearlyDividends': 'Yearly Accumulated Dividends',
+      'productCard.totalDividends': 'Total Dividends Until Withdrawal Age',
+      'productCard.totalReturn': 'Total Return at Surrender',
+      'productCard.compoundCalculation': 'Compound Calculation',
+      'productCard.simpleCalculation': 'Simple Calculation',
+      
+      // New MPF Fields
+      'productCard.currentMPFAmount': 'Current MPF Amount',
+      'productCard.mpfAt65': 'MPF Total at Age 65',
+      'productCard.totalDividendsEarned': 'Total Dividends Earned',
+      'productCard.mpfWithoutDividends': 'MPF Value Without Dividends',
+      'productCard.employeeContributionDeduction': 'Employee Contribution Deduction',
+      
+      // New Saving Plans Fields
+      'productCard.expectedAnnualReturn': 'Expected Annual Return (%)',
+      'productCard.breakEvenPeriod': 'Break-even Period (Years)',
+      'productCard.withdrawalAmount': 'Withdrawal Amount',
+      'productCard.withdrawalPeriod': 'Withdrawal Period',
+      'productCard.surrenderValue': 'Surrender Value',
+      'productCard.contributionPeriod': 'Contribution Period',
+      'productCard.surrenderAge': 'Surrender Age',
+      
+      // New Bank Fields
+      'productCard.existingAmount': 'Existing Amount',
+      'productCard.contributionFrequency': 'Contribution Frequency',
+      'productCard.contributionPeriod': 'Contribution Period',
+      'productCard.alreadyOwned': 'Already Owned',
+      'productCard.yes': 'Yes',
+      'productCard.no': 'No',
+      'productCard.lockInPeriod': 'Lock-in Period (Months)',
+      'productCard.totalSavings': 'Total Savings Amount',
+      'productCard.totalAmount': 'Total Amount',
+      
+      // New Retirement Funds Fields
+      'productCard.completionAge': 'Completion Age',
+      'productCard.monthlyReturn': 'Monthly Return After Completion',
+      'productCard.oneTime': 'One-time',
+      
+      // New Own Living Fields
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
+      'productCard.sellAge': 'Sell Age',
+      'productCard.willNotSell': 'Will Not Sell',
+      'productCard.currentSituation': 'Current Situation',
+      'productCard.selfOccupied': 'Self-occupied',
+      'productCard.rented': 'Rented',
+      'productCard.monthlyRent': 'Monthly Rent (HKD)',
+      'productCard.rentStartAge': 'Rent Start Age',
+      'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
+      'productCard.propertyValue': 'Property Value',
+      'productCard.downPayment': 'Down Payment (HKD)',
+      
+      // New Renting Fields
+      'productCard.monthlyRentExpense': 'Monthly Rent Expense',
 
       // Dashboard
       'dashboard.admin.title': 'Administrator Dashboard',

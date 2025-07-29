@@ -19,8 +19,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       bank: '🏛️',
       retirement_funds: '🎯',
       own_living: '🏠',
-      renting: '🏢',
-      owner: '🏘️'
+      renting: '🏢'
     };
     return icons[subType] || '💰';
   };
@@ -33,8 +32,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       bank: t('financialPlanning.bank'),
       retirement_funds: t('financialPlanning.retirementFunds'),
       own_living: t('financialPlanning.ownLiving'),
-      renting: t('financialPlanning.renting'),
-      owner: t('financialPlanning.ownerToRentOut')
+      renting: t('financialPlanning.renting')
     };
     return names[subType] || t('financialPlanning.product');
   };
@@ -47,14 +45,14 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.fundAllocation')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.fundCategory')}</label>
               <select
-                value={data.fundAllocation}
-                onChange={(e) => updateProduct(product.id, 'fundAllocation', e.target.value)}
+                value={data.fundCategory}
+                onChange={(e) => updateProduct(product.id, 'fundCategory', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
-                <option value="growth">{t('productCard.growth')}</option>
-                <option value="dividends">{t('productCard.dividends')}</option>
+                <option value="growth">{t('productCard.growthFund')}</option>
+                <option value="dividend">{t('productCard.dividendFund')}</option>
               </select>
             </div>
             <div>
@@ -100,6 +98,15 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'mpf':
         return (
           <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentMPFAmount')}</label>
+              <input
+                type="number"
+                value={data.currentMPFAmount}
+                onChange={(e) => updateProduct(product.id, 'currentMPFAmount', parseFloat(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlySalary')}</label>
               <input
@@ -161,15 +168,6 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.planName')}</label>
-              <input
-                type="text"
-                value={data.planName}
-                onChange={(e) => updateProduct(product.id, 'planName', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
               <input
                 type="number"
@@ -190,11 +188,57 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionDuration')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionPeriod')}</label>
               <input
                 type="number"
-                value={data.contributionDuration}
-                onChange={(e) => updateProduct(product.id, 'contributionDuration', parseInt(e.target.value) || 0)}
+                value={data.contributionPeriod}
+                onChange={(e) => updateProduct(product.id, 'contributionPeriod', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedAnnualReturn')}</label>
+              <input
+                type="number"
+                value={data.expectedAnnualReturn}
+                onChange={(e) => updateProduct(product.id, 'expectedAnnualReturn', parseFloat(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.breakEvenPeriod')}</label>
+              <input
+                type="number"
+                value={data.breakEvenPeriod}
+                onChange={(e) => updateProduct(product.id, 'breakEvenPeriod', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.withdrawalAmount')}</label>
+              <input
+                type="number"
+                value={data.withdrawalAmount}
+                onChange={(e) => updateProduct(product.id, 'withdrawalAmount', parseFloat(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.withdrawalPeriod')}</label>
+              <input
+                type="text"
+                value={data.withdrawalPeriod}
+                onChange={(e) => updateProduct(product.id, 'withdrawalPeriod', e.target.value)}
+                placeholder="例如: 65-70"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.surrenderValue')}</label>
+              <input
+                type="number"
+                value={data.surrenderValue}
+                onChange={(e) => updateProduct(product.id, 'surrenderValue', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -233,73 +277,117 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 <option value="fixed_deposit">{t('productCard.fixedDeposit')}</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
-              <input
-                type="number"
-                value={data.contribution}
-                onChange={(e) => updateProduct(product.id, 'contribution', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionType')}</label>
-              <select
-                value={data.contributionType}
-                onChange={(e) => updateProduct(product.id, 'contributionType', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="monthly">{t('productCard.monthly')}</option>
-                <option value="yearly">{t('productCard.yearly')}</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.duration')}</label>
-              <input
-                type="number"
-                value={data.duration}
-                onChange={(e) => updateProduct(product.id, 'duration', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.durationType')}</label>
-              <select
-                value={data.durationType}
-                onChange={(e) => updateProduct(product.id, 'durationType', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="years">{t('productCard.years')}</option>
-                <option value="months">{t('productCard.months')}</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.interestRate')}</label>
-              <input
-                type="number"
-                value={data.interestRate}
-                onChange={(e) => updateProduct(product.id, 'interestRate', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
-              <input
-                type="number"
-                value={data.startAge}
-                onChange={(e) => updateProduct(product.id, 'startAge', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.withdrawalAge')}</label>
-              <input
-                type="number"
-                value={data.withdrawalAge}
-                onChange={(e) => updateProduct(product.id, 'withdrawalAge', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
+            
+            {data.planType === 'saving' ? (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.existingAmount')}</label>
+                  <input
+                    type="number"
+                    value={data.existingAmount}
+                    onChange={(e) => updateProduct(product.id, 'existingAmount', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
+                  <input
+                    type="number"
+                    value={data.contribution}
+                    onChange={(e) => updateProduct(product.id, 'contribution', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionFrequency')}</label>
+                  <select
+                    value={data.contributionFrequency}
+                    onChange={(e) => updateProduct(product.id, 'contributionFrequency', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  >
+                    <option value="monthly">{t('productCard.monthly')}</option>
+                    <option value="yearly">{t('productCard.yearly')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionPeriod')}</label>
+                  <input
+                    type="number"
+                    value={data.contributionPeriod}
+                    onChange={(e) => updateProduct(product.id, 'contributionPeriod', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.interestRate')}</label>
+                  <input
+                    type="number"
+                    value={data.interestRate}
+                    onChange={(e) => updateProduct(product.id, 'interestRate', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
+                  <input
+                    type="number"
+                    value={data.startAge}
+                    onChange={(e) => updateProduct(product.id, 'startAge', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contribution')}</label>
+                  <input
+                    type="number"
+                    value={data.contribution}
+                    onChange={(e) => updateProduct(product.id, 'contribution', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.alreadyOwned')}</label>
+                  <select
+                    value={data.alreadyOwned}
+                    onChange={(e) => updateProduct(product.id, 'alreadyOwned', e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  >
+                    <option value="Y">{t('productCard.yes')}</option>
+                    <option value="N">{t('productCard.no')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.lockInPeriod')}</label>
+                  <input
+                    type="number"
+                    value={data.lockInPeriod}
+                    onChange={(e) => updateProduct(product.id, 'lockInPeriod', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.interestRate')}</label>
+                  <input
+                    type="number"
+                    value={data.interestRate}
+                    onChange={(e) => updateProduct(product.id, 'interestRate', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
+                  <input
+                    type="number"
+                    value={data.startAge}
+                    onChange={(e) => updateProduct(product.id, 'startAge', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+              </>
+            )}
           </div>
         );
 
@@ -316,32 +404,32 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.frequency')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.contributionFrequency')}</label>
               <select
-                value={data.frequency}
-                onChange={(e) => updateProduct(product.id, 'frequency', e.target.value)}
+                value={data.contributionFrequency}
+                onChange={(e) => updateProduct(product.id, 'contributionFrequency', e.target.value)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
                 <option value="monthly">{t('productCard.monthly')}</option>
-                <option value="quarterly">{t('productCard.quarterly')}</option>
                 <option value="yearly">{t('productCard.yearly')}</option>
+                <option value="oneTime">{t('productCard.oneTime')}</option>
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startDate')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.startAge')}</label>
               <input
-                type="date"
-                value={data.startDate}
-                onChange={(e) => updateProduct(product.id, 'startDate', e.target.value)}
+                type="number"
+                value={data.startAge}
+                onChange={(e) => updateProduct(product.id, 'startAge', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.targetRetirementAge')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.completionAge')}</label>
               <input
                 type="number"
-                value={data.targetRetirementAge}
-                onChange={(e) => updateProduct(product.id, 'targetRetirementAge', parseInt(e.target.value) || 0)}
+                value={data.completionAge}
+                onChange={(e) => updateProduct(product.id, 'completionAge', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -360,18 +448,6 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'own_living':
         return (
           <div className="space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
-              <select
-                value={data.type}
-                onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="Apartment">{t('productCard.apartment')}</option>
-                <option value="House">{t('productCard.house')}</option>
-                <option value="Condo">{t('productCard.condo')}</option>
-              </select>
-            </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchasePrice')}</label>
               <input
@@ -409,14 +485,63 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchaseAge')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.mortgageStartAge')}</label>
               <input
                 type="number"
-                value={data.purchaseAge}
-                onChange={(e) => updateProduct(product.id, 'purchaseAge', parseInt(e.target.value) || 0)}
+                value={data.mortgageStartAge}
+                onChange={(e) => updateProduct(product.id, 'mortgageStartAge', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.sellAge')}</label>
+              <select
+                value={data.sellAge}
+                onChange={(e) => updateProduct(product.id, 'sellAge', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="willNotSell">{t('productCard.willNotSell')}</option>
+                <option value="65">65</option>
+                <option value="70">70</option>
+                <option value="75">75</option>
+                <option value="80">80</option>
+                <option value="85">85</option>
+                <option value="90">90</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentSituation')}</label>
+              <select
+                value={data.currentSituation}
+                onChange={(e) => updateProduct(product.id, 'currentSituation', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="selfOccupied">{t('productCard.selfOccupied')}</option>
+                <option value="rented">{t('productCard.rented')}</option>
+              </select>
+            </div>
+            {data.currentSituation === 'rented' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlyRent')}</label>
+                  <input
+                    type="number"
+                    value={data.monthlyRent}
+                    onChange={(e) => updateProduct(product.id, 'monthlyRent', parseFloat(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentStartAge')}</label>
+                  <input
+                    type="number"
+                    value={data.rentStartAge}
+                    onChange={(e) => updateProduct(product.id, 'rentStartAge', parseInt(e.target.value) || 0)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  />
+                </div>
+              </>
+            )}
           </div>
         );
 
@@ -424,23 +549,11 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         return (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
-              <select
-                value={data.type}
-                onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="Apartment">{t('productCard.apartment')}</option>
-                <option value="House">{t('productCard.house')}</option>
-                <option value="Condo">{t('productCard.condo')}</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentalExpenses')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlyRentExpense')}</label>
               <input
                 type="number"
-                value={data.rentalExpenses}
-                onChange={(e) => updateProduct(product.id, 'rentalExpenses', parseFloat(e.target.value) || 0)}
+                value={data.monthlyRentExpense}
+                onChange={(e) => updateProduct(product.id, 'monthlyRentExpense', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -474,92 +587,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           </div>
         );
 
-      case 'owner':
-        return (
-          <div className="space-y-3">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.type')}</label>
-              <select
-                value={data.type}
-                onChange={(e) => updateProduct(product.id, 'type', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="Apartment">{t('productCard.apartment')}</option>
-                <option value="House">{t('productCard.house')}</option>
-                <option value="Land">{t('productCard.land')}</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.purchasePrice')}</label>
-              <input
-                type="number"
-                value={data.purchasePrice}
-                onChange={(e) => updateProduct(product.id, 'purchasePrice', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.currentValue')}</label>
-              <input
-                type="number"
-                value={data.currentValue}
-                onChange={(e) => updateProduct(product.id, 'currentValue', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.status')}</label>
-              <select
-                value={data.status}
-                onChange={(e) => updateProduct(product.id, 'status', e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              >
-                <option value="renting">{t('productCard.renting')}</option>
-                <option value="vacant">{t('productCard.vacant')}</option>
-              </select>
-            </div>
-            {data.status === 'renting' && (
-              <>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentAmount')}</label>
-                  <input
-                    type="number"
-                    value={data.rentAmount}
-                    onChange={(e) => updateProduct(product.id, 'rentAmount', parseFloat(e.target.value) || 0)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.rentIncrement')}</label>
-                  <input
-                    type="number"
-                    value={data.rentIncrement}
-                    onChange={(e) => updateProduct(product.id, 'rentIncrement', parseFloat(e.target.value) || 0)}
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2"
-                  />
-                </div>
-              </>
-            )}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.ownershipStartAge')}</label>
-              <input
-                type="number"
-                value={data.ownershipStartAge}
-                onChange={(e) => updateProduct(product.id, 'ownershipStartAge', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.ownershipEndAge')}</label>
-              <input
-                type="number"
-                value={data.ownershipEndAge}
-                onChange={(e) => updateProduct(product.id, 'ownershipEndAge', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-          </div>
-        );
+
 
       default:
         return <div>{t('productCard.unknownProductType')}</div>;

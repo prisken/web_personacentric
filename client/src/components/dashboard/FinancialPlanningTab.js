@@ -47,8 +47,7 @@ const FinancialPlanningTab = () => {
     ],
     real_estate: [
       { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
-      { id: 'renting', name: t('financialPlanning.renting'), icon: '🏢' },
-      { id: 'owner', name: t('financialPlanning.ownerToRentOut'), icon: '🏘️' }
+      { id: 'renting', name: t('financialPlanning.renting'), icon: '🏢' }
     ]
   };
 
@@ -75,7 +74,7 @@ const FinancialPlanningTab = () => {
     switch (subType) {
       case 'funds':
         return {
-          fundAllocation: 'growth',
+          fundCategory: 'growth',
           investmentAmount: 0,
           startAge: 30,
           expectedReturn: 8,
@@ -83,6 +82,7 @@ const FinancialPlanningTab = () => {
         };
       case 'mpf':
         return {
+          currentMPFAmount: 0,
           monthlySalary: 0,
           salaryIncrement: 3,
           employerContribution: 5,
@@ -92,59 +92,55 @@ const FinancialPlanningTab = () => {
         };
       case 'saving_plans':
         return {
-          planName: '',
           contribution: 0,
           contributionType: 'monthly',
-          contributionDuration: 10,
+          contributionPeriod: 10,
+          expectedAnnualReturn: 5,
+          breakEvenPeriod: 5,
+          withdrawalAmount: 0,
+          withdrawalPeriod: '65-70',
+          surrenderValue: 0,
           startAge: 30,
           surrenderAge: 40
         };
       case 'bank':
         return {
           planType: 'saving',
+          existingAmount: 0,
           contribution: 0,
-          contributionType: 'monthly',
-          duration: 10,
-          durationType: 'years',
+          contributionFrequency: 'monthly',
+          contributionPeriod: 10,
           interestRate: 2,
           startAge: 30,
-          withdrawalAge: 40
+          alreadyOwned: 'N',
+          lockInPeriod: 12
         };
       case 'retirement_funds':
         return {
           contributionAmount: 0,
-          frequency: 'monthly',
-          startDate: new Date().toISOString().split('T')[0],
-          targetRetirementAge: 65,
+          contributionFrequency: 'monthly',
+          startAge: 30,
+          completionAge: 65,
           expectedReturn: 6
         };
       case 'own_living':
         return {
-          type: 'Apartment',
           purchasePrice: 0,
           downPayment: 0,
           mortgageAmount: 0,
           monthlyPayment: 0,
-          purchaseAge: 30
+          mortgageStartAge: 30,
+          sellAge: 'willNotSell',
+          currentSituation: 'selfOccupied',
+          monthlyRent: 0,
+          rentStartAge: 30
         };
       case 'renting':
         return {
-          type: 'Apartment',
-          rentalExpenses: 0,
+          monthlyRentExpense: 0,
           startAge: 30,
-          rentalIncrement: 2,
+          rentalIncrement: 3,
           expectedEndAge: 65
-        };
-      case 'owner':
-        return {
-          type: 'Apartment',
-          purchasePrice: 0,
-          currentValue: 0,
-          status: 'renting',
-          rentAmount: 0,
-          rentIncrement: 2,
-          ownershipStartAge: 30,
-          ownershipEndAge: 65
         };
       default:
         return {};
@@ -166,38 +162,52 @@ const FinancialPlanningTab = () => {
     switch (subType) {
       case 'funds':
         const years = data.expectedWithdrawalAge - data.startAge;
-        const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-        const totalDividend = totalValue - data.investmentAmount;
-        return `預計總收益: ${formatCurrency(totalDividend)} (總值: ${formatCurrency(totalValue)})`;
+        if (data.fundCategory === 'growth') {
+          // 增長基金：複式計算，總回報包含本金和收益
+          const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
+          return `${t('productCard.totalReturn')}: ${formatCurrency(totalValue)}`;
+        } else {
+          // 派息基金：單利計算，每月派息
+          const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
+          const yearlyDividend = monthlyDividend * 12;
+          const totalDividends = yearlyDividend * years;
+          return `${t('productCard.monthlyDividends')}: ${formatCurrency(monthlyDividend)} | ${t('productCard.totalDividends')}: ${formatCurrency(totalDividends)}`;
+        }
       case 'mpf':
         const mpfYears = 65 - data.currentAge;
         const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
-        const totalMPF = monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears);
-        return `65歲時強積金總額: ${formatCurrency(totalMPF)}`;
+        const totalMPF = data.currentMPFAmount + (monthlyContribution * 12 * Math.pow(1 + data.expectedReturn / 100, mpfYears));
+        const mpfWithoutDividends = data.currentMPFAmount + (monthlyContribution * 12 * mpfYears);
+        const mpfTotalDividendsEarned = totalMPF - mpfWithoutDividends;
+        return `${t('productCard.mpfAt65')}: ${formatCurrency(totalMPF)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(mpfTotalDividendsEarned)}`;
       case 'saving_plans':
-        const totalContribution = data.contribution * data.contributionDuration * (data.contributionType === 'monthly' ? 12 : 1);
-        return `退保時總額: ${formatCurrency(totalContribution)}`;
+        const savingTotalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
+        const savingTotalDividendsEarned = data.surrenderValue - savingTotalContribution + data.withdrawalAmount;
+        return `${t('productCard.surrenderValue')}: ${formatCurrency(data.surrenderValue)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(savingTotalDividendsEarned)}`;
       case 'bank':
-        const totalBankContribution = data.contribution * data.duration * (data.contributionType === 'monthly' ? 12 : 1);
-        const bankInterest = totalBankContribution * (data.interestRate / 100) * data.duration;
-        return `提取時總額: ${formatCurrency(totalBankContribution + bankInterest)}`;
+        if (data.planType === 'saving') {
+          const totalSavings = data.existingAmount + (data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1));
+          const interest = totalSavings * (data.interestRate / 100) * data.contributionPeriod;
+          return `${t('productCard.totalSavings')}: ${formatCurrency(totalSavings + interest)}`;
+        } else {
+          const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, data.lockInPeriod / 12);
+          return `${t('productCard.totalAmount')}: ${formatCurrency(totalAmount)}`;
+        }
       case 'retirement_funds':
-        const yearsToRetirement = data.targetRetirementAge - new Date(data.startDate).getFullYear();
-        const frequencyMultiplier = data.frequency === 'monthly' ? 12 : data.frequency === 'quarterly' ? 4 : 1;
-        const totalRetirementFunds = data.contributionAmount * frequencyMultiplier * yearsToRetirement;
-        return `退休時總額: ${formatCurrency(totalRetirementFunds)}`;
+        const yearsToCompletion = data.completionAge - (data.startAge || 30);
+        const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : data.contributionFrequency === 'yearly' ? 1 : 1;
+        const retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
+        const monthlyReturn = retirementTotalContribution * (data.expectedReturn / 100) / 12;
+        return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyReturn)}`;
       case 'own_living':
         const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
-        const paidUpAge = data.purchaseAge + mortgageYears;
-        return `供完樓年齡: ${Math.round(paidUpAge)}歲`;
+        const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
+        const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
+        return `${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲 | ${t('productCard.propertyValue')}: ${formatCurrency(propertyValue)}`;
       case 'renting':
         const rentalYears = data.expectedEndAge - data.startAge;
-        const totalRent = data.rentalExpenses * 12 * rentalYears;
-        return `總租金支出: ${formatCurrency(totalRent)}`;
-      case 'owner':
-        const ownershipYears = data.ownershipEndAge - data.ownershipStartAge;
-        const totalRentIncome = data.rentAmount * 12 * ownershipYears;
-        return `總租金收入: ${formatCurrency(totalRentIncome)}`;
+        const totalRent = data.monthlyRentExpense * 12 * rentalYears;
+        return `${t('productCard.totalRentPaid')}: ${formatCurrency(totalRent)}`;
       default:
         return '';
     }
