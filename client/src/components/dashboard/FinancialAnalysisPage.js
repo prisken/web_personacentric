@@ -236,7 +236,7 @@ const FinancialAnalysisPage = ({
         if (subType === 'bank' && data.planType === 'fixed_deposit') {
           const lockInYears = data.lockInPeriod / 12;
           const yearsSinceStart = year - data.startAge;
-          if (yearsSinceStart === lockInYears) {
+          if (Math.abs(yearsSinceStart - lockInYears) < 0.01) {
             // Fixed deposit matures, total amount (with interest) moves to flexible funds
             const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
             flexibleFunds += totalAmount;
@@ -581,12 +581,7 @@ const FinancialAnalysisPage = ({
             // They are handled in calculateAccumulatedFlexibleFunds
             break;
           } else {
-            // For fixed deposits: add contribution to assets at start age if already owned
-            if (data.alreadyOwned === 'Y' && age === data.startAge) {
-              assets += data.contribution;
-            }
-            
-            // During lock-in period, show the fixed deposit as an asset (only if already owned)
+            // For fixed deposits: show contribution as asset during lock-in period (only if already owned)
             const lockInYears = data.lockInPeriod / 12;
             const yearsSinceStart = age - data.startAge;
             if (yearsSinceStart >= 0 && yearsSinceStart < lockInYears && data.alreadyOwned === 'Y') {
