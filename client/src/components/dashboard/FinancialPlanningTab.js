@@ -201,15 +201,15 @@ const FinancialPlanningTab = () => {
           const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
           const yearlyDividend = monthlyDividend * 12;
           const totalDividends = yearlyDividend * years;
-          return `${t('productCard.monthlyDividends')}: ${formatCurrency(monthlyDividend)} | ${t('productCard.totalDividends')}: ${formatCurrency(totalDividends)}`;
+          return `${t('productCard.monthlyDividends')}: ${formatCurrency(monthlyDividend)}\n${t('productCard.totalDividends')}: ${formatCurrency(totalDividends)}`;
         }
       case 'mpf':
         const mpfResult = calculateMPF(data);
-        return `${t('productCard.mpfAt65')}: ${formatCurrency(mpfResult.totalMPF)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(mpfResult.mpfTotalDividendsEarned)}`;
+        return `${t('productCard.mpfAt65')}: ${formatCurrency(mpfResult.totalMPF)}\n${t('productCard.totalDividendsEarned')}: ${formatCurrency(mpfResult.mpfTotalDividendsEarned)}`;
       case 'saving_plans':
         const savingTotalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
         const savingTotalDividendsEarned = data.surrenderValue - savingTotalContribution + data.withdrawalAmount;
-        return `${t('productCard.surrenderValue')}: ${formatCurrency(data.surrenderValue)} | ${t('productCard.totalDividendsEarned')}: ${formatCurrency(savingTotalDividendsEarned)}`;
+        return `${t('productCard.surrenderValue')}: ${formatCurrency(data.surrenderValue)}\n${t('productCard.totalDividendsEarned')}: ${formatCurrency(savingTotalDividendsEarned)}`;
       case 'bank':
         if (data.planType === 'saving') {
           const totalSavings = data.existingAmount + (data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1));
@@ -229,7 +229,7 @@ const FinancialPlanningTab = () => {
         const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
         const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
         const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
-        return `${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲 | ${t('productCard.propertyValue')}: ${formatCurrency(propertyValue)}`;
+        return `${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲\n${t('productCard.propertyValue')}: ${formatCurrency(propertyValue)}`;
       case 'renting':
         const rentalYears = data.expectedEndAge - data.startAge;
         const totalRent = data.monthlyRentExpense * 12 * rentalYears;

@@ -707,9 +707,9 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       {product.summary && (
         <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <span className="text-blue-600">📊</span>
-              <p className="text-sm font-medium text-gray-700">{product.summary}</p>
+            <div className="flex items-start space-x-2">
+              <span className="text-blue-600 mt-1">📊</span>
+              <p className="text-sm font-medium text-gray-700 whitespace-pre-line">{product.summary}</p>
             </div>
             <button
               onClick={() => handleInfoClick(product.subType, product.data)}
