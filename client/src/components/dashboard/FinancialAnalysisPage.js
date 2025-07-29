@@ -551,6 +551,11 @@ const FinancialAnalysisPage = ({
           
           const paidUpAge = data.mortgageCompletionAge;
           
+          // Add down payment as asset at mortgage start age
+          if (age === data.mortgageStartAge) {
+            assets += downPaymentAmount;
+          }
+          
           // Check if property is sold at this age
           if (data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
             // Property is sold, no longer an asset (sale proceeds go to flexible funds)
