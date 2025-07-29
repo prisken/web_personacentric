@@ -247,12 +247,33 @@ const FinancialPlanningPDFReport = ({
         return totalContribution * proportion;
         
       case 'bank':
-        const bankYears = data.withdrawalAge - data.startAge;
-        const bankValue = data.contribution * 12 * bankYears * (1 + data.interestRate / 100);
-        const yearsFromBankStart = age - data.startAge;
-        if (yearsFromBankStart <= 0) return 0;
-        if (yearsFromBankStart >= bankYears) return bankValue;
-        return data.contribution * 12 * yearsFromBankStart * (1 + data.interestRate / 100);
+        if (data.planType === 'saving') {
+          // For saving accounts: compound interest on existing amount + contributions
+          const yearsSinceStart = age - data.startAge;
+          if (yearsSinceStart > 0) {
+            // Calculate total contributions over the period
+            const totalContributions = data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            
+            // Calculate compound interest on existing amount
+            const existingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+            
+            // Calculate compound interest on contributions (simplified - assume contributions are made at the start)
+            const contributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+            
+            return existingAmountWithInterest + contributionsWithInterest;
+          }
+          return data.existingAmount;
+        } else {
+          // For fixed deposits: compound interest on locked amount
+          const lockInYears = data.lockInPeriod / 12;
+          const yearsSinceStart = age - data.startAge;
+          if (yearsSinceStart >= lockInYears) {
+            // Calculate compound interest on the contribution
+            const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
+            return totalAmount;
+          }
+          return 0;
+        }
         
       case 'retirement_funds':
         // Hong Kong Annuity Plan - no asset value, only income

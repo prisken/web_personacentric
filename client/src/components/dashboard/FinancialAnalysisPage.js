@@ -271,6 +271,23 @@ const FinancialAnalysisPage = ({
           totalExpenses += monthlyPayment;
         }
       }
+      
+      // Add bank contributions as expenses
+      if (product.subType === 'bank') {
+        const data = product.data;
+        if (data.planType === 'saving') {
+          // For saving accounts: add monthly/yearly contributions as expenses
+          if (age >= data.startAge && age < data.startAge + data.contributionPeriod) {
+            const contributionAmount = data.contribution * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            totalExpenses += contributionAmount;
+          }
+        } else {
+          // For fixed deposits: add one-time contribution as expense if not already owned
+          if (age === data.startAge && data.alreadyOwned === 'N') {
+            totalExpenses += data.contribution;
+          }
+        }
+      }
     });
 
     return totalExpenses;
@@ -296,10 +313,30 @@ const FinancialAnalysisPage = ({
           }
           break;
         case 'bank':
-          if (age >= data.withdrawalAge) {
-            const totalContribution = data.contribution * data.duration * (data.contributionType === 'monthly' ? 12 : 1);
-            const bankInterest = totalContribution * (data.interestRate / 100) * data.duration;
-            assets += totalContribution + bankInterest;
+          if (data.planType === 'saving') {
+            // For saving accounts: compound interest on existing amount + contributions
+            const yearsSinceStart = age - data.startAge;
+            if (yearsSinceStart > 0) {
+              // Calculate total contributions over the period
+              const totalContributions = data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1);
+              
+              // Calculate compound interest on existing amount
+              const existingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+              
+              // Calculate compound interest on contributions (simplified - assume contributions are made at the start)
+              const contributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+              
+              assets += existingAmountWithInterest + contributionsWithInterest;
+            }
+          } else {
+            // For fixed deposits: compound interest on locked amount
+            const lockInYears = data.lockInPeriod / 12;
+            const yearsSinceStart = age - data.startAge;
+            if (yearsSinceStart >= lockInYears) {
+              // Calculate compound interest on the contribution
+              const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
+              assets += totalAmount;
+            }
           }
           break;
         case 'retirement_funds':
@@ -366,6 +403,13 @@ const FinancialAnalysisPage = ({
         if (age < paidUpAge) {
           const remainingYears = paidUpAge - age;
           liabilities += monthlyPayment * 12 * remainingYears;
+        }
+      }
+      
+      // Add bank fixed deposit contributions as liabilities if not already owned
+      if (subType === 'bank' && data.planType === 'fixed' && data.alreadyOwned === 'N') {
+        if (age === data.startAge) {
+          liabilities += data.contribution;
         }
       }
     });
