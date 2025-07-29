@@ -136,7 +136,8 @@ const FinancialPlanningTab = () => {
           fundCategory: 'growth',
           investmentAmount: 0,
           startAge: 30,
-          expectedReturn: 8
+          expectedReturn: 8,
+          expectedWithdrawalAge: 65
         };
       case 'mpf':
         return {
@@ -224,8 +225,8 @@ const FinancialPlanningTab = () => {
       case 'funds':
         if (data.fundCategory === 'growth') {
           // 增長基金：複式計算，總回報包含本金和收益
-          // Use a standard 35-year investment period (from start age to age 65)
-          const years = 65 - data.startAge;
+          // Use expected withdrawal age instead of hardcoded 65
+          const years = data.expectedWithdrawalAge - data.startAge;
           const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
           return `${t('productCard.totalReturn')}: ${formatCurrency(totalValue)}`;
         } else {

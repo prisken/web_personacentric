@@ -758,6 +758,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.startAge': '開始年齡',
       'productCard.expectedReturn': '預期年回報率 (%)',
       'productCard.expectedReturnPlaceholder': '例如: 8 表示年回報率 8%',
+      'productCard.expectedWithdrawalAge': '預期提取年齡',
+      'productCard.expectedWithdrawalAgePlaceholder': '例如: 65 表示65歲時提取',
 
       'productCard.monthlySalary': '月薪 (HKD)',
       'productCard.salaryIncrement': '年薪增幅 (%)',
@@ -1539,6 +1541,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.startAge': 'Start Age',
       'productCard.expectedReturn': 'Expected Annual Return (%)',
       'productCard.expectedReturnPlaceholder': 'e.g., 8 means 8% annual return',
+      'productCard.expectedWithdrawalAge': 'Expected Withdrawal Age',
+      'productCard.expectedWithdrawalAgePlaceholder': 'e.g., 65 means withdraw at age 65',
 
       'productCard.monthlySalary': 'Monthly Salary (HKD)',
       'productCard.salaryIncrement': 'Annual Salary Increment (%)',

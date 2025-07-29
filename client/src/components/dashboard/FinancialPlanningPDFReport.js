@@ -185,7 +185,9 @@ const FinancialPlanningPDFReport = ({
         
         if (data.fundCategory === 'growth') {
           // 增長基金：投資金額 + 累積收益 = 總資產
-          return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
+          // Use expected withdrawal age for calculation period
+          const calculationYears = Math.min(yearsFromStart, data.expectedWithdrawalAge - data.startAge);
+          return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, calculationYears);
         } else {
           // 派息基金：投資金額 = 總資產（收益以派息形式發放）
           return data.investmentAmount;
