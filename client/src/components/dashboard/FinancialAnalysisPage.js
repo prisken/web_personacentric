@@ -412,26 +412,25 @@ const FinancialAnalysisPage = ({
           
         case 'retirement_funds':
           if (age >= data.completionAge) {
-            // Start retirement fund income
-            let retirementTotalContribution;
-            let yearsToCompletion;
+            // Hong Kong Annuity Plan calculation
+            const premium = data.contributionAmount;
+            const annuityStartAge = data.completionAge;
+            const gender = data.gender || 'male';
             
-            if (data.contributionFrequency === 'oneTime') {
-              // For one-time contribution, use the contribution amount directly
-              retirementTotalContribution = data.contributionAmount;
-              yearsToCompletion = data.completionAge - data.startAge;
-            } else {
-              // For monthly/yearly contributions, calculate based on frequency and years
-              yearsToCompletion = data.completionAge - data.startAge;
-              const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
-              retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
-            }
+            // Base rates per $1,000,000 premium at age 60 (Hong Kong Annuity Plan rates)
+            const baseRateMale = 5100; // $5,100 per month for male
+            const baseRateFemale = 4700; // $4,700 per month for female
             
-            // Calculate total fund value after compound growth
-            const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsToCompletion);
-            // Calculate monthly return based on total fund value
-            const monthlyReturn = retirementValue * (data.expectedReturn / 100) / 12;
-            incomeSources.retirementIncome += monthlyReturn;
+            // Age adjustment factor (simplified - older age gets higher monthly payout)
+            const ageAdjustment = Math.pow(1.05, annuityStartAge - 60);
+            
+            // Gender factor
+            const genderFactor = gender === 'male' ? baseRateMale : baseRateFemale;
+            
+            // Calculate monthly annuity
+            const monthlyAnnuity = (premium / 1000000) * genderFactor * ageAdjustment;
+            
+            incomeSources.retirementIncome += monthlyAnnuity;
           }
           break;
           

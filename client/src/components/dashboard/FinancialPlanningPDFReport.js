@@ -255,36 +255,9 @@ const FinancialPlanningPDFReport = ({
         return data.contribution * 12 * yearsFromBankStart * (1 + data.interestRate / 100);
         
       case 'retirement_funds':
-        let retirementTotalContribution;
-        let retirementYears;
-        
-        if (data.contributionFrequency === 'oneTime') {
-          // For one-time contribution, use the contribution amount directly
-          retirementTotalContribution = data.contributionAmount;
-          retirementYears = data.completionAge - data.startAge;
-        } else {
-          // For monthly/yearly contributions, calculate based on frequency and years
-          retirementYears = data.completionAge - data.startAge;
-          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
-          retirementTotalContribution = data.contributionAmount * frequencyMultiplier * retirementYears;
-        }
-        
-        const retirementValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, retirementYears);
-        // Calculate value at specific age
-        const yearsFromRetirementStart = age - data.startAge;
-        if (yearsFromRetirementStart <= 0) return 0;
-        if (yearsFromRetirementStart >= retirementYears) return retirementValue;
-        
-        // For intermediate ages, calculate compound growth
-        if (data.contributionFrequency === 'oneTime') {
-          // For one-time contribution, calculate based on the single amount
-          return retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsFromRetirementStart);
-        } else {
-          // For monthly/yearly contributions, calculate proportional growth
-          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
-          const intermediateContribution = data.contributionAmount * frequencyMultiplier * yearsFromRetirementStart;
-          return intermediateContribution * Math.pow(1 + data.expectedReturn / 100, yearsFromRetirementStart);
-        }
+        // Hong Kong Annuity Plan - no asset value, only income
+        // The premium is converted to guaranteed monthly income
+        return 0;
         
       case 'own_living':
         const propertyYears = age - data.purchaseAge;

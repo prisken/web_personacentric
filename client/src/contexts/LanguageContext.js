@@ -891,6 +891,27 @@ export const LanguageProvider = ({ children }) => {
       'productCard.viewFormula': '查看計算公式',
       'productCard.calculationFormula': '計算公式',
       'productCard.explanation': '說明',
+
+      // Retirement Funds
+      'productCard.contributionAmount': '投保金額 (HKD)',
+      'productCard.contributionAmountPlaceholder': '例如: 1000000',
+      'productCard.contributionFrequency': '供款頻率',
+      'productCard.monthly': '每月',
+      'productCard.yearly': '每年',
+      'productCard.oneTime': '一次性',
+      'productCard.startAge': '投保年齡',
+      'productCard.completionAge': '年金開始年齡',
+      'productCard.gender': '性別',
+      'productCard.male': '男性',
+      'productCard.female': '女性',
+      'productCard.lifeExpectancy': '預期壽命',
+      'productCard.guaranteedPeriod': '保證年期',
+      'productCard.annuityType': '年金類型',
+      'productCard.immediate': '即期年金',
+      'productCard.deferred': '延期年金',
+      'productCard.monthlyReturn': '每月年金',
+      'productCard.totalPayments': '總年金收入',
+      'productCard.internalRateOfReturn': '內部回報率',
     },
     'en': {
       // Navigation

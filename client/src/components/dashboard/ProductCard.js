@@ -82,19 +82,11 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           };
         }
       case 'retirement_funds':
-        if (data.contributionFrequency === 'oneTime') {
-          return {
-            title: t('productCard.monthlyReturn'),
-            formula: `一次性供款 = 供款金額\n退休基金總值 = 一次性供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
-            description: '一次性退休基金供款使用複式計算，基於單次供款金額和投資年期計算複利增長，然後根據總值計算每月回報。'
-          };
-        } else {
-          return {
-            title: t('productCard.monthlyReturn'),
-            formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n退休基金總值 = 總供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
-            description: '定期退休基金使用複式計算，在完成供款後開始提供每月回報，回報基於複利增長的總值和年回報率。'
-          };
-        }
+        return {
+          title: t('productCard.monthlyReturn'),
+          formula: `香港年金計劃計算公式：\n\n基礎月年金率（60歲）：\n- 男性：$5,100/月（每$1,000,000投保）\n- 女性：$4,700/月（每$1,000,000投保）\n\n年齡調整：\n月年金 = (投保金額 ÷ 1,000,000) × 基礎月年金率 × (1.05)^(年金開始年齡 - 60)\n\n總年金收入：\n總收入 = 月年金 × 12 × (預期壽命 - 年金開始年齡)\n\n內部回報率：\nIRR = (總收入 ÷ 投保金額)^(1/年金年期) - 1`,
+          description: '香港年金計劃提供保證終身收入，回報率與投保人壽命掛鈎。投保人愈長壽，內部回報率愈高。'
+        };
       case 'own_living':
         return {
           title: t('productCard.mortgageCompletionAge'),
@@ -482,6 +474,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 value={data.contributionAmount}
                 onChange={(e) => updateProduct(product.id, 'contributionAmount', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder={t('productCard.contributionAmountPlaceholder')}
               />
             </div>
             <div>
@@ -515,13 +508,44 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedReturn')}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.gender')}</label>
+              <select
+                value={data.gender}
+                onChange={(e) => updateProduct(product.id, 'gender', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="male">{t('productCard.male')}</option>
+                <option value="female">{t('productCard.female')}</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.lifeExpectancy')}</label>
               <input
                 type="number"
-                value={data.expectedReturn}
-                onChange={(e) => updateProduct(product.id, 'expectedReturn', parseFloat(e.target.value) || 0)}
+                value={data.lifeExpectancy}
+                onChange={(e) => updateProduct(product.id, 'lifeExpectancy', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.guaranteedPeriod')}</label>
+              <input
+                type="number"
+                value={data.guaranteedPeriod}
+                onChange={(e) => updateProduct(product.id, 'guaranteedPeriod', parseInt(e.target.value) || 0)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.annuityType')}</label>
+              <select
+                value={data.annuityType}
+                onChange={(e) => updateProduct(product.id, 'annuityType', e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              >
+                <option value="immediate">{t('productCard.immediate')}</option>
+                <option value="deferred">{t('productCard.deferred')}</option>
+              </select>
             </div>
           </div>
         );

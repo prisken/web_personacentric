@@ -175,11 +175,15 @@ const FinancialPlanningTab = () => {
         };
       case 'retirement_funds':
         return {
-          contributionAmount: 0,
-          contributionFrequency: 'monthly',
-          startAge: 30,
-          completionAge: 65,
-          expectedReturn: 6
+          contributionAmount: 1000000, // Premium amount
+          contributionFrequency: 'oneTime', // Annuity is typically one-time premium
+          startAge: 60, // Premium age
+          completionAge: 65, // Annuity start age
+          expectedReturn: 4, // Internal rate of return
+          gender: 'male', // Gender affects monthly payout
+          lifeExpectancy: 86, // Life expectancy for IRR calculation
+          guaranteedPeriod: 10, // Guaranteed payment period
+          annuityType: 'immediate' // Immediate or deferred annuity
         };
       case 'own_living':
         return {
@@ -253,25 +257,34 @@ const FinancialPlanningTab = () => {
           return `${t('productCard.totalAmount')}: ${formatCurrency(totalAmount)}`;
         }
       case 'retirement_funds':
-        let retirementTotalContribution;
-        let yearsToCompletion;
+        // Hong Kong Annuity Plan calculation
+        const premium = data.contributionAmount;
+        const premiumAge = data.startAge;
+        const annuityStartAge = data.completionAge;
+        const gender = data.gender || 'male';
+        const lifeExpectancy = data.lifeExpectancy || 86;
         
-        if (data.contributionFrequency === 'oneTime') {
-          // For one-time contribution, use the contribution amount directly
-          retirementTotalContribution = data.contributionAmount;
-          yearsToCompletion = data.completionAge - data.startAge;
-        } else {
-          // For monthly/yearly contributions, calculate based on frequency and years
-          yearsToCompletion = data.completionAge - (data.startAge || 30);
-          const frequencyMultiplier = data.contributionFrequency === 'monthly' ? 12 : 1;
-          retirementTotalContribution = data.contributionAmount * frequencyMultiplier * yearsToCompletion;
-        }
+        // Base rates per $1,000,000 premium at age 60 (Hong Kong Annuity Plan rates)
+        const baseRateMale = 5100; // $5,100 per month for male
+        const baseRateFemale = 4700; // $4,700 per month for female
         
-        // Calculate total fund value after compound growth
-        const totalFundValue = retirementTotalContribution * Math.pow(1 + data.expectedReturn / 100, yearsToCompletion);
-        // Calculate monthly return based on total fund value
-        const monthlyReturn = totalFundValue * (data.expectedReturn / 100) / 12;
-        return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyReturn)}`;
+        // Age adjustment factor (simplified - older age gets higher monthly payout)
+        const ageAdjustment = Math.pow(1.05, annuityStartAge - 60);
+        
+        // Gender factor
+        const genderFactor = gender === 'male' ? baseRateMale : baseRateFemale;
+        
+        // Calculate monthly annuity
+        const monthlyAnnuity = (premium / 1000000) * genderFactor * ageAdjustment;
+        
+        // Calculate total payments over life expectancy
+        const totalPayments = monthlyAnnuity * 12 * (lifeExpectancy - annuityStartAge);
+        
+        // Calculate internal rate of return
+        const annuityYears = lifeExpectancy - annuityStartAge;
+        const irr = annuityYears > 0 ? (Math.pow(totalPayments / premium, 1/annuityYears) - 1) * 100 : 0;
+        
+        return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyAnnuity)}\n${t('productCard.totalPayments')}: ${formatCurrency(totalPayments)}\n${t('productCard.internalRateOfReturn')}: ${irr.toFixed(2)}%`;
       case 'own_living':
         const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
         const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
