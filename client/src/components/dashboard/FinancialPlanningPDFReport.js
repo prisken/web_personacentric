@@ -184,10 +184,10 @@ const FinancialPlanningPDFReport = ({
         if (yearsFromStart <= 0) return 0;
         
         if (data.fundCategory === 'growth') {
-          // 增長基金：複式計算，總回報包含本金和收益
+          // 增長基金：投資金額 + 累積收益 = 總資產
           return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
         } else {
-          // 派息基金：本金保持不變，收益以派息形式發放
+          // 派息基金：投資金額 = 總資產（收益以派息形式發放）
           return data.investmentAmount;
         }
         

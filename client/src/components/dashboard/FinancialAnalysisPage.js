@@ -180,20 +180,14 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'funds':
-          if (data.fundCategory === 'growth') {
-            // 增長基金：從65歲開始提取
-            if (age >= 65) {
-              const years = age - data.startAge;
-              const totalValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, years);
-              passiveIncome += totalValue * 0.04 / 12; // 4% annual withdrawal rate
-            }
-          } else {
-            // 派息基金：從第一年開始每月派息
+          if (data.fundCategory === 'dividend') {
+            // 派息基金：從第一年開始每月派息，計入投資收益
             if (age >= data.startAge) {
               const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
               passiveIncome += monthlyDividend;
             }
           }
+          // 增長基金：不計入投資收益，收益累積在資產中
           break;
         case 'mpf':
           if (age >= 65) {
@@ -331,7 +325,13 @@ const FinancialAnalysisPage = ({
         case 'funds':
           const fundYears = age - data.startAge;
           if (fundYears > 0) {
-            assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears); // Compound annual growth
+            if (data.fundCategory === 'growth') {
+              // 增長基金：投資金額 + 累積收益 = 總資產
+              assets += data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, fundYears);
+            } else {
+              // 派息基金：投資金額 = 總資產（收益以派息形式發放）
+              assets += data.investmentAmount;
+            }
           }
           break;
         case 'saving_plans':
@@ -528,19 +528,14 @@ const FinancialAnalysisPage = ({
       
       switch (product.subType) {
         case 'funds':
-          if (data.fundCategory === 'growth') {
-            // 增長基金：從65歲開始提取
-            if (age >= 65) {
-              const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, age - data.startAge);
-              incomeSources.fundIncome += fundValue * 0.04; // 4% withdrawal rate
-            }
-          } else {
-            // 派息基金：從第一年開始每月派息
+          if (data.fundCategory === 'dividend') {
+            // 派息基金：從第一年開始每月派息，計入投資收益
             if (age >= data.startAge) {
               const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
               incomeSources.fundIncome += monthlyDividend * 12; // Annual dividend income
             }
           }
+          // 增長基金：不計入投資收益，收益累積在資產中
           break;
           
         case 'mpf':
@@ -668,10 +663,10 @@ const FinancialAnalysisPage = ({
         if (yearsFromStart <= 0) return 0;
         
         if (data.fundCategory === 'growth') {
-          // 增長基金：複式計算，總回報包含本金和收益
+          // 增長基金：投資金額 + 累積收益 = 總資產
           return data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, yearsFromStart);
         } else {
-          // 派息基金：本金保持不變，收益以派息形式發放
+          // 派息基金：投資金額 = 總資產（收益以派息形式發放）
           return data.investmentAmount;
         }
         
@@ -828,8 +823,8 @@ const FinancialAnalysisPage = ({
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
-        formula: `投資收益 + 租金收入 + 退休金收入\n\n當前${currentAge}歲詳細計算：\n基金收益：基金價值 × 提取率\n強積金：MPF餘額 × 提取率\n銀行利息：存款餘額 × 年利率 ÷ 12\n租金收入：月租金收入\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
-        description: '無需工作即可獲得的收入，包括投資分紅、租金、退休金、年金等'
+        formula: `投資收益 + 租金收入 + 年金收入\n\n當前${currentAge}歲詳細計算：\n派息基金收益：基金本金 × 年回報率 ÷ 12\n強積金：MPF餘額 × 提取率\n銀行利息：存款餘額 × 年利率 ÷ 12\n租金收入：月租金收入\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n\n注意：增長基金不計入被動收入，收益累積在資產中`,
+        description: '無需工作即可獲得的收入，包括派息基金分紅、租金、退休金、年金等。增長基金收益不計入被動收入，而是累積在資產價值中。'
       },
       totalExpenses: {
         title: '月開支計算公式',
@@ -884,8 +879,8 @@ const FinancialAnalysisPage = ({
       },
       incomeSources: {
         title: '收入來源分析說明',
-        formula: `工作收入 = 強積金卡月薪 × (1 + 年薪增幅)^年數\n基金收益 = 基金價值 × 提取率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds' }, currentAge) * 0.04 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月`,
-        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入來自強積金卡的月薪（考慮年薪增幅），在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取、年金收入和租金收入。'
+        formula: `工作收入 = 強積金卡月薪 × (1 + 年薪增幅)^年數\n派息基金收益 = 基金本金 × 年回報率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n派息基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds', data: { fundCategory: 'dividend', investmentAmount: 100000, expectedReturn: 6 } }, currentAge) * 0.06 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月\n\n注意：增長基金不計入收入來源，收益累積在資產中`,
+        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入來自強積金卡的月薪（考慮年薪增幅），在退休前提供主要收入，退休後則依賴派息基金收益、儲蓄提取、年金收入和租金收入。增長基金收益不計入收入來源，而是累積在資產價值中。'
       }
     };
     
