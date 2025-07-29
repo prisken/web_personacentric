@@ -586,14 +586,15 @@ const FinancialAnalysisPage = ({
               assets += data.contribution;
             }
             
-            // During lock-in period, show the fixed deposit as an asset
+            // During lock-in period, show the fixed deposit as an asset (only if already owned)
             const lockInYears = data.lockInPeriod / 12;
             const yearsSinceStart = age - data.startAge;
-            if (yearsSinceStart >= 0 && yearsSinceStart < lockInYears) {
-              // Show the contribution amount as an asset during lock-in period
+            if (yearsSinceStart >= 0 && yearsSinceStart < lockInYears && data.alreadyOwned === 'Y') {
+              // Show the contribution amount as an asset during lock-in period (only for already owned)
               assets += data.contribution;
             }
             // After lock-in period, the total amount moves to flexible funds (handled in calculateAccumulatedFlexibleFunds)
+            // and the contribution amount is removed from assets
           }
           break;
         case 'annuity':
@@ -1224,8 +1225,8 @@ const FinancialAnalysisPage = ({
       },
       totalAssets: {
         title: '總資產計算公式',
-        formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積 + 定期存款（鎖定期內）\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n定期存款：鎖定期內顯示供款金額（已擁有）或0（未擁有）\n物業價值：購買價格 × (1 + 升值率)^持有年數\n\n注意：定期存款在鎖定期後轉入年度靈活資金`,
-        description: '包括現金、投資組合、物業價值、儲蓄、定期存款（鎖定期內）等所有資產的總和'
+        formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積 + 定期存款（鎖定期內，僅限已擁有）\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n定期存款：鎖定期內顯示供款金額（僅限已擁有），未擁有則為0\n物業價值：購買價格 × (1 + 升值率)^持有年數\n\n注意：定期存款在鎖定期後轉入年度靈活資金，並從淨資產中扣除供款金額`,
+        description: '包括現金、投資組合、物業價值、儲蓄、定期存款（鎖定期內，僅限已擁有）等所有資產的總和'
       },
               totalLiabilities: {
           title: '總負債計算公式',
