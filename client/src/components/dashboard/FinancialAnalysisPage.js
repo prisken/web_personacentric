@@ -428,7 +428,7 @@ const FinancialAnalysisPage = ({
           break;
         case 'annuity':
           // 年金：每月年金計入被動收入，從年金開始年齡到預期壽命
-          if (age >= data.annuityStartAge && age <= data.expectedLifespan) {
+          if (age >= data.annuityStartAge && age <= data.lifeExpectancy) {
             passiveIncome += data.monthlyAnnuity;
           }
           break;
@@ -535,8 +535,9 @@ const FinancialAnalysisPage = ({
             const contributionEndAge = data.premiumAge + data.contributionPeriod;
             
             if (age >= contributionStartAge && age < contributionEndAge) {
-              totalExpenses += data.annualContribution;
-              expenseBreakdown.annuityContributions += data.annualContribution;
+              // Annual contribution should be divided by 12 to get monthly expense
+              totalExpenses += data.annualContribution / 12;
+              expenseBreakdown.annuityContributions += data.annualContribution / 12;
             }
           } else {
             // For immediate annuity, add one-time contribution as expense at premium age
