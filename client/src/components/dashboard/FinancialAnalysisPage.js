@@ -655,6 +655,17 @@ const FinancialAnalysisPage = ({
           }
         }
 
+        // Add rental payments as liabilities
+        if (subType === 'rental') {
+          if (year >= data.leaseStartAge) {
+            // Calculate rent with annual increase
+            const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
+            const yearsSinceLeaseStart = year - data.leaseStartAge;
+            const currentRent = data.monthlyRent * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
+            accumulatedLiabilities += currentRent * 12;
+          }
+        }
+
         // Add annuity contributions as liabilities
         if (subType === 'annuity') {
           // For deferred annuity, add annual contributions as liabilities during contribution period
