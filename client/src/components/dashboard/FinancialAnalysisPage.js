@@ -169,42 +169,6 @@ const FinancialAnalysisPage = ({
       income += salaryWithIncrement;
     }
 
-    // Add income from products
-    products.forEach(product => {
-      const { subType, data } = product;
-      
-      switch (subType) {
-        case 'funds':
-          if (data.fundCategory === 'growth') {
-            // 增長基金：從65歲開始提取
-            if (age >= 65) {
-              const fundValue = data.investmentAmount * Math.pow(1 + data.expectedReturn / 100, age - data.startAge);
-              income += fundValue * 0.04; // 4% withdrawal rate
-            }
-          } else {
-            // 派息基金：從第一年開始每月派息
-            if (age >= data.startAge) {
-              const monthlyDividend = data.investmentAmount * (data.expectedReturn / 100) / 12;
-              income += monthlyDividend * 12; // Annual dividend income
-            }
-          }
-          break;
-        case 'mpf':
-          if (age >= 65) {
-            const mpfResult = calculateMPF(data);
-            income += mpfResult.totalMPF / 240; // Assume 20 years of withdrawal
-          }
-          break;
-        case 'owner':
-          if (age >= data.ownershipStartAge && age <= data.ownershipEndAge && data.status === 'renting') {
-            const ownershipYears = age - data.ownershipStartAge;
-            const rentIncome = data.rentAmount * Math.pow(1 + data.rentIncrement / 100, ownershipYears);
-            income += rentIncome;
-          }
-          break;
-      }
-    });
-
     return income;
   };
 
@@ -859,8 +823,8 @@ const FinancialAnalysisPage = ({
     const formulas = {
       totalMonthlyIncome: {
         title: '總月收入計算公式',
-        formula: `工作收入 + 投資收益 + 租金收入 + 其他被動收入\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n投資收益：基金提取 + 強積金提取 + 銀行利息\n租金收入：投資物業租金\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
-        description: '包括所有收入來源：工作薪資（來自強積金卡月薪，退休前）、基金提取、強積金、租金收入、年金收入等'
+        formula: `工作收入（僅來自強積金卡月薪）\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n\n注意：總月收入僅包含工作薪資，其他收入來源（基金收益、租金收入、年金收入等）不計入總月收入`,
+        description: '僅包括工作薪資（來自強積金卡月薪，退休前），不包含其他被動收入來源'
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
