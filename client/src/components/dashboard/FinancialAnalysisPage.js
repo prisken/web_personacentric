@@ -124,35 +124,33 @@ const FinancialAnalysisPage = ({
       const endYear = analysisPeriod.end;
 
       for (let age = startYear; age <= endYear; age++) {
-      const yearData = {
-        age,
-        totalMonthlyIncome: calculateTotalIncome(age),
-        monthlyPassiveIncome: calculatePassiveIncome(age),
-        totalExpenses: calculateTotalExpenses(age),
-        netCashFlow: 0,
-        totalAssets: calculateTotalAssets(age),
-        totalLiabilities: calculateTotalLiabilities(age),
-        netWorth: 0,
-        assetAllocation: calculateAssetAllocation(age),
-        cashReserve: 0,
-        withdrawalRate: 0,
-        probabilityOfOutliving: 'Low'
-      };
+        const totalIncome = calculateTotalIncome(age);
+        const passiveIncome = calculatePassiveIncome(age);
+        const totalExpenses = calculateTotalExpenses(age);
+        const totalAssets = calculateTotalAssets(age);
+        const totalLiabilities = calculateTotalLiabilities(age);
 
-      yearData.netCashFlow = yearData.totalMonthlyIncome - yearData.totalExpenses;
-      yearData.netWorth = yearData.totalAssets - yearData.totalLiabilities;
-      yearData.cashReserve = calculateCashReserve(yearData);
-      yearData.withdrawalRate = calculateWithdrawalRate(yearData);
-      yearData.probabilityOfOutliving = calculateOutlivingProbability(yearData, age);
+        const yearData = {
+          age: age,
+          totalMonthlyIncome: totalIncome,
+          monthlyPassiveIncome: passiveIncome,
+          totalExpenses: totalExpenses,
+          netCashFlow: totalIncome - totalExpenses,
+          totalAssets: totalAssets,
+          totalLiabilities: totalLiabilities,
+          netWorth: totalAssets - totalLiabilities,
+          cashReserve: calculateCashReserve({ totalAssets, totalExpenses }),
+          outlivingProbability: calculateOutlivingProbability({ totalAssets, totalExpenses, age }, age)
+        };
 
-      data.push(yearData);
-    }
+        data.push(yearData);
+      }
 
-    setFinancialData(data);
-    if (onFinancialDataUpdate) {
-      onFinancialDataUpdate(data);
-    }
-    setIsCalculating(false);
+      setFinancialData(data);
+      if (onFinancialDataUpdate) {
+        onFinancialDataUpdate(data);
+      }
+      setIsCalculating(false);
     }, 100);
   };
 
@@ -230,65 +228,107 @@ const FinancialAnalysisPage = ({
 
   const calculateTotalExpenses = (age) => {
     let totalExpenses = 0;
+    let expenseBreakdown = {
+      manualExpenses: 0,
+      rentalExpenses: 0,
+      mortgageExpenses: 0,
+      bankContributions: 0,
+      savingPlanContributions: 0,
+      annuityContributions: 0
+    };
     
-    // Add manual expenses
+    // Add manual expenses with inflation
     expenses.forEach(expense => {
       if (age >= expense.fromAge && age <= expense.toAge) {
         const yearsSinceStart = age - expense.fromAge;
         const inflatedExpenses = expense.monthlyExpenses * Math.pow(1 + inflationRate / 100, yearsSinceStart);
         totalExpenses += inflatedExpenses;
+        expenseBreakdown.manualExpenses += inflatedExpenses;
       }
     });
 
-    // Add rental expenses from products
+    // Add product-related expenses
     products.forEach(product => {
-      if (product.subType === 'rental') {
-        const data = product.data;
-        if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
-          const rentalYears = age - data.leaseStartAge;
-          const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
-          totalExpenses += monthlyRentWithIncrease;
-        }
-      }
+      const { subType, data } = product;
       
-      // Add mortgage payments from own_living products
-      if (product.subType === 'own_living') {
-        const data = product.data;
-        if (age >= data.mortgageStartAge && age < data.mortgageCompletionAge) {
-          // Calculate mortgage amount and monthly payment
-          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
-          const mortgageAmount = data.purchasePrice - downPaymentAmount;
+      switch (subType) {
+        case 'rental':
+          if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
+            const rentalYears = age - data.leaseStartAge;
+            const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
+            totalExpenses += monthlyRentWithIncrease;
+            expenseBreakdown.rentalExpenses += monthlyRentWithIncrease;
+          }
+          break;
           
-          // Use actual mortgage interest rate and completion age from data
-          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
-          const interestRate = data.mortgageInterestRate / 100;
-          const monthlyInterestRate = interestRate / 12;
-          const numberOfPayments = mortgageTerm * 12;
+        case 'own_living':
+          if (age >= data.mortgageStartAge && age < data.mortgageCompletionAge) {
+            // Calculate mortgage amount and monthly payment
+            const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+            const mortgageAmount = data.purchasePrice - downPaymentAmount;
+            
+            const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+            const interestRate = data.mortgageInterestRate / 100;
+            const monthlyInterestRate = interestRate / 12;
+            const numberOfPayments = mortgageTerm * 12;
+            
+            // Calculate monthly payment using mortgage formula
+            const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            
+            totalExpenses += monthlyPayment;
+            expenseBreakdown.mortgageExpenses += monthlyPayment;
+          }
+          break;
           
-          // Calculate monthly payment using mortgage formula
-          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+        case 'bank':
+          if (data.planType === 'saving') {
+            // For saving accounts: add monthly/yearly contributions as expenses
+            if (age >= data.startAge && age < data.startAge + data.contributionPeriod) {
+              const contributionAmount = data.contribution * (data.contributionFrequency === 'monthly' ? 12 : 1);
+              totalExpenses += contributionAmount;
+              expenseBreakdown.bankContributions += contributionAmount;
+            }
+          } else {
+            // For fixed deposits: add one-time contribution as expense if not already owned
+            if (age === data.startAge && data.alreadyOwned === 'N') {
+              totalExpenses += data.contribution;
+              expenseBreakdown.bankContributions += data.contribution;
+            }
+          }
+          break;
           
-          totalExpenses += monthlyPayment;
-        }
-      }
-      
-      // Add bank contributions as expenses
-      if (product.subType === 'bank') {
-        const data = product.data;
-        if (data.planType === 'saving') {
-          // For saving accounts: add monthly/yearly contributions as expenses
+        case 'saving_plans':
+          // Add saving plan contributions as expenses during contribution period
           if (age >= data.startAge && age < data.startAge + data.contributionPeriod) {
-            const contributionAmount = data.contribution * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            const contributionAmount = data.contribution * (data.contributionType === 'monthly' ? 12 : 1);
             totalExpenses += contributionAmount;
+            expenseBreakdown.savingPlanContributions += contributionAmount;
           }
-        } else {
-          // For fixed deposits: add one-time contribution as expense if not already owned
-          if (age === data.startAge && data.alreadyOwned === 'N') {
-            totalExpenses += data.contribution;
+          break;
+          
+        case 'annuity':
+          // Add annuity contributions as expenses
+          if (data.annuityType === 'deferred') {
+            const contributionStartAge = data.premiumAge;
+            const contributionEndAge = data.premiumAge + data.contributionPeriod;
+            
+            if (age >= contributionStartAge && age < contributionEndAge) {
+              totalExpenses += data.annualContribution;
+              expenseBreakdown.annuityContributions += data.annualContribution;
+            }
+          } else {
+            // For immediate annuity, add one-time contribution as expense at premium age
+            if (age === data.premiumAge) {
+              totalExpenses += data.contributionAmount;
+              expenseBreakdown.annuityContributions += data.contributionAmount;
+            }
           }
-        }
+          break;
       }
     });
+
+    // Store expense breakdown for formula explanation
+    window.currentExpenseBreakdown = expenseBreakdown;
 
     return totalExpenses;
   };
@@ -765,75 +805,62 @@ const FinancialAnalysisPage = ({
   };
 
   const calculateCashReserve = (yearData) => {
-    if (yearData.totalExpenses > 0) {
-      return yearData.totalAssets / yearData.totalExpenses;
-    }
-    return 0;
-  };
-
-  const calculateWithdrawalRate = (yearData) => {
-    if (yearData.totalAssets > 0) {
-      return (yearData.totalExpenses * 12 / yearData.totalAssets) * 100;
-    }
-    return 0;
+    return yearData.totalExpenses > 0 ? yearData.totalAssets / yearData.totalExpenses : 0;
   };
 
   const calculateOutlivingProbability = (yearData, age) => {
-    if (yearData.cashReserve < 12) {
-      return 'High';
-    } else if (yearData.cashReserve < 24) {
-      return 'Medium';
-    } else {
-      return 'Low';
-    }
+    const cashReserve = yearData.totalAssets / yearData.totalExpenses;
+    if (cashReserve > 300) return 'Very Low';
+    if (cashReserve > 240) return 'Low';
+    if (cashReserve > 180) return 'Medium';
+    if (cashReserve > 120) return 'High';
+    return 'Very High';
   };
 
   const showFormulaInfo = (field) => {
+    const currentAge = analysisPeriod.start;
+    const currentExpenseBreakdown = window.currentExpenseBreakdown || {};
+    
     const formulas = {
       totalMonthlyIncome: {
         title: '總月收入計算公式',
-        formula: '工作收入 + 投資收益 + 租金收入 + 其他被動收入',
-        description: '包括所有收入來源：工作薪資（退休前）、基金提取、強積金、租金收入等'
+        formula: `工作收入 + 投資收益 + 租金收入 + 其他被動收入\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '薪資收入' : '已退休'}\n投資收益：基金提取 + 強積金提取 + 銀行利息\n租金收入：投資物業租金\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
+        description: '包括所有收入來源：工作薪資（退休前）、基金提取、強積金、租金收入、年金收入等'
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
-        formula: '投資收益 + 租金收入 + 退休金收入',
-        description: '無需工作即可獲得的收入，包括投資分紅、租金、退休金等'
+        formula: `投資收益 + 租金收入 + 退休金收入\n\n當前${currentAge}歲詳細計算：\n基金收益：基金價值 × 提取率\n強積金：MPF餘額 × 提取率\n銀行利息：存款餘額 × 年利率 ÷ 12\n租金收入：月租金收入\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
+        description: '無需工作即可獲得的收入，包括投資分紅、租金、退休金、年金等'
       },
       totalExpenses: {
         title: '月開支計算公式',
-        formula: '基本開支 × (1 + 通脹率)^年數',
-        description: '考慮通脹因素調整後的月開支，通脹率會逐年累積影響'
+        formula: `基本開支 + 產品相關開支\n\n當前${currentAge}歲詳細計算：\n基本開支：${formatCurrency(currentExpenseBreakdown.manualExpenses || 0)} (考慮${inflationRate}%通脹)\n租金開支：${formatCurrency(currentExpenseBreakdown.rentalExpenses || 0)}\n按揭供款：${formatCurrency(currentExpenseBreakdown.mortgageExpenses || 0)}\n銀行供款：${formatCurrency(currentExpenseBreakdown.bankContributions || 0)}\n儲蓄計劃供款：${formatCurrency(currentExpenseBreakdown.savingPlanContributions || 0)}\n年金供款：${formatCurrency(currentExpenseBreakdown.annuityContributions || 0)}\n\n總開支：${formatCurrency((currentExpenseBreakdown.manualExpenses || 0) + (currentExpenseBreakdown.rentalExpenses || 0) + (currentExpenseBreakdown.mortgageExpenses || 0) + (currentExpenseBreakdown.bankContributions || 0) + (currentExpenseBreakdown.savingPlanContributions || 0) + (currentExpenseBreakdown.annuityContributions || 0))}`,
+        description: '包括基本生活開支（考慮通脹）和所有產品相關的供款開支'
       },
       netCashFlow: {
         title: '淨現金流計算公式',
-        formula: '總月收入 - 總月開支',
+        formula: `總月收入 - 總月開支\n\n當前${currentAge}歲：\n總月收入：${formatCurrency(calculateTotalIncome(currentAge))}\n總月開支：${formatCurrency(calculateTotalExpenses(currentAge))}\n淨現金流：${formatCurrency(calculateTotalIncome(currentAge) - calculateTotalExpenses(currentAge))}`,
         description: '每月實際可支配的現金，正值表示有盈餘，負值表示需要動用儲蓄'
       },
       totalAssets: {
         title: '總資產計算公式',
-        formula: '當前資產 + 投資增長 + 物業增值',
-        description: '包括現金、投資組合、物業價值等所有資產的總和'
+        formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n銀行存款：本金 + 利息\n物業價值：購買價格 × (1 + 升值率)^持有年數`,
+        description: '包括現金、投資組合、物業價值、儲蓄等所有資產的總和'
       },
       totalLiabilities: {
         title: '總負債計算公式',
-        formula: '剩餘按揭 + 其他債務',
-        description: '包括未償還的按揭貸款、個人貸款等所有債務'
+        formula: `按揭餘額 + 其他債務 + 產品供款義務\n\n當前${currentAge}歲詳細計算：\n按揭餘額：剩餘按揭金額\n固定存款供款：${currentAge === 45 ? '一次性供款' : '無'}\n年金供款：${currentAge >= 45 && currentAge < 65 ? '年度供款' : '無'}`,
+        description: '包括未償還的按揭貸款、產品供款義務等所有債務'
       },
       netWorth: {
         title: '淨資產計算公式',
-        formula: '總資產 - 總負債',
+        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}`,
         description: '實際擁有的財富總額，是財務狀況的重要指標'
       },
       cashReserve: {
         title: '現金儲備計算公式',
-        formula: '總資產 ÷ 月開支 (月數)',
+        formula: `總資產 ÷ 月開支 = 可維持月數\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n月開支：${formatCurrency(calculateTotalExpenses(currentAge))}\n現金儲備：${Math.round(calculateTotalAssets(currentAge) / calculateTotalExpenses(currentAge))}個月`,
         description: '在不增加收入的情況下，現有資產可以維持生活開支的月數'
-      },
-      withdrawalRate: {
-        title: '提取率計算公式',
-        formula: '(年開支 ÷ 總資產) × 100%',
-        description: '每年從資產中提取的百分比，4%是常用的安全提取率'
       }
     };
     
@@ -842,21 +869,24 @@ const FinancialAnalysisPage = ({
   };
 
   const showChartFormulaInfo = (chartType) => {
+    const currentAge = analysisPeriod.start;
+    const currentExpenseBreakdown = window.currentExpenseBreakdown || {};
+    
     const chartFormulas = {
       financialTrend: {
         title: '財務趨勢圖說明',
-        formula: '淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入\n年開支 = 月開支 × 12',
+        formula: `淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入 + 年金收入\n年開支 = 月開支 × 12\n\n當前${currentAge}歲詳細數據：\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}\n被動收入：${formatCurrency(calculatePassiveIncome(currentAge) * 12)}/年\n年開支：${formatCurrency(calculateTotalExpenses(currentAge) * 12)}/年`,
         description: '此圖表顯示隨年齡變化的財務狀況趨勢。淨資產反映總體財富，被動收入顯示無需工作的收入來源，年開支則反映生活成本。通過觀察這些線條的變化，可以評估財務規劃的有效性和退休準備度。'
       },
       assetAllocation: {
         title: '資產配置說明',
-        formula: '物業 = 自住物業 + 投資物業價值\n現金 = 當前資產 + 儲蓄計劃 + 銀行存款 + 退休基金\n投資 = 基金 + 強積金\n其他 = 其他資產',
-        description: '此圖表顯示在選定年齡時的資產分配比例。物業包括自住和投資物業的價值，現金包括流動資產和儲蓄，投資包括基金和強積金，其他則包括其他類型的資產。良好的資產配置有助於分散風險和優化回報。'
+        formula: `物業 = 自住物業 + 投資物業價值\n現金 = 當前資產 + 儲蓄計劃 + 銀行存款\n投資 = 基金 + 強積金\n其他 = 其他資產\n\n當前${currentAge}歲資產配置：\n物業：${formatCurrency(calculateProductValueAtAge({ subType: 'own_living' }, currentAge) + calculateProductValueAtAge({ subType: 'rental' }, currentAge))}\n現金：${formatCurrency(currentAssets + calculateProductValueAtAge({ subType: 'saving_plans' }, currentAge) + calculateProductValueAtAge({ subType: 'bank' }, currentAge))}\n投資：${formatCurrency(calculateProductValueAtAge({ subType: 'funds' }, currentAge) + calculateProductValueAtAge({ subType: 'mpf' }, currentAge))}`,
+        description: '此圖表顯示在選定年齡時的資產分配比例。物業包括自住和投資物業的價值，現金包括流動資產和儲蓄，投資包括基金和強積金。良好的資產配置有助於分散風險和優化回報。'
       },
       incomeSources: {
         title: '收入來源分析說明',
-        formula: '工作收入 = 退休前薪資\n基金收益 = 基金價值 × 4% 提取率\n強積金 = MPF餘額 × 4% 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率\n退休基金 = 退休儲蓄 × 4% 提取率\n租金收入 = 月租金 × 12',
-        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取和租金收入。4%提取率是常用的安全提取比例，確保資金可持續使用。'
+        formula: `工作收入 = 退休前薪資\n基金收益 = 基金價值 × 提取率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '薪資收入' : '已退休'}\n基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds' }, currentAge) * 0.04 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月`,
+        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取、年金收入和租金收入。'
       }
     };
     
@@ -1207,18 +1237,6 @@ const FinancialAnalysisPage = ({
                         </button>
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div className="flex items-center space-x-1">
-                        <span>提取率</span>
-                        <button
-                          onClick={() => showFormulaInfo('withdrawalRate')}
-                          className="text-blue-500 hover:text-blue-700 transition-colors"
-                          title="查看計算公式"
-                        >
-                          ℹ️
-                        </button>
-                      </div>
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -1233,7 +1251,7 @@ const FinancialAnalysisPage = ({
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.netWorth)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.cashReserve.toFixed(1)} 個月</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.withdrawalRate.toFixed(1)}%</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.outlivingProbability}</td>
                     </tr>
                   ))}
                 </tbody>
