@@ -174,7 +174,7 @@ const FinancialPlanningTab = () => {
           lockInPeriod: 12
         };
       case 'annuity':
-        return {
+        const defaultAnnuityData = {
           annuityType: 'deferred', // 延期 or 即期
           contributionMethod: 'deferred', // 供款方式
           annualContribution: 100000, // 每年供款額 (for deferred)
@@ -185,6 +185,11 @@ const FinancialPlanningTab = () => {
           premiumAge: 45, // 投保年齡
           lifeExpectancy: 86 // 預期壽命
         };
+        
+        // Calculate and add monthlyAnnuity
+        defaultAnnuityData.monthlyAnnuity = calculateAnnuityMonthlyPayment(defaultAnnuityData);
+        
+        return defaultAnnuityData;
       case 'own_living':
         return {
           purchasePrice: 5000000,
@@ -210,10 +215,48 @@ const FinancialPlanningTab = () => {
     }
   };
 
+  const calculateAnnuityMonthlyPayment = (data) => {
+    // Hong Kong Annuity Plan calculation
+    let totalPremium;
+    
+    if (data.annuityType === 'deferred') {
+      // 延期年金：每年供款 × 供款年期
+      totalPremium = data.annualContribution * data.contributionPeriod;
+    } else {
+      // 即期年金：一次性供款
+      totalPremium = data.contributionAmount;
+    }
+    
+    const annuityStartAge = data.annuityStartAge;
+    const gender = data.gender || 'male';
+    
+    // Base rates per $1,000,000 premium at age 60 (Hong Kong Annuity Plan rates)
+    const baseRateMale = 5100; // $5,100 per month for male
+    const baseRateFemale = 4700; // $4,700 per month for female
+    
+    // Age adjustment factor (simplified - older age gets higher monthly payout)
+    const ageAdjustment = Math.pow(1.05, annuityStartAge - 60);
+    
+    // Gender factor
+    const genderFactor = gender === 'male' ? baseRateMale : baseRateFemale;
+    
+    // Calculate monthly annuity
+    const monthlyAnnuity = (totalPremium / 1000000) * genderFactor * ageAdjustment;
+    
+    return monthlyAnnuity;
+  };
+
   const updateProduct = (productId, field, value) => {
     setProducts(products.map(product => {
       if (product.id === productId) {
         const updatedData = { ...product.data, [field]: value };
+        
+        // For annuity products, calculate and store monthlyAnnuity
+        if (product.subType === 'annuity') {
+          const monthlyAnnuity = calculateAnnuityMonthlyPayment(updatedData);
+          updatedData.monthlyAnnuity = monthlyAnnuity;
+        }
+        
         const summary = calculateProductSummary(product.subType, updatedData);
         return { ...product, data: updatedData, summary };
       }
