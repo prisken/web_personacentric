@@ -952,17 +952,6 @@ export const LanguageProvider = ({ children }) => {
   const t = (key, params = {}) => {
     let translation = translations[language]?.[key] || translations['en']?.[key] || key;
     
-    // Debug: Log the translation process for totalRentPaid
-    if (key === 'productCard.totalRentPaid') {
-      console.log('Translation debug:', {
-        key,
-        language,
-        translation,
-        zhTranslation: translations['zh-TW']?.[key],
-        enTranslation: translations['en']?.[key]
-      });
-    }
-    
     // Replace parameters
     Object.keys(params).forEach(param => {
       translation = translation.replace(`{${param}}`, params[param]);
