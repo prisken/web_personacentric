@@ -557,17 +557,36 @@ const FinancialAnalysisPage = ({
             break;
           }
           
-          // Property is still owned, but only count as asset after mortgage is paid off
-          const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
-            ? parseInt(data.sellAge) 
-            : data.mortgageCompletionAge;
-          
-          if (age >= effectiveMortgageEndAge) {
-            // Mortgage is paid off (or property sold), property value counts as asset
+          // Property is still owned, count equity as asset
+          if (age >= data.mortgageStartAge) {
             const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
             const yearsSincePurchase = age - data.mortgageStartAge;
             const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
-            assets += currentPropertyValue;
+            
+            // Calculate equity: property value minus remaining mortgage
+            const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+            const mortgageAmount = data.purchasePrice - downPaymentAmount;
+            
+            let remainingMortgage = 0;
+            if (age < data.mortgageCompletionAge) {
+              // Calculate remaining mortgage balance
+              const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+              const interestRate = data.mortgageInterestRate / 100;
+              const monthlyInterestRate = interestRate / 12;
+              const numberOfPayments = mortgageTerm * 12;
+              const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              
+              const paymentsMade = (age - data.mortgageStartAge) * 12;
+              const remainingPayments = numberOfPayments - paymentsMade;
+              
+              if (remainingPayments > 0) {
+                remainingMortgage = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              }
+            }
+            
+            // Equity = Property Value - Remaining Mortgage
+            const equity = Math.max(0, currentPropertyValue - remainingMortgage);
+            assets += equity;
           }
           break;
       }
@@ -605,10 +624,7 @@ const FinancialAnalysisPage = ({
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-          // Add down payment as initial liability at mortgage start age
-          if (year === data.mortgageStartAge) {
-            accumulatedLiabilities += downPaymentAmount;
-          }
+
           
           // Use actual mortgage interest rate and completion age from data
           const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
