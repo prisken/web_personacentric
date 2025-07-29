@@ -230,6 +230,20 @@ const FinancialAnalysisPage = ({
         }
       });
       
+      // Add fixed deposit maturity to flexible funds
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'bank' && data.planType === 'fixed_deposit') {
+          const lockInYears = data.lockInPeriod / 12;
+          const yearsSinceStart = year - data.startAge;
+          if (yearsSinceStart === lockInYears) {
+            // Fixed deposit matures, total amount (with interest) moves to flexible funds
+            const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
+            flexibleFunds += totalAmount;
+          }
+        }
+      });
+      
       // Add saving account values as flexible funds (liquid cash)
       products.forEach(product => {
         const { subType, data } = product;
@@ -567,14 +581,19 @@ const FinancialAnalysisPage = ({
             // They are handled in calculateAccumulatedFlexibleFunds
             break;
           } else {
-            // For fixed deposits: compound interest on locked amount
+            // For fixed deposits: add contribution to assets at start age if already owned
+            if (data.alreadyOwned === 'Y' && age === data.startAge) {
+              assets += data.contribution;
+            }
+            
+            // During lock-in period, show the fixed deposit as an asset
             const lockInYears = data.lockInPeriod / 12;
             const yearsSinceStart = age - data.startAge;
-            if (yearsSinceStart >= lockInYears) {
-              // Calculate compound interest on the contribution
-              const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
-              assets += totalAmount;
+            if (yearsSinceStart >= 0 && yearsSinceStart < lockInYears) {
+              // Show the contribution amount as an asset during lock-in period
+              assets += data.contribution;
             }
+            // After lock-in period, the total amount moves to flexible funds (handled in calculateAccumulatedFlexibleFunds)
           }
           break;
         case 'annuity':
@@ -1205,8 +1224,8 @@ const FinancialAnalysisPage = ({
       },
       totalAssets: {
         title: '總資產計算公式',
-        formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n銀行存款：本金 + 利息\n物業價值：購買價格 × (1 + 升值率)^持有年數`,
-        description: '包括現金、投資組合、物業價值、儲蓄等所有資產的總和'
+        formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積 + 定期存款（鎖定期內）\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n定期存款：鎖定期內顯示供款金額（已擁有）或0（未擁有）\n物業價值：購買價格 × (1 + 升值率)^持有年數\n\n注意：定期存款在鎖定期後轉入年度靈活資金`,
+        description: '包括現金、投資組合、物業價值、儲蓄、定期存款（鎖定期內）等所有資產的總和'
       },
               totalLiabilities: {
           title: '總負債計算公式',
@@ -1220,8 +1239,8 @@ const FinancialAnalysisPage = ({
         },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取 + 儲蓄戶口（目標儲蓄金額，如有足夠剩餘資金）\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取、強積金提取（65歲時全額轉入）和儲蓄戶口（僅在有足夠剩餘資金時儲蓄目標金額）的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取、強積金提取和儲蓄戶口的資金（儲蓄金額取決於剩餘資金）'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取 + 定期存款到期 + 儲蓄戶口（目標儲蓄金額，如有足夠剩餘資金）\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取、強積金提取（65歲時全額轉入）、定期存款到期（本金+利息）和儲蓄戶口（僅在有足夠剩餘資金時儲蓄目標金額）的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取、強積金提取、定期存款到期和儲蓄戶口的資金（儲蓄金額取決於剩餘資金）'
       },
 
     };
