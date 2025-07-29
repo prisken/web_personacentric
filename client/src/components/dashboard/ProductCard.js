@@ -64,8 +64,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'saving_plans':
         return {
           title: t('productCard.surrenderValue'),
-          formula: `總供款 = 供款金額 × 供款年期 × (月供 ? 12 : 1)\n總派息收益 = 退保金額 - 總供款 + 金額提取`,
-          description: '儲蓄計劃在回本期後開始計算派息，總派息收益為退保金額減去總供款加上提取金額。'
+          formula: `總供款 = 供款金額 × 供款年期 × (月供 ? 12 : 1)\n總派息收益 = 退保金額 - 總供款 + 金額提取\n投資年期 = 退保年齡 - 開始年齡\n預期年回報率 = (總派息收益 ÷ 總供款) ÷ 投資年期 × 100`,
+          description: '儲蓄計劃的預期年回報率根據總派息收益、總供款金額和投資年期自動計算得出。'
         };
       case 'bank':
         if (data.planType === 'saving') {
@@ -277,15 +277,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.expectedAnnualReturn')}</label>
-              <input
-                type="number"
-                value={data.expectedAnnualReturn}
-                onChange={(e) => updateProduct(product.id, 'expectedAnnualReturn', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.breakEvenPeriod')}</label>
               <input

@@ -238,11 +238,13 @@ const FinancialPlanningPDFReport = ({
         
       case 'saving_plans':
         const savingYears = data.surrenderAge - data.startAge;
-        const savingValue = data.contribution * 12 * savingYears;
         const yearsFromSavingStart = age - data.startAge;
         if (yearsFromSavingStart <= 0) return 0;
-        if (yearsFromSavingStart >= savingYears) return savingValue;
-        return data.contribution * 12 * yearsFromSavingStart;
+        if (yearsFromSavingStart >= savingYears) return data.surrenderValue;
+        // For intermediate ages, calculate proportional value
+        const totalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
+        const proportion = yearsFromSavingStart / savingYears;
+        return totalContribution * proportion;
         
       case 'bank':
         const bankYears = data.withdrawalAge - data.startAge;

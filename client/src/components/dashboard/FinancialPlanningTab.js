@@ -154,7 +154,6 @@ const FinancialPlanningTab = () => {
           contribution: 0,
           contributionType: 'monthly',
           contributionPeriod: 10,
-          expectedAnnualReturn: 5,
           breakEvenPeriod: 5,
           withdrawalAmount: 0,
           withdrawalPeriod: '65-70',
@@ -238,7 +237,12 @@ const FinancialPlanningTab = () => {
       case 'saving_plans':
         const savingTotalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
         const savingTotalDividendsEarned = data.surrenderValue - savingTotalContribution + data.withdrawalAmount;
-        return `${t('productCard.surrenderValue')}: ${formatCurrency(data.surrenderValue)}\n${t('productCard.totalDividendsEarned')}: ${formatCurrency(savingTotalDividendsEarned)}`;
+        
+        // Calculate expected annual return
+        const investmentPeriod = data.surrenderAge - data.startAge;
+        const expectedAnnualReturn = investmentPeriod > 0 ? (savingTotalDividendsEarned / savingTotalContribution) / investmentPeriod * 100 : 0;
+        
+        return `${t('productCard.surrenderValue')}: ${formatCurrency(data.surrenderValue)}\n${t('productCard.totalDividendsEarned')}: ${formatCurrency(savingTotalDividendsEarned)}\n${t('productCard.expectedAnnualReturn')}: ${expectedAnnualReturn.toFixed(2)}%`;
       case 'bank':
         if (data.planType === 'saving') {
           const totalSavings = data.existingAmount + (data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1));
