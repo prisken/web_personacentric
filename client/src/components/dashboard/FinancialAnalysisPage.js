@@ -546,9 +546,23 @@ const FinancialAnalysisPage = ({
   const calculateAccumulatedLiabilities = (age) => {
     let accumulatedLiabilities = 0;
     
-    // Track liabilities from start age to current age
-    const startAge = analysisPeriod.start;
-    for (let year = startAge; year <= age; year++) {
+    // Find the earliest start age among all products to ensure we capture all liabilities
+    let earliestStartAge = analysisPeriod.start;
+    products.forEach(product => {
+      const { subType, data } = product;
+      if (subType === 'own_living' && data.mortgageStartAge < earliestStartAge) {
+        earliestStartAge = data.mortgageStartAge;
+      }
+      if (subType === 'bank' && data.startAge < earliestStartAge) {
+        earliestStartAge = data.startAge;
+      }
+      if (subType === 'annuity' && data.premiumAge < earliestStartAge) {
+        earliestStartAge = data.premiumAge;
+      }
+    });
+    
+    // Track liabilities from earliest product start age to current age
+    for (let year = earliestStartAge; year <= age; year++) {
       
       products.forEach(product => {
         const { subType, data } = product;
@@ -1045,16 +1059,16 @@ const FinancialAnalysisPage = ({
         formula: `當前資產 + 投資增長 + 物業增值 + 儲蓄累積\n\n當前${currentAge}歲詳細計算：\n當前資產：${formatCurrency(currentAssets)}\n基金價值：基金本金 × (1 + 年回報率)^投資年數\n強積金：MPF累積金額\n儲蓄計劃：${currentAge >= 65 ? '退保金額' : '累積供款'}\n銀行存款：本金 + 利息\n物業價值：購買價格 × (1 + 升值率)^持有年數`,
         description: '包括現金、投資組合、物業價值、儲蓄等所有資產的總和'
       },
-      totalLiabilities: {
-        title: '總負債計算公式',
-        formula: `累積負債總和（從開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n累積負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從開始年齡到當前年齡期間的所有負債累積`,
-        description: '從開始年齡到當前年齡期間累積的所有負債總和'
-      },
-      netWorth: {
-        title: '淨資產計算公式',
-        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為累積負債總和`,
-        description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
-      },
+              totalLiabilities: {
+          title: '總負債計算公式',
+          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n累積負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間的所有負債累積`,
+          description: '從最早產品開始年齡到當前年齡期間累積的所有負債總和'
+        },
+              netWorth: {
+          title: '淨資產計算公式',
+          formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為從最早產品開始年齡累積的負債總和`,
+          description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
+        },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
         formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金提取（65歲時全額轉入）的資金`,
