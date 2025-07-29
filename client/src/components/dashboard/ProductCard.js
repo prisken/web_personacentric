@@ -84,8 +84,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'retirement_funds':
         return {
           title: t('productCard.monthlyReturn'),
-          formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n每月回報 = 總供款 × 年回報率 ÷ 12`,
-          description: '退休基金在完成供款後開始提供每月回報，回報基於總供款金額和年回報率。'
+          formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n退休基金總值 = 總供款 × (1 + 年回報率)^(完成年齡 - 開始年齡)\n每月回報 = 退休基金總值 × 年回報率 ÷ 12`,
+          description: '退休基金使用複式計算，在完成供款後開始提供每月回報，回報基於複利增長的總值和年回報率。'
         };
       case 'own_living':
         return {
