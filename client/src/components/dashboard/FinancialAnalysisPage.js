@@ -157,9 +157,16 @@ const FinancialAnalysisPage = ({
   const calculateTotalIncome = (age) => {
     let income = 0;
     
+    // Find MPF card to get monthly salary
+    const mpfProduct = products.find(product => product.subType === 'mpf');
+    const monthlySalary = mpfProduct ? mpfProduct.data.monthlySalary : 0;
+    
     // Add salary income if not retired
-    if (age < retirementAge) {
-      income += 50000; // Default salary, should be configurable
+    if (age < retirementAge && monthlySalary > 0) {
+      // Apply salary increment from MPF card
+      const yearsSinceStart = age - (mpfProduct ? mpfProduct.data.currentAge : age);
+      const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, Math.max(0, yearsSinceStart));
+      income += salaryWithIncrement;
     }
 
     // Add income from products
@@ -522,6 +529,18 @@ const FinancialAnalysisPage = ({
       rentalIncome: 0
     };
 
+    // Calculate work income from MPF card
+    const mpfProduct = products.find(product => product.subType === 'mpf');
+    if (mpfProduct && age < retirementAge) {
+      const monthlySalary = mpfProduct.data.monthlySalary || 0;
+      if (monthlySalary > 0) {
+        // Apply salary increment from MPF card
+        const yearsSinceStart = age - (mpfProduct.data.currentAge || age);
+        const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct.data.salaryIncrement || 0) / 100, Math.max(0, yearsSinceStart));
+        incomeSources.workIncome = salaryWithIncrement;
+      }
+    }
+
     // Calculate income from each product type
     products.forEach(product => {
       const data = product.data;
@@ -811,8 +830,8 @@ const FinancialAnalysisPage = ({
     const formulas = {
       totalMonthlyIncome: {
         title: '總月收入計算公式',
-        formula: `工作收入 + 投資收益 + 租金收入 + 其他被動收入\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '薪資收入' : '已退休'}\n投資收益：基金提取 + 強積金提取 + 銀行利息\n租金收入：投資物業租金\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
-        description: '包括所有收入來源：工作薪資（退休前）、基金提取、強積金、租金收入、年金收入等'
+        formula: `工作收入 + 投資收益 + 租金收入 + 其他被動收入\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n投資收益：基金提取 + 強積金提取 + 銀行利息\n租金收入：投資物業租金\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}`,
+        description: '包括所有收入來源：工作薪資（來自強積金卡月薪，退休前）、基金提取、強積金、租金收入、年金收入等'
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
@@ -872,8 +891,8 @@ const FinancialAnalysisPage = ({
       },
       incomeSources: {
         title: '收入來源分析說明',
-        formula: `工作收入 = 退休前薪資\n基金收益 = 基金價值 × 提取率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '薪資收入' : '已退休'}\n基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds' }, currentAge) * 0.04 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月`,
-        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取、年金收入和租金收入。'
+        formula: `工作收入 = 強積金卡月薪 × (1 + 年薪增幅)^年數\n基金收益 = 基金價值 × 提取率\n強積金 = MPF餘額 × 提取率\n儲蓄計劃 = 累積儲蓄 ÷ 12\n銀行利息 = 存款餘額 × 利率 ÷ 12\n年金收入 = 年金月收入\n租金收入 = 月租金 × 12\n\n當前${currentAge}歲收入來源：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n基金收益：${formatCurrency(calculateProductValueAtAge({ subType: 'funds' }, currentAge) * 0.04 / 12)}/月\n強積金：${formatCurrency(calculateProductValueAtAge({ subType: 'mpf' }, currentAge) * 0.04 / 12)}/月\n銀行利息：${formatCurrency(calculateProductValueAtAge({ subType: 'bank' }, currentAge) * 0.03 / 12)}/月\n年金收入：${currentAge >= 65 ? '年金月收入' : '尚未開始'}\n租金收入：${formatCurrency(calculateProductValueAtAge({ subType: 'rental' }, currentAge) / 12)}/月`,
+        description: '此圖表顯示在選定年齡時各收入來源的年度金額。工作收入來自強積金卡的月薪（考慮年薪增幅），在退休前提供主要收入，退休後則依賴投資收益、儲蓄提取、年金收入和租金收入。'
       }
     };
     
