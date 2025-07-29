@@ -177,8 +177,32 @@ const FinancialAnalysisPage = ({
     for (let year = startAge; year <= age; year++) {
       const yearIncome = calculateTotalIncome(year);
       const yearExpenses = calculateTotalExpenses(year);
-      const yearNetCashFlow = yearIncome - yearExpenses;
-      flexibleFunds += yearNetCashFlow * 12; // Convert monthly to annual
+      
+      // Calculate monthly recurring expenses (excluding one-time expenses)
+      let monthlyRecurringExpenses = 0;
+      let oneTimeExpenses = 0;
+      
+      // Separate recurring vs one-time expenses
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'bank' && data.planType === 'fixed_deposit' && data.alreadyOwned === 'N' && year === data.startAge) {
+          // Fixed deposit contribution is one-time
+          oneTimeExpenses += data.contribution;
+        } else if (subType === 'annuity' && data.annuityType === 'immediate' && year === data.premiumAge) {
+          // Immediate annuity contribution is one-time
+          oneTimeExpenses += data.contributionAmount;
+        } else {
+          // All other expenses are recurring monthly expenses
+          // This will be handled by the existing yearExpenses calculation
+        }
+      });
+      
+      // Calculate net cash flow: monthly income - monthly recurring expenses
+      const monthlyNetCashFlow = yearIncome - (yearExpenses - oneTimeExpenses);
+      flexibleFunds += monthlyNetCashFlow * 12; // Convert monthly to annual
+      
+      // Add one-time expenses directly (not multiplied by 12)
+      flexibleFunds -= oneTimeExpenses;
       
       // Add dividends from funds as liquid cash (until expected withdrawal age)
       products.forEach(product => {
