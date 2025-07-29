@@ -299,8 +299,15 @@ const FinancialPlanningTab = () => {
         // Calculate monthly payment using mortgage formula
         const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
         
-        const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
-        return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.mortgageCompletionAge')}: ${Math.round(data.mortgageCompletionAge)}歲`;
+        // Calculate total amount paid over the mortgage term
+        const totalAmountPaid = monthlyPayment * numberOfPayments;
+        const totalInterestPaid = totalAmountPaid - mortgageAmount;
+        
+        // Calculate property value at completion age (assuming 3% annual appreciation)
+        const propertyAppreciationYears = data.mortgageCompletionAge - data.mortgageStartAge;
+        const propertyValueAtCompletion = data.purchasePrice * Math.pow(1.03, propertyAppreciationYears);
+        
+        return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.totalInterestPaid')}: ${formatCurrency(totalInterestPaid)}\n${t('productCard.propertyValueAtCompletion')}: ${formatCurrency(propertyValueAtCompletion)}`;
       case 'rental':
         const rentalYears = data.expectedEndAge - data.leaseStartAge;
         // Calculate total rent with annual increase

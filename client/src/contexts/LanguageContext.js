@@ -937,6 +937,16 @@ export const LanguageProvider = ({ children }) => {
       'productCard.mortgageCompletionAge': '供完樓年齡',
       'productCard.mortgageCompletionAgePlaceholder': '例如: 60',
       'productCard.mortgageStartAge': 'Mortgage Start Age',
+      'productCard.mortgageCompletionAge': '供完樓年齡',
+      'productCard.mortgageCompletionAgePlaceholder': '例如: 60',
+      'productCard.totalInterestPaid': '總利息支出',
+      'productCard.propertyValueAtCompletion': '供完樓時物業價值',
+      'productCard.mortgageStartAge': '開始供樓年紀',
+      'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
+      'productCard.mortgageCompletionAgePlaceholder': 'e.g., 60',
+      'productCard.totalInterestPaid': 'Total Interest Paid',
+      'productCard.propertyValueAtCompletion': 'Property Value at Completion',
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
     },
     'en': {
       // Navigation
@@ -1791,6 +1801,9 @@ export const LanguageProvider = ({ children }) => {
       'productCard.mortgageInterestRatePlaceholder': 'e.g., 3.5',
       'productCard.mortgageCompletionAge': 'Mortgage Completion Age',
       'productCard.mortgageCompletionAgePlaceholder': 'e.g., 60',
+      'productCard.mortgageStartAge': 'Mortgage Start Age',
+      'productCard.totalInterestPaid': 'Total Interest Paid',
+      'productCard.propertyValueAtCompletion': 'Property Value at Completion',
       'productCard.mortgageStartAge': 'Mortgage Start Age',
     }
   };

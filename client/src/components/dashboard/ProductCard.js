@@ -89,6 +89,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         };
       case 'own_living':
         const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+        const propertyAppreciationYears = data.mortgageCompletionAge - data.mortgageStartAge;
         
         // Check if completion age is valid
         if (data.mortgageCompletionAge <= data.mortgageStartAge) {
@@ -101,8 +102,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         
         return {
           title: t('productCard.mortgageCompletionAge'),
-          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n供完樓年齡 = 開始供樓年紀 + ${mortgageTerm}年 = ${data.mortgageCompletionAge}歲\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
-          description: '自住物業按揭計算基於用戶指定的供款年期和按揭利率，首期付款以百分比計算，每月供款根據實際按揭利率和年期自動計算。'
+          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n總供款金額 = 每月供款 × ${mortgageTerm * 12}期\n總利息支出 = 總供款金額 - 按揭金額\n\n供完樓時物業價值 = 購買價格 × (1.03)^${propertyAppreciationYears}年（假設3%年增長）`,
+          description: '自住物業按揭計算顯示每月供款、總利息支出和供完樓時的物業價值，幫助了解完整的財務影響。'
         };
       case 'renting':
         return {
