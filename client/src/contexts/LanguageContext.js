@@ -236,7 +236,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.contributionPeriod': '供款年期',
 
       // Product Card Fields - Bank
-      'productCard.saving': '儲蓄',
+      'productCard.saving': '儲蓄 (靈活資金)',
       'productCard.fixedDeposit': '定期存款',
       'productCard.existingAmount': '現存金額',
       'productCard.contributionFrequency': '供款頻率',
@@ -702,7 +702,7 @@ export const LanguageProvider = ({ children }) => {
       'productCard.contributionPeriod': 'Contribution Period',
 
       // Product Card Fields - Bank
-      'productCard.saving': 'Saving',
+      'productCard.saving': 'Saving (Flexible Funds)',
       'productCard.fixedDeposit': 'Fixed Deposit',
       'productCard.existingAmount': 'Existing Amount',
       'productCard.contributionFrequency': 'Contribution Frequency',

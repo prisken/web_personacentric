@@ -229,6 +229,37 @@ const FinancialAnalysisPage = ({
           flexibleFunds += saleProceeds;
         }
       });
+      
+      // Add saving account values as flexible funds (liquid cash)
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'bank' && data.planType === 'saving' && year >= data.startAge) {
+          const yearsSinceStart = year - data.startAge;
+          if (yearsSinceStart >= 0) {
+            // Calculate total contributions over the period
+            const totalContributions = data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1);
+            
+            // Calculate compound interest on existing amount
+            const existingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+            
+            // Calculate compound interest on contributions (simplified - assume contributions are made at the start)
+            const contributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
+            
+            // Add to flexible funds (only add the growth for this year to avoid double counting)
+            if (yearsSinceStart === 0) {
+              flexibleFunds += existingAmountWithInterest + contributionsWithInterest;
+            } else {
+              // For subsequent years, add only the interest earned this year
+              const previousYear = year - 1;
+              const previousYearsSinceStart = previousYear - data.startAge;
+              const previousExistingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, previousYearsSinceStart);
+              const previousContributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, previousYearsSinceStart);
+              const interestEarnedThisYear = (existingAmountWithInterest + contributionsWithInterest) - (previousExistingAmountWithInterest + previousContributionsWithInterest);
+              flexibleFunds += interestEarnedThisYear;
+            }
+          }
+        }
+      });
     }
     
     return Math.max(0, flexibleFunds); // Ensure non-negative
@@ -507,20 +538,9 @@ const FinancialAnalysisPage = ({
           break;
         case 'bank':
           if (data.planType === 'saving') {
-            // For saving accounts: compound interest on existing amount + contributions
-            const yearsSinceStart = age - data.startAge;
-            if (yearsSinceStart > 0) {
-              // Calculate total contributions over the period
-              const totalContributions = data.contribution * data.contributionPeriod * (data.contributionFrequency === 'monthly' ? 12 : 1);
-              
-              // Calculate compound interest on existing amount
-              const existingAmountWithInterest = data.existingAmount * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
-              
-              // Calculate compound interest on contributions (simplified - assume contributions are made at the start)
-              const contributionsWithInterest = totalContributions * Math.pow(1 + data.interestRate / 100, yearsSinceStart);
-              
-              assets += existingAmountWithInterest + contributionsWithInterest;
-            }
+            // Saving accounts are treated as flexible funds (liquid cash), not as assets
+            // They are handled in calculateAccumulatedFlexibleFunds
+            break;
           } else {
             // For fixed deposits: compound interest on locked amount
             const lockInYears = data.lockInPeriod / 12;
@@ -1175,8 +1195,8 @@ const FinancialAnalysisPage = ({
         },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金提取（65歲時全額轉入）的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金提取的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取 + 儲蓄戶口利息\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取、強積金提取（65歲時全額轉入）和儲蓄戶口（靈活資金）的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取、強積金提取和儲蓄戶口的資金'
       },
 
     };
