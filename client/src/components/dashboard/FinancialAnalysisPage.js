@@ -154,15 +154,13 @@ const FinancialAnalysisPage = ({
         }
       });
       
-      // Add progressive MPF withdrawal starting from age 65
+      // Add MPF withdrawal at age 65 (entire amount moves to liquid cash)
       products.forEach(product => {
         const { subType, data } = product;
-        if (subType === 'mpf' && year >= 65) {
+        if (subType === 'mpf' && year === 65) {
           const mpfResult = calculateMPF(data);
-          // Progressive withdrawal: assume 20-year withdrawal period (65-85)
-          const withdrawalPeriod = 20; // years
-          const annualMPFWithdrawal = mpfResult.totalMPF / withdrawalPeriod;
-          flexibleFunds += annualMPFWithdrawal;
+          // Entire MPF value moves to liquid cash at age 65
+          flexibleFunds += mpfResult.totalMPF;
         }
       });
     }
@@ -414,14 +412,20 @@ const FinancialAnalysisPage = ({
           }
           // After expected withdrawal age, fund value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
           break;
-        case 'mpf':
-          // Only include MPF value if before age 65
-          if (age < 65) {
-            const mpfResult = calculateMPF(data);
-            assets += mpfResult.totalMPF;
-          }
-          // After age 65, MPF value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
-          break;
+                     case 'mpf':
+               // Only include MPF value if before age 65
+               if (age < 65) {
+                 const mpfResult = calculateMPF(data);
+                 // Progressive MPF growth: calculate MPF value at current age, not final value
+                 const yearsFromCurrentAge = age - data.currentAge;
+                 if (yearsFromCurrentAge > 0) {
+                   // Calculate MPF value at current age (progressive growth)
+                   const currentMPFValue = mpfResult.totalMPF * (yearsFromCurrentAge / (65 - data.currentAge));
+                   assets += currentMPFValue;
+                 }
+               }
+               // After age 65, MPF value is moved to liquid cash (handled in calculateAccumulatedFlexibleFunds)
+               break;
         case 'saving_plans':
           if (age >= data.surrenderAge) {
             const totalContribution = data.contribution * data.contributionPeriod * (data.contributionType === 'monthly' ? 12 : 1);
@@ -936,8 +940,8 @@ const FinancialAnalysisPage = ({
       },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
-        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金漸進提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金漸進提取（65歲起分20年提取）的資金`,
-        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金漸進提取的資金'
+        formula: `當前資產 + 累積淨現金流 + 基金派息 + 基金提取 + 強積金提取\n\n當前${currentAge}歲：\n當前資產：${formatCurrency(currentAssets)}\n累積淨現金流：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge) - currentAssets)}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：此金額代表可靈活使用的現金，包括基金派息、基金提取和強積金提取（65歲時全額轉入）的資金`,
+        description: '可靈活使用的現金總額，包括當前資產、累積的淨現金流、基金派息、基金提取和強積金提取的資金'
       },
 
     };
