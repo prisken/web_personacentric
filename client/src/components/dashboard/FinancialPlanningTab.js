@@ -61,24 +61,53 @@ const FinancialPlanningTab = () => {
   // Helper function to calculate MPF with proper compound interest
   const calculateMPF = (data) => {
     const mpfYears = 65 - data.currentAge;
-    const monthlyContribution = data.monthlySalary * (data.employerContribution + data.employeeContribution) / 100;
     
     // Compound the current MPF amount for the full period
     const currentMPFCompounded = data.currentMPFAmount * Math.pow(1 + data.expectedReturn / 100, mpfYears);
     
-    // Calculate future contributions with proper compound interest
+    // Calculate future contributions with proper compound interest and salary increments
     // Each monthly contribution compounds for different periods
     let futureContributionsCompounded = 0;
+    let totalContributions = 0;
+    
     for (let year = 0; year < mpfYears; year++) {
+      // Calculate salary for this year with increment
+      const currentYearSalary = data.monthlySalary * Math.pow(1 + data.salaryIncrement / 100, year);
+      
       for (let month = 0; month < 12; month++) {
         const monthsRemaining = (mpfYears - year) * 12 - month;
+        
+        // Calculate MPF contribution for this month based on salary
+        let monthlyContribution = 0;
+        
+        if (currentYearSalary >= 7100) {
+          // Calculate employer contribution
+          let employerContribution = 0;
+          if (currentYearSalary >= 30000) {
+            employerContribution = 1500; // Cap at 1,500
+          } else {
+            employerContribution = currentYearSalary * (data.employerContribution / 100);
+          }
+          
+          // Calculate employee contribution
+          let employeeContribution = 0;
+          if (currentYearSalary >= 30000) {
+            employeeContribution = 1500; // Cap at 1,500
+          } else {
+            employeeContribution = currentYearSalary * (data.employeeContribution / 100);
+          }
+          
+          monthlyContribution = employerContribution + employeeContribution;
+        }
+        
         const contributionCompounded = monthlyContribution * Math.pow(1 + data.expectedReturn / 100, monthsRemaining / 12);
         futureContributionsCompounded += contributionCompounded;
+        totalContributions += monthlyContribution;
       }
     }
     
     const totalMPF = currentMPFCompounded + futureContributionsCompounded;
-    const mpfWithoutDividends = data.currentMPFAmount + (monthlyContribution * 12 * mpfYears);
+    const mpfWithoutDividends = data.currentMPFAmount + totalContributions;
     const mpfTotalDividendsEarned = totalMPF - mpfWithoutDividends;
     
     return {
