@@ -237,34 +237,14 @@ const FinancialAnalysisPage = ({
           const lockInYears = data.lockInPeriod / 12;
           const yearsSinceStart = year - data.startAge;
           
-          // Debug logging for fixed deposits
-          if (year === 31) {
-            console.log('Fixed Deposit Debug:', {
-              subType,
-              planType: data.planType,
-              startAge: data.startAge,
-              lockInPeriod: data.lockInPeriod,
-              lockInYears,
-              yearsSinceStart,
-              contribution: data.contribution,
-              interestRate: data.interestRate,
-              alreadyOwned: data.alreadyOwned
-            });
-          }
+
           
           if (Math.abs(yearsSinceStart - lockInYears) < 0.01) {
             // Fixed deposit matures, total amount (with interest) moves to flexible funds
             const totalAmount = data.contribution * Math.pow(1 + data.interestRate / 100, lockInYears);
             flexibleFunds += totalAmount;
             
-            // Debug logging for maturity
-            if (year === 31) {
-              console.log('Fixed Deposit Maturity:', {
-                year,
-                totalAmount,
-                flexibleFunds
-              });
-            }
+
           }
         }
       });
@@ -328,7 +308,7 @@ const FinancialAnalysisPage = ({
       });
     }
     
-    return Math.max(0, flexibleFunds); // Ensure non-negative
+    return flexibleFunds; // Return actual calculated value
   };
 
   const calculateFinancialProjection = () => {
