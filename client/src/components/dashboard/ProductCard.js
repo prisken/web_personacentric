@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 
 const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }) => {
@@ -45,14 +45,14 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         if (data.fundCategory === 'growth') {
           return {
             title: t('productCard.totalReturn'),
-            formula: `總回報 = 投資金額 × (1 + 年回報率)^(提取年齡 - 開始年齡)`,
-            description: '增長基金使用複式計算，總回報包含本金和收益，收益會再投資產生複利效果。'
+            formula: `投資年期 = 提取年齡 - 開始年齡\n總回報 = 投資金額 × (1 + 年回報率)^投資年期\n\n增長基金特點：\n- 使用複式計算\n- 收益會再投資\n- 產生複利效果\n- 總回報包含本金和收益`,
+            description: '增長基金將收益再投資，產生複利效果，適合長期投資和資本增值。'
           };
         } else {
           return {
             title: t('productCard.monthlyDividends'),
-            formula: `每月派息 = 投資金額 × 年回報率 ÷ 12\n總派息 = 每月派息 × 12 × (提取年齡 - 開始年齡)`,
-            description: '派息基金使用單利計算，每月派發固定金額，不產生複利效果。'
+            formula: `投資年期 = 提取年齡 - 開始年齡\n每月派息 = 投資金額 × 年回報率 ÷ 12\n總派息 = 每月派息 × 12 × 投資年期\n\n派息基金特點：\n- 使用單利計算\n- 每月派發固定金額\n- 不產生複利效果\n- 本金保持不變`,
+            description: '派息基金每月派發固定收益，適合需要穩定現金流的投資者。'
           };
         }
       case 'mpf':
@@ -109,6 +109,14 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
     setInfoContent(explanation);
     setShowInfoDialog(true);
   };
+
+  // Update info dialog content when fund category changes
+  useEffect(() => {
+    if (showInfoDialog && product.subType === 'funds') {
+      const explanation = getFormulaExplanation(product.subType, product.data);
+      setInfoContent(explanation);
+    }
+  }, [product.data.fundCategory, showInfoDialog, product.subType]);
 
   const renderFormFields = () => {
     const { subType, data } = product;
