@@ -213,23 +213,28 @@ const FinancialAnalysisPage = ({
     const mpfProduct = products.find(product => product.subType === 'mpf');
     const monthlySalary = mpfProduct ? mpfProduct.data.monthlySalary : 0;
     
-    // Add salary income if not retired and age 65 or below
-    if (age < retirementAge && age <= 65 && monthlySalary > 0) {
+    // Add salary income if not retired (continue until specified retirement age)
+    if (age < retirementAge && monthlySalary > 0) {
       // Apply salary increment from MPF card
       const yearsSinceStart = age - (mpfProduct ? mpfProduct.data.currentAge : age);
       const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, Math.max(0, yearsSinceStart));
       
       // Deduct employee contribution percentage (only for age 65 and below)
-      const employeeContributionRate = mpfProduct ? mpfProduct.data.employeeContribution : 0;
-      const employeeContribution = salaryWithIncrement * (employeeContributionRate / 100);
-      
-      // Apply MPF contribution caps
-      let finalEmployeeContribution = employeeContribution;
-      if (salaryWithIncrement >= 30000) {
-        finalEmployeeContribution = 1500; // Cap at 1,500 HKD
-      } else if (salaryWithIncrement < 7100) {
-        finalEmployeeContribution = 0; // No contribution if below 7,100 HKD
+      let finalEmployeeContribution = 0;
+      if (age <= 65) {
+        const employeeContributionRate = mpfProduct ? mpfProduct.data.employeeContribution : 0;
+        const employeeContribution = salaryWithIncrement * (employeeContributionRate / 100);
+        
+        // Apply MPF contribution caps
+        if (salaryWithIncrement >= 30000) {
+          finalEmployeeContribution = 1500; // Cap at 1,500 HKD
+        } else if (salaryWithIncrement < 7100) {
+          finalEmployeeContribution = 0; // No contribution if below 7,100 HKD
+        } else {
+          finalEmployeeContribution = employeeContribution;
+        }
       }
+      // After age 65, no MPF contribution deduction (even if still working)
       
       income += salaryWithIncrement - finalEmployeeContribution;
     }
@@ -893,8 +898,8 @@ const FinancialAnalysisPage = ({
     const formulas = {
       totalMonthlyIncome: {
         title: '總月收入計算公式',
-        formula: `(月薪 × (1 + 年薪增幅)^年數) - 僱員供款（僅適用於65歲及以下）\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge && currentAge <= 65 ? '強積金卡月薪（考慮年薪增幅）' : '已退休或超過65歲'}\n僱員供款：${currentAge < retirementAge && currentAge <= 65 ? '月薪 × 僱員供款百分比（考慮供款上限）' : '無'}\n\n注意：僱員供款扣除僅適用於65歲及以下，並應用強積金供款上限（月薪≥30,000時上限1,500，月薪<7,100時無供款）`,
-        description: '工作收入，僅在65歲及以下時扣除僱員供款百分比，僅包括來自強積金卡片的月薪'
+        formula: `(月薪 × (1 + 年薪增幅)^年數) - 僱員供款（僅適用於65歲及以下）\n\n當前${currentAge}歲詳細計算：\n工作收入：${currentAge < retirementAge ? '強積金卡月薪（考慮年薪增幅）' : '已退休'}\n僱員供款：${currentAge < retirementAge && currentAge <= 65 ? '月薪 × 僱員供款百分比（考慮供款上限）' : currentAge > 65 ? '無（65歲後無需供款）' : '無'}\n\n注意：工作收入持續至指定退休年齡，僱員供款扣除僅適用於65歲及以下，並應用強積金供款上限（月薪≥30,000時上限1,500，月薪<7,100時無供款）`,
+        description: '工作收入持續至指定退休年齡，僅在65歲及以下時扣除僱員供款百分比，僅包括來自強積金卡片的月薪'
       },
       monthlyPassiveIncome: {
         title: '月被動收入計算公式',
