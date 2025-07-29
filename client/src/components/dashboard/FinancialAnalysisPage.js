@@ -361,6 +361,9 @@ const FinancialAnalysisPage = ({
   const calculateTotalAssets = (age) => {
     let assets = currentAssets;
     
+    // Add accumulated flexible funds (liquid cash)
+    assets += calculateAccumulatedFlexibleFunds(age) - currentAssets;
+    
     products.forEach(product => {
       const { subType, data } = product;
       
@@ -887,8 +890,8 @@ const FinancialAnalysisPage = ({
       },
       netWorth: {
         title: '淨資產計算公式',
-        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}`,
-        description: '實際擁有的財富總額，是財務狀況的重要指標'
+        formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金）`,
+        description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
       },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
