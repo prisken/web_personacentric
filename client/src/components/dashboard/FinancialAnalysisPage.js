@@ -369,7 +369,7 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'rental':
-          if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
+          if (age >= data.leaseStartAge) {
             const rentalYears = age - data.leaseStartAge;
             const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
             totalExpenses += monthlyRentWithIncrease;
@@ -661,7 +661,7 @@ const FinancialAnalysisPage = ({
             // Calculate rent with annual increase
             const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
             const yearsSinceLeaseStart = year - data.leaseStartAge;
-            const currentRent = data.monthlyRent * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
+            const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
             accumulatedLiabilities += currentRent * 12;
           }
         }
@@ -743,7 +743,7 @@ const FinancialAnalysisPage = ({
           // Calculate rent with annual increase
           const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
           const yearsSinceLeaseStart = age - data.leaseStartAge;
-          const currentRent = data.monthlyRent * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
+          const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
           liabilities += currentRent * 12;
         }
       }
@@ -941,12 +941,7 @@ const FinancialAnalysisPage = ({
           break;
           
         case 'rental':
-          // Rental income starts immediately
-          const rentalYears = age - data.leaseStartAge;
-          if (rentalYears >= 0) {
-            const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
-            incomeSources.rentalIncome += monthlyRentWithIncrease;
-          }
+          // Rental expenses - no income from rental expenses
           break;
           
         case 'owner_to_rent_out':
