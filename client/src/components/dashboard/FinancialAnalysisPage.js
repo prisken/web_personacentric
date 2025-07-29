@@ -557,8 +557,13 @@ const FinancialAnalysisPage = ({
             break;
           }
           
-          // Property is still owned, calculate its value with growth
-          if (age >= data.mortgageStartAge) {
+          // Property is still owned, but only count as asset after mortgage is paid off
+          const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
+            ? parseInt(data.sellAge) 
+            : data.mortgageCompletionAge;
+          
+          if (age >= effectiveMortgageEndAge) {
+            // Mortgage is paid off (or property sold), property value counts as asset
             const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
             const yearsSincePurchase = age - data.mortgageStartAge;
             const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
@@ -599,6 +604,11 @@ const FinancialAnalysisPage = ({
           // Calculate mortgage amount and monthly payment based on down payment percentage
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
+          
+          // Add down payment as initial liability at mortgage start age
+          if (year === data.mortgageStartAge) {
+            accumulatedLiabilities += downPaymentAmount;
+          }
           
           // Use actual mortgage interest rate and completion age from data
           const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
