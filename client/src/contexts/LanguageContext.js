@@ -270,6 +270,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.leaseStartAge': '租約開始年齡',
       'productCard.rentIncreaseRate': '租金增幅 (%)',
       'productCard.rentIncreaseRatePlaceholder': '例如: 3',
+      'productCard.expectedEndAge': '預期結束年齡',
+      'productCard.totalRentPaid': '總租金支出',
 
       // Product Card Fields - Annuity
       'productCard.annuityType': '年金類型',
@@ -556,6 +558,8 @@ export const LanguageProvider = ({ children }) => {
       'productCard.leaseStartAge': 'Lease Start Age',
       'productCard.rentIncreaseRate': 'Rent Increase Rate (%)',
       'productCard.rentIncreaseRatePlaceholder': 'e.g., 3',
+      'productCard.expectedEndAge': 'Expected End Age',
+      'productCard.totalRentPaid': 'Total Rent Paid',
 
       // Product Card Fields - Annuity
       'productCard.annuityType': 'Annuity Type',

@@ -34,7 +34,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       bank: t('financialPlanning.bank'),
       annuity: t('financialPlanning.annuity'),
       own_living: t('financialPlanning.ownLiving'),
-      rental: t('financialPlanning.renting')
+      rental: t('financialPlanning.rental')
     };
     return names[subType] || '未知產品';
   };
