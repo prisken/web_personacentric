@@ -315,10 +315,7 @@ const FinancialAnalysisPage = ({
           // 增長基金：不計入投資收益，收益累積在資產中
           break;
         case 'mpf':
-          if (age >= 65) {
-            const mpfResult = calculateMPF(data);
-            passiveIncome += mpfResult.totalMPF / 240;
-          }
+          // MPF does not provide passive income - it moves to liquid cash at age 65
           break;
         case 'owner':
           if (age >= data.ownershipStartAge && age <= data.ownershipEndAge && data.status === 'renting') {
