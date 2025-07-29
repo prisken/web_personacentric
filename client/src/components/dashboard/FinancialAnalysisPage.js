@@ -379,14 +379,9 @@ const FinancialAnalysisPage = ({
             }
           }
           break;
-        case 'retirement_funds':
-          const yearsToRetirement = data.targetRetirementAge - new Date(data.startDate).getFullYear();
-          const frequencyMultiplier = data.frequency === 'monthly' ? 12 : data.frequency === 'quarterly' ? 4 : 1;
-          const totalRetirementFunds = data.contributionAmount * frequencyMultiplier * yearsToRetirement;
-          if (age >= data.targetRetirementAge) {
-            assets += totalRetirementFunds;
-          }
-          break;
+        case 'annuity':
+          // Annuities are income products, not assets
+          return 0;
         case 'own_living':
           // Calculate mortgage amount and monthly payment based on down payment percentage
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
@@ -406,14 +401,6 @@ const FinancialAnalysisPage = ({
             assets += data.purchasePrice * Math.pow(1.03, age - data.mortgageStartAge); // 3% property appreciation
           }
           break;
-        case 'owner':
-          if (age >= data.ownershipStartAge && age <= data.ownershipEndAge) {
-            assets += data.currentValue * Math.pow(1.03, age - data.ownershipStartAge);
-          }
-          break;
-        case 'annuity':
-          // Annuities are income products, not assets
-          return 0;
       }
     });
 

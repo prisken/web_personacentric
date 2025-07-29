@@ -149,7 +149,7 @@ const FinancialPlanningPDFReport = ({
           break;
         case 'saving_plans':
         case 'bank':
-        case 'retirement_funds':
+        case 'annuity':
           allocation.cash += productValue;
           break;
         case 'own_living':
@@ -275,7 +275,7 @@ const FinancialPlanningPDFReport = ({
           return 0;
         }
         
-      case 'retirement_funds':
+      case 'annuity':
         // Hong Kong Annuity Plan - no asset value, only income
         // The premium is converted to guaranteed monthly income
         return 0;
@@ -556,7 +556,7 @@ const getProductDetails = (product, t) => {
       return `${t('financialPlanning.contribution')}: ${new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'HKD' }).format(data.contribution)}/${t('financialPlanning.monthly')}`;
     case 'bank':
       return `${t('financialPlanning.contribution')}: ${new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'HKD' }).format(data.contribution)}/${t('financialPlanning.monthly')}, ${t('financialPlanning.interestRate')}: ${data.interestRate}%`;
-    case 'retirement_funds':
+    case 'annuity':
       return `${t('financialPlanning.contribution')}: ${new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'HKD' }).format(data.contributionAmount)}/${t('financialPlanning.monthly')}`;
     case 'own_living':
       return `${t('financialPlanning.purchasePrice')}: ${new Intl.NumberFormat('zh-TW', { style: 'currency', currency: 'HKD' }).format(data.purchasePrice)}`;

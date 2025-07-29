@@ -19,11 +19,11 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       mpf: '🏦',
       saving_plans: '💰',
       bank: '🏛️',
-      retirement_funds: '🎯',
+      annuity: '🎯',
       own_living: '🏠',
-      renting: '🏢'
+      rental: '🏢'
     };
-    return icons[subType] || '💰';
+    return icons[subType] || '📋';
   };
 
   const getProductName = (subType) => {
@@ -32,11 +32,11 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       mpf: t('financialPlanning.mpf'),
       saving_plans: t('financialPlanning.savingPlans'),
       bank: t('financialPlanning.bank'),
-      retirement_funds: t('financialPlanning.retirementFunds'),
+      annuity: t('financialPlanning.annuity'),
       own_living: t('financialPlanning.ownLiving'),
-      renting: t('financialPlanning.renting')
+      rental: t('financialPlanning.renting')
     };
-    return names[subType] || t('financialPlanning.product');
+    return names[subType] || '未知產品';
   };
 
   const getFormulaExplanation = (subType, data) => {
@@ -81,7 +81,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
             description: '定期存款使用複式計算，根據鎖定時間和年利率計算到期總金額。'
           };
         }
-      case 'retirement_funds':
+      case 'annuity':
         return {
           title: t('productCard.monthlyReturn'),
           formula: `香港年金計劃計算公式：\n\n基礎月年金率（60歲）：\n- 男性：$5,100/月（每$1,000,000投保）\n- 女性：$4,700/月（每$1,000,000投保）\n\n年齡調整：\n月年金 = (投保金額 ÷ 1,000,000) × 基礎月年金率 × (1.05)^(年金開始年齡 - 60)\n\n總年金收入：\n總收入 = 月年金 × 12 × (預期壽命 - 年金開始年齡)\n\n內部回報率：\nIRR = (總收入 ÷ 投保金額)^(1/年金年期) - 1`,
@@ -131,7 +131,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
 
   // Update info dialog content when fund category or retirement fund frequency changes
   useEffect(() => {
-    if (showInfoDialog && (product.subType === 'funds' || product.subType === 'retirement_funds')) {
+    if (showInfoDialog && (product.subType === 'funds' || product.subType === 'annuity')) {
       const explanation = getFormulaExplanation(product.subType, product.data);
       setInfoContent(explanation);
     }
@@ -483,7 +483,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           </div>
         );
 
-      case 'retirement_funds':
+      case 'annuity':
         return (
           <div className="space-y-3">
             <div>

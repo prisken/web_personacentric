@@ -45,7 +45,7 @@ const CreateProductModal = ({ productTypes, onClose, onAddProduct }) => {
                       <h3 className="text-lg font-semibold text-gray-900 mb-2">{category.name}</h3>
                       <p className="text-sm text-gray-500">
                         {category.id === 'investment' && '基金、強積金等投資產品'}
-                        {category.id === 'saving' && '儲蓄計劃、銀行、退休基金'}
+                        {category.id === 'saving' && '儲蓄計劃、銀行、年金'}
                         {category.id === 'real_estate' && '自住、租賃、出租物業'}
                       </p>
                     </div>

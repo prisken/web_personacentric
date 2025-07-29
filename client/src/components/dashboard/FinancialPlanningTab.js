@@ -42,15 +42,12 @@ const FinancialPlanningTab = () => {
     ],
     saving: [
       { id: 'saving_plans', name: t('financialPlanning.savingPlans'), icon: '💰' },
-      { id: 'bank', name: t('financialPlanning.bank'), icon: '🏛️' },
-      { id: 'retirement_funds', name: t('financialPlanning.retirementFunds'), icon: '🎯' }
+      { id: 'bank', name: t('financialPlanning.bank'), icon: '🏦' },
+      { id: 'annuity', name: t('financialPlanning.annuity'), icon: '🎯' }
     ],
     real_estate: [
       { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
       { id: 'rental', name: t('financialPlanning.renting'), icon: '🏢' }
-    ],
-    retirement: [
-      { id: 'annuity', name: t('financialPlanning.annuity'), icon: '💰' }
     ]
   };
 
