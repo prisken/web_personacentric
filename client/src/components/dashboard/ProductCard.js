@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 
 const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }) => {
   const { t } = useTranslation();
+  const [showInfoDialog, setShowInfoDialog] = useState(false);
+  const [infoContent, setInfoContent] = useState({ title: '', formula: '', description: '' });
   
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -35,6 +37,77 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       renting: t('financialPlanning.renting')
     };
     return names[subType] || t('financialPlanning.product');
+  };
+
+  const getFormulaExplanation = (subType, data) => {
+    switch (subType) {
+      case 'funds':
+        if (data.fundCategory === 'growth') {
+          return {
+            title: t('productCard.totalReturn'),
+            formula: `總回報 = 投資金額 × (1 + 年回報率)^(提取年齡 - 開始年齡)`,
+            description: '增長基金使用複式計算，總回報包含本金和收益，收益會再投資產生複利效果。'
+          };
+        } else {
+          return {
+            title: t('productCard.monthlyDividends'),
+            formula: `每月派息 = 投資金額 × 年回報率 ÷ 12\n總派息 = 每月派息 × 12 × (提取年齡 - 開始年齡)`,
+            description: '派息基金使用單利計算，每月派發固定金額，不產生複利效果。'
+          };
+        }
+      case 'mpf':
+        return {
+          title: t('productCard.mpfAt65'),
+          formula: `強積金總額 = 現有金額 + (月供款 × 12 × (1 + 年回報率)^(65 - 當前年齡))\n總派息收益 = 強積金總額 - (現有金額 + 月供款 × 12 × (65 - 當前年齡))`,
+          description: '強積金計算包含現有金額和未來供款，使用複式計算得出總額，派息收益為複利與單利的差額。'
+        };
+      case 'saving_plans':
+        return {
+          title: t('productCard.surrenderValue'),
+          formula: `總供款 = 供款金額 × 供款年期 × (月供 ? 12 : 1)\n總派息收益 = 退保金額 - 總供款 + 金額提取`,
+          description: '儲蓄計劃在回本期後開始計算派息，總派息收益為退保金額減去總供款加上提取金額。'
+        };
+      case 'bank':
+        if (data.planType === 'saving') {
+          return {
+            title: t('productCard.totalSavings'),
+            formula: `總儲蓄 = 現存金額 + (供款金額 × 供款年期 × (月供 ? 12 : 1))\n利息 = 總儲蓄 × 年利率 × 供款年期\n總金額 = 總儲蓄 + 利息`,
+            description: '儲蓄戶口計算包含現存金額和定期供款，加上按年利率計算的利息收入。'
+          };
+        } else {
+          return {
+            title: t('productCard.totalAmount'),
+            formula: `總金額 = 供款金額 × (1 + 年利率)^(鎖定時間 ÷ 12)`,
+            description: '定期存款使用複式計算，根據鎖定時間和年利率計算到期總金額。'
+          };
+        }
+      case 'retirement_funds':
+        return {
+          title: t('productCard.monthlyReturn'),
+          formula: `總供款 = 供款金額 × 頻率倍數 × (完成年齡 - 開始年齡)\n每月回報 = 總供款 × 年回報率 ÷ 12`,
+          description: '退休基金在完成供款後開始提供每月回報，回報基於總供款金額和年回報率。'
+        };
+      case 'own_living':
+        return {
+          title: t('productCard.mortgageCompletionAge'),
+          formula: `供樓年期 = 按揭金額 ÷ (月供 × 12)\n供完樓年齡 = 開始供樓年紀 + 供樓年期\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
+          description: '自住物業計算供樓年期和完成年齡，樓價總值假設每年3%增長率。'
+        };
+      case 'renting':
+        return {
+          title: t('productCard.totalRentPaid'),
+          formula: `總租金支出 = 每月租金 × 12 × (結束年齡 - 開始年齡)`,
+          description: '租賃支出為每月租金乘以租賃期間的總月數。'
+        };
+      default:
+        return { title: '', formula: '', description: '' };
+    }
+  };
+
+  const handleInfoClick = (subType, data) => {
+    const explanation = getFormulaExplanation(subType, data);
+    setInfoContent(explanation);
+    setShowInfoDialog(true);
   };
 
   const renderFormFields = () => {
@@ -633,9 +706,47 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       {/* Summary */}
       {product.summary && (
         <div className="bg-gray-50 px-6 py-4 border-t border-gray-200">
-          <div className="flex items-center space-x-2">
-            <span className="text-blue-600">📊</span>
-            <p className="text-sm font-medium text-gray-700">{product.summary}</p>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-blue-600">📊</span>
+              <p className="text-sm font-medium text-gray-700">{product.summary}</p>
+            </div>
+            <button
+              onClick={() => handleInfoClick(product.subType, product.data)}
+              className="text-blue-600 hover:text-blue-800 transition-colors"
+              title={t('productCard.viewFormula')}
+            >
+              ℹ️
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Info Dialog */}
+      {showInfoDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4">
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">{infoContent.title}</h3>
+              <button
+                onClick={() => setShowInfoDialog(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="mb-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t('productCard.calculationFormula')}：</h4>
+                <pre className="text-sm text-gray-600 bg-gray-50 p-3 rounded border whitespace-pre-line font-mono">
+                  {infoContent.formula}
+                </pre>
+              </div>
+              <div>
+                <h4 className="text-sm font-medium text-gray-700 mb-2">{t('productCard.explanation')}：</h4>
+                <p className="text-sm text-gray-600">{infoContent.description}</p>
+              </div>
+            </div>
           </div>
         </div>
       )}

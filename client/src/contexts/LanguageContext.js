@@ -886,6 +886,11 @@ export const LanguageProvider = ({ children }) => {
       
       // New Renting Fields
       'productCard.monthlyRentExpense': '每月租金開支',
+      
+      // Info Dialog
+      'productCard.viewFormula': '查看計算公式',
+      'productCard.calculationFormula': '計算公式',
+      'productCard.explanation': '說明',
     },
     'en': {
       // Navigation
@@ -1569,6 +1574,11 @@ export const LanguageProvider = ({ children }) => {
       
       // New Renting Fields
       'productCard.monthlyRentExpense': 'Monthly Rent Expense',
+      
+      // Info Dialog
+      'productCard.viewFormula': 'View Calculation Formula',
+      'productCard.calculationFormula': 'Calculation Formula',
+      'productCard.explanation': 'Explanation',
 
       // Dashboard
       'dashboard.admin.title': 'Administrator Dashboard',
