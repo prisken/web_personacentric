@@ -638,6 +638,20 @@ const FinancialAnalysisPage = ({
       });
     }
 
+    // Subtract property sale proceeds from accumulated liabilities
+    products.forEach(product => {
+      const { subType, data } = product;
+      if (subType === 'own_living' && data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
+        // Calculate property value at sale age with growth
+        const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
+        const yearsSincePurchase = parseInt(data.sellAge) - data.mortgageStartAge;
+        const saleProceeds = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+        
+        // Subtract sale proceeds from accumulated liabilities (but don't go below 0)
+        accumulatedLiabilities = Math.max(0, accumulatedLiabilities - saleProceeds);
+      }
+    });
+
     return accumulatedLiabilities;
   };
 
@@ -1084,12 +1098,12 @@ const FinancialAnalysisPage = ({
       },
               totalLiabilities: {
           title: '總負債計算公式',
-          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間已發生的負債，而非未來剩餘負債`,
-          description: '從最早產品開始年齡到當前年齡期間已發生的負債總和'
+          formula: `累積負債總和（從最早產品開始年齡到當前年齡）- 物業售樓收益\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間已發生的負債，減去物業售樓收益（如適用）`,
+          description: '從最早產品開始年齡到當前年齡期間已發生的負債總和，減去物業售樓收益'
         },
               netWorth: {
           title: '淨資產計算公式',
-          formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為從最早產品開始年齡累積的負債總和`,
+          formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為從最早產品開始年齡累積的負債總和減去物業售樓收益`,
           description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
         },
       accumulatedFlexibleFunds: {
