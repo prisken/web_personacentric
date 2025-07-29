@@ -187,10 +187,8 @@ const FinancialPlanningTab = () => {
         };
       case 'own_living':
         return {
-          purchasePrice: 0,
-          downPayment: 0,
-          mortgageAmount: 0,
-          monthlyPayment: 0,
+          purchasePrice: 5000000,
+          downPayment: 30, // Changed to percentage
           mortgageStartAge: 30,
           sellAge: 'willNotSell',
           currentSituation: 'selfOccupied',
@@ -286,10 +284,24 @@ const FinancialPlanningTab = () => {
         
         return `${t('productCard.monthlyReturn')}: ${formatCurrency(monthlyAnnuity)}\n${t('productCard.totalPayments')}: ${formatCurrency(totalPayments)}\n${t('productCard.internalRateOfReturn')}: ${irr.toFixed(2)}%`;
       case 'own_living':
-        const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
+        // Calculate mortgage amount and monthly payment based on down payment percentage
+        const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+        const mortgageAmount = data.purchasePrice - downPaymentAmount;
+        
+        // Assume 30-year mortgage term and 3% interest rate for calculation
+        const mortgageTerm = 30;
+        const interestRate = 3;
+        const monthlyInterestRate = interestRate / 100 / 12;
+        const numberOfPayments = mortgageTerm * 12;
+        
+        // Calculate monthly payment using mortgage formula
+        const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+        
+        const mortgageYears = mortgageTerm;
         const mortgageCompletionAge = data.mortgageStartAge + mortgageYears;
+        
         const propertyValue = data.sellAge === 'willNotSell' ? 0 : data.purchasePrice * Math.pow(1.03, parseInt(data.sellAge) - data.mortgageStartAge); // 假設3%年增長
-        return `${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲\n${t('productCard.propertyValue')}: ${formatCurrency(propertyValue)}`;
+        return `${t('productCard.monthlyPayment')}: ${formatCurrency(monthlyPayment)}\n${t('productCard.mortgageCompletionAge')}: ${Math.round(mortgageCompletionAge)}歲`;
       case 'rental':
         const rentalYears = data.expectedEndAge - data.leaseStartAge;
         // Calculate total rent with annual increase

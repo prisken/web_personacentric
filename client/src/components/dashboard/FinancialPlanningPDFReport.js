@@ -260,9 +260,10 @@ const FinancialPlanningPDFReport = ({
         return 0;
         
       case 'own_living':
-        const propertyYears = age - data.purchaseAge;
+        // Property value with appreciation
+        const propertyYears = age - data.mortgageStartAge;
         if (propertyYears <= 0) return 0;
-        const propertyAppreciation = 0.03;
+        const propertyAppreciation = 0.03; // 3% annual appreciation
         return data.purchasePrice * Math.pow(1 + propertyAppreciation, propertyYears);
         
       case 'rental':

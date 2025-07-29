@@ -90,8 +90,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
       case 'own_living':
         return {
           title: t('productCard.mortgageCompletionAge'),
-          formula: `供樓年期 = 按揭金額 ÷ (月供 × 12)\n供完樓年齡 = 開始供樓年紀 + 供樓年期\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
-          description: '自住物業計算供樓年期和完成年齡，樓價總值假設每年3%增長率。'
+          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（30年期，3%年利率）：\n月利率 = 3% ÷ 12 = 0.25%\n供款期數 = 30年 × 12 = 360期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^360) ÷ ((1 + 月利率)^360 - 1)\n\n供完樓年齡 = 開始供樓年紀 + 30年\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
+          description: '自住物業按揭計算基於30年期固定利率，首期付款以百分比計算，每月供款自動計算。'
         };
       case 'renting':
         return {
@@ -569,24 +569,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 value={data.downPayment}
                 onChange={(e) => updateProduct(product.id, 'downPayment', parseFloat(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.mortgageAmount')}</label>
-              <input
-                type="number"
-                value={data.mortgageAmount}
-                onChange={(e) => updateProduct(product.id, 'mortgageAmount', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlyPayment')}</label>
-              <input
-                type="number"
-                value={data.monthlyPayment}
-                onChange={(e) => updateProduct(product.id, 'monthlyPayment', parseFloat(e.target.value) || 0)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                placeholder={t('productCard.downPaymentPlaceholder')}
               />
             </div>
             <div>
@@ -611,7 +594,6 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 <option value="75">75</option>
                 <option value="80">80</option>
                 <option value="85">85</option>
-                <option value="90">90</option>
               </select>
             </div>
             <div>
@@ -622,10 +604,10 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               >
                 <option value="selfOccupied">{t('productCard.selfOccupied')}</option>
-                <option value="rented">{t('productCard.rented')}</option>
+                <option value="renting">{t('productCard.renting')}</option>
               </select>
             </div>
-            {data.currentSituation === 'rented' && (
+            {data.currentSituation === 'renting' && (
               <>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">{t('productCard.monthlyRent')}</label>

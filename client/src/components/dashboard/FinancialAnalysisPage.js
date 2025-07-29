@@ -250,6 +250,27 @@ const FinancialAnalysisPage = ({
           totalExpenses += monthlyRentWithIncrease;
         }
       }
+      
+      // Add mortgage payments from own_living products
+      if (product.subType === 'own_living') {
+        const data = product.data;
+        if (age >= data.mortgageStartAge && age < data.mortgageStartAge + 30) {
+          // Calculate mortgage amount and monthly payment
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          const mortgageAmount = data.purchasePrice - downPaymentAmount;
+          
+          // Assume 30-year mortgage term and 3% interest rate
+          const mortgageTerm = 30;
+          const interestRate = 3;
+          const monthlyInterestRate = interestRate / 100 / 12;
+          const numberOfPayments = mortgageTerm * 12;
+          
+          // Calculate monthly payment using mortgage formula
+          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+          
+          totalExpenses += monthlyPayment;
+        }
+      }
     });
 
     return totalExpenses;
@@ -290,10 +311,23 @@ const FinancialAnalysisPage = ({
           }
           break;
         case 'own_living':
-          const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
-          const paidUpAge = data.purchaseAge + mortgageYears;
+          // Calculate mortgage amount and monthly payment based on down payment percentage
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          const mortgageAmount = data.purchasePrice - downPaymentAmount;
+          
+          // Assume 30-year mortgage term and 3% interest rate for calculation
+          const mortgageTerm = 30;
+          const interestRate = 3;
+          const monthlyInterestRate = interestRate / 100 / 12;
+          const numberOfPayments = mortgageTerm * 12;
+          
+          // Calculate monthly payment using mortgage formula
+          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+          
+          const mortgageYears = mortgageTerm;
+          const paidUpAge = data.mortgageStartAge + mortgageYears;
           if (age >= paidUpAge) {
-            assets += data.purchasePrice * Math.pow(1.03, age - data.purchaseAge); // 3% property appreciation
+            assets += data.purchasePrice * Math.pow(1.03, age - data.mortgageStartAge); // 3% property appreciation
           }
           break;
         case 'owner':
@@ -314,11 +348,24 @@ const FinancialAnalysisPage = ({
       const { subType, data } = product;
       
       if (subType === 'own_living') {
-        const mortgageYears = data.mortgageAmount / (data.monthlyPayment * 12);
-        const paidUpAge = data.purchaseAge + mortgageYears;
+        // Calculate mortgage amount and monthly payment based on down payment percentage
+        const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+        const mortgageAmount = data.purchasePrice - downPaymentAmount;
+        
+        // Assume 30-year mortgage term and 3% interest rate for calculation
+        const mortgageTerm = 30;
+        const interestRate = 3;
+        const monthlyInterestRate = interestRate / 100 / 12;
+        const numberOfPayments = mortgageTerm * 12;
+        
+        // Calculate monthly payment using mortgage formula
+        const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+        
+        const mortgageYears = mortgageTerm;
+        const paidUpAge = data.mortgageStartAge + mortgageYears;
         if (age < paidUpAge) {
           const remainingYears = paidUpAge - age;
-          liabilities += data.monthlyPayment * 12 * remainingYears;
+          liabilities += monthlyPayment * 12 * remainingYears;
         }
       }
     });
