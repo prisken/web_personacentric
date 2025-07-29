@@ -369,7 +369,7 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'rental':
-          if (age >= data.leaseStartAge) {
+          if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
             const rentalYears = age - data.leaseStartAge;
             const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
             totalExpenses += monthlyRentWithIncrease;
@@ -597,6 +597,9 @@ const FinancialAnalysisPage = ({
       if (subType === 'annuity' && data.premiumAge < earliestStartAge) {
         earliestStartAge = data.premiumAge;
       }
+      if (subType === 'rental' && data.leaseStartAge < earliestStartAge) {
+        earliestStartAge = data.leaseStartAge;
+      }
     });
     
     // Track liabilities from earliest product start age to current age
@@ -657,7 +660,7 @@ const FinancialAnalysisPage = ({
 
         // Add rental payments as liabilities
         if (subType === 'rental') {
-          if (year >= data.leaseStartAge) {
+          if (year >= data.leaseStartAge && year <= data.expectedEndAge) {
             // Calculate rent with annual increase
             const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
             const yearsSinceLeaseStart = year - data.leaseStartAge;
@@ -739,7 +742,7 @@ const FinancialAnalysisPage = ({
 
       // Add rental payments as liabilities
       if (subType === 'rental') {
-        if (age >= data.leaseStartAge) {
+        if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
           // Calculate rent with annual increase
           const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
           const yearsSinceLeaseStart = age - data.leaseStartAge;
