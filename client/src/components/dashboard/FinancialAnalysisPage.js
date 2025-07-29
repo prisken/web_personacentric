@@ -1061,7 +1061,7 @@ const FinancialAnalysisPage = ({
       },
               totalLiabilities: {
           title: '總負債計算公式',
-          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n累積負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間的所有負債累積`,
+          formula: `累積負債總和（從最早產品開始年齡到當前年齡）\n\n當前${currentAge}歲詳細計算：\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n\n注意：包括從最早產品開始年齡到當前年齡期間的所有負債累積`,
           description: '從最早產品開始年齡到當前年齡期間累積的所有負債總和'
         },
               netWorth: {
@@ -1428,6 +1428,18 @@ const FinancialAnalysisPage = ({
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       <div className="flex items-center space-x-1">
+                        <span>總負債</span>
+                        <button
+                          onClick={() => showFormulaInfo('totalLiabilities')}
+                          className="text-blue-500 hover:text-blue-700 transition-colors"
+                          title="查看計算公式"
+                        >
+                          ℹ️
+                        </button>
+                      </div>
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <div className="flex items-center space-x-1">
                         <span>淨資產</span>
                         <button
                           onClick={() => showFormulaInfo('netWorth')}
@@ -1462,6 +1474,7 @@ const FinancialAnalysisPage = ({
                       <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${data.netCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         {formatCurrency(data.netCashFlow)}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.totalLiabilities)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.netWorth)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.accumulatedFlexibleFunds)}</td>
                     </tr>
