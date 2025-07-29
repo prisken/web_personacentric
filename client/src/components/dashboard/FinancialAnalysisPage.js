@@ -378,7 +378,12 @@ const FinancialAnalysisPage = ({
           break;
           
         case 'own_living':
-          if (age >= data.mortgageStartAge && age < data.mortgageCompletionAge) {
+          // Check if property is sold early - if so, stop mortgage payments at sale age
+          const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
+            ? parseInt(data.sellAge) 
+            : data.mortgageCompletionAge;
+          
+          if (age >= data.mortgageStartAge && age < effectiveMortgageEndAge) {
             // Calculate mortgage amount and monthly payment
             const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
             const mortgageAmount = data.purchasePrice - downPaymentAmount;
