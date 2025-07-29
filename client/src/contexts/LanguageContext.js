@@ -305,7 +305,39 @@ export const LanguageProvider = ({ children }) => {
       'productCard.explanation': '說明',
 
       // Dashboard
+      'dashboard.tabs.overview': '概覽',
+      'dashboard.tabs.agentConnection': '客戶配對',
+      'dashboard.tabs.events': '活動',
+      'dashboard.tabs.blogManagement': '博客管理',
+      'dashboard.tabs.points': '積分',
+      'dashboard.tabs.contests': '競賽',
+      'dashboard.tabs.profile': '個人資料',
       'dashboard.tabs.financial_planning': '理財產品配置',
+
+      // Navigation
+      'nav.events': '活動',
+      'nav.agentPairing': '客戶配對',
+      'nav.contentGenerator': '內容生成器',
+      'nav.blogs': '博客',
+      'nav.contests': '競賽',
+      'nav.login': '登入',
+      'nav.register': '註冊',
+
+      // Actions
+      'actions.allAgents': '所有代理',
+      'actions.dashboard': '儀表板',
+      'actions.logout': '登出',
+
+      // Roles
+      'roles.admin.emoji': '👑',
+      'roles.agent.emoji': '👨‍💼',
+      'roles.client.emoji': '👤',
+
+      // Client Management
+      'financialPlanning.clientName': '客戶姓名',
+      'financialPlanning.enterClientName': '輸入客戶姓名',
+      'financialPlanning.editRecommendations': '編輯建議',
+      'financialPlanning.currentUser': '當前用戶',
     },
     'en': {
       // Financial Planning - Main
@@ -593,7 +625,39 @@ export const LanguageProvider = ({ children }) => {
       'productCard.explanation': 'Explanation',
 
       // Dashboard
+      'dashboard.tabs.overview': 'Overview',
+      'dashboard.tabs.agentConnection': 'Agent Connection',
+      'dashboard.tabs.events': 'Events',
+      'dashboard.tabs.blogManagement': 'Blog Management',
+      'dashboard.tabs.points': 'Points',
+      'dashboard.tabs.contests': 'Contests',
+      'dashboard.tabs.profile': 'Profile',
       'dashboard.tabs.financial_planning': 'Financial Planning',
+
+      // Navigation
+      'nav.events': 'Events',
+      'nav.agentPairing': 'Agent Pairing',
+      'nav.contentGenerator': 'Content Generator',
+      'nav.blogs': 'Blogs',
+      'nav.contests': 'Contests',
+      'nav.login': 'Login',
+      'nav.register': 'Register',
+
+      // Actions
+      'actions.allAgents': 'All Agents',
+      'actions.dashboard': 'Dashboard',
+      'actions.logout': 'Logout',
+
+      // Roles
+      'roles.admin.emoji': '👑',
+      'roles.agent.emoji': '👨‍💼',
+      'roles.client.emoji': '👤',
+
+      // Client Management
+      'financialPlanning.clientName': 'Client Name',
+      'financialPlanning.enterClientName': 'Enter client name',
+      'financialPlanning.editRecommendations': 'Edit Recommendations',
+      'financialPlanning.currentUser': 'Current User',
     }
   };
 
