@@ -260,7 +260,7 @@ const FinancialAnalysisPage = ({
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
           // Use actual mortgage interest rate and completion age from data
-          const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
+          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
           const interestRate = data.mortgageInterestRate / 100;
           const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
@@ -353,7 +353,7 @@ const FinancialAnalysisPage = ({
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
           // Use actual mortgage interest rate and completion age from data
-          const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
+          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
           const interestRate = data.mortgageInterestRate / 100;
           const monthlyInterestRate = interestRate / 12;
           const numberOfPayments = mortgageTerm * 12;
@@ -389,7 +389,7 @@ const FinancialAnalysisPage = ({
         const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
         // Use actual mortgage interest rate and completion age from data
-        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
+        const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
         const interestRate = data.mortgageInterestRate / 100;
         const monthlyInterestRate = interestRate / 12;
         const numberOfPayments = mortgageTerm * 12;

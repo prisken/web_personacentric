@@ -88,7 +88,17 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
           description: '香港年金計劃提供保證終身收入，回報率與投保人壽命掛鈎。投保人愈長壽，內部回報率愈高。'
         };
       case 'own_living':
-        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge;
+        const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+        
+        // Check if completion age is valid
+        if (data.mortgageCompletionAge <= data.mortgageStartAge) {
+          return {
+            title: t('productCard.mortgageCompletionAge'),
+            formula: `⚠️ 錯誤：供完樓年齡必須大於開始供樓年紀\n\n請確保：\n供完樓年齡 > 開始供樓年紀\n\n例如：\n開始供樓年紀：30歲\n供完樓年齡：60歲（30年期）`,
+            description: '請修正供完樓年齡設定，確保大於開始供樓年紀。'
+          };
+        }
+        
         return {
           title: t('productCard.mortgageCompletionAge'),
           formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n供完樓年齡 = 開始供樓年紀 + ${mortgageTerm}年 = ${data.mortgageCompletionAge}歲\n樓價總值 = 購買價格 × (1.03)^(賣樓年紀 - 開始供樓年紀)`,
@@ -592,6 +602,7 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
                 onChange={(e) => updateProduct(product.id, 'mortgageCompletionAge', parseInt(e.target.value) || 0)}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
                 placeholder={t('productCard.mortgageCompletionAgePlaceholder')}
+                min={data.mortgageStartAge + 1}
               />
             </div>
             <div>

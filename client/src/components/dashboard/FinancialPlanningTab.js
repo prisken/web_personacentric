@@ -290,8 +290,8 @@ const FinancialPlanningTab = () => {
         const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
         const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
-        // Assume 30-year mortgage term and 3% interest rate for calculation
-        const mortgageTerm = data.mortgageCompletionAge - data.mortgageStartAge; // Use user-specified completion age
+        // Validate mortgage term - ensure completion age is greater than start age
+        const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
         const interestRate = data.mortgageInterestRate / 100; // Use the input interest rate
         const monthlyInterestRate = interestRate / 12;
         const numberOfPayments = mortgageTerm * 12;
