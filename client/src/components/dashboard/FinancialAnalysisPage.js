@@ -605,9 +605,26 @@ const FinancialAnalysisPage = ({
           const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
           
           const paidUpAge = data.mortgageCompletionAge;
-          // Only add to accumulated liabilities if this year is within the mortgage period
-          if (year >= data.mortgageStartAge && year < paidUpAge) {
-            accumulatedLiabilities += monthlyPayment * 12;
+          
+          // Check if property is sold before mortgage completion
+          if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
+            // Property sold early - calculate remaining mortgage balance at sale age
+            if (year === parseInt(data.sellAge)) {
+              // Calculate how many payments have been made
+              const paymentsMade = (parseInt(data.sellAge) - data.mortgageStartAge) * 12;
+              const remainingPayments = numberOfPayments - paymentsMade;
+              
+              // Calculate remaining mortgage balance using amortization formula
+              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              
+              // Add remaining mortgage balance as a lump sum liability
+              accumulatedLiabilities += remainingBalance;
+            }
+          } else {
+            // Normal mortgage payments - add monthly payments to accumulated liabilities
+            if (year >= data.mortgageStartAge && year < paidUpAge) {
+              accumulatedLiabilities += monthlyPayment * 12;
+            }
           }
         }
         

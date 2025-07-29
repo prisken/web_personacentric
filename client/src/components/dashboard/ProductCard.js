@@ -102,8 +102,8 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
         
         return {
           title: t('productCard.mortgageCompletionAge'),
-          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n總供款金額 = 每月供款 × ${mortgageTerm * 12}期\n總利息支出 = 總供款金額 - 按揭金額\n\n供完樓時物業價值 = 購買價格 × (1.01)^${propertyAppreciationYears}年（假設1%年增長）`,
-          description: '自住物業按揭計算顯示每月供款、總利息支出和供完樓時的物業價值，幫助了解完整的財務影響。'
+          formula: `首期金額 = 購買價格 × 首期付款%\n按揭金額 = 購買價格 - 首期金額\n\n每月供款計算（${mortgageTerm}年期，${data.mortgageInterestRate}%年利率）：\n月利率 = ${data.mortgageInterestRate}% ÷ 12 = ${(data.mortgageInterestRate / 12).toFixed(3)}%\n供款期數 = ${mortgageTerm}年 × 12 = ${mortgageTerm * 12}期\n\n每月供款 = 按揭金額 × (月利率 × (1 + 月利率)^${mortgageTerm * 12}) ÷ ((1 + 月利率)^${mortgageTerm * 12} - 1)\n\n總供款金額 = 每月供款 × ${mortgageTerm * 12}期\n總利息支出 = 總供款金額 - 按揭金額\n\n供完樓時物業價值 = 購買價格 × (1.01)^${propertyAppreciationYears}年（假設1%年增長）\n\n${data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge ? `\n⚠️ 提前售樓（${data.sellAge}歲）：\n- 停止每月供款\n- 剩餘按揭餘額加入累積負債\n- 售樓收益加入年度靈活資金\n- 售樓收益可抵消剩餘按揭餘額` : ''}`,
+          description: '自住物業按揭計算顯示每月供款、總利息支出和供完樓時的物業價值。如提前售樓，剩餘按揭餘額將加入負債，售樓收益可抵消負債。'
         };
       case 'renting':
         return {
