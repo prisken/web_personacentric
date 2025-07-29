@@ -286,10 +286,6 @@ const FinancialPlanningPDFReport = ({
         // The premium is converted to guaranteed monthly income
         return 0;
         
-      case 'annuity':
-        // Annuities are income products, not assets
-        return 0;
-        
       case 'own_living':
         // Property value with appreciation
         const propertyYears = age - data.mortgageStartAge;
