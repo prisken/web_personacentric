@@ -138,9 +138,7 @@ const FinancialAnalysisPage = ({
           netCashFlow: totalIncome - totalExpenses,
           totalAssets: totalAssets,
           totalLiabilities: totalLiabilities,
-          netWorth: totalAssets - totalLiabilities,
-          cashReserve: calculateCashReserve({ totalAssets, totalExpenses }),
-          outlivingProbability: calculateOutlivingProbability({ totalAssets, totalExpenses, age }, age)
+          netWorth: totalAssets - totalLiabilities
         };
 
         data.push(yearData);
@@ -798,18 +796,7 @@ const FinancialAnalysisPage = ({
     }
   };
 
-  const calculateCashReserve = (yearData) => {
-    return yearData.totalExpenses > 0 ? yearData.totalAssets / yearData.totalExpenses : 0;
-  };
 
-  const calculateOutlivingProbability = (yearData, age) => {
-    const cashReserve = yearData.totalAssets / yearData.totalExpenses;
-    if (cashReserve > 300) return 'Very Low';
-    if (cashReserve > 240) return 'Low';
-    if (cashReserve > 180) return 'Medium';
-    if (cashReserve > 120) return 'High';
-    return 'Very High';
-  };
 
   const showFormulaInfo = (field) => {
     const currentAge = analysisPeriod.start;
@@ -851,11 +838,7 @@ const FinancialAnalysisPage = ({
         formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateTotalLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateTotalLiabilities(currentAge))}`,
         description: '實際擁有的財富總額，是財務狀況的重要指標'
       },
-      cashReserve: {
-        title: '現金儲備計算公式',
-        formula: `總資產 ÷ 月開支 = 可維持月數\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n月開支：${formatCurrency(calculateTotalExpenses(currentAge))}\n現金儲備：${Math.round(calculateTotalAssets(currentAge) / calculateTotalExpenses(currentAge))}個月`,
-        description: '在不增加收入的情況下，現有資產可以維持生活開支的月數'
-      }
+
     };
     
     setCurrentFormula(formulas[field] || { title: '未知', formula: '無公式', description: '無描述' });
@@ -1219,18 +1202,6 @@ const FinancialAnalysisPage = ({
                         </button>
                       </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      <div className="flex items-center space-x-1">
-                        <span>現金儲備</span>
-                        <button
-                          onClick={() => showFormulaInfo('cashReserve')}
-                          className="text-blue-500 hover:text-blue-700 transition-colors"
-                          title="查看計算公式"
-                        >
-                          ℹ️
-                        </button>
-                      </div>
-                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
@@ -1244,8 +1215,6 @@ const FinancialAnalysisPage = ({
                         {formatCurrency(data.netCashFlow)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(data.netWorth)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.cashReserve.toFixed(1)} 個月</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{data.outlivingProbability}</td>
                     </tr>
                   ))}
                 </tbody>

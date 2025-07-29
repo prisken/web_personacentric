@@ -635,7 +635,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.monthlyExpenses': '月開支',
       'financialPlanning.netCashFlow': '淨現金流',
       'financialPlanning.netWorth': '淨資產',
-      'financialPlanning.cashReserve': '現金儲備',
+
       'financialPlanning.withdrawalRate': '提取率',
       'financialPlanning.months': '個月',
       'financialPlanning.financialTrendChart': '財務趨勢圖',
@@ -688,9 +688,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.netWorthFormula': '淨資產計算公式',
       'financialPlanning.netWorthCalculation': '總資產 - 總負債',
       'financialPlanning.netWorthDescription': '實際擁有的財富總額，是財務狀況的重要指標',
-      'financialPlanning.cashReserveFormula': '現金儲備計算公式',
-      'financialPlanning.cashReserveCalculation': '總資產 ÷ 月開支 (月數)',
-      'financialPlanning.cashReserveDescription': '在不增加收入的情況下，現有資產可以維持生活開支的月數',
+
+
       'financialPlanning.withdrawalRateFormula': '提取率計算公式',
       'financialPlanning.withdrawalRateCalculation': '(年開支 ÷ 總資產) × 100%',
       'financialPlanning.withdrawalRateDescription': '每年從資產中提取的百分比，4%是常用的安全提取率',
@@ -1418,7 +1417,7 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.monthlyExpenses': 'Monthly Expenses',
       'financialPlanning.netCashFlow': 'Net Cash Flow',
       'financialPlanning.netWorth': 'Net Worth',
-      'financialPlanning.cashReserve': 'Cash Reserve',
+
       'financialPlanning.withdrawalRate': 'Withdrawal Rate',
       'financialPlanning.months': 'months',
       'financialPlanning.financialTrendChart': 'Financial Trend Chart',
@@ -1471,9 +1470,8 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.netWorthFormula': 'Net Worth Calculation Formula',
       'financialPlanning.netWorthCalculation': 'Total Assets - Total Liabilities',
       'financialPlanning.netWorthDescription': 'Actual wealth owned, an important indicator of financial status',
-      'financialPlanning.cashReserveFormula': 'Cash Reserve Calculation Formula',
-      'financialPlanning.cashReserveCalculation': 'Total Assets ÷ Monthly Expenses (months)',
-      'financialPlanning.cashReserveDescription': 'Number of months existing assets can maintain living expenses without additional income',
+
+
       'financialPlanning.withdrawalRateFormula': 'Withdrawal Rate Calculation Formula',
       'financialPlanning.withdrawalRateCalculation': '(Annual Expenses ÷ Total Assets) × 100%',
       'financialPlanning.withdrawalRateDescription': 'Percentage withdrawn from assets annually, 4% is a commonly used safe withdrawal rate',
