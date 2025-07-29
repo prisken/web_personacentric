@@ -47,7 +47,7 @@ const FinancialPlanningTab = () => {
     ],
     real_estate: [
       { id: 'own_living', name: t('financialPlanning.ownLiving'), icon: '🏠' },
-      { id: 'renting', name: t('financialPlanning.renting'), icon: '🏢' }
+      { id: 'rental', name: t('financialPlanning.renting'), icon: '🏢' }
     ]
   };
 
@@ -196,13 +196,6 @@ const FinancialPlanningTab = () => {
           currentSituation: 'selfOccupied',
           monthlyRent: 0,
           rentStartAge: 30
-        };
-      case 'renting':
-        return {
-          monthlyRentExpense: 0,
-          startAge: 30,
-          rentalIncrement: 3,
-          expectedEndAge: 65
         };
       case 'rental':
         return {
