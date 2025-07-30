@@ -749,6 +749,12 @@ const FinancialAnalysisPage = ({
             // Debug: Log the calculation for verification
             console.log(`Age ${age}: Purchase Price=${data.purchasePrice}, Down Payment %=${data.downPayment}, Down Payment Amount=${downPaymentAmount}, Total Payments=${totalPaymentsMade}, Total Interest=${totalInterestPaid}, Property Equity=${propertyEquity}`);
             
+            // Debug: Log total assets calculation
+            const totalAssets = calculateTotalAssets(age);
+            const totalLiabilities = calculateAccumulatedLiabilities(age);
+            const netAssets = totalAssets - totalLiabilities;
+            console.log(`NET ASSETS DEBUG Age ${age}: Total Assets=${totalAssets}, Total Liabilities=${totalLiabilities}, Net Assets=${netAssets}`);
+            
             // Check if mortgage is completed or property is sold
             const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
               ? parseInt(data.sellAge) 
