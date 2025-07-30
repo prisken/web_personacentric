@@ -718,8 +718,6 @@ const FinancialAnalysisPage = ({
           const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
           const mortgageAmount = data.purchasePrice - downPaymentAmount;
           
-
-          
           // Use actual mortgage interest rate and completion age from data
           const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge); // Minimum 1 year
           const interestRate = data.mortgageInterestRate / 100;
@@ -733,11 +731,8 @@ const FinancialAnalysisPage = ({
           
           // Check if property is sold before mortgage completion
           if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
-            // Property sold early - add monthly payments up to sale age, then add remaining balance
-            if (year >= data.mortgageStartAge && year < parseInt(data.sellAge)) {
-              // Add monthly payments made before sale
-              accumulatedLiabilities += monthlyPayment * 12;
-            } else if (year === parseInt(data.sellAge)) {
+            // Property sold early - only add remaining balance at sale age
+            if (year === parseInt(data.sellAge)) {
               // Calculate how many payments have been made
               const paymentsMade = (parseInt(data.sellAge) - data.mortgageStartAge) * 12;
               const remainingPayments = numberOfPayments - paymentsMade;
@@ -749,9 +744,17 @@ const FinancialAnalysisPage = ({
               accumulatedLiabilities += remainingBalance;
             }
           } else {
-            // Normal mortgage payments - add monthly payments to accumulated liabilities
-            if (year >= data.mortgageStartAge && year < paidUpAge) {
-              accumulatedLiabilities += monthlyPayment * 12;
+            // Normal mortgage - only add remaining balance at current age if still paying
+            if (year === age && year >= data.mortgageStartAge && year < paidUpAge) {
+              // Calculate how many payments have been made so far
+              const paymentsMade = (year - data.mortgageStartAge) * 12;
+              const remainingPayments = numberOfPayments - paymentsMade;
+              
+              // Calculate remaining mortgage balance using amortization formula
+              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              
+              // Add remaining mortgage balance as current liability
+              accumulatedLiabilities += remainingBalance;
             }
           }
         }
