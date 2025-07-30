@@ -749,26 +749,31 @@ const FinancialAnalysisPage = ({
             // Calculate total interest paid so far
             const totalInterestPaid = totalPaymentsMade - (mortgageAmount * (paymentsMade / numberOfPayments));
             
-            // Calculate property equity: Down Payment + (Total Payments - Total Interest)
-            const propertyEquity = downPaymentAmount + (totalPaymentsMade - totalInterestPaid);
+            // Calculate remaining mortgage balance
+            const totalPaid = monthlyPayment * paymentsMade;
+            const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
+            
+            // Calculate property equity: 購買價格 - 剩餘按揭
+            const propertyEquity = data.purchasePrice - remainingBalance;
+            
+            // Apply property value growth to equity: (購買價格 - 剩餘按揭) × 物業價值增長%
+            const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
+            const yearsSincePurchase = age - data.mortgageStartAge;
+            const growthOnEquity = propertyEquity * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+            
+            // Total property value: ((購買價格 - 剩餘按揭) × 物業價值增長%) + (購買價格 - 剩餘按揭)
+            const totalPropertyValue = growthOnEquity + propertyEquity;
             
             // Debug: Log the calculation for verification
-            console.log(`Age ${age}: Purchase Price=${data.purchasePrice}, Down Payment %=${data.downPayment}, Down Payment Amount=${downPaymentAmount}, Total Payments=${totalPaymentsMade}, Total Interest=${totalInterestPaid}, Property Equity=${propertyEquity}`);
+            console.log(`PROPERTY DEBUG Age ${age}: Purchase Price=${data.purchasePrice}, Remaining Mortgage=${remainingBalance}, Property Equity=${propertyEquity}, Growth Rate=${propertyValueGrowth}, Years Since Purchase=${yearsSincePurchase}, Growth on Equity=${growthOnEquity}, Total Property Value=${totalPropertyValue}`);
             
-            // Check if mortgage is completed or property is sold
-            const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
-              ? parseInt(data.sellAge) 
-              : data.mortgageCompletionAge;
-            
-            if (age >= effectiveMortgageEndAge) {
-              // Mortgage is paid off (or property sold), show full property value
-              const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
-              const yearsSincePurchase = age - data.mortgageStartAge;
-              const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
-              assets += currentPropertyValue;
+            // Check if property is sold
+            if (data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
+              // Property is sold, no longer an asset (sale proceeds go to flexible funds)
+              break;
             } else {
-              // Still paying mortgage, show property equity
-              assets += propertyEquity;
+              // Property is still owned, add total property value
+              assets += totalPropertyValue;
             }
           }
           break;
