@@ -1365,8 +1365,8 @@ const FinancialAnalysisPage = ({
       labels: financialData.map(d => `${d.age}${t('financialPlanning.yearsOld')}`),
       datasets: [
         {
-          label: t('financialPlanning.netWorth'),
-          data: financialData.map(d => d.netWorth),
+          label: t('financialPlanning.totalMonthlyIncome'),
+          data: financialData.map(d => d.totalMonthlyIncome),
           borderColor: 'rgb(59, 130, 246)',
           backgroundColor: 'rgba(59, 130, 246, 0.1)',
           tension: 0.1
@@ -1388,30 +1388,32 @@ const FinancialAnalysisPage = ({
       ]
     },
     pie: {
-      labels: [t('financialPlanning.property'), t('financialPlanning.cash'), t('financialPlanning.investments'), t('financialPlanning.other')],
+      labels: [t('financialPlanning.flexibleFunds'), t('financialPlanning.totalAssets')],
       datasets: [{
-        data: Object.values(calculateAssetAllocation(selectedAge)),
+        data: [calculateAccumulatedFlexibleFunds(selectedAge), calculateTotalAssets(selectedAge)],
         backgroundColor: [
-          'rgba(147, 51, 234, 0.8)',
           'rgba(59, 130, 246, 0.8)',
-          'rgba(34, 197, 94, 0.8)',
-          'rgba(251, 146, 60, 0.8)'
+          'rgba(34, 197, 94, 0.8)'
         ]
       }]
     },
     bar: {
-      labels: [t('financialPlanning.workIncome'), t('financialPlanning.fundIncome'), t('financialPlanning.mpfIncome'), t('financialPlanning.savingIncome'), t('financialPlanning.bankIncome'), t('financialPlanning.retirementIncome'), t('financialPlanning.rentalIncome')],
+      labels: [t('financialPlanning.workIncome'), t('financialPlanning.investmentIncome'), t('financialPlanning.rentalIncome'), t('financialPlanning.bankReturn'), t('financialPlanning.mpfIncome')],
       datasets: [{
         label: t('financialPlanning.incomeSources'),
-        data: calculateIncomeSources(selectedAge),
+        data: [
+          calculateTotalIncome(selectedAge),
+          calculatePassiveIncome(selectedAge),
+          calculateProductValueAtAge({ subType: 'rental' }, selectedAge) / 12,
+          calculateProductValueAtAge({ subType: 'bank' }, selectedAge) * 0.03 / 12,
+          calculateProductValueAtAge({ subType: 'mpf' }, selectedAge) * 0.04 / 12
+        ],
         backgroundColor: [
           'rgba(59, 130, 246, 0.8)',
           'rgba(34, 197, 94, 0.8)',
           'rgba(147, 51, 234, 0.8)',
-          'rgba(251, 146, 60, 0.8)',
           'rgba(16, 185, 129, 0.8)',
-          'rgba(245, 158, 11, 0.8)',
-          'rgba(239, 68, 68, 0.8)'
+          'rgba(245, 158, 11, 0.8)'
         ]
       }]
     }
