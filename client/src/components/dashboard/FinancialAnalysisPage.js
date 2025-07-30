@@ -732,17 +732,35 @@ const FinancialAnalysisPage = ({
             break;
           }
           
-          // Property is still owned, but only count as asset after mortgage is paid off
-          const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
-            ? parseInt(data.sellAge) 
-            : data.mortgageCompletionAge;
-          
-          if (age >= effectiveMortgageEndAge) {
-            // Mortgage is paid off (or property sold), property value counts as asset
-            const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
-            const yearsSincePurchase = age - data.mortgageStartAge;
-            const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
-            assets += currentPropertyValue;
+          // Calculate property equity (what user actually owns)
+          if (age >= data.mortgageStartAge) {
+            // Calculate how many payments have been made so far
+            const paymentsMade = Math.min((age - data.mortgageStartAge) * 12, numberOfPayments);
+            
+            // Calculate total mortgage payments made
+            const totalPaymentsMade = monthlyPayment * paymentsMade;
+            
+            // Calculate total interest paid so far
+            const totalInterestPaid = totalPaymentsMade - (mortgageAmount * (paymentsMade / numberOfPayments));
+            
+            // Calculate property equity: Down Payment + (Total Payments - Total Interest)
+            const propertyEquity = downPaymentAmount + (totalPaymentsMade - totalInterestPaid);
+            
+            // Check if mortgage is completed or property is sold
+            const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
+              ? parseInt(data.sellAge) 
+              : data.mortgageCompletionAge;
+            
+            if (age >= effectiveMortgageEndAge) {
+              // Mortgage is paid off (or property sold), show full property value
+              const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
+              const yearsSincePurchase = age - data.mortgageStartAge;
+              const currentPropertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+              assets += currentPropertyValue;
+            } else {
+              // Still paying mortgage, show property equity
+              assets += propertyEquity;
+            }
           }
           break;
       }
