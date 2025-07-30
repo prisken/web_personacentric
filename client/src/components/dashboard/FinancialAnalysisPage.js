@@ -747,7 +747,7 @@ const FinancialAnalysisPage = ({
             const propertyEquity = downPaymentAmount + (totalPaymentsMade - totalInterestPaid);
             
             // Debug: Log the calculation for verification
-            console.log(`Age ${age}: Down Payment=${downPaymentAmount}, Total Payments=${totalPaymentsMade}, Total Interest=${totalInterestPaid}, Property Equity=${propertyEquity}`);
+            console.log(`Age ${age}: Purchase Price=${data.purchasePrice}, Down Payment %=${data.downPayment}, Down Payment Amount=${downPaymentAmount}, Total Payments=${totalPaymentsMade}, Total Interest=${totalInterestPaid}, Property Equity=${propertyEquity}`);
             
             // Check if mortgage is completed or property is sold
             const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
@@ -840,7 +840,13 @@ const FinancialAnalysisPage = ({
               // Calculate remaining mortgage balance using standard amortization formula
               // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
               // Where: P = principal, r = monthly rate, n = payments made, PMT = monthly payment
-              const remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+              let remainingBalance;
+              if (monthlyInterestRate === 0) {
+                // Handle zero interest rate case
+                remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
+              } else {
+                remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+              }
               
               // Add remaining mortgage balance as current liability (for display only)
               accumulatedLiabilities += remainingBalance;
@@ -917,7 +923,13 @@ const FinancialAnalysisPage = ({
             // Calculate remaining mortgage balance using standard amortization formula
             // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
             // Where: P = principal, r = monthly rate, n = payments made, PMT = monthly payment
-            const remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+            let remainingBalance;
+            if (monthlyInterestRate === 0) {
+              // Handle zero interest rate case
+              remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
+            } else {
+              remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+            }
             
             // Add remaining mortgage balance as current liability (for display only)
             liabilities += remainingBalance;
