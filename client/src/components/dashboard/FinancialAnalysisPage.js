@@ -839,13 +839,14 @@ const FinancialAnalysisPage = ({
               
               // Calculate remaining mortgage balance using standard amortization formula
               // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
-              // Where: P = principal, r = monthly rate, n = payments made, PMT = monthly payment
+              // Where: P = principal, r = monthly rate, n = remaining payments, PMT = monthly payment
               let remainingBalance;
               if (monthlyInterestRate === 0) {
                 // Handle zero interest rate case
                 remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
               } else {
-                remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+                // Use remaining payments (not payments made) for the formula
+                remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, remainingPayments) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / monthlyInterestRate);
               }
               
               // Add remaining mortgage balance as current liability (for display only)
@@ -922,13 +923,14 @@ const FinancialAnalysisPage = ({
             
             // Calculate remaining mortgage balance using standard amortization formula
             // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
-            // Where: P = principal, r = monthly rate, n = payments made, PMT = monthly payment
+            // Where: P = principal, r = monthly rate, n = remaining payments, PMT = monthly payment
             let remainingBalance;
             if (monthlyInterestRate === 0) {
               // Handle zero interest rate case
               remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
             } else {
-              remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, paymentsMade) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, paymentsMade) - 1) / monthlyInterestRate);
+              // Use remaining payments (not payments made) for the formula
+              remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, remainingPayments) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / monthlyInterestRate);
             }
             
             // Add remaining mortgage balance as current liability (for display only)
