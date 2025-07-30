@@ -270,8 +270,11 @@ const FinancialAnalysisPage = ({
           const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
           
           // Add net sale proceeds (property value minus remaining mortgage)
-          const netSaleProceeds = propertyValue - remainingBalance;
+          const netSaleProceeds = Math.max(0, propertyValue - remainingBalance);
           flexibleFunds += netSaleProceeds;
+          
+          // If property value is not enough to cover mortgage, the shortfall remains as a liability
+          // This is handled in calculateAccumulatedLiabilities by not removing the mortgage liability
         }
       });
       
@@ -758,21 +761,36 @@ const FinancialAnalysisPage = ({
           
           // Check if property is sold before mortgage completion
           if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
-            // Property sold early - only add remaining balance at sale age
-            if (year === parseInt(data.sellAge)) {
-              // Calculate how many payments have been made
-              const paymentsMade = (parseInt(data.sellAge) - data.mortgageStartAge) * 12;
+            // Property sold early - show remaining balance until sale age, then remove it
+            if (year >= data.mortgageStartAge && year < parseInt(data.sellAge)) {
+              // Show remaining balance during mortgage period
+              const paymentsMade = (year - data.mortgageStartAge) * 12;
               const remainingPayments = numberOfPayments - paymentsMade;
-              
-              // Calculate remaining mortgage balance using amortization formula
               const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-              
-              // Add remaining mortgage balance as a lump sum liability
               accumulatedLiabilities += remainingBalance;
             }
+            // At sale age and after: check if property value covers mortgage
+            if (year >= parseInt(data.sellAge)) {
+              // Calculate property value at sale age
+              const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100;
+              const yearsSincePurchase = parseInt(data.sellAge) - data.mortgageStartAge;
+              const propertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+              
+              // Calculate remaining mortgage balance at sale age
+              const paymentsMade = (parseInt(data.sellAge) - data.mortgageStartAge) * 12;
+              const remainingPayments = numberOfPayments - paymentsMade;
+              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              
+              // If property value is not enough to cover mortgage, add shortfall as liability
+              if (propertyValue < remainingBalance) {
+                const shortfall = remainingBalance - propertyValue;
+                accumulatedLiabilities += shortfall;
+              }
+              // If property value covers mortgage, no liability (mortgage is paid off)
+            }
           } else {
-            // Normal mortgage - only add remaining balance at current age if still paying
-            if (year === age && year >= data.mortgageStartAge && year < paidUpAge) {
+            // Normal mortgage - show remaining balance if still paying
+            if (year >= data.mortgageStartAge && year < paidUpAge) {
               // Calculate how many payments have been made so far
               const paymentsMade = (year - data.mortgageStartAge) * 12;
               const remainingPayments = numberOfPayments - paymentsMade;
