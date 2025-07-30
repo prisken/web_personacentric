@@ -872,9 +872,31 @@ const FinancialAnalysisPage = ({
         const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
         
         const paidUpAge = data.mortgageCompletionAge;
-        if (age < paidUpAge) {
-          const remainingYears = paidUpAge - age;
-          liabilities += monthlyPayment * 12 * remainingYears;
+        
+        // Check if property is sold before mortgage completion
+        if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
+          // Property sold early - show remaining balance until sale age, then remove it
+          if (age >= data.mortgageStartAge && age < parseInt(data.sellAge)) {
+            // Show remaining balance during mortgage period
+            const paymentsMade = (age - data.mortgageStartAge) * 12;
+            const remainingPayments = numberOfPayments - paymentsMade;
+            const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            liabilities += remainingBalance;
+          }
+          // At sale age and after: mortgage is paid off, no liability
+        } else {
+          // Normal mortgage - show remaining balance if still paying
+          if (age >= data.mortgageStartAge && age < paidUpAge) {
+            // Calculate how many payments have been made so far
+            const paymentsMade = (age - data.mortgageStartAge) * 12;
+            const remainingPayments = numberOfPayments - paymentsMade;
+            
+            // Calculate remaining mortgage balance using amortization formula
+            const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            
+            // Add remaining mortgage balance as current liability (for display only)
+            liabilities += remainingBalance;
+          }
         }
       }
       
