@@ -428,8 +428,11 @@ const FinancialAnalysisPage = ({
     if (age < retirementAge && monthlySalary > 0) {
       // Apply salary increment from MPF card - start from current age
       const currentAge = mpfProduct ? mpfProduct.data.currentAge : analysisPeriod.start;
-      const yearsSinceStart = Math.max(0, age - currentAge);
-      const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, yearsSinceStart);
+      
+      // Only start salary from current age onwards
+      if (age >= currentAge) {
+        const yearsSinceStart = age - currentAge;
+        const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, yearsSinceStart);
       
       // Deduct employee contribution percentage (only for age 65 and below)
       let finalEmployeeContribution = 0;
@@ -445,10 +448,11 @@ const FinancialAnalysisPage = ({
         } else {
           finalEmployeeContribution = employeeContribution;
         }
+        
+        // After age 65, no MPF contribution deduction (even if still working)
+        income += salaryWithIncrement - finalEmployeeContribution;
       }
-      // After age 65, no MPF contribution deduction (even if still working)
-      
-      income += salaryWithIncrement - finalEmployeeContribution;
+    }
     }
 
     return income;
@@ -946,9 +950,13 @@ const FinancialAnalysisPage = ({
       if (monthlySalary > 0) {
         // Apply salary increment from MPF card - start from current age
         const currentAge = mpfProduct.data.currentAge || analysisPeriod.start;
-        const yearsSinceStart = Math.max(0, age - currentAge);
-        const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct.data.salaryIncrement || 0) / 100, yearsSinceStart);
-        incomeSources.workIncome = salaryWithIncrement;
+        
+        // Only start salary from current age onwards
+        if (age >= currentAge) {
+          const yearsSinceStart = age - currentAge;
+          const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct.data.salaryIncrement || 0) / 100, yearsSinceStart);
+          incomeSources.workIncome = salaryWithIncrement;
+        }
       }
     }
 
