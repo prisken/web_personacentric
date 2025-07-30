@@ -1209,6 +1209,7 @@ const FinancialAnalysisPage = ({
         return totalContribution * proportion;
         
       case 'bank':
+        if (!data || !data.withdrawalAge || !data.startAge || !data.contribution || !data.interestRate) return 0;
         const bankYears = data.withdrawalAge - data.startAge;
         const bankValue = data.contribution * 12 * bankYears * (1 + data.interestRate / 100);
         // Calculate value at specific age
@@ -1218,6 +1219,7 @@ const FinancialAnalysisPage = ({
         return data.contribution * 12 * yearsFromBankStart * (1 + data.interestRate / 100);
         
       case 'retirement_funds':
+        if (!data || !data.contributionFrequency || !data.contributionAmount || !data.completionAge || !data.startAge || !data.expectedReturn) return 0;
         let retirementTotalContribution;
         let retirementYears;
         
@@ -1251,6 +1253,7 @@ const FinancialAnalysisPage = ({
         
       case 'own_living':
         // Property value with appreciation
+        if (!data || !data.purchaseAge || !data.purchasePrice) return 0;
         const propertyYears = age - data.purchaseAge;
         if (propertyYears <= 0) return 0;
         const propertyAppreciation = 0.03; // 3% annual appreciation
@@ -1262,6 +1265,7 @@ const FinancialAnalysisPage = ({
         
       case 'owner_to_rent_out':
         // Property value with appreciation
+        if (!data || !data.ownershipStartAge || !data.purchasePrice) return 0;
         const ownerPropertyYears = age - data.ownershipStartAge;
         if (ownerPropertyYears <= 0) return 0;
         const ownerPropertyAppreciation = 0.03; // 3% annual appreciation
@@ -1420,21 +1424,21 @@ const FinancialAnalysisPage = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 lg:space-y-6">
       {/* Configuration Section */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-gray-900">{t('financialPlanning.financialAnalysis')}</h2>
+      <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6 space-y-4 sm:space-y-0">
+          <h2 className="text-lg lg:text-xl font-bold text-gray-900">{t('financialPlanning.financialAnalysis')}</h2>
           <button
             onClick={calculateFinancialProjection}
             disabled={isCalculating}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold"
+            className="w-full sm:w-auto bg-blue-600 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm lg:text-base"
           >
             {isCalculating ? t('financialPlanning.calculating') : `🔄 ${t('financialPlanning.recalculate')}`}
           </button>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.retirementAge')}</label>
             <input
@@ -1464,42 +1468,44 @@ const FinancialAnalysisPage = ({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">{t('financialPlanning.analysisPeriod')}</label>
-            <div className="space-y-2">
-              <div className="flex space-x-2">
+            <div className="space-y-3">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                 <input
                   type="number"
                   value={analysisPeriod.start}
                   onChange={(e) => setAnalysisPeriod({...analysisPeriod, start: parseInt(e.target.value) || 65})}
-                  className="w-20 border border-gray-300 rounded-lg px-2 py-2"
+                  className="flex-1 sm:w-20 border border-gray-300 rounded-lg px-3 py-2 text-center sm:text-left"
                   min="18"
                   max="120"
+                  placeholder="開始年齡"
                 />
-                <span className="self-center">{t('financialPlanning.to')}</span>
+                <span className="self-center text-center">{t('financialPlanning.to')}</span>
                 <input
                   type="number"
                   value={analysisPeriod.end}
                   onChange={(e) => setAnalysisPeriod({...analysisPeriod, end: parseInt(e.target.value) || 75})}
-                  className="w-20 border border-gray-300 rounded-lg px-2 py-2"
+                  className="flex-1 sm:w-20 border border-gray-300 rounded-lg px-3 py-2 text-center sm:text-left"
                   min="18"
                   max="120"
+                  placeholder="結束年齡"
                 />
               </div>
-              <div className="flex space-x-1">
+              <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setAnalysisPeriod({start: 65, end: 75})}
-                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors"
                 >
                   {t('financialPlanning.retirementPeriod')}
                 </button>
                 <button
                   onClick={() => setAnalysisPeriod({start: 60, end: 90})}
-                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors"
                 >
                   {t('financialPlanning.longTerm')}
                 </button>
                 <button
                   onClick={() => setAnalysisPeriod({start: 30, end: 65})}
-                  className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded"
+                  className="text-xs bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors"
                 >
                   {t('financialPlanning.workingPeriod')}
                 </button>
