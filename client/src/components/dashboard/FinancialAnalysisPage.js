@@ -243,28 +243,8 @@ const FinancialAnalysisPage = ({
         }
       });
       
-      // Add yearly accumulated mortgage payments as negative flexible funds
-      products.forEach(product => {
-        const { subType, data } = product;
-        if (subType === 'own_living' && year >= data.mortgageStartAge && year < data.mortgageCompletionAge) {
-          // Calculate mortgage amount and monthly payment
-          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
-          const mortgageAmount = data.purchasePrice - downPaymentAmount;
-          
-          // Use actual mortgage interest rate and completion age from data
-          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
-          const interestRate = data.mortgageInterestRate / 100;
-          const monthlyInterestRate = interestRate / 12;
-          const numberOfPayments = mortgageTerm * 12;
-          
-          // Calculate monthly payment using mortgage formula
-          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-          
-          // Yearly mortgage payments reduce flexible funds (negative value)
-          const yearlyMortgagePayments = monthlyPayment * 12;
-          flexibleFunds -= yearlyMortgagePayments;
-        }
-      });
+      // Mortgage payments are handled through expenses calculation
+      // No need to add them directly to flexible funds as they're already included in yearExpenses
       
       // Add dividends from funds as liquid cash (until expected withdrawal age)
       products.forEach(product => {
