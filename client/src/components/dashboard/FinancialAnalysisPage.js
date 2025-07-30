@@ -746,6 +746,9 @@ const FinancialAnalysisPage = ({
             // Calculate property equity: Down Payment + (Total Payments - Total Interest)
             const propertyEquity = downPaymentAmount + (totalPaymentsMade - totalInterestPaid);
             
+            // Debug: Log the calculation for verification
+            console.log(`Age ${age}: Down Payment=${downPaymentAmount}, Total Payments=${totalPaymentsMade}, Total Interest=${totalInterestPaid}, Property Equity=${propertyEquity}`);
+            
             // Check if mortgage is completed or property is sold
             const effectiveMortgageEndAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < data.mortgageCompletionAge) 
               ? parseInt(data.sellAge) 
