@@ -197,8 +197,11 @@ const FinancialAnalysisPage = ({
         }
       });
       
-      // Calculate net cash flow: monthly income - monthly recurring expenses
-      const monthlyNetCashFlow = yearIncome - (yearExpenses - oneTimeExpenses);
+      // Calculate passive income for this year
+      const yearPassiveIncome = calculatePassiveIncome(year);
+      
+      // Calculate net cash flow: monthly income + passive income - monthly recurring expenses
+      const monthlyNetCashFlow = yearIncome + yearPassiveIncome - (yearExpenses - oneTimeExpenses);
       flexibleFunds += monthlyNetCashFlow * 12; // Convert monthly to annual
       
       // Add one-time expenses directly (not multiplied by 12)
