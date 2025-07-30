@@ -406,7 +406,7 @@ const FinancialAnalysisPage = ({
         const totalAssets = calculateTotalAssets(age);
         const totalLiabilities = calculateAccumulatedLiabilities(age);
         const accumulatedFlexibleFunds = calculateAccumulatedFlexibleFunds(age);
-        const netWorth = totalAssets + accumulatedFlexibleFunds; // 淨資產 = 總資產 + 年度靈活資金
+        const netWorth = totalAssets + currentAssets + accumulatedFlexibleFunds; // 淨資產 = 總資產 + 當前資產 + 年度靈活資金
         const netWorthMinusFlexibleFunds = netWorth - accumulatedFlexibleFunds;
         
         // Debug: Log 淨資產 minus 年度靈活資金 for every year
@@ -643,10 +643,9 @@ const FinancialAnalysisPage = ({
   };
 
   const calculateTotalAssets = (age) => {
-    let assets = currentAssets;
+    let assets = 0; // Start with 0, don't include current assets or flexible funds here
     
-    // Add accumulated flexible funds (liquid cash)
-    assets += calculateAccumulatedFlexibleFunds(age) - currentAssets;
+    // Note: currentAssets and flexible funds are handled separately in netWorth calculation
     
     products.forEach(product => {
       const { subType, data } = product;
