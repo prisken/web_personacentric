@@ -405,8 +405,8 @@ const FinancialAnalysisPage = ({
         const totalExpenses = calculateTotalExpenses(age);
         const totalAssets = calculateTotalAssets(age);
         const totalLiabilities = calculateAccumulatedLiabilities(age);
-        const netWorth = totalAssets - totalLiabilities;
         const accumulatedFlexibleFunds = calculateAccumulatedFlexibleFunds(age);
+        const netWorth = totalAssets + accumulatedFlexibleFunds; // 淨資產 = 總資產 + 年度靈活資金
         const netWorthMinusFlexibleFunds = netWorth - accumulatedFlexibleFunds;
         
         // Debug: Log 淨資產 minus 年度靈活資金 for every year
