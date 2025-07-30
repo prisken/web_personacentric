@@ -816,8 +816,10 @@ const FinancialAnalysisPage = ({
               const paymentsMade = (year - data.mortgageStartAge) * 12;
               const remainingPayments = numberOfPayments - paymentsMade;
               
-              // Calculate remaining mortgage balance using amortization formula
-              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+              // Calculate remaining mortgage balance using proper amortization formula
+              // Formula: remainingBalance = P * (1 - (1 + r)^n - (1 + r)^(n-t)) / ((1 + r)^n - 1)
+              // Where: P = principal, r = monthly rate, n = total payments, t = payments made
+              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, numberOfPayments) - Math.pow(1 + monthlyInterestRate, paymentsMade)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
               
               // Add remaining mortgage balance as current liability (for display only)
               accumulatedLiabilities += remainingBalance;
@@ -891,8 +893,10 @@ const FinancialAnalysisPage = ({
             const paymentsMade = (age - data.mortgageStartAge) * 12;
             const remainingPayments = numberOfPayments - paymentsMade;
             
-            // Calculate remaining mortgage balance using amortization formula
-            const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            // Calculate remaining mortgage balance using proper amortization formula
+            // Formula: remainingBalance = P * (1 - (1 + r)^n - (1 + r)^(n-t)) / ((1 + r)^n - 1)
+            // Where: P = principal, r = monthly rate, n = total payments, t = payments made
+            const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, numberOfPayments) - Math.pow(1 + monthlyInterestRate, paymentsMade)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
             
             // Add remaining mortgage balance as current liability (for display only)
             liabilities += remainingBalance;
