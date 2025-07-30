@@ -426,9 +426,10 @@ const FinancialAnalysisPage = ({
     
     // Add salary income if not retired (continue until specified retirement age)
     if (age < retirementAge && monthlySalary > 0) {
-      // Apply salary increment from MPF card
-      const yearsSinceStart = age - (mpfProduct ? mpfProduct.data.currentAge : age);
-      const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, Math.max(0, yearsSinceStart));
+      // Apply salary increment from MPF card - start from current age
+      const currentAge = mpfProduct ? mpfProduct.data.currentAge : analysisPeriod.start;
+      const yearsSinceStart = Math.max(0, age - currentAge);
+      const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct ? mpfProduct.data.salaryIncrement : 0) / 100, yearsSinceStart);
       
       // Deduct employee contribution percentage (only for age 65 and below)
       let finalEmployeeContribution = 0;
@@ -943,9 +944,10 @@ const FinancialAnalysisPage = ({
     if (mpfProduct && age < retirementAge) {
       const monthlySalary = mpfProduct.data.monthlySalary || 0;
       if (monthlySalary > 0) {
-        // Apply salary increment from MPF card
-        const yearsSinceStart = age - (mpfProduct.data.currentAge || age);
-        const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct.data.salaryIncrement || 0) / 100, Math.max(0, yearsSinceStart));
+        // Apply salary increment from MPF card - start from current age
+        const currentAge = mpfProduct.data.currentAge || analysisPeriod.start;
+        const yearsSinceStart = Math.max(0, age - currentAge);
+        const salaryWithIncrement = monthlySalary * Math.pow(1 + (mpfProduct.data.salaryIncrement || 0) / 100, yearsSinceStart);
         incomeSources.workIncome = salaryWithIncrement;
       }
     }
