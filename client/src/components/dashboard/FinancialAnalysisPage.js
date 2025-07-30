@@ -355,7 +355,7 @@ const FinancialAnalysisPage = ({
           totalMonthlyIncome: totalIncome,
           monthlyPassiveIncome: passiveIncome,
           totalExpenses: totalExpenses,
-          netCashFlow: totalIncome - totalExpenses,
+          netCashFlow: totalIncome + passiveIncome - totalExpenses,
           totalAssets: totalAssets,
           totalLiabilities: calculateAccumulatedLiabilities(age),
           netWorth: totalAssets - calculateAccumulatedLiabilities(age),
