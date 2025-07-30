@@ -191,6 +191,10 @@ const FinancialAnalysisPage = ({
         } else if (subType === 'annuity' && data.annuityType === 'immediate' && year === data.premiumAge) {
           // Immediate annuity contribution is one-time
           oneTimeExpenses += data.contributionAmount;
+        } else if (subType === 'own_living' && year === data.mortgageStartAge) {
+          // Down payment is one-time expense at mortgage start age
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          oneTimeExpenses += downPaymentAmount;
         } else {
           // All other expenses are recurring monthly expenses
           // This will be handled by the existing yearExpenses calculation
