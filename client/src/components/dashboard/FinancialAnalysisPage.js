@@ -404,8 +404,14 @@ const FinancialAnalysisPage = ({
         const passiveIncome = calculatePassiveIncome(age);
         const totalExpenses = calculateTotalExpenses(age);
         const totalAssets = calculateTotalAssets(age);
-        const totalLiabilities = calculateTotalLiabilities(age);
-
+        const totalLiabilities = calculateAccumulatedLiabilities(age);
+        const netWorth = totalAssets - totalLiabilities;
+        const accumulatedFlexibleFunds = calculateAccumulatedFlexibleFunds(age);
+        const netWorthMinusFlexibleFunds = netWorth - accumulatedFlexibleFunds;
+        
+        // Debug: Log 淨資產 minus 年度靈活資金 for every year
+        console.log(`NET WORTH DEBUG Age ${age}: Net Worth=${netWorth}, Flexible Funds=${accumulatedFlexibleFunds}, Net Worth - Flexible Funds=${netWorthMinusFlexibleFunds}`);
+        
         const yearData = {
           age: age,
           totalMonthlyIncome: totalIncome,
@@ -413,9 +419,9 @@ const FinancialAnalysisPage = ({
           totalExpenses: totalExpenses,
           netCashFlow: totalIncome + passiveIncome - totalExpenses,
           totalAssets: totalAssets,
-          totalLiabilities: calculateAccumulatedLiabilities(age),
-          netWorth: totalAssets - calculateAccumulatedLiabilities(age),
-          accumulatedFlexibleFunds: calculateAccumulatedFlexibleFunds(age)
+          totalLiabilities: totalLiabilities,
+          netWorth: netWorth,
+          accumulatedFlexibleFunds: accumulatedFlexibleFunds
         };
 
         data.push(yearData);
@@ -818,9 +824,6 @@ const FinancialAnalysisPage = ({
             // This is more reliable than complex formulas
             const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
             
-            // Debug: Log mortgage calculation details
-            console.log(`MORTGAGE DEBUG Age ${age}: mortgageAmount=${mortgageAmount}, monthlyPayment=${monthlyPayment}, paymentsMade=${paymentsMade}, totalPaid=${totalPaid}, numberOfPayments=${numberOfPayments}, remainingBalance=${remainingBalance}`);
-            
             // Add remaining mortgage balance as current liability (for display only)
             accumulatedLiabilities += remainingBalance;
           }
@@ -892,9 +895,6 @@ const FinancialAnalysisPage = ({
             // Calculate remaining balance using simple linear amortization
             // This is more reliable than complex formulas
             const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
-            
-            // Debug: Log mortgage calculation details
-            console.log(`MORTGAGE DEBUG Age ${age}: mortgageAmount=${mortgageAmount}, monthlyPayment=${monthlyPayment}, paymentsMade=${paymentsMade}, totalPaid=${totalPaid}, numberOfPayments=${numberOfPayments}, remainingBalance=${remainingBalance}`);
             
             // Add remaining mortgage balance as current liability (for display only)
             liabilities += remainingBalance;
