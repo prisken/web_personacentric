@@ -771,23 +771,9 @@ const FinancialAnalysisPage = ({
           }
         }
 
-        // Add annuity contributions as liabilities
-        if (subType === 'annuity') {
-          // For deferred annuity, add annual contributions as liabilities during contribution period
-          if (data.annuityType === 'deferred') {
-            const contributionStartAge = data.premiumAge;
-            const contributionEndAge = data.premiumAge + data.contributionPeriod;
-            
-            if (year >= contributionStartAge && year < contributionEndAge) {
-              accumulatedLiabilities += data.annualContribution;
-            }
-          } else {
-            // For immediate annuity, add one-time contribution as liability at premium age
-            if (year === data.premiumAge) {
-              accumulatedLiabilities += data.contributionAmount;
-            }
-          }
-        }
+        // Annuities are insurance products, not liabilities - contributions are expenses, not debts
+        // The annuity contribution is already handled as an expense in calculateTotalExpenses
+        // and reduces liquid assets in calculateAccumulatedFlexibleFunds
       });
     }
 
@@ -853,23 +839,8 @@ const FinancialAnalysisPage = ({
         }
       }
 
-      // Add annuity contributions as liabilities
-      if (subType === 'annuity') {
-        // For deferred annuity, add annual contributions as liabilities during contribution period
-        if (data.annuityType === 'deferred') {
-          const contributionStartAge = data.premiumAge;
-          const contributionEndAge = data.premiumAge + data.contributionPeriod;
-          
-          if (age >= contributionStartAge && age < contributionEndAge) {
-            liabilities += data.annualContribution;
-          }
-        } else {
-          // For immediate annuity, add one-time contribution as liability at premium age
-          if (age === data.premiumAge) {
-            liabilities += data.contributionAmount;
-          }
-        }
-      }
+      // Annuities are insurance products, not liabilities - contributions are expenses, not debts
+      // The annuity contribution is already handled as an expense in calculateTotalExpenses
     });
 
     return liabilities;
