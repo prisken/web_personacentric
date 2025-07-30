@@ -446,11 +446,19 @@ const FinancialAnalysisPage = ({
             passiveIncome += data.monthlyAnnuity;
           }
           break;
-        case 'owner':
-          if (age >= data.ownershipStartAge && age <= data.ownershipEndAge && data.status === 'renting') {
-            const ownershipYears = age - data.ownershipStartAge;
-            const rentIncome = data.rentAmount * Math.pow(1 + data.rentIncrement / 100, ownershipYears);
-            passiveIncome += rentIncome;
+        case 'own_living':
+          // Add rental income if property is being rented out
+          if (data.currentSituation === 'renting' && age >= data.rentStartAge) {
+            // Determine end age: sell age if property is sold, otherwise age 100
+            const endAge = (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < 100) 
+              ? parseInt(data.sellAge) 
+              : 100;
+            
+            if (age <= endAge) {
+              const rentalYears = age - data.rentStartAge;
+              const monthlyRentWithIncrease = data.monthlyRent * Math.pow(1 + (data.rentIncreaseRate || 0) / 100, rentalYears);
+              passiveIncome += monthlyRentWithIncrease;
+            }
           }
           break;
       }
@@ -486,6 +494,7 @@ const FinancialAnalysisPage = ({
       
       switch (subType) {
         case 'rental':
+          // Rental card is for expenses (renting a property), not income
           if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
             const rentalYears = age - data.leaseStartAge;
             const monthlyRentWithIncrease = data.monthlyRentExpense * Math.pow(1 + data.rentIncreaseRate / 100, rentalYears);
