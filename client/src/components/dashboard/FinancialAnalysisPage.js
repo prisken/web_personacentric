@@ -211,6 +211,15 @@ const FinancialAnalysisPage = ({
       // Add one-time expenses directly (not multiplied by 12)
       flexibleFunds -= oneTimeExpenses;
       
+      // Add fund investment amount as negative flexible funds at start age
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'funds' && year === data.startAge) {
+          // Fund investment amount reduces flexible funds (negative value)
+          flexibleFunds -= data.investmentAmount;
+        }
+      });
+      
       // Add dividends from funds as liquid cash (until expected withdrawal age)
       products.forEach(product => {
         const { subType, data } = product;
@@ -805,12 +814,8 @@ const FinancialAnalysisPage = ({
           }
         }
 
-        // Add fund investment amount as liability at start age
-        if (subType === 'funds') {
-          if (year === data.startAge) {
-            accumulatedLiabilities += data.investmentAmount;
-          }
-        }
+        // Fund investment amount is now handled in flexible funds as negative value
+        // Removed from liabilities calculation
 
         // Annuities are insurance products, not liabilities - contributions are expenses, not debts
         // The annuity contribution is already handled as an expense in calculateTotalExpenses
