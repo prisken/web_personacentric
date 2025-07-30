@@ -74,20 +74,20 @@ const AgentDashboard = ({ data, onRefresh }) => {
       {/* Dashboard Header */}
       <div className="bg-white shadow-lg border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-8 lg:py-12 space-y-4 sm:space-y-0">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-6 lg:py-8 xl:py-12 space-y-4 sm:space-y-0">
             <div>
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
                 👨‍💼 顧問儀表板
               </h1>
-              <p className="text-lg lg:text-xl xl:text-2xl text-gray-600">
+              <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-600">
                 管理您的客戶和業務
               </p>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 w-full sm:w-auto">
               <button
                 onClick={onRefresh}
                 disabled={loading}
-                className="bg-blue-600 text-white px-6 py-3 lg:px-8 lg:py-4 rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-base lg:text-lg"
+                className="w-full sm:w-auto bg-blue-600 text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm sm:text-base lg:text-lg"
               >
                 {loading ? '更新中...' : '刷新數據'}
               </button>
@@ -98,13 +98,29 @@ const AgentDashboard = ({ data, onRefresh }) => {
 
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-16 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex space-x-1 lg:space-x-2 overflow-x-auto scrollbar-hide">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          {/* Mobile: Dropdown for tabs */}
+          <div className="block sm:hidden">
+            <select
+              value={activeTab}
+              onChange={(e) => setActiveTab(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium"
+            >
+              {tabs.map((tab) => (
+                <option key={tab.id} value={tab.id}>
+                  {tab.icon} {tab.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          {/* Desktop: Horizontal tabs */}
+          <nav className="hidden sm:flex space-x-1 lg:space-x-2 overflow-x-auto scrollbar-hide">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
+                className={`py-3 lg:py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
                   activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 bg-blue-50'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
@@ -123,17 +139,17 @@ const AgentDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 xl:gap-8">
+              <div className="bg-white rounded-xl lg:rounded-2xl shadow-lg p-4 lg:p-6 xl:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white text-xl lg:text-2xl">💰</span>
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-green-500 rounded-lg lg:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                      <span className="text-white text-lg sm:text-xl lg:text-2xl">💰</span>
                     </div>
                   </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">總佣金</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
+                  <div className="ml-3 lg:ml-4 xl:ml-6">
+                    <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-500">總佣金</p>
+                    <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900">
                       {formatCurrency(data.statistics?.total_commission || 0)}
                     </p>
                   </div>

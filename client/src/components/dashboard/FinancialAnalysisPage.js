@@ -1623,14 +1623,64 @@ const FinancialAnalysisPage = ({
       {financialData.length > 0 && !isCalculating && (
         <div className="space-y-6">
           {/* Yearly Financial Status */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">年度財務狀況</h2>
-              <div className="text-sm text-gray-500">
+          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 lg:mb-6 space-y-2 sm:space-y-0">
+              <h2 className="text-lg lg:text-xl font-bold text-gray-900">年度財務狀況</h2>
+              <div className="text-xs sm:text-sm text-gray-500">
                 分析期間: {analysisPeriod.start}歲 - {analysisPeriod.end}歲 ({analysisPeriod.end - analysisPeriod.start + 1}年)
               </div>
             </div>
-            <div className="overflow-x-auto">
+            
+            {/* Mobile: Card view */}
+            <div className="block lg:hidden space-y-3">
+              {financialData.map((data, index) => (
+                <div key={data.age} className="bg-gray-50 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-900">{data.age}歲</h3>
+                    <span className="text-xs text-gray-500">年齡</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div>
+                      <span className="text-gray-500">總月收入:</span>
+                      <div className="font-medium">{formatCurrency(data.totalMonthlyIncome)}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">被動收入:</span>
+                      <div className="font-medium">{formatCurrency(data.monthlyPassiveIncome * 12)}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">月開支:</span>
+                      <div className="font-medium">{formatCurrency(data.totalExpenses * 12)}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">淨現金流:</span>
+                      <div className={`font-medium ${data.netCashFlow >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatCurrency(data.netCashFlow)}
+                      </div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">總負債:</span>
+                      <div className="font-medium text-red-600">{formatCurrency(data.totalLiabilities)}</div>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">淨資產:</span>
+                      <div className={`font-medium ${data.netWorth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatCurrency(data.netWorth)}
+                      </div>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-gray-500">年度靈活資金:</span>
+                      <div className={`font-medium ${data.accumulatedFlexibleFunds >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {formatCurrency(data.accumulatedFlexibleFunds)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Desktop: Table view */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -1742,10 +1792,10 @@ const FinancialAnalysisPage = ({
           </div>
 
           {/* Charts */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6 lg:col-span-2">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">財務趨勢圖</h3>
+                <h3 className="text-base lg:text-lg font-bold text-gray-900">財務趨勢圖</h3>
                 <button
                   onClick={() => showChartFormulaInfo('financialTrend')}
                   className="text-blue-500 hover:text-blue-700 transition-colors"
@@ -1754,23 +1804,44 @@ const FinancialAnalysisPage = ({
                   ℹ️
                 </button>
               </div>
-              <Line data={chartData.line} options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'top',
+              <div className="h-64 lg:h-80">
+                <Line data={chartData.line} options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: 'top',
+                      labels: {
+                        boxWidth: 12,
+                        padding: 8,
+                        font: {
+                          size: 11
+                        }
+                      }
+                    },
+                    title: {
+                      display: true,
+                      text: '淨資產、被動收入與開支趨勢',
+                      font: {
+                        size: 14
+                      }
+                    }
                   },
-                  title: {
-                    display: true,
-                    text: '淨資產、被動收入與開支趨勢'
+                  scales: {
+                    x: {
+                      ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                      }
+                    }
                   }
-                }
-              }} />
+                }} />
+              </div>
             </div>
             
-            <div className="bg-white rounded-xl shadow-lg p-6">
+            <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">資產配置</h3>
+                <h3 className="text-base lg:text-lg font-bold text-gray-900">資產配置</h3>
                 <button
                   onClick={() => showChartFormulaInfo('assetAllocation')}
                   className="text-blue-500 hover:text-blue-700 transition-colors"
@@ -1784,28 +1855,38 @@ const FinancialAnalysisPage = ({
                 <select
                   value={selectedAge}
                   onChange={(e) => setSelectedAge(parseInt(e.target.value))}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                 >
                   {financialData.map(data => (
                     <option key={data.age} value={data.age}>{data.age}歲</option>
                   ))}
                 </select>
               </div>
-              <Pie data={chartData.pie} options={{
-                responsive: true,
-                plugins: {
-                  legend: {
-                    position: 'bottom',
+              <div className="h-64 lg:h-80">
+                <Pie data={chartData.pie} options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        boxWidth: 12,
+                        padding: 8,
+                        font: {
+                          size: 11
+                        }
+                      }
+                    }
                   }
-                }
-              }} />
+                }} />
+              </div>
             </div>
           </div>
 
           {/* Income Sources Chart */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
+          <div className="bg-white rounded-xl shadow-lg p-4 lg:p-6">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-gray-900">收入來源分析</h3>
+              <h3 className="text-base lg:text-lg font-bold text-gray-900">收入來源分析</h3>
               <button
                 onClick={() => showChartFormulaInfo('incomeSources')}
                 className="text-blue-500 hover:text-blue-700 transition-colors"
@@ -1819,35 +1900,60 @@ const FinancialAnalysisPage = ({
               <select
                 value={selectedAge}
                 onChange={(e) => setSelectedAge(parseInt(e.target.value))}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
               >
                 {financialData.map(data => (
                   <option key={data.age} value={data.age}>{data.age}歲</option>
                 ))}
               </select>
             </div>
-            <Bar data={chartData.bar} options={{
-              responsive: true,
-              plugins: {
-                legend: {
-                  position: 'top',
+            <div className="h-64 lg:h-80">
+              <Bar data={chartData.bar} options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: {
+                    position: 'top',
+                    labels: {
+                      boxWidth: 12,
+                      padding: 8,
+                      font: {
+                        size: 11
+                      }
+                    }
+                  },
+                  title: {
+                    display: true,
+                    text: '各收入來源年度金額',
+                    font: {
+                      size: 14
+                    }
+                  }
                 },
-                title: {
-                  display: true,
-                  text: '各收入來源年度金額'
-                }
-              },
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  ticks: {
-                    callback: function(value) {
-                      return formatCurrency(value);
+                scales: {
+                  x: {
+                    ticks: {
+                      maxRotation: 45,
+                      minRotation: 45,
+                      font: {
+                        size: 10
+                      }
+                    }
+                  },
+                  y: {
+                    beginAtZero: true,
+                    ticks: {
+                      callback: function(value) {
+                        return formatCurrency(value);
+                      },
+                      font: {
+                        size: 10
+                      }
                     }
                   }
                 }
-              }
-            }} />
+              }} />
+            </div>
           </div>
         </div>
       )}
