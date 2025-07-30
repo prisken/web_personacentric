@@ -833,21 +833,13 @@ const FinancialAnalysisPage = ({
           } else {
             // Normal mortgage - show remaining balance if still paying
             if (year >= data.mortgageStartAge && year < paidUpAge) {
-              // Calculate how many payments have been made so far
+              // Simple and reliable mortgage balance calculation
               const paymentsMade = (year - data.mortgageStartAge) * 12;
-              const remainingPayments = numberOfPayments - paymentsMade;
+              const totalPaid = monthlyPayment * paymentsMade;
               
-              // Calculate remaining mortgage balance using standard amortization formula
-              // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
-              // Where: P = principal, r = monthly rate, n = remaining payments, PMT = monthly payment
-              let remainingBalance;
-              if (monthlyInterestRate === 0) {
-                // Handle zero interest rate case
-                remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
-              } else {
-                // Use remaining payments (not payments made) for the formula
-                remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, remainingPayments) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / monthlyInterestRate);
-              }
+              // Calculate remaining balance using simple linear amortization
+              // This is more reliable than complex formulas
+              const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
               
               // Add remaining mortgage balance as current liability (for display only)
               accumulatedLiabilities += remainingBalance;
@@ -917,21 +909,13 @@ const FinancialAnalysisPage = ({
         } else {
           // Normal mortgage - show remaining balance if still paying
           if (age >= data.mortgageStartAge && age < paidUpAge) {
-            // Calculate how many payments have been made so far
+            // Simple and reliable mortgage balance calculation
             const paymentsMade = (age - data.mortgageStartAge) * 12;
-            const remainingPayments = numberOfPayments - paymentsMade;
+            const totalPaid = monthlyPayment * paymentsMade;
             
-            // Calculate remaining mortgage balance using standard amortization formula
-            // Formula: remainingBalance = P * (1 + r)^n - PMT * ((1 + r)^n - 1) / r
-            // Where: P = principal, r = monthly rate, n = remaining payments, PMT = monthly payment
-            let remainingBalance;
-            if (monthlyInterestRate === 0) {
-              // Handle zero interest rate case
-              remainingBalance = Math.max(0, mortgageAmount - (monthlyPayment * paymentsMade));
-            } else {
-              // Use remaining payments (not payments made) for the formula
-              remainingBalance = Math.max(0, mortgageAmount * Math.pow(1 + monthlyInterestRate, remainingPayments) - monthlyPayment * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / monthlyInterestRate);
-            }
+            // Calculate remaining balance using simple linear amortization
+            // This is more reliable than complex formulas
+            const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
             
             // Add remaining mortgage balance as current liability (for display only)
             liabilities += remainingBalance;
