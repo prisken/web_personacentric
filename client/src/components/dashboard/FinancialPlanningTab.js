@@ -235,6 +235,7 @@ const FinancialPlanningTab = () => {
     const baseRateFemale = 4700; // $4,700 per month for female
     
     // Age adjustment factor (simplified - older age gets higher monthly payout)
+    // For age 45, this would be Math.pow(1.05, 45 - 60) = Math.pow(1.05, -15) = 0.463
     const ageAdjustment = Math.pow(1.05, annuityStartAge - 60);
     
     // Gender factor
@@ -242,6 +243,16 @@ const FinancialPlanningTab = () => {
     
     // Calculate monthly annuity
     const monthlyAnnuity = (totalPremium / 1000000) * genderFactor * ageAdjustment;
+    
+    // Debug logging
+    console.log('Annuity calculation:', {
+      totalPremium,
+      annuityStartAge,
+      gender,
+      ageAdjustment,
+      genderFactor,
+      monthlyAnnuity
+    });
     
     return monthlyAnnuity;
   };

@@ -429,6 +429,13 @@ const FinancialAnalysisPage = ({
         case 'annuity':
           // 年金：每月年金計入被動收入，從年金開始年齡到預期壽命
           if (age >= data.annuityStartAge && age <= data.lifeExpectancy) {
+            console.log('Adding annuity to passive income:', {
+              age,
+              annuityStartAge: data.annuityStartAge,
+              lifeExpectancy: data.lifeExpectancy,
+              monthlyAnnuity: data.monthlyAnnuity,
+              passiveIncome
+            });
             passiveIncome += data.monthlyAnnuity;
           }
           break;
