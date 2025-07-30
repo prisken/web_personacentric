@@ -448,10 +448,10 @@ const FinancialAnalysisPage = ({
         } else {
           finalEmployeeContribution = employeeContribution;
         }
-        
-        // After age 65, no MPF contribution deduction (even if still working)
-        income += salaryWithIncrement - finalEmployeeContribution;
       }
+      
+      // Add salary income (with or without MPF contribution deduction)
+      income += salaryWithIncrement - finalEmployeeContribution;
     }
     }
 
