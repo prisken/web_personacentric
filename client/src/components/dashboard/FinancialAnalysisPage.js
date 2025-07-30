@@ -756,15 +756,16 @@ const FinancialAnalysisPage = ({
             // Calculate property equity: 購買價格 - 剩餘按揭
             const propertyEquity = data.purchasePrice - remainingBalance;
             
-            // Apply property value growth to equity: (購買價格 - 剩餘按揭) × (1 + 物業價值增長%)
+            // Apply property value growth to equity: (購買價格 - 剩餘按揭) × 物業價值增長%
             const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
             const yearsSincePurchase = age - data.mortgageStartAge;
+            const growthOnEquity = propertyEquity * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
             
-            // Total property value: (購買價格 - 剩餘按揭) × (1 + 物業價值增長%)^年數
-            const totalPropertyValue = propertyEquity * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+            // Total property value: ((購買價格 - 剩餘按揭) × 物業價值增長%) + (購買價格 - 剩餘按揭)
+            const totalPropertyValue = growthOnEquity + propertyEquity;
             
             // Debug: Log the calculation for verification
-            console.log(`PROPERTY DEBUG Age ${age}: Purchase Price=${data.purchasePrice}, Remaining Mortgage=${remainingBalance}, Property Equity=${propertyEquity}, Growth Rate=${propertyValueGrowth}, Years Since Purchase=${yearsSincePurchase}, Total Property Value=${totalPropertyValue}`);
+            console.log(`PROPERTY DEBUG Age ${age}: Purchase Price=${data.purchasePrice}, Remaining Mortgage=${remainingBalance}, Property Equity=${propertyEquity}, Growth Rate=${propertyValueGrowth}, Years Since Purchase=${yearsSincePurchase}, Growth on Equity=${growthOnEquity}, Total Property Value=${totalPropertyValue}`);
             
             // Check if property is sold
             if (data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
