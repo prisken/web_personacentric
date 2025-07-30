@@ -220,6 +220,20 @@ const FinancialAnalysisPage = ({
         }
       });
       
+      // Add yearly rental expenses as negative flexible funds
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'rental' && year >= data.leaseStartAge && year <= data.expectedEndAge) {
+          // Calculate yearly rent with annual increase
+          const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
+          const yearsSinceLeaseStart = year - data.leaseStartAge;
+          const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
+          const yearlyRent = currentRent * 12;
+          // Yearly rental expense reduces flexible funds (negative value)
+          flexibleFunds -= yearlyRent;
+        }
+      });
+      
       // Add dividends from funds as liquid cash (until expected withdrawal age)
       products.forEach(product => {
         const { subType, data } = product;
@@ -803,16 +817,8 @@ const FinancialAnalysisPage = ({
           }
         }
 
-        // Add rental payments as liabilities
-        if (subType === 'rental') {
-          if (year >= data.leaseStartAge && year <= data.expectedEndAge) {
-            // Calculate rent with annual increase
-            const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
-            const yearsSinceLeaseStart = year - data.leaseStartAge;
-            const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
-            accumulatedLiabilities += currentRent * 12;
-          }
-        }
+        // Rental payments are now handled in flexible funds as negative value
+        // Removed from liabilities calculation
 
         // Fund investment amount is now handled in flexible funds as negative value
         // Removed from liabilities calculation
@@ -863,16 +869,8 @@ const FinancialAnalysisPage = ({
         }
       }
 
-      // Add rental payments as liabilities
-      if (subType === 'rental') {
-        if (age >= data.leaseStartAge && age <= data.expectedEndAge) {
-          // Calculate rent with annual increase
-          const rentIncreaseRate = (data.rentIncreaseRate || 0) / 100;
-          const yearsSinceLeaseStart = age - data.leaseStartAge;
-          const currentRent = data.monthlyRentExpense * Math.pow(1 + rentIncreaseRate, yearsSinceLeaseStart);
-          liabilities += currentRent * 12;
-        }
-      }
+      // Rental payments are now handled in flexible funds as negative value
+      // Removed from liabilities calculation
 
       // Annuities are insurance products, not liabilities - contributions are expenses, not debts
       // The annuity contribution is already handled as an expense in calculateTotalExpenses
