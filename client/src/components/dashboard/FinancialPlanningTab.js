@@ -187,7 +187,9 @@ const FinancialPlanningTab = () => {
         };
         
         // Calculate and add monthlyAnnuity
+        console.log('Creating new annuity product, calculating monthlyAnnuity...');
         defaultAnnuityData.monthlyAnnuity = calculateAnnuityMonthlyPayment(defaultAnnuityData);
+        console.log('New annuity data with monthlyAnnuity:', defaultAnnuityData);
         
         return defaultAnnuityData;
       case 'own_living':
@@ -264,8 +266,11 @@ const FinancialPlanningTab = () => {
         
         // For annuity products, calculate and store monthlyAnnuity
         if (product.subType === 'annuity') {
+          console.log('Updating annuity product, calculating monthlyAnnuity...');
           const monthlyAnnuity = calculateAnnuityMonthlyPayment(updatedData);
+          console.log('Calculated monthlyAnnuity:', monthlyAnnuity);
           updatedData.monthlyAnnuity = monthlyAnnuity;
+          console.log('Updated data with monthlyAnnuity:', updatedData);
         }
         
         const summary = calculateProductSummary(product.subType, updatedData);
@@ -431,7 +436,20 @@ const FinancialPlanningTab = () => {
   const loadUser = (userData) => {
     setCurrentUser(userData.id);
     setClientName(userData.clientName || '');
-    setProducts(userData.products || []);
+    
+    // Ensure all annuity products have monthlyAnnuity calculated
+    const updatedProducts = (userData.products || []).map(product => {
+      if (product.subType === 'annuity' && !product.data.monthlyAnnuity) {
+        console.log('Fixing existing annuity product without monthlyAnnuity...');
+        const monthlyAnnuity = calculateAnnuityMonthlyPayment(product.data);
+        const updatedData = { ...product.data, monthlyAnnuity };
+        const summary = calculateProductSummary(product.subType, updatedData);
+        return { ...product, data: updatedData, summary };
+      }
+      return product;
+    });
+    
+    setProducts(updatedProducts);
     setRetirementAge(userData.retirementAge || 65);
     setInflationRate(userData.inflationRate || 2);
     setCurrentAssets(userData.currentAssets || 0);
