@@ -249,15 +249,29 @@ const FinancialAnalysisPage = ({
         }
       });
       
-      // Add property sale proceeds to flexible funds
+      // Add property sale proceeds to flexible funds (net proceeds after mortgage)
       products.forEach(product => {
         const { subType, data } = product;
         if (subType === 'own_living' && data.sellAge !== 'willNotSell' && year === parseInt(data.sellAge)) {
           // Calculate property value at sale age with growth
           const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
           const yearsSincePurchase = year - data.mortgageStartAge;
-          const saleProceeds = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
-          flexibleFunds += saleProceeds;
+          const propertyValue = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
+          
+          // Calculate remaining mortgage balance at sale age
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          const mortgageAmount = data.purchasePrice - downPaymentAmount;
+          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+          const interestRate = data.mortgageInterestRate / 100;
+          const monthlyInterestRate = interestRate / 12;
+          const numberOfPayments = mortgageTerm * 12;
+          const paymentsMade = (year - data.mortgageStartAge) * 12;
+          const remainingPayments = numberOfPayments - paymentsMade;
+          const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+          
+          // Add net sale proceeds (property value minus remaining mortgage)
+          const netSaleProceeds = propertyValue - remainingBalance;
+          flexibleFunds += netSaleProceeds;
         }
       });
       
@@ -803,19 +817,8 @@ const FinancialAnalysisPage = ({
       });
     }
 
-    // Subtract property sale proceeds from accumulated liabilities
-    products.forEach(product => {
-      const { subType, data } = product;
-      if (subType === 'own_living' && data.sellAge !== 'willNotSell' && age >= parseInt(data.sellAge)) {
-        // Calculate property value at sale age with growth
-        const propertyValueGrowth = (data.propertyValueGrowth || 1) / 100; // Default to 1% if not set
-        const yearsSincePurchase = parseInt(data.sellAge) - data.mortgageStartAge;
-        const saleProceeds = data.purchasePrice * Math.pow(1 + propertyValueGrowth, yearsSincePurchase);
-        
-        // Subtract sale proceeds from accumulated liabilities (but don't go below 0)
-        accumulatedLiabilities = Math.max(0, accumulatedLiabilities - saleProceeds);
-      }
-    });
+    // Note: Property sale proceeds are handled in calculateAccumulatedFlexibleFunds
+    // The remaining mortgage balance is already added as a liability at sale age
 
     return accumulatedLiabilities;
   };
