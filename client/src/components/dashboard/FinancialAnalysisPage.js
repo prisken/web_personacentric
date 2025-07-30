@@ -1316,8 +1316,8 @@ const FinancialAnalysisPage = ({
         },
               netWorth: {
           title: '淨資產計算公式',
-          formula: `總資產 - 總負債\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n總負債：${formatCurrency(calculateAccumulatedLiabilities(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n\n注意：總資產包括年度靈活資金（流動現金），總負債為從最早產品開始年齡累積的負債總和減去物業售樓收益`,
-          description: '實際擁有的財富總額，包括流動現金和投資資產，是財務狀況的重要指標'
+          formula: `總資產 + 年度靈活資金\n\n當前${currentAge}歲：\n總資產：${formatCurrency(calculateTotalAssets(currentAge))}\n年度靈活資金：${formatCurrency(calculateAccumulatedFlexibleFunds(currentAge))}\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) + calculateAccumulatedFlexibleFunds(currentAge))}\n\n注意：淨資產代表總體財富，包括所有資產和流動現金，總負債仍會單獨顯示供參考`,
+          description: '實際擁有的財富總額，包括所有資產和流動現金，是財務狀況的重要指標'
         },
       accumulatedFlexibleFunds: {
         title: '年度靈活資金計算公式',
@@ -1338,7 +1338,7 @@ const FinancialAnalysisPage = ({
     const chartFormulas = {
       financialTrend: {
         title: '財務趨勢圖說明',
-        formula: `淨資產 = 總資產 - 總負債\n被動收入 = 投資收益 + 租金收入 + 退休金收入 + 年金收入\n年開支 = 月開支 × 12\n\n當前${currentAge}歲詳細數據：\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) - calculateAccumulatedLiabilities(currentAge))}\n被動收入：${formatCurrency(calculatePassiveIncome(currentAge) * 12)}/年\n年開支：${formatCurrency(calculateTotalExpenses(currentAge) * 12)}/年`,
+        formula: `淨資產 = 總資產 + 年度靈活資金\n被動收入 = 投資收益 + 租金收入 + 退休金收入 + 年金收入\n年開支 = 月開支 × 12\n\n當前${currentAge}歲詳細數據：\n淨資產：${formatCurrency(calculateTotalAssets(currentAge) + calculateAccumulatedFlexibleFunds(currentAge))}\n被動收入：${formatCurrency(calculatePassiveIncome(currentAge) * 12)}/年\n年開支：${formatCurrency(calculateTotalExpenses(currentAge) * 12)}/年`,
         description: '此圖表顯示隨年齡變化的財務狀況趨勢。淨資產反映總體財富，被動收入顯示無需工作的收入來源，年開支則反映生活成本。通過觀察這些線條的變化，可以評估財務規劃的有效性和退休準備度。'
       },
       assetAllocation: {
