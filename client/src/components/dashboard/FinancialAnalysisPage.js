@@ -192,9 +192,8 @@ const FinancialAnalysisPage = ({
           // Immediate annuity contribution is one-time
           oneTimeExpenses += data.contributionAmount;
         } else if (subType === 'own_living' && year === data.mortgageStartAge) {
-          // Down payment is one-time expense at mortgage start age
-          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
-          oneTimeExpenses += downPaymentAmount;
+          // Down payment is now handled in flexible funds as negative value
+          // Removed from one-time expenses calculation
         } else {
           // All other expenses are recurring monthly expenses
           // This will be handled by the existing yearExpenses calculation
@@ -231,6 +230,16 @@ const FinancialAnalysisPage = ({
           const yearlyRent = currentRent * 12;
           // Yearly rental expense reduces flexible funds (negative value)
           flexibleFunds -= yearlyRent;
+        }
+      });
+      
+      // Add down payment as negative flexible funds at mortgage start age
+      products.forEach(product => {
+        const { subType, data } = product;
+        if (subType === 'own_living' && year === data.mortgageStartAge) {
+          // Down payment reduces flexible funds (negative value)
+          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+          flexibleFunds -= downPaymentAmount;
         }
       });
       
