@@ -775,102 +775,75 @@ const FinancialAnalysisPage = ({
   const calculateAccumulatedLiabilities = (age) => {
     let accumulatedLiabilities = 0;
     
-    // Find the earliest start age among all products to ensure we capture all liabilities
-    let earliestStartAge = analysisPeriod.start;
+    // Only calculate liabilities for the current age, not accumulate from previous years
     products.forEach(product => {
       const { subType, data } = product;
-      if (subType === 'own_living' && data.mortgageStartAge < earliestStartAge) {
-        earliestStartAge = data.mortgageStartAge;
-      }
-      if (subType === 'bank' && data.startAge < earliestStartAge) {
-        earliestStartAge = data.startAge;
-      }
-      if (subType === 'annuity' && data.premiumAge < earliestStartAge) {
-        earliestStartAge = data.premiumAge;
-      }
-      if (subType === 'rental' && data.leaseStartAge < earliestStartAge) {
-        earliestStartAge = data.leaseStartAge;
-      }
-      if (subType === 'funds' && data.startAge < earliestStartAge) {
-        earliestStartAge = data.startAge;
-      }
-    });
-    
-    // Track liabilities from earliest product start age to current age
-    for (let year = earliestStartAge; year <= age; year++) {
       
-      products.forEach(product => {
-        const { subType, data } = product;
+      // Add remaining mortgage balance as liability (for display purposes only)
+      if (subType === 'own_living') {
+        // Calculate mortgage amount and monthly payment based on down payment percentage
+        const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
+        const mortgageAmount = data.purchasePrice - downPaymentAmount;
         
-        // Add remaining mortgage balance as liability (for display purposes only)
-        if (subType === 'own_living') {
-          // Calculate mortgage amount and monthly payment based on down payment percentage
-          const downPaymentAmount = data.purchasePrice * (data.downPayment / 100);
-          const mortgageAmount = data.purchasePrice - downPaymentAmount;
-          
-          // Use actual mortgage interest rate and completion age from data
-          const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
-          const interestRate = data.mortgageInterestRate / 100;
-          const monthlyInterestRate = interestRate / 12;
-          const numberOfPayments = mortgageTerm * 12;
-          
-          // Calculate monthly payment using mortgage formula
-          const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-          
-          const paidUpAge = data.mortgageCompletionAge;
-          
-          // Check if property is sold before mortgage completion
-          if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
-            // Property sold early - show remaining balance until sale age, then remove it
-            if (year >= data.mortgageStartAge && year < parseInt(data.sellAge)) {
-              // Show remaining balance during mortgage period
-              const paymentsMade = (year - data.mortgageStartAge) * 12;
-              const remainingPayments = numberOfPayments - paymentsMade;
-              const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-              accumulatedLiabilities += remainingBalance;
-            }
-            // At sale age and after: mortgage is paid off, no liability
-          } else {
-            // Normal mortgage - show remaining balance if still paying
-            if (year >= data.mortgageStartAge && year < paidUpAge) {
-              // Simple and reliable mortgage balance calculation
-              const paymentsMade = (year - data.mortgageStartAge) * 12;
-              const totalPaid = monthlyPayment * paymentsMade;
-              
-              // Calculate remaining balance using simple linear amortization
-              // This is more reliable than complex formulas
-              const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
-              
-              // Debug: Log mortgage calculation details
-              console.log(`MORTGAGE DEBUG Age ${year}: mortgageAmount=${mortgageAmount}, monthlyPayment=${monthlyPayment}, paymentsMade=${paymentsMade}, totalPaid=${totalPaid}, numberOfPayments=${numberOfPayments}, remainingBalance=${remainingBalance}`);
-              
-              // Add remaining mortgage balance as current liability (for display only)
-              accumulatedLiabilities += remainingBalance;
-            }
+        // Use actual mortgage interest rate and completion age from data
+        const mortgageTerm = Math.max(1, data.mortgageCompletionAge - data.mortgageStartAge);
+        const interestRate = data.mortgageInterestRate / 100;
+        const monthlyInterestRate = interestRate / 12;
+        const numberOfPayments = mortgageTerm * 12;
+        
+        // Calculate monthly payment using mortgage formula
+        const monthlyPayment = mortgageAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, numberOfPayments)) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+        
+        const paidUpAge = data.mortgageCompletionAge;
+        
+        // Check if property is sold before mortgage completion
+        if (data.sellAge !== 'willNotSell' && parseInt(data.sellAge) < paidUpAge) {
+          // Property sold early - show remaining balance until sale age, then remove it
+          if (age >= data.mortgageStartAge && age < parseInt(data.sellAge)) {
+            // Show remaining balance during mortgage period
+            const paymentsMade = (age - data.mortgageStartAge) * 12;
+            const remainingPayments = numberOfPayments - paymentsMade;
+            const remainingBalance = mortgageAmount * (Math.pow(1 + monthlyInterestRate, remainingPayments) - 1) / (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+            accumulatedLiabilities += remainingBalance;
+          }
+          // At sale age and after: mortgage is paid off, no liability
+        } else {
+          // Normal mortgage - show remaining balance if still paying
+          if (age >= data.mortgageStartAge && age < paidUpAge) {
+            // Simple and reliable mortgage balance calculation
+            const paymentsMade = (age - data.mortgageStartAge) * 12;
+            const totalPaid = monthlyPayment * paymentsMade;
+            
+            // Calculate remaining balance using simple linear amortization
+            // This is more reliable than complex formulas
+            const remainingBalance = Math.max(0, mortgageAmount - (totalPaid * (mortgageAmount / (monthlyPayment * numberOfPayments))));
+            
+            // Debug: Log mortgage calculation details
+            console.log(`MORTGAGE DEBUG Age ${age}: mortgageAmount=${mortgageAmount}, monthlyPayment=${monthlyPayment}, paymentsMade=${paymentsMade}, totalPaid=${totalPaid}, numberOfPayments=${numberOfPayments}, remainingBalance=${remainingBalance}`);
+            
+            // Add remaining mortgage balance as current liability (for display only)
+            accumulatedLiabilities += remainingBalance;
           }
         }
-        
-        // Add bank fixed deposit contributions as liabilities if not already owned
-        if (subType === 'bank' && data.planType === 'fixed' && data.alreadyOwned === 'N') {
-          if (year === data.startAge) {
-            accumulatedLiabilities += data.contribution;
-          }
+      }
+      
+      // Add bank fixed deposit contributions as liabilities if not already owned
+      if (subType === 'bank' && data.planType === 'fixed' && data.alreadyOwned === 'N') {
+        if (age === data.startAge) {
+          accumulatedLiabilities += data.contribution;
         }
+      }
 
-        // Rental payments are now handled in flexible funds as negative value
-        // Removed from liabilities calculation
+      // Rental payments are now handled in flexible funds as negative value
+      // Removed from liabilities calculation
 
-        // Fund investment amount is now handled in flexible funds as negative value
-        // Removed from liabilities calculation
+      // Fund investment amount is now handled in flexible funds as negative value
+      // Removed from liabilities calculation
 
-        // Annuities are insurance products, not liabilities - contributions are expenses, not debts
-        // The annuity contribution is already handled as an expense in calculateTotalExpenses
-        // and reduces liquid assets in calculateAccumulatedFlexibleFunds
-      });
-    }
-
-    // Note: Property sale proceeds are handled in calculateAccumulatedFlexibleFunds
-    // The remaining mortgage balance is already added as a liability at sale age
+      // Annuities are insurance products, not liabilities - contributions are expenses, not debts
+      // The annuity contribution is already handled as an expense in calculateTotalExpenses
+      // and reduces liquid assets in calculateAccumulatedFlexibleFunds
+    });
 
     return accumulatedLiabilities;
   };
