@@ -20,6 +20,43 @@ export const LanguageProvider = ({ children }) => {
 
   const translations = {
     'zh-TW': {
+      // Homepage - Testimonials
+      'testimonials.title': '客戶怎麼說',
+      'testimonials.client10': '「AI內容生成器幫我節省了大量時間，讓我能專注在與客戶的互動上。」',
+      'testimonials.client10Name': '陳小明',
+      'testimonials.client10Title': '資深理財顧問',
+
+      // Homepage - Events
+      'events.title': '最新活動',
+      'events.financialPlanning': '財務規劃工作坊',
+      'events.investmentStrategy': '投資策略研討會',
+      'events.retirementPlanning': '退休規劃大師班',
+      'events.revisit': '重新瀏覽',
+      'events.viewAll': '查看所有活動',
+
+      // Homepage - Partners
+      'partners.title': '合作夥伴',
+
+      // Homepage - Blogs
+      'blogs.title': '最新部落格',
+      'blogs.investmentStrategies2024': '2024年投資策略',
+      'blogs.investmentStrategiesExcerpt': '探索2024年最新的投資趨勢和機會，幫助您做出明智的投資決策。',
+      'blogs.insurancePolicies': '了解保險政策',
+      'blogs.insurancePoliciesExcerpt': '深入解析各類保險產品，協助您選擇最適合的保障方案。',
+      'blogs.retirementEssentials': '退休規劃要點',
+      'blogs.retirementEssentialsExcerpt': '掌握退休規劃的關鍵要素，確保您的退休生活無憂無慮。',
+      'blogs.readMore': '閱讀更多',
+      'blogs.viewAll': '查看所有文章',
+
+      // Homepage - Contact
+      'contact.title': '聯絡我們',
+      'contact.subtitle': '有任何問題或需要支援，請隨時聯絡我們',
+      'contact.name': '姓名',
+      'contact.phone': '電話',
+      'contact.email': '電子郵件',
+      'contact.message': '訊息',
+      'contact.send': '發送訊息',
+
       // Homepage - Hero Section
       'home.hero.slide1.title': '找到最適合您的財務顧問',
       'home.hero.slide1.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
@@ -538,6 +575,43 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.generateReport': '生成報告',
     },
     'en': {
+      // Homepage - Testimonials
+      'testimonials.title': 'What Our Clients Say',
+      'testimonials.client10': '"The AI content generator saved me so much time, allowing me to focus on client interactions."',
+      'testimonials.client10Name': 'John Smith',
+      'testimonials.client10Title': 'Senior Financial Advisor',
+
+      // Homepage - Events
+      'events.title': 'Latest Events',
+      'events.financialPlanning': 'Financial Planning Workshop',
+      'events.investmentStrategy': 'Investment Strategy Seminar',
+      'events.retirementPlanning': 'Retirement Planning Masterclass',
+      'events.revisit': 'Revisit',
+      'events.viewAll': 'View All Events',
+
+      // Homepage - Partners
+      'partners.title': 'Partnering Organizations',
+
+      // Homepage - Blogs
+      'blogs.title': 'Latest Blogs',
+      'blogs.investmentStrategies2024': 'Investment Strategies for 2024',
+      'blogs.investmentStrategiesExcerpt': 'Explore the latest investment trends and opportunities for 2024 to make informed investment decisions.',
+      'blogs.insurancePolicies': 'Understanding Insurance Policies',
+      'blogs.insurancePoliciesExcerpt': 'Deep dive into various insurance products to help you choose the right coverage.',
+      'blogs.retirementEssentials': 'Retirement Planning Essentials',
+      'blogs.retirementEssentialsExcerpt': 'Master the key elements of retirement planning to ensure a worry-free retirement.',
+      'blogs.readMore': 'Read More',
+      'blogs.viewAll': 'View All Blogs',
+
+      // Homepage - Contact
+      'contact.title': 'Contact Us',
+      'contact.subtitle': 'Get in touch with us for any questions or support',
+      'contact.name': 'Name',
+      'contact.phone': 'Phone',
+      'contact.email': 'Email',
+      'contact.message': 'Message',
+      'contact.send': 'Send Message',
+
       // Homepage - Hero Section
       'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
       'home.hero.slide1.subtitle': 'AI-powered matching to connect you with the right professional',
