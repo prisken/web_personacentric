@@ -41,7 +41,6 @@ User.hasMany(EventRegistration, { foreignKey: 'user_id', as: 'eventRegistrations
 User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
 User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
-User.hasMany(Recommendation, { foreignKey: 'user_id', as: 'recommendations' });
 User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
 
 // Agent associations
@@ -107,18 +106,9 @@ Notification.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 EventRegistration.belongsTo(Event, { foreignKey: 'event_id', as: 'event' });
 EventRegistration.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-
-
 // Client upgrade
 ClientUpgrade.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 ClientUpgrade.belongsTo(User, { foreignKey: 'reviewed_by', as: 'reviewer' });
-
-// Recommendation associations
-Recommendation.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-Recommendation.hasMany(RecommendationEngagement, { foreignKey: 'recommendation_id', as: 'engagements' });
-
-// Recommendation engagements
-RecommendationEngagement.belongsTo(Recommendation, { foreignKey: 'recommendation_id', as: 'recommendation' });
 
 // Badge associations
 Badge.hasMany(UserBadge, { foreignKey: 'badge_id', as: 'userBadges' });
@@ -148,8 +138,6 @@ module.exports = {
   Notification,
   EventRegistration,
   ClientUpgrade,
-  Recommendation,
-  RecommendationEngagement,
   Badge,
   UserBadge
-}; 
+};
