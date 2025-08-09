@@ -181,6 +181,66 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* About Section */}
+      <section className="py-16 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">
+              {t('home.about.title')}
+            </h2>
+            <p className="text-xl lg:text-2xl text-blue-200 max-w-3xl mx-auto">
+              {t('home.about.subtitle')}
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Smart Matching */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-4xl mb-4">🎯</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('home.about.benefit1.title')}
+              </h3>
+              <p className="text-blue-200">
+                {t('home.about.benefit1.desc')}
+              </p>
+            </div>
+
+            {/* Professional Community */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-4xl mb-4">👥</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('home.about.benefit2.title')}
+              </h3>
+              <p className="text-blue-200">
+                {t('home.about.benefit2.desc')}
+              </p>
+            </div>
+
+            {/* Reward System */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-4xl mb-4">🏆</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('home.about.benefit3.title')}
+              </h3>
+              <p className="text-blue-200">
+                {t('home.about.benefit3.desc')}
+              </p>
+            </div>
+
+            {/* Continuous Learning */}
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-4xl mb-4">📚</div>
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('home.about.benefit4.title')}
+              </h3>
+              <p className="text-blue-200">
+                {t('home.about.benefit4.desc')}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Gifts Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

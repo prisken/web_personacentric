@@ -61,6 +61,18 @@ export const LanguageProvider = ({ children }) => {
 
       // Homepage - Hero Section
       'home.hero.registerNow': '立即報名',
+      
+      // Homepage - About Section
+      'home.about.title': '為什麼選擇 Persona Centric？',
+      'home.about.subtitle': '專業理財配對平台，為您打造個人化的財務未來',
+      'home.about.benefit1.title': '智能配對',
+      'home.about.benefit1.desc': '透過AI技術，精準匹配最適合您的財務顧問',
+      'home.about.benefit2.title': '專業社群',
+      'home.about.benefit2.desc': '加入活躍的投資者社群，分享經驗與見解',
+      'home.about.benefit3.title': '獎勵機制',
+      'home.about.benefit3.desc': '參與平台活動，獲得積分和專屬優惠',
+      'home.about.benefit4.title': '持續學習',
+      'home.about.benefit4.desc': '獲取最新的財經知識和投資策略',
       'home.gifts.title': '獲得免費禮品！',
       'home.gifts.subtitle': '參與我們的投資遊戲',
       'home.gifts.cta': '立即加入獲得10000免費積分',
@@ -604,6 +616,18 @@ export const LanguageProvider = ({ children }) => {
 
       // Homepage - Hero Section
       'home.hero.registerNow': 'Register Now',
+      
+      // Homepage - About Section
+      'home.about.title': 'Why Choose Persona Centric?',
+      'home.about.subtitle': 'Professional financial matching platform, crafting your personalized financial future',
+      'home.about.benefit1.title': 'Smart Matching',
+      'home.about.benefit1.desc': 'AI-powered technology to match you with the perfect financial advisor',
+      'home.about.benefit2.title': 'Professional Community',
+      'home.about.benefit2.desc': 'Join an active investor community to share experiences and insights',
+      'home.about.benefit3.title': 'Reward System',
+      'home.about.benefit3.desc': 'Earn points and exclusive benefits by participating in platform activities',
+      'home.about.benefit4.title': 'Continuous Learning',
+      'home.about.benefit4.desc': 'Access the latest financial knowledge and investment strategies',
       'home.gifts.title': 'Get free gifts!',
       'home.gifts.subtitle': 'by playing our investment game',
       'home.gifts.cta': 'Join Now and get 10000 free Tokets',
