@@ -21,6 +21,9 @@ export const LanguageProvider = ({ children }) => {
   const translations = {
     'zh-TW': {
       // Homepage - Testimonials
+      'testimonials.client4': '「專業的顧問配對，讓我找到最適合的投資策略。」',
+      'testimonials.client4Name': '李小華',
+      'testimonials.client4Title': '上班族',
       'testimonials.title': '客戶怎麼說',
       'testimonials.client10': '「AI內容生成器幫我節省了大量時間，讓我能專注在與客戶的互動上。」',
       'testimonials.client10Name': '陳小明',
@@ -576,6 +579,9 @@ export const LanguageProvider = ({ children }) => {
     },
     'en': {
       // Homepage - Testimonials
+      'testimonials.client4': '"Professional advisor matching helped me find the perfect investment strategy."',
+      'testimonials.client4Name': 'Jane Smith',
+      'testimonials.client4Title': 'Employee',
       'testimonials.title': 'What Our Clients Say',
       'testimonials.client10': '"The AI content generator saved me so much time, allowing me to focus on client interactions."',
       'testimonials.client10Name': 'John Smith',
