@@ -145,9 +145,9 @@ const Header = () => {
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 lg:h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center group">
+          {/* Logo - Centered for logged-in users */}
+          <div className={`flex items-center ${user ? 'absolute left-1/2 transform -translate-x-1/2' : ''}`}>
+            <Link to={user ? '/dashboard' : '/'} className="flex items-center group">
               <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center mr-2 lg:mr-3 transition-transform duration-200 group-hover:scale-110 shadow-lg">
                 <span className="text-white text-xs lg:text-sm font-bold">📈</span>
               </div>
@@ -179,18 +179,7 @@ const Header = () => {
               </a>
             </nav>
           )}
-          {/* Dashboard Link - Only shown for logged-in users */}
-          {user && (
-            <nav className="hidden lg:flex items-center">
-              <Link
-                to="/dashboard"
-                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
-              >
-                {t('actions.dashboard')}
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-              </Link>
-            </nav>
-          )}
+
 
           {/* Language Switcher & Auth Buttons */}
           <div className="flex items-center space-x-2 lg:space-x-4">
@@ -300,15 +289,7 @@ const Header = () => {
                   </a>
                 </>
               )}
-              {user && (
-                <Link
-                  to="/dashboard"
-                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {t('actions.dashboard')}
-                </Link>
-              )}
+
               <div className="pt-3 border-t border-gray-300/30">
                 {user ? (
                   <>

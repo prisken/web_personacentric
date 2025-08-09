@@ -35,6 +35,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
     { id: 'investment', label: '投資遊戲', icon: '📈' },
     { id: 'points', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
+    { id: 'blogs', label: t('nav.blogs'), icon: '📝' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 

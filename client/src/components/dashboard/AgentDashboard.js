@@ -58,6 +58,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'events', label: t('dashboard.tabs.events'), icon: '📅' },
     { id: 'analytics', label: t('dashboard.tabs.points'), icon: '🎯' },
     { id: 'contests', label: t('dashboard.tabs.contests'), icon: '🏆' },
+    { id: 'blogs', label: t('nav.blogs'), icon: '📝' },
     { id: 'financial_planning', label: t('financialPlanning.tab'), icon: '💰' },
     { id: 'profile', label: t('dashboard.tabs.profile'), icon: '👤' }
   ];
