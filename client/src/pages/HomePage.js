@@ -41,9 +41,8 @@ const HomePage = () => {
     { number: '85%', label: t('stats.growth'), description: t('stats.averageGrowth') }
   ];
 
-  // Add carousel state for contest winners and testimonials
+  // Add carousel state for contest winners
   const [winnerIndex, setWinnerIndex] = useState(0);
-  const [testimonialIndex, setTestimonialIndex] = useState(0);
 
   // Contest winners data (replace with real data as needed)
   const contestWinners = [
@@ -77,70 +76,6 @@ const HomePage = () => {
     }
   ];
 
-  // Expand testimonials to 10
-  const testimonials = [
-    {
-      quote: t('testimonials.client1'),
-      name: t('testimonials.client1Name'),
-      title: t('testimonials.client1Title'),
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'
-    },
-    {
-      quote: t('testimonials.client2'),
-      name: t('testimonials.client2Name'),
-      title: t('testimonials.client2Title'),
-      avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'
-    },
-    {
-      quote: t('testimonials.client3'),
-      name: t('testimonials.client3Name'),
-      title: t('testimonials.client3Title'),
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80'
-    },
-    {
-      quote: t('testimonials.client4'),
-      name: t('testimonials.client4Name'),
-      title: t('testimonials.client4Title'),
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg'
-    },
-    {
-      quote: t('testimonials.client5'),
-      name: t('testimonials.client5Name'),
-      title: t('testimonials.client5Title'),
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg'
-    },
-    {
-      quote: t('testimonials.client6'),
-      name: t('testimonials.client6Name'),
-      title: t('testimonials.client6Title'),
-      avatar: 'https://randomuser.me/api/portraits/men/45.jpg'
-    },
-    {
-      quote: t('testimonials.client7'),
-      name: t('testimonials.client7Name'),
-      title: t('testimonials.client7Title'),
-      avatar: 'https://randomuser.me/api/portraits/women/65.jpg'
-    },
-    {
-      quote: t('testimonials.client8'),
-      name: t('testimonials.client8Name'),
-      title: t('testimonials.client8Title'),
-      avatar: 'https://randomuser.me/api/portraits/men/77.jpg'
-    },
-    {
-      quote: t('testimonials.client9'),
-      name: t('testimonials.client9Name'),
-      title: t('testimonials.client9Title'),
-      avatar: 'https://randomuser.me/api/portraits/women/88.jpg'
-    },
-    {
-      quote: t('testimonials.client10'),
-      name: t('testimonials.client10Name'),
-      title: t('testimonials.client10Title'),
-      avatar: 'https://randomuser.me/api/portraits/men/99.jpg'
-    },
-  ];
-
   // Auto-rotate contest winners
   useEffect(() => {
     const interval = setInterval(() => {
@@ -148,24 +83,6 @@ const HomePage = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, [contestWinners.length]);
-
-  // Update testimonials carousel logic to show 3 per slide
-  const testimonialsPerSlide = 3;
-  const totalSlides = Math.ceil(testimonials.length / testimonialsPerSlide);
-
-  // Auto-rotate testimonials
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTestimonialIndex((prev) => (prev + 1) % totalSlides);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [totalSlides]);
-
-  // Get current testimonials for the slide
-  const getCurrentTestimonials = () => {
-    const startIndex = testimonialIndex * testimonialsPerSlide;
-    return testimonials.slice(startIndex, startIndex + testimonialsPerSlide);
-  };
 
   // Events data
   const events = [
@@ -345,52 +262,6 @@ const HomePage = () => {
             >
               Become a Member
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Client Testimonials - Mobile Optimized */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
-              {t('testimonials.title')}
-            </h2>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="w-full max-w-6xl bg-gray-50 rounded-2xl p-4 sm:p-8 lg:p-12 shadow-xl transition-all duration-500">
-              {/* Mobile: Single column, Tablet: 2 columns, Desktop: 3 columns */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
-                {getCurrentTestimonials().map((testimonial, index) => (
-                  <div key={index} className="text-center group">
-                    <div className="w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 lg:mb-6 rounded-full overflow-hidden shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                      <img 
-                        src={testimonial.avatar} 
-                        alt={testimonial.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex justify-center mb-3 sm:mb-4 lg:mb-6">
-                      {[...Array(5)].map((_, i) => (
-                        <i key={i} className="fas fa-star text-yellow-400 text-xs sm:text-sm lg:text-base"></i>
-                      ))}
-                    </div>
-                    <p className="text-gray-700 mb-3 sm:mb-4 lg:mb-6 italic text-sm sm:text-base lg:text-lg leading-relaxed">"{testimonial.quote}"</p>
-                    <h4 className="font-semibold text-gray-900 text-base sm:text-lg lg:text-xl mb-1 sm:mb-2">{testimonial.name}</h4>
-                    <p className="text-gray-600 text-xs sm:text-sm lg:text-base">{testimonial.title}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex space-x-2 sm:space-x-3 mt-6 sm:mt-8 lg:mt-12">
-              {[...Array(totalSlides)].map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setTestimonialIndex(idx)}
-                  className={`w-2 h-2 sm:w-3 sm:h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-200 ${idx === testimonialIndex ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'}`}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </section>
