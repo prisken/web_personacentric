@@ -161,8 +161,8 @@ const HomePage = () => {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="https://placehold.co/1920x1080/e2e8f0/475569?text=Upcoming+Event+Banner" 
-              alt="Upcoming Event"
+              src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=2070&q=80" 
+              alt="Speed Dating Event"
               className="w-full h-full object-cover"
             />
             {/* Dark overlay */}
