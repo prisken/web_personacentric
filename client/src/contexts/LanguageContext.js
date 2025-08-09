@@ -57,10 +57,7 @@ export const LanguageProvider = ({ children }) => {
       // Homepage - Become a Member
       'member.title': '成為會員',
       'member.subtitle': '立即加入獲得10,000積分',
-      'member.name': '姓名',
-      'member.phone': '電話',
-      'member.email': '電子郵件',
-      'member.cta': '立即加入',
+      'member.cta': '立即註冊',
 
       // Homepage - Hero Section
       'home.hero.slide1.title': '找到最適合您的財務顧問',
@@ -602,10 +599,7 @@ export const LanguageProvider = ({ children }) => {
       // Homepage - Become a Member
       'member.title': 'Become a Member',
       'member.subtitle': 'Join now and get 10,000 points free',
-      'member.name': 'Name',
-      'member.phone': 'Phone',
-      'member.email': 'Email',
-      'member.cta': 'Join Now',
+      'member.cta': 'Register Now',
 
       // Homepage - Hero Section
       'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
