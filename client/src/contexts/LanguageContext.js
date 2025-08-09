@@ -535,18 +535,10 @@ export const LanguageProvider = ({ children }) => {
       'contest.rule5': '遵守規則',
 
       // Footer
-      'footer.company': '公司',
       'footer.about': '關於我們',
       'footer.privacy': '隱私政策',
       'footer.terms': '服務條款',
-      'footer.quickLinks': '快速鏈接',
-      'footer.support': '支持',
-      'footer.social': '社交媒體',
-      'footer.description': '連接客戶與專業代理的平台',
       'footer.copyright': '版權所有',
-      'footer.privacyPolicy': '隱私政策',
-      'footer.termsOfService': '服務條款',
-      'footer.cookiePolicy': 'Cookie 政策',
 
       // Financial Planning Additional
       'financialPlanning.yearsOld': '歲',
@@ -1088,18 +1080,10 @@ export const LanguageProvider = ({ children }) => {
       'contest.rule5': 'Rule compliance',
 
       // Footer
-      'footer.company': 'Company',
       'footer.about': 'About Us',
       'footer.privacy': 'Privacy Policy',
       'footer.terms': 'Terms of Service',
-      'footer.quickLinks': 'Quick Links',
-      'footer.support': 'Support',
-      'footer.social': 'Social Media',
-      'footer.description': 'Platform connecting clients with professional agents',
       'footer.copyright': 'All rights reserved',
-      'footer.privacyPolicy': 'Privacy Policy',
-      'footer.termsOfService': 'Terms of Service',
-      'footer.cookiePolicy': 'Cookie Policy',
 
       // Financial Planning Additional
       'financialPlanning.yearsOld': 'years old',
