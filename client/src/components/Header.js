@@ -157,26 +157,31 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.key}
-                to={item.path}
+          {/* Desktop Navigation - Only shown for non-logged-in users */}
+          {!user && (
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.key}
+                  to={item.path}
+                  className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+                >
+                  {item.label}
+                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
+                </Link>
+              ))}
+              <a
+                href="/all-agents"
                 className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
-                {item.label}
+                {t('actions.allAgents')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-              </Link>
-            ))}
-            <a
-              href="/all-agents"
-              className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
-            >
-              {t('actions.allAgents')}
-              <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-            </a>
-            {user && (
+              </a>
+            </nav>
+          )}
+          {/* Dashboard Link - Only shown for logged-in users */}
+          {user && (
+            <nav className="hidden lg:flex items-center">
               <Link
                 to="/dashboard"
                 className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
@@ -184,8 +189,8 @@ const Header = () => {
                 {t('actions.dashboard')}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
               </Link>
-            )}
-          </nav>
+            </nav>
+          )}
 
           {/* Language Switcher & Auth Buttons */}
           <div className="flex items-center space-x-2 lg:space-x-4">
@@ -274,23 +279,27 @@ const Header = () => {
                   ? 'bg-black/80 backdrop-blur-sm border-gray-600' 
                   : 'bg-white/95 border-gray-200'
             }`}>
-              {navItems.map((item) => (
-                <Link
-                  key={item.key}
-                  to={item.path}
-                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <a
-                href="/all-agents"
-                className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {t('actions.allAgents')}
-              </a>
+              {!user && (
+                <>
+                  {navItems.map((item) => (
+                    <Link
+                      key={item.key}
+                      to={item.path}
+                      className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                  <a
+                    href="/all-agents"
+                    className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t('actions.allAgents')}
+                  </a>
+                </>
+              )}
               {user && (
                 <Link
                   to="/dashboard"

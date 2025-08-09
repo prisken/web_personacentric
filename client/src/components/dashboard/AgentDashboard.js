@@ -13,7 +13,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
   }, [activeTab]);
 
   const [showEventModal, setShowEventModal] = useState(false);
-  const [showBlogModal, setShowBlogModal] = useState(false);
   const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
@@ -57,7 +56,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'overview', label: t('dashboard.tabs.overview'), icon: '📊' },
     { id: 'clients', label: t('dashboard.tabs.agentConnection'), icon: '👥' },
     { id: 'events', label: t('dashboard.tabs.events'), icon: '📅' },
-    { id: 'content', label: t('dashboard.tabs.blogManagement'), icon: '📝' },
     { id: 'analytics', label: t('dashboard.tabs.points'), icon: '🎯' },
     { id: 'contests', label: t('dashboard.tabs.contests'), icon: '🏆' },
     { id: 'financial_planning', label: t('financialPlanning.tab'), icon: '💰' },
@@ -410,30 +408,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
           </div>
         )}
 
-        {/* Content Creation Tab */}
-        {activeTab === 'content' && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg lg:text-xl font-bold text-gray-900">內容創作</h3>
-                <button
-                  onClick={() => setShowBlogModal(true)}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
-                >
-                  撰寫文章
-                </button>
-              </div>
-            </div>
-            <div className="p-6">
-              <div className="text-center text-gray-500 py-8">
-                <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <p className="mt-2">暫無文章</p>
-              </div>
-            </div>
-          </div>
-        )}
+
 
         {/* Analytics Tab */}
         {activeTab === 'analytics' && (

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../contexts/LanguageContext';
+import { useUser } from '../contexts/UserContext';
 import AdminDashboard from '../components/dashboard/AdminDashboard';
 import AgentDashboard from '../components/dashboard/AgentDashboard';
 import ClientDashboard from '../components/dashboard/ClientDashboard';
@@ -8,9 +10,18 @@ import apiService from '../services/api';
 
 const DashboardPage = () => {
   const { t } = useTranslation();
+  const { user } = useUser();
+  const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   useEffect(() => {
     fetchDashboardData();
@@ -72,7 +83,13 @@ const DashboardPage = () => {
 
   // Render role-specific dashboard
   const renderDashboard = () => {
-    switch (dashboardData.user.role) {
+    // Ensure user roles match
+    if (!user || (dashboardData.user && user.id !== dashboardData.user.id)) {
+      navigate('/login');
+      return null;
+    }
+
+    switch (user.role) {
       case 'admin':
         return <AdminDashboard data={dashboardData} onRefresh={fetchDashboardData} />;
       case 'agent':
