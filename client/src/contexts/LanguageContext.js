@@ -20,6 +20,48 @@ export const LanguageProvider = ({ children }) => {
 
   const translations = {
     'zh-TW': {
+      // Homepage - Hero Section
+      'home.hero.slide1.title': '找到最適合您的財務顧問',
+      'home.hero.slide1.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
+      'home.hero.slide2.title': '找到最適合您的財務顧問',
+      'home.hero.slide2.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
+      'home.hero.slide3.title': 'AI內容創作只需2分鐘',
+      'home.hero.slide3.subtitle': '立即生成專業財務內容',
+      'hero.eventCTA': '立即報名',
+      'hero.pairingCTA': '立即配對',
+      'hero.aiCTA': '2分鐘生成貼文',
+
+      // Homepage - Small CTA
+      'home.getRightAgent': '找到對的顧問，讓您的投資翻倍！',
+      'smallCTA.button': '開始配對',
+
+      // Homepage - Stats
+      'home.proofOfConcept': '概念驗證',
+      'home.realResults': '我們平台的真實成果',
+      'stats.agents': '位顧問',
+      'stats.clients': '位成功客戶',
+      'stats.growth': '投資成長率',
+      'stats.activeAdvisors': '活躍財務顧問',
+      'stats.successfulClients': '成功服務的客戶',
+      'stats.averageGrowth': '平均投資成長率',
+
+      // Homepage - AI Content
+      'ai.title': 'AI生成內容讓您的生活更輕鬆',
+      'ai.industrySelector': '選擇您的生活風格',
+      'ai.tryButton': '試用AI內容生成器',
+      'ai.contestWinner': '上月競賽得主',
+      'ai.viewAllWinners': '查看所有得主',
+
+      // Contest Winners
+      'contest.winners.socialMedia': '社群媒體貼文',
+      'contest.winners.blogArticle': '部落格文章',
+      'contest.winners.posterDesign': '海報設計',
+      'contest.winners.videoContent': '影片內容',
+      'contest.winners.bestViralPost': '關於財務素養的最佳病毒貼文',
+      'contest.winners.insightfulBlog': '關於投資策略的深入部落格',
+      'contest.winners.creativePoster': '退休規劃創意海報',
+      'contest.winners.engagingVideo': '保險基礎知識吸引影片',
+
       // Financial Planning - Main
       'financialPlanning.title': '理財產品配置',
       'financialPlanning.tab': '理財產品配置',
@@ -496,6 +538,48 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.generateReport': '生成報告',
     },
     'en': {
+      // Homepage - Hero Section
+      'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
+      'home.hero.slide1.subtitle': 'AI-powered matching to connect you with the right professional',
+      'home.hero.slide2.title': 'Find Your Perfect Financial Advisor',
+      'home.hero.slide2.subtitle': 'AI-powered matching to connect you with the right professional',
+      'home.hero.slide3.title': 'AI Content Creation in 2 Minutes',
+      'home.hero.slide3.subtitle': 'Generate professional financial content instantly',
+      'hero.eventCTA': 'Register Now',
+      'hero.pairingCTA': 'Pair Now',
+      'hero.aiCTA': 'Create Post in 2 mins',
+
+      // Homepage - Small CTA
+      'home.getRightAgent': 'Get the right agent and double your investment!',
+      'smallCTA.button': 'Get Started',
+
+      // Homepage - Stats
+      'home.proofOfConcept': 'Proof of Concept',
+      'home.realResults': 'Our platform\'s real results',
+      'stats.agents': 'Agents',
+      'stats.clients': 'Successful Clients',
+      'stats.growth': 'Investment Growth',
+      'stats.activeAdvisors': 'Active financial advisors',
+      'stats.successfulClients': 'Successful clients served',
+      'stats.averageGrowth': 'Average investment growth',
+
+      // Homepage - AI Content
+      'ai.title': 'AI Generated Content Makes Your Life So Much Easier',
+      'ai.industrySelector': 'Select Your Lifestyle',
+      'ai.tryButton': 'Try AI Content Generator',
+      'ai.contestWinner': 'Last Month Contest Winner',
+      'ai.viewAllWinners': 'View All Winners',
+
+      // Contest Winners
+      'contest.winners.socialMedia': 'Social Media Post',
+      'contest.winners.blogArticle': 'Blog Article',
+      'contest.winners.posterDesign': 'Poster Design',
+      'contest.winners.videoContent': 'Video Content',
+      'contest.winners.bestViralPost': 'Best viral post about financial literacy',
+      'contest.winners.insightfulBlog': 'Insightful blog on investment strategies',
+      'contest.winners.creativePoster': 'Creative poster for retirement planning',
+      'contest.winners.engagingVideo': 'Engaging video on insurance basics',
+
       // Financial Planning - Main
       'financialPlanning.title': 'Financial Product Planning',
       'financialPlanning.tab': 'Financial Planning',
