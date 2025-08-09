@@ -288,7 +288,7 @@ const HomePage = () => {
                   <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-500 mb-3 sm:mb-4 lg:mb-6 xl:mb-8">{post.date}</p>
                   <Link
                     to="/blogs"
-                    className="text-blue-600 hover:text-blue-700 font-semibold text-xs sm:text-sm lg:text-base xl:text-lg transition-all duration-200 hover:translate-x-1 inline-block"
+                    className="text-black hover:text-gray-800 font-medium text-xs sm:text-sm lg:text-base xl:text-lg transition-all duration-200 hover:translate-x-1 inline-block"
                   >
                     {t('blogs.readMore')} →
                   </Link>
@@ -300,7 +300,7 @@ const HomePage = () => {
           <div className="text-center mt-8 sm:mt-12 lg:mt-16">
             <Link
               to="/blogs"
-              className="inline-block bg-blue-600 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-block bg-black text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-lg text-base sm:text-lg lg:text-xl font-medium hover:bg-gray-800 transition-all duration-300"
             >
               {t('blogs.viewAll')}
             </Link>
@@ -320,7 +320,7 @@ const HomePage = () => {
             </p>
             <Link
               to="/register"
-              className="inline-block bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+              className="inline-block bg-black text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 rounded-lg text-base sm:text-lg lg:text-xl font-medium hover:bg-gray-800 transition-all duration-300"
             >
               {t('member.cta')}
             </Link>
