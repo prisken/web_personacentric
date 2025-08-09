@@ -20,6 +20,18 @@ export const LanguageProvider = ({ children }) => {
 
   const translations = {
     'zh-TW': {
+      // Lifestyle Options
+      'lifestyle.active': '活躍型',
+      'lifestyle.family': '家庭導向',
+      'lifestyle.traveler': '旅遊愛好者',
+      'lifestyle.foodie': '美食家',
+      'lifestyle.creative': '創意型',
+      'lifestyle.tech': '科技迷',
+      'lifestyle.wellness': '健康生活',
+      'lifestyle.finance': '理財達人',
+      'lifestyle.student': '學生族',
+      'lifestyle.retiree': '退休族',
+
       // Homepage - Testimonials
       'testimonials.client4': '「專業的顧問配對，讓我找到最適合的投資策略。」',
       'testimonials.client4Name': '李小華',
@@ -578,6 +590,18 @@ export const LanguageProvider = ({ children }) => {
       'financialPlanning.generateReport': '生成報告',
     },
     'en': {
+      // Lifestyle Options
+      'lifestyle.active': 'Active Lifestyle',
+      'lifestyle.family': 'Family Oriented',
+      'lifestyle.traveler': 'Traveler',
+      'lifestyle.foodie': 'Foodie',
+      'lifestyle.creative': 'Creative',
+      'lifestyle.tech': 'Tech Enthusiast',
+      'lifestyle.wellness': 'Wellness Focused',
+      'lifestyle.finance': 'Finance Savvy',
+      'lifestyle.student': 'Student',
+      'lifestyle.retiree': 'Retiree',
+
       // Homepage - Testimonials
       'testimonials.client4': '"Professional advisor matching helped me find the perfect investment strategy."',
       'testimonials.client4Name': 'Jane Smith',
