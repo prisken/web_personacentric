@@ -224,32 +224,32 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Proof of Concept - Statistics with CTA - Mobile Optimized */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white">
+      {/* Proof of Concept - Statistics with CTA - Compact Version */}
+      <section className="py-8 sm:py-10 lg:py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
+          <div className="text-center mb-6 sm:mb-8 lg:mb-10">
+            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">
               {t('home.proofOfConcept')}
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
               {t('home.realResults')}
             </p>
           </div>
           
           {/* Mobile: Single row layout, Desktop: Grid layout */}
-          <div className="flex flex-row overflow-x-auto gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-12 lg:mb-16 pb-4 sm:pb-6 lg:pb-8 lg:grid lg:grid-cols-3 lg:overflow-x-visible">
+          <div className="flex flex-row overflow-x-auto gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10 pb-2 lg:grid lg:grid-cols-3 lg:overflow-x-visible">
             {stats.map((stat, index) => (
-              <div key={index} className="text-center group flex-shrink-0 w-64 sm:w-72 lg:w-auto lg:flex-shrink">
+              <div key={index} className="text-center group flex-shrink-0 w-48 sm:w-56 lg:w-auto lg:flex-shrink">
                 <div className="relative">
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 xl:w-36 xl:h-36 mx-auto mb-4 sm:mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                    <span className="text-2xl sm:text-3xl lg:text-5xl font-bold text-white">{stat.number}</span>
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 rounded-full bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                    <span className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{stat.number}</span>
                   </div>
-                  <div className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 w-6 h-6 sm:w-8 sm:h-8 lg:w-10 lg:h-10 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                    <i className="fas fa-chart-line text-white text-xs sm:text-sm lg:text-base"></i>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                    <i className="fas fa-chart-line text-white text-xs"></i>
                   </div>
                 </div>
-                <h3 className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">{stat.label}</h3>
-                <p className="text-sm sm:text-base lg:text-lg text-gray-600 leading-relaxed">{stat.description}</p>
+                <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">{stat.label}</h3>
+                <p className="text-xs sm:text-sm lg:text-base text-gray-600">{stat.description}</p>
               </div>
             ))}
           </div>
@@ -258,7 +258,7 @@ const HomePage = () => {
           <div className="text-center">
             <Link
               to="/pricing"
-              className="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               Become a Member
             </Link>
