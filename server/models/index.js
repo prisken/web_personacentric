@@ -20,8 +20,7 @@ const AccessCode = require('./AccessCode');
 const Notification = require('./Notification');
 const EventRegistration = require('./EventRegistration');
 const ClientUpgrade = require('./ClientUpgrade');
-const Recommendation = require('./Recommendation');
-const RecommendationEngagement = require('./RecommendationEngagement');
+
 const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
 

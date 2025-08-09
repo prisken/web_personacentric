@@ -18,7 +18,7 @@ const aiRoutes = require('./routes/ai');
 const paymentRoutes = require('./routes/payments');
 const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
-const recommendationRoutes = require('./routes/recommendations');
+
 const uploadRoutes = require('./routes/upload');
 const agentRoutes = require('./routes/agents');
 
@@ -72,7 +72,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/recommendations', recommendationRoutes);
+
 app.use('/api/upload', uploadRoutes);
 app.use('/api/agents', agentRoutes);
 
