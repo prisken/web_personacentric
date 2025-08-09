@@ -145,11 +145,10 @@ const Header = () => {
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 lg:h-16 relative">
-          {/* Empty div for spacing */}
-          <div className="w-[200px]"></div>
+          {user && <div className="w-[200px]"></div>}
 
-          {/* Logo - Centered */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center">
+          {/* Logo - Centered when logged in, left aligned when logged out */}
+          <div className={`flex items-center ${user ? 'absolute left-1/2 transform -translate-x-1/2' : ''}`}>
             <Link to={user ? '/dashboard' : '/'} className="flex items-center group">
               <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center mr-2 lg:mr-3 transition-transform duration-200 group-hover:scale-110 shadow-lg">
                 <span className="text-white text-xs lg:text-sm font-bold">📈</span>
