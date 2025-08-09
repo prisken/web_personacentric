@@ -153,164 +153,93 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - extends into header area */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden -mt-16 pt-16">
-        {/* Background Image */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${heroSlides[currentSlide].bgImage})` }}
-        >
-          <div className="absolute inset-0 bg-black bg-opacity-60"></div>
-        </div>
-
-        {/* Geometric Shapes */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-20 left-10 w-12 h-12 lg:w-20 lg:h-20 bg-orange-500 rounded-full opacity-20 animate-bounce"></div>
-          <div className="absolute top-40 right-20 w-10 h-10 lg:w-16 lg:h-16 bg-blue-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '1s' }}></div>
-          <div className="absolute bottom-40 left-20 w-8 h-8 lg:w-12 lg:h-12 bg-green-500 rounded-full opacity-20 animate-bounce" style={{ animationDelay: '2s' }}></div>
-        </div>
-
-        {/* Hero Content */}
-        <div className="relative z-10 text-center text-white max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 lg:mb-8 animate-fade-in leading-tight">
-            {heroSlides[currentSlide].title}
-          </h1>
-          <p className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-6 sm:mb-8 lg:mb-10 animate-slide-up px-2 sm:px-4 lg:px-8 leading-relaxed">
-            {heroSlides[currentSlide].subtitle}
-          </p>
-          <div className="flex justify-center">
+      {/* Hero Section - Upcoming Event */}
+      <section className="relative h-[600px] flex items-center justify-center overflow-hidden -mt-16 pt-16 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="bg-gray-300 rounded-2xl h-[400px] w-full flex flex-col items-center justify-center">
+            <p className="text-gray-600 mb-4">images of upcoming event</p>
             <Link
-              to={heroSlides[currentSlide].ctaLink}
-              className="bg-orange-600 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              to="/register"
+              className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
             >
-              {heroSlides[currentSlide].cta}
+              Register NOW
             </Link>
           </div>
         </div>
-
-        {/* Carousel Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 sm:w-3 sm:h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-300 ${
-                index === currentSlide ? 'bg-white scale-110' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-              }`}
-            />
-          ))}
-        </div>
-
-        {/* Scroll Indicator */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-          </div>
-        </div>
       </section>
 
-      {/* Small CTA Section - fixed text on one line */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gradient-to-r from-blue-50 to-green-50">
-        <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8 leading-tight">
-            {t('home.getRightAgent')}
-          </h2>
-          <Link
-            to="/agent-matching"
-            className="inline-block bg-blue-600 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            {t('smallCTA.button')}
-          </Link>
-        </div>
-      </section>
-
-      {/* Proof of Concept - Statistics with CTA - Compact Version */}
-      <section className="py-8 sm:py-10 lg:py-12 bg-white">
+      {/* Gifts Section */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-6 sm:mb-8 lg:mb-10">
-            <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">
-              {t('home.proofOfConcept')}
-            </h2>
-            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto">
-              {t('home.realResults')}
-            </p>
-          </div>
-          
-          {/* Mobile: Single row layout, Desktop: Grid layout */}
-          <div className="flex flex-row overflow-x-auto gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8 lg:mb-10 pb-2 lg:grid lg:grid-cols-3 lg:overflow-x-visible">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center group flex-shrink-0 w-48 sm:w-56 lg:w-auto lg:flex-shrink">
-                <div className="relative">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 lg:w-20 lg:h-20 mx-auto mb-3 sm:mb-4 rounded-full bg-gradient-to-r from-blue-600 to-green-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                    <span className="text-lg sm:text-xl lg:text-2xl font-bold text-white">{stat.number}</span>
-                  </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                    <i className="fas fa-chart-line text-white text-xs"></i>
-                  </div>
-                </div>
-                <h3 className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 mb-1 sm:mb-2">{stat.label}</h3>
-                <p className="text-xs sm:text-sm lg:text-base text-gray-600">{stat.description}</p>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
+            {/* Left side - Scrolling gifts */}
+            <div className="w-full lg:w-1/2">
+              <div className="relative bg-gray-300 rounded-2xl h-[400px] w-full flex flex-col items-center justify-center">
+                <p className="text-gray-600">images of different gifts<br/>scrolling from bottom to top</p>
               </div>
-            ))}
-          </div>
+            </div>
 
-          {/* Become a Member CTA */}
+            {/* Right side - Text and CTA */}
+            <div className="w-full lg:w-1/2 text-center lg:text-left">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-6">Get free gifts!</h2>
+              <p className="text-xl lg:text-2xl text-gray-600 mb-8">by playing our investment game</p>
+              <Link
+                to="/register"
+                className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+              >
+                Join Now and get 10000 free Tokets
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5 Questions Section */}
+      <section className="py-16 bg-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">5 Questions</h2>
+            <p className="text-xl lg:text-2xl text-gray-600 mb-8">to Match with your perfect Financial planner</p>
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              {/* Emoji circles */}
+              {['💼', '🏠', '💰', '📈', '🎯'].map((emoji, index) => (
+                <div key={index} className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-2xl lg:text-3xl shadow-md">
+                  {emoji}
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-500 italic mb-8">*emojis of different interest</p>
             <Link
-              to="/pricing"
-              className="inline-block bg-gradient-to-r from-blue-600 to-green-600 text-white px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-semibold hover:from-blue-700 hover:to-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              to="/agent-matching"
+              className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
             >
-              Become a Member
+              Match Now
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Events Section - Mobile Optimized */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-orange-600">
+      {/* Events Section */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 lg:mb-8">
-              {t('events.title')}
-            </h2>
-          </div>
-          
-          {/* Mobile: 2 columns, Tablet: 3 columns */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
-            {events.map((event, index) => (
-              <div key={event.id} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
-                <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
-                  <img 
-                    src={event.image} 
-                    alt={event.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                </div>
-                <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
-                  <h3 className="text-sm sm:text-base lg:text-xl xl:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">{event.title}</h3>
-                  <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-600 mb-3 sm:mb-4 lg:mb-6 xl:mb-8">{event.date}</p>
-                  <Link
-                    to="/events"
-                    className={`inline-block px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-3 xl:px-8 xl:py-4 rounded-xl text-xs sm:text-sm lg:text-base xl:text-lg font-semibold transition-all duration-300 ${
-                      event.status === 'upcoming' 
-                        ? 'bg-orange-600 text-white hover:bg-orange-700 shadow-lg hover:shadow-xl' 
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                    }`}
-                  >
-                    {event.status === 'upcoming' ? t('events.registerNow') : t('events.revisit')}
-                  </Link>
-                </div>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
+            {/* Left side - Text and CTA */}
+            <div className="w-full lg:w-1/2 text-center lg:text-left">
+              <h2 className="text-4xl lg:text-5xl font-bold mb-8">Join our events</h2>
+              <Link
+                to="/events"
+                className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+              >
+                Join Now
+              </Link>
+            </div>
+
+            {/* Right side - Scrolling events */}
+            <div className="w-full lg:w-1/2">
+              <div className="relative bg-gray-300 rounded-2xl h-[400px] w-full flex flex-col items-center justify-center">
+                <p className="text-gray-600">images of different events<br/>scrolling from bottom to top</p>
               </div>
-            ))}
-          </div>
-          
-          <div className="text-center mt-8 sm:mt-12 lg:mt-16">
-            <Link
-              to="/events"
-              className="inline-block bg-white text-orange-600 px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              {t('events.viewAll')}
-            </Link>
+            </div>
           </div>
         </div>
       </section>
