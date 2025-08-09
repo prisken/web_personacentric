@@ -13,7 +13,7 @@ import EventsPage from './pages/EventsPage';
 import BlogsPage from './pages/BlogsPage';
 import BlogDetailPage from './pages/BlogDetailPage';
 import ContestsPage from './pages/ContestsPage';
-import AITrialPage from './pages/AITrialPage';
+
 import AgentMatchingPage from './pages/AgentMatchingPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -45,7 +45,7 @@ function App() {
                 <Route path="/blogs" element={<BlogsPage />} />
                 <Route path="/blogs/:slug" element={<BlogDetailPage />} />
                 <Route path="/contests" element={<ContestsPage />} />
-                <Route path="/ai-trial" element={<AITrialPage />} />
+
                 <Route path="/agent-matching" element={<AgentMatchingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
