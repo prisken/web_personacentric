@@ -157,14 +157,18 @@ const HomePage = () => {
     <div className="min-h-screen">
       {/* Hero Section - Upcoming Event */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
-        <div className="absolute inset-0 bg-gray-300 flex flex-col items-center justify-center">
-          <p className="text-gray-600 mb-4">images of upcoming event</p>
-          <Link
-            to="/register"
-            className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
-          >
-            Register NOW
-          </Link>
+        <div className="absolute inset-0 bg-gray-300 flex flex-col items-center">
+          <div className="flex-grow flex items-center justify-center">
+            <p className="text-gray-600">images of upcoming event</p>
+          </div>
+          <div className="mb-20">
+            <Link
+              to="/register"
+              className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+            >
+              Register NOW
+            </Link>
+          </div>
         </div>
       </section>
 
