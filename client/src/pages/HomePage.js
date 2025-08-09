@@ -154,17 +154,15 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Upcoming Event */}
-      <section className="relative h-[600px] flex items-center justify-center overflow-hidden -mt-16 pt-16 bg-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-          <div className="bg-gray-300 rounded-2xl h-[400px] w-full flex flex-col items-center justify-center">
-            <p className="text-gray-600 mb-4">images of upcoming event</p>
-            <Link
-              to="/register"
-              className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
-            >
-              Register NOW
-            </Link>
-          </div>
+      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
+        <div className="absolute inset-0 bg-gray-300 flex flex-col items-center justify-center">
+          <p className="text-gray-600 mb-4">images of upcoming event</p>
+          <Link
+            to="/register"
+            className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+          >
+            Register NOW
+          </Link>
         </div>
       </section>
 
