@@ -157,14 +157,23 @@ const HomePage = () => {
     <div className="min-h-screen">
       {/* Hero Section - Upcoming Event */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
-        <div className="absolute inset-0 bg-gray-300 flex flex-col items-center">
-          <div className="flex-grow flex items-center justify-center">
-            <p className="text-gray-600">images of upcoming event</p>
+        <div className="absolute inset-0">
+          {/* Background Image */}
+          <div className="absolute inset-0">
+            <img 
+              src="https://placehold.co/1920x1080/e2e8f0/475569?text=Upcoming+Event+Banner" 
+              alt="Upcoming Event"
+              className="w-full h-full object-cover"
+            />
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-30"></div>
           </div>
-          <div className="mb-20">
+          
+          {/* Content */}
+          <div className="absolute inset-0 flex flex-col justify-end items-center pb-24">
             <Link
               to="/register"
-              className="bg-black text-white px-6 py-3 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+              className="bg-black text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-gray-800 transition-all duration-300 shadow-xl"
             >
               Register NOW
             </Link>
