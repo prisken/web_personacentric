@@ -97,13 +97,6 @@ export const LanguageProvider = ({ children }) => {
       'stats.successfulClients': '成功服務的客戶',
       'stats.averageGrowth': '平均投資成長率',
 
-      // Homepage - AI Content
-      'ai.title': 'AI生成內容讓您的生活更輕鬆',
-      'ai.industrySelector': '選擇您的生活風格',
-      'ai.tryButton': '試用AI內容生成器',
-      'ai.contestWinner': '上月競賽得主',
-      'ai.viewAllWinners': '查看所有得主',
-
       // Contest Winners
       'contest.winners.socialMedia': '社群媒體貼文',
       'contest.winners.blogArticle': '部落格文章',
@@ -666,13 +659,6 @@ export const LanguageProvider = ({ children }) => {
       'stats.activeAdvisors': 'Active financial advisors',
       'stats.successfulClients': 'Successful clients served',
       'stats.averageGrowth': 'Average investment growth',
-
-      // Homepage - AI Content
-      'ai.title': 'AI Generated Content Makes Your Life So Much Easier',
-      'ai.industrySelector': 'Select Your Lifestyle',
-      'ai.tryButton': 'Try AI Content Generator',
-      'ai.contestWinner': 'Last Month Contest Winner',
-      'ai.viewAllWinners': 'View All Winners',
 
       // Contest Winners
       'contest.winners.socialMedia': 'Social Media Post',

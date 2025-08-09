@@ -23,14 +23,6 @@ const HomePage = () => {
       cta: t('hero.pairingCTA'),
       ctaLink: '/agent-matching',
       bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
-    },
-    {
-      id: 3,
-      title: t('home.hero.slide3.title'),
-      subtitle: t('home.hero.slide3.subtitle'),
-      cta: t('hero.aiCTA'),
-      ctaLink: '/ai-trial',
-      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
     }
   ];
 
@@ -353,69 +345,6 @@ const HomePage = () => {
             >
               Become a Member
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Content Creation Section */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
-              {t('ai.title')}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center">
-            {/* Lifestyle Selector */}
-            <div className="space-y-4 sm:space-y-6 lg:space-y-8">
-              <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10">
-                <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8">
-                  {t('ai.industrySelector')}
-                </h3>
-                <select className="w-full p-3 sm:p-4 lg:p-5 border-2 border-gray-200 rounded-xl text-base sm:text-lg lg:text-xl focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200">
-                  {lifestyleOptions.map(option => (
-                    <option key={option.value} value={option.value}>{option.label}</option>
-                  ))}
-                </select>
-                <Link
-                  to="/ai-trial"
-                  className="mt-4 sm:mt-6 lg:mt-8 inline-block bg-orange-600 text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-orange-700 transition-all duration-300 w-full text-center shadow-lg hover:shadow-xl"
-                >
-                  {t('ai.tryButton')}
-                </Link>
-              </div>
-            </div>
-
-            {/* Contest Winners Showcase */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 lg:p-10 flex flex-col items-center">
-              <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-4 sm:mb-6 lg:mb-8 text-center">
-                {t('ai.contestWinner')}
-              </h3>
-              <div className="w-full max-w-sm lg:max-w-md flex flex-col items-center">
-                <div className={`bg-gradient-to-br ${contestWinners[winnerIndex].bg} rounded-2xl p-4 sm:p-6 lg:p-8 text-white w-full flex flex-col items-center transition-all duration-500 shadow-lg`}>
-                  <img src={contestWinners[winnerIndex].image} alt={contestWinners[winnerIndex].type} className="w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 object-cover rounded-xl mb-3 sm:mb-4 lg:mb-6 shadow-lg" />
-                  <i className={`${contestWinners[winnerIndex].icon} text-xl sm:text-2xl lg:text-3xl mb-2 sm:mb-3 lg:mb-4`}></i>
-                  <p className="text-base sm:text-lg lg:text-xl font-semibold mb-2 lg:mb-3 text-center">{contestWinners[winnerIndex].type}</p>
-                  <p className="text-xs sm:text-sm lg:text-base text-white/90 text-center leading-relaxed">{contestWinners[winnerIndex].content}</p>
-                </div>
-                <div className="flex space-x-2 sm:space-x-3 mt-4 sm:mt-6 lg:mt-8">
-                  {contestWinners.map((_, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setWinnerIndex(idx)}
-                      className={`w-2 h-2 sm:w-3 sm:h-3 lg:w-4 lg:h-4 rounded-full transition-all duration-200 ${idx === winnerIndex ? 'bg-blue-600 scale-110' : 'bg-gray-300 hover:bg-gray-400'}`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <Link
-                to="/contests"
-                className="mt-4 sm:mt-6 lg:mt-8 inline-block text-blue-600 hover:text-blue-700 font-semibold text-sm sm:text-base lg:text-lg transition-all duration-200 hover:translate-x-1"
-              >
-                {t('ai.viewAllWinners')} →
-              </Link>
-            </div>
           </div>
         </div>
       </section>

@@ -44,7 +44,6 @@ const Header = () => {
   const navItems = [
     { key: 'nav.events', path: '/events', label: t('nav.events') },
     { key: 'nav.agentPairing', path: '/agent-matching', label: t('nav.agentPairing') },
-    { key: 'nav.contentGenerator', path: '/ai-trial', label: t('nav.contentGenerator') },
     { key: 'nav.blogs', path: '/blogs', label: t('nav.blogs') },
     { key: 'nav.contests', path: '/contests', label: t('nav.contests') },
   ];
@@ -75,8 +74,7 @@ const Header = () => {
   // Check if we're on a page with light background (most pages)
   const hasLightBackground = [
     '/events',
-    '/agent-matching', 
-    '/ai-trial',
+    '/agent-matching',
     '/blogs',
     '/contests',
     '/login',
