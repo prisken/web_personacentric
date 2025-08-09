@@ -383,15 +383,15 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-16 sm:py-20 lg:py-24 bg-gray-900 text-white">
+      {/* Become a Member Section */}
+      <section className="py-16 sm:py-20 lg:py-24 bg-gradient-to-br from-blue-900 to-indigo-900 text-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 sm:mb-16 lg:mb-20">
             <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8">
-              {t('contact.title')}
+              {t('member.title')}
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-300 leading-relaxed">
-              Get in touch with us for any questions or support
+            <p className="text-lg sm:text-xl lg:text-2xl text-blue-200 leading-relaxed">
+              {t('member.subtitle')}
             </p>
           </div>
           
@@ -399,31 +399,26 @@ const HomePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               <input
                 type="text"
-                placeholder={t('contact.name')}
-                className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
+                placeholder={t('member.name')}
+                className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-blue-800/50 border-2 border-blue-700/50 text-white placeholder-blue-300 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
               />
               <input
                 type="tel"
-                placeholder={t('contact.phone')}
-                className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
+                placeholder={t('member.phone')}
+                className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-blue-800/50 border-2 border-blue-700/50 text-white placeholder-blue-300 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
               />
             </div>
             <input
               type="email"
-              placeholder={t('contact.email')}
-              className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
+              placeholder={t('member.email')}
+              className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-blue-800/50 border-2 border-blue-700/50 text-white placeholder-blue-300 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg"
             />
-            <textarea
-              placeholder={t('contact.message')}
-              rows="6"
-              className="w-full px-4 py-3 sm:px-6 sm:py-4 lg:px-8 lg:py-5 rounded-xl bg-gray-800 border-2 border-gray-700 text-white placeholder-gray-400 focus:ring-4 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 text-sm sm:text-base lg:text-lg resize-none"
-            ></textarea>
             <div className="text-center">
               <button
                 type="submit"
-                className="bg-blue-600 text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 rounded-xl text-base sm:text-lg lg:text-xl font-semibold hover:from-orange-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
-                {t('contact.send')}
+                {t('member.cta')}
               </button>
             </div>
           </form>

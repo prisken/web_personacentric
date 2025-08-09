@@ -54,14 +54,13 @@ export const LanguageProvider = ({ children }) => {
       'blogs.readMore': '閱讀更多',
       'blogs.viewAll': '查看所有文章',
 
-      // Homepage - Contact
-      'contact.title': '聯絡我們',
-      'contact.subtitle': '有任何問題或需要支援，請隨時聯絡我們',
-      'contact.name': '姓名',
-      'contact.phone': '電話',
-      'contact.email': '電子郵件',
-      'contact.message': '訊息',
-      'contact.send': '發送訊息',
+      // Homepage - Become a Member
+      'member.title': '成為會員',
+      'member.subtitle': '立即加入獲得10,000積分',
+      'member.name': '姓名',
+      'member.phone': '電話',
+      'member.email': '電子郵件',
+      'member.cta': '立即加入',
 
       // Homepage - Hero Section
       'home.hero.slide1.title': '找到最適合您的財務顧問',
@@ -608,14 +607,13 @@ export const LanguageProvider = ({ children }) => {
       'blogs.readMore': 'Read More',
       'blogs.viewAll': 'View All Blogs',
 
-      // Homepage - Contact
-      'contact.title': 'Contact Us',
-      'contact.subtitle': 'Get in touch with us for any questions or support',
-      'contact.name': 'Name',
-      'contact.phone': 'Phone',
-      'contact.email': 'Email',
-      'contact.message': 'Message',
-      'contact.send': 'Send Message',
+      // Homepage - Become a Member
+      'member.title': 'Become a Member',
+      'member.subtitle': 'Join now and get 10,000 points free',
+      'member.name': 'Name',
+      'member.phone': 'Phone',
+      'member.email': 'Email',
+      'member.cta': 'Join Now',
 
       // Homepage - Hero Section
       'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
