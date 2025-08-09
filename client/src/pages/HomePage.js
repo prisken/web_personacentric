@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollingGifts from '../components/ScrollingGifts';
+import ScrollingEvents from '../components/ScrollingEvents';
 
 const HomePage = () => {
   const { t } = useLanguage();
@@ -232,10 +233,8 @@ const HomePage = () => {
             </div>
 
             {/* Right side - Scrolling events */}
-            <div className="w-full lg:w-1/2">
-              <div className="relative bg-gray-300 rounded-2xl h-[400px] w-full flex flex-col items-center justify-center">
-                <p className="text-gray-600">images of different events<br/>scrolling from bottom to top</p>
-              </div>
+            <div className="w-full lg:w-1/2 h-[400px]">
+              <ScrollingEvents />
             </div>
           </div>
         </div>
