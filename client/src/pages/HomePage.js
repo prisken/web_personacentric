@@ -173,9 +173,9 @@ const HomePage = () => {
           <div className="absolute inset-0 flex flex-col justify-end items-center pb-24">
             <Link
               to="/register"
-              className="bg-black text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-gray-800 transition-all duration-300 shadow-xl"
+              className="bg-blue-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-blue-700 transition-all duration-300 shadow-xl border-2 border-yellow-500"
             >
-              Register NOW
+              {t('home.hero.registerNow')}
             </Link>
           </div>
         </div>
@@ -192,13 +192,13 @@ const HomePage = () => {
 
             {/* Right side - Text and CTA */}
             <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6">Get free gifts!</h2>
-              <p className="text-xl lg:text-2xl text-gray-600 mb-8">by playing our investment game</p>
+              <h2 className="text-4xl lg:text-5xl font-bold mb-6">{t('home.gifts.title')}</h2>
+              <p className="text-xl lg:text-2xl text-gray-600 mb-8">{t('home.gifts.subtitle')}</p>
               <Link
                 to="/register"
-                className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+                className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
               >
-                Join Now and get 10000 free Tokets
+                {t('home.gifts.cta')}
               </Link>
             </div>
           </div>
@@ -209,22 +209,22 @@ const HomePage = () => {
       <section className="py-16 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">5 Questions</h2>
-            <p className="text-xl lg:text-2xl text-gray-600 mb-8">to Match with your perfect Financial planner</p>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-4">{t('home.match.title')}</h2>
+            <p className="text-xl lg:text-2xl text-gray-600 mb-8">{t('home.match.subtitle')}</p>
             <div className="flex flex-wrap justify-center gap-4 mb-8">
               {/* Emoji circles */}
               {['💼', '🏠', '💰', '📈', '🎯'].map((emoji, index) => (
-                <div key={index} className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-2xl lg:text-3xl shadow-md">
+                <div key={index} className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-2xl lg:text-3xl shadow-md border-2 border-yellow-500">
                   {emoji}
                 </div>
               ))}
             </div>
-            <p className="text-sm text-gray-500 italic mb-8">*emojis of different interest</p>
+            <p className="text-sm text-gray-500 italic mb-8">{t('home.match.note')}</p>
             <Link
               to="/agent-matching"
-              className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+              className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
             >
-              Match Now
+              {t('home.match.cta')}
             </Link>
           </div>
         </div>
@@ -236,12 +236,12 @@ const HomePage = () => {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
             <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-8">Join our events</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold mb-8">{t('home.events.title')}</h2>
               <Link
                 to="/events"
-                className="inline-block bg-black text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-800 transition-all duration-300"
+                className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
               >
-                Join Now
+                {t('home.events.cta')}
               </Link>
             </div>
 

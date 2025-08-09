@@ -60,15 +60,16 @@ export const LanguageProvider = ({ children }) => {
       'member.cta': '立即註冊',
 
       // Homepage - Hero Section
-      'home.hero.slide1.title': '找到最適合您的財務顧問',
-      'home.hero.slide1.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
-      'home.hero.slide2.title': '找到最適合您的財務顧問',
-      'home.hero.slide2.subtitle': 'AI驅動的配對技術，為您找到最適合的專業顧問',
-      'home.hero.slide3.title': 'AI內容創作只需2分鐘',
-      'home.hero.slide3.subtitle': '立即生成專業財務內容',
-      'hero.eventCTA': '立即報名',
-      'hero.pairingCTA': '立即配對',
-      'hero.aiCTA': '2分鐘生成貼文',
+      'home.hero.registerNow': '立即報名',
+      'home.gifts.title': '獲得免費禮品！',
+      'home.gifts.subtitle': '參與我們的投資遊戲',
+      'home.gifts.cta': '立即加入獲得10000免費積分',
+      'home.match.title': '5個問題',
+      'home.match.subtitle': '配對最適合您的財務規劃師',
+      'home.match.note': '*不同興趣的表情符號',
+      'home.match.cta': '立即配對',
+      'home.events.title': '參加我們的活動',
+      'home.events.cta': '立即加入',
 
       // Homepage - Small CTA
       'home.getRightAgent': '找到對的顧問，讓您的投資翻倍！',
@@ -602,15 +603,16 @@ export const LanguageProvider = ({ children }) => {
       'member.cta': 'Register Now',
 
       // Homepage - Hero Section
-      'home.hero.slide1.title': 'Find Your Perfect Financial Advisor',
-      'home.hero.slide1.subtitle': 'AI-powered matching to connect you with the right professional',
-      'home.hero.slide2.title': 'Find Your Perfect Financial Advisor',
-      'home.hero.slide2.subtitle': 'AI-powered matching to connect you with the right professional',
-      'home.hero.slide3.title': 'AI Content Creation in 2 Minutes',
-      'home.hero.slide3.subtitle': 'Generate professional financial content instantly',
-      'hero.eventCTA': 'Register Now',
-      'hero.pairingCTA': 'Pair Now',
-      'hero.aiCTA': 'Create Post in 2 mins',
+      'home.hero.registerNow': 'Register Now',
+      'home.gifts.title': 'Get free gifts!',
+      'home.gifts.subtitle': 'by playing our investment game',
+      'home.gifts.cta': 'Join Now and get 10000 free Tokets',
+      'home.match.title': '5 Questions',
+      'home.match.subtitle': 'to Match with your perfect Financial planner',
+      'home.match.note': '*emojis of different interest',
+      'home.match.cta': 'Match Now',
+      'home.events.title': 'Join our events',
+      'home.events.cta': 'Join Now',
 
       // Homepage - Small CTA
       'home.getRightAgent': 'Get the right agent and double your investment!',
