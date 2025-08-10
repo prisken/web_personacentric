@@ -280,7 +280,7 @@ const HomePage = () => {
                 </div>
               ))}
             </div>
-            <p className="text-sm text-gray-500 italic mb-8">{t('home.match.note')}</p>
+
             <Link
               to="/agent-matching"
               className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
