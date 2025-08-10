@@ -180,14 +180,21 @@ const HomePage = () => {
             {/* CTA Button */}
             <Link
               to="/register"
-              className="group relative w-full sm:w-auto bg-gradient-to-br from-red-500 to-red-600 text-white px-8 py-4 rounded-lg text-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden"
+              className="group relative w-full sm:w-auto px-8 py-4 rounded-xl text-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden backdrop-blur-md"
               style={{
-                boxShadow: '0 4px 0 rgb(153 27 27), 0 8px 20px rgba(0, 0, 0, 0.3)',
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.12) 100%)',
+                boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.2), 0 2px 8px -1px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
+                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+                borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
                 transform: 'translateY(-2px)',
+                textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
               }}
             >
-              <span className="absolute inset-0 bg-white/20 translate-y-12 group-hover:translate-y-0 transition-transform duration-300"></span>
-              <span className="relative inline-flex items-center">
+              <span className="absolute inset-0 bg-white/10 translate-y-12 group-hover:translate-y-0 transition-transform duration-300"></span>
+              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%)',
+              }}></span>
+              <span className="relative inline-flex items-center text-white">
                 {t('home.hero.registerNow')}
                 <svg 
                   className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" 
