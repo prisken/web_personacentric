@@ -180,9 +180,24 @@ const HomePage = () => {
             {/* CTA Button */}
             <Link
               to="/register"
-              className="w-full sm:w-auto bg-red-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-red-700 transition-all duration-300 shadow-xl transform hover:scale-105 flex items-center justify-center"
+              className="group relative w-full sm:w-auto bg-gradient-to-br from-red-500 to-red-600 text-white px-8 py-4 rounded-lg text-xl font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden"
+              style={{
+                boxShadow: '0 4px 0 rgb(153 27 27), 0 8px 20px rgba(0, 0, 0, 0.3)',
+                transform: 'translateY(-2px)',
+              }}
             >
-              {t('home.hero.registerNow')}
+              <span className="absolute inset-0 bg-white/20 translate-y-12 group-hover:translate-y-0 transition-transform duration-300"></span>
+              <span className="relative inline-flex items-center">
+                {t('home.hero.registerNow')}
+                <svg 
+                  className="ml-2 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-200" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </span>
             </Link>
           </div>
         </div>
