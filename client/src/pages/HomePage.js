@@ -161,7 +161,7 @@ const HomePage = () => {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="/images/food-for-talk.jpg" 
+              src={`/images/food-for-talk.jpg?t=${Date.now()}`} 
               alt="Food for Talk Event"
               className="w-full h-full object-cover"
             />
