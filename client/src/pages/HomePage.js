@@ -170,18 +170,7 @@ const HomePage = () => {
           </div>
           
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            {/* Event Logo/Text */}
-            <div className="text-center mb-8 transform hover:scale-105 transition-transform duration-300">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <div className="text-red-500 text-5xl">❤️</div>
-                <div className="text-white text-5xl">💡</div>
-              </div>
-              <div className="text-white text-5xl md:text-7xl font-bold mb-2">Food</div>
-              <div className="text-red-500 text-4xl md:text-6xl font-bold italic mb-4">for Talk</div>
-              <div className="text-white text-2xl md:text-3xl tracking-widest">OCT 2023</div>
-            </div>
-            
+          <div className="absolute inset-0 flex flex-col items-center justify-end pb-16">
             {/* CTA Button */}
             <Link
               to="/register"
