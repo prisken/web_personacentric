@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -9,6 +10,33 @@ const Footer = () => {
     { label: t('footer.about'), path: '/about' },
     { label: t('footer.privacy'), path: '/help' },
     { label: t('footer.terms'), path: '/help' },
+  ];
+
+  const socialLinks = [
+    { 
+      icon: FaFacebook, 
+      url: 'https://facebook.com/personacentric', 
+      label: t('footer.socialMedia.facebook'),
+      color: 'hover:text-blue-500'
+    },
+    { 
+      icon: FaTwitter, 
+      url: 'https://twitter.com/personacentric', 
+      label: t('footer.socialMedia.twitter'),
+      color: 'hover:text-blue-400'
+    },
+    { 
+      icon: FaInstagram, 
+      url: 'https://instagram.com/personacentric', 
+      label: t('footer.socialMedia.instagram'),
+      color: 'hover:text-pink-500'
+    },
+    { 
+      icon: FaLinkedin, 
+      url: 'https://linkedin.com/company/personacentric', 
+      label: t('footer.socialMedia.linkedin'),
+      color: 'hover:text-blue-600'
+    },
   ];
 
   return (
@@ -21,6 +49,28 @@ const Footer = () => {
               <span className="text-white text-sm font-bold">📈</span>
             </div>
             <span className="text-xl font-bold">Persona Centric</span>
+          </div>
+
+          {/* Social Media Links */}
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <span className="text-sm font-medium text-gray-400">{t('footer.followUs')}:</span>
+            <div className="flex gap-4">
+              {socialLinks.map((social, index) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={index}
+                    href={social.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`text-gray-400 ${social.color} transition-all duration-200 hover:scale-110`}
+                    aria-label={social.label}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
+            </div>
           </div>
 
           {/* Essential Links */}

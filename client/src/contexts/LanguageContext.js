@@ -88,6 +88,11 @@ export const LanguageProvider = ({ children }) => {
 
       // Homepage - Stats
       'home.proofOfConcept': '概念驗證',
+      'footer.followUs': 'Follow Us',
+      'footer.socialMedia.facebook': 'Follow us on Facebook',
+      'footer.socialMedia.instagram': 'Follow us on Instagram',
+      'footer.socialMedia.linkedin': 'Connect on LinkedIn',
+      'footer.socialMedia.twitter': 'Follow us on Twitter',
       'home.realResults': '我們平台的真實成果',
       'stats.agents': '位顧問',
       'stats.clients': '位成功客戶',
