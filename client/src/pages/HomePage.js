@@ -156,7 +156,7 @@ const HomePage = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section - Upcoming Event */}
-      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
+      <section className="relative min-h-[80vh] sm:h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
         <div className="absolute inset-0">
           {/* Background Image */}
           <div className="absolute inset-0">
@@ -165,16 +165,22 @@ const HomePage = () => {
               alt="Food for Talk Event"
               className="w-full h-full object-cover"
             />
-            {/* Light overlay with gradient - only at bottom for button visibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
+            {/* Enhanced gradient overlay for better text visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent"></div>
           </div>
           
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-end pb-16">
+          <div className="absolute inset-0 flex flex-col items-center justify-end text-center pb-20 sm:pb-16 px-4">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-3xl">
+              {t('home.hero.title')}
+            </h1>
+            <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl">
+              {t('home.hero.subtitle')}
+            </p>
             {/* CTA Button */}
             <Link
               to="/register"
-              className="bg-red-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-red-700 transition-all duration-300 shadow-xl transform hover:scale-105"
+              className="w-full sm:w-auto bg-red-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-red-700 transition-all duration-300 shadow-xl transform hover:scale-105 flex items-center justify-center"
             >
               {t('home.hero.registerNow')}
             </Link>
@@ -183,58 +189,58 @@ const HomePage = () => {
       </section>
 
       {/* About Section */}
-      <section className="py-16 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4 text-white">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-white">
               {t('home.about.title')}
             </h2>
-            <p className="text-xl lg:text-2xl text-blue-200 max-w-3xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-2xl text-blue-200 max-w-3xl mx-auto">
               {t('home.about.subtitle')}
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Smart Matching */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-4xl mb-4">🎯</div>
-              <h3 className="text-xl font-bold text-white mb-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">🎯</div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                 {t('home.about.benefit1.title')}
               </h3>
-              <p className="text-blue-200">
+              <p className="text-sm sm:text-base text-blue-200">
                 {t('home.about.benefit1.desc')}
               </p>
             </div>
 
             {/* Professional Community */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-4xl mb-4">👥</div>
-              <h3 className="text-xl font-bold text-white mb-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">👥</div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                 {t('home.about.benefit2.title')}
               </h3>
-              <p className="text-blue-200">
+              <p className="text-sm sm:text-base text-blue-200">
                 {t('home.about.benefit2.desc')}
               </p>
             </div>
 
             {/* Reward System */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-4xl mb-4">🏆</div>
-              <h3 className="text-xl font-bold text-white mb-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">🏆</div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                 {t('home.about.benefit3.title')}
               </h3>
-              <p className="text-blue-200">
+              <p className="text-sm sm:text-base text-blue-200">
                 {t('home.about.benefit3.desc')}
               </p>
             </div>
 
             {/* Continuous Learning */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-4xl mb-4">📚</div>
-              <h3 className="text-xl font-bold text-white mb-2">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">📚</div>
+              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
                 {t('home.about.benefit4.title')}
               </h3>
-              <p className="text-blue-200">
+              <p className="text-sm sm:text-base text-blue-200">
                 {t('home.about.benefit4.desc')}
               </p>
             </div>
@@ -243,39 +249,42 @@ const HomePage = () => {
       </section>
 
       {/* Gifts Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
-            {/* Left side - Scrolling gifts */}
-            <div className="w-full lg:w-1/2 h-[400px]">
-              <ScrollingGifts />
-            </div>
-
-            {/* Right side - Text and CTA */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6">{t('home.gifts.title')}</h2>
-              <p className="text-xl lg:text-2xl text-gray-600 mb-8">{t('home.gifts.subtitle')}</p>
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
+            {/* Text and CTA - Moved to top for mobile */}
+            <div className="w-full lg:w-1/2 text-center lg:text-left order-1 lg:order-2">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">{t('home.gifts.title')}</h2>
+              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8">{t('home.gifts.subtitle')}</p>
               <Link
                 to="/register"
-                className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
               >
                 {t('home.gifts.cta')}
               </Link>
+            </div>
+
+            {/* Scrolling gifts - Moved to bottom for mobile */}
+            <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] order-2 lg:order-1 mt-8 lg:mt-0">
+              <ScrollingGifts />
             </div>
           </div>
         </div>
       </section>
 
       {/* 5 Questions Section */}
-      <section className="py-16 bg-gray-100">
+      <section className="py-12 sm:py-16 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-4">{t('home.match.title')}</h2>
-            <p className="text-xl lg:text-2xl text-gray-600 mb-8">{t('home.match.subtitle')}</p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">{t('home.match.title')}</h2>
+            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8">{t('home.match.subtitle')}</p>
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
               {/* Emoji circles */}
               {['💼', '🏠', '💰', '📈', '🎯'].map((emoji, index) => (
-                <div key={index} className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-2xl lg:text-3xl shadow-md border-2 border-yellow-500">
+                <div 
+                  key={index} 
+                  className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-xl sm:text-2xl lg:text-3xl shadow-md border-2 border-yellow-500 transform hover:scale-110 transition-transform duration-200"
+                >
                   {emoji}
                 </div>
               ))}
@@ -283,7 +292,7 @@ const HomePage = () => {
 
             <Link
               to="/agent-matching"
-              className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
+              className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
             >
               {t('home.match.cta')}
             </Link>
@@ -292,22 +301,25 @@ const HomePage = () => {
       </section>
 
       {/* Events Section */}
-      <section className="py-16 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-16">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
             <div className="w-full lg:w-1/2 text-center lg:text-left">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-8">{t('home.events.title')}</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.events.title')}</h2>
+              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
+                {t('home.events.subtitle')}
+              </p>
               <Link
                 to="/events"
-                className="inline-block bg-blue-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
               >
                 {t('home.events.cta')}
               </Link>
             </div>
 
             {/* Right side - Scrolling events */}
-            <div className="w-full lg:w-1/2 h-[400px]">
+            <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] mt-8 lg:mt-0">
               <ScrollingEvents />
             </div>
           </div>
