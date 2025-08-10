@@ -161,19 +161,31 @@ const HomePage = () => {
           {/* Background Image */}
           <div className="absolute inset-0">
             <img 
-              src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=2070&q=80" 
-              alt="Speed Dating Event"
+              src="/food-for-talk.jpg" 
+              alt="Food for Talk Event"
               className="w-full h-full object-cover"
             />
-            {/* Dark overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+            {/* Dark overlay with gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
           </div>
           
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col justify-end items-center pb-24">
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            {/* Event Logo/Text */}
+            <div className="text-center mb-8 transform hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="text-red-500 text-5xl">❤️</div>
+                <div className="text-white text-5xl">💡</div>
+              </div>
+              <div className="text-white text-5xl md:text-7xl font-bold mb-2">Food</div>
+              <div className="text-red-500 text-4xl md:text-6xl font-bold italic mb-4">for Talk</div>
+              <div className="text-white text-2xl md:text-3xl tracking-widest">OCT 2023</div>
+            </div>
+            
+            {/* CTA Button */}
             <Link
               to="/register"
-              className="bg-blue-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-blue-700 transition-all duration-300 shadow-xl border-2 border-yellow-500"
+              className="bg-red-600 text-white px-8 py-4 rounded-lg text-xl font-medium hover:bg-red-700 transition-all duration-300 shadow-xl transform hover:scale-105"
             >
               {t('home.hero.registerNow')}
             </Link>
