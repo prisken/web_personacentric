@@ -165,8 +165,8 @@ const HomePage = () => {
               alt="Food for Talk Event"
               className="w-full h-full object-cover"
             />
-            {/* Dark overlay with gradient */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-black/30"></div>
+            {/* Light overlay with gradient - only at bottom for button visibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
           </div>
           
           {/* Content */}
