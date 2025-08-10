@@ -63,7 +63,7 @@ export const LanguageProvider = ({ children }) => {
       'home.hero.registerNow': '立即報名',
       
       // Homepage - About Section
-      'home.about.title': '為什麼選擇 Persona Centric？',
+      'home.about.title': '為什麼選擇 Persona Centric',
       'home.about.subtitle': '專業理財配對平台，為您打造個人化的財務未來',
       'home.about.benefit1.title': '智能配對',
       'home.about.benefit1.desc': '透過AI技術，精準匹配最適合您的財務顧問',
