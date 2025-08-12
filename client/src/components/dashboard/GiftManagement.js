@@ -10,6 +10,7 @@ const GiftManagement = () => {
   const { user } = useContext(UserContext);
   const [gifts, setGifts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedGift, setSelectedGift] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,7 +31,7 @@ const GiftManagement = () => {
   const fetchGifts = async () => {
     try {
       const response = await axios.get('/api/gifts');
-      setGifts(response.data);
+      setGifts(response.data || []);
     } catch (error) {
       console.error('Error fetching gifts:', error);
       toast.error('Failed to fetch gifts');
@@ -42,7 +43,7 @@ const GiftManagement = () => {
   const fetchCategories = async () => {
     try {
       const response = await axios.get('/api/gifts/categories');
-      setCategories(response.data);
+      setCategories(response.data || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Failed to fetch categories');
@@ -115,6 +116,24 @@ const GiftManagement = () => {
 
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500">{error}</p>
+        <button
+          onClick={() => {
+            setError(null);
+            fetchGifts();
+            fetchCategories();
+          }}
+          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          重試
+        </button>
+      </div>
+    );
   }
 
   return (
