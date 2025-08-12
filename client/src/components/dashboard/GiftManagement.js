@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useContext } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import axios from 'axios';
+import apiService from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../LoadingSpinner';
 import ImageUpload from '../ImageUpload';
@@ -30,8 +30,8 @@ const GiftManagement = () => {
 
   const fetchGifts = async () => {
     try {
-      const response = await axios.get('/api/gifts');
-      setGifts(response.data || []);
+      const response = await apiService.get('/gifts');
+      setGifts(response || []);
     } catch (error) {
       console.error('Error fetching gifts:', error);
       toast.error('Failed to fetch gifts');
@@ -42,8 +42,8 @@ const GiftManagement = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('/api/gifts/categories');
-      setCategories(response.data || []);
+      const response = await apiService.get('/gifts/categories');
+      setCategories(response || []);
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Failed to fetch categories');
@@ -52,7 +52,7 @@ const GiftManagement = () => {
 
   const handleCreateGift = async () => {
     try {
-      await axios.post('/api/gifts', formData);
+      await apiService.post('/gifts', formData);
       toast.success('Gift created successfully');
       fetchGifts();
       setIsModalOpen(false);
@@ -72,7 +72,7 @@ const GiftManagement = () => {
 
   const handleUpdateGift = async (id) => {
     try {
-      await axios.put(`/api/gifts/${id}`, formData);
+      await apiService.put(`/gifts/${id}`, formData);
       toast.success('Gift updated successfully');
       fetchGifts();
       setIsModalOpen(false);
@@ -86,7 +86,7 @@ const GiftManagement = () => {
   const handleDeleteGift = async (id) => {
     if (window.confirm('Are you sure you want to delete this gift?')) {
       try {
-        await axios.delete(`/api/gifts/${id}`);
+        await apiService.delete(`/gifts/${id}`);
         toast.success('Gift deleted successfully');
         fetchGifts();
       } catch (error) {
@@ -103,7 +103,7 @@ const GiftManagement = () => {
   const handleSeedGifts = async () => {
     try {
       setLoading(true);
-      await axios.post('/api/gifts/seed');
+      await apiService.post('/gifts/seed');
       toast.success('Gifts seeded successfully');
       fetchGifts();
     } catch (error) {
