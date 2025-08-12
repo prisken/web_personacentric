@@ -195,6 +195,10 @@ async function seedData() {
       }
     }
 
+    // Seed gifts and categories
+    const seedGifts = require('./seedData/giftSeeds');
+    await seedGifts();
+
     console.log('Data seeding completed successfully');
   } catch (error) {
     console.error('Seeding error:', error);

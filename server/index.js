@@ -21,6 +21,7 @@ const adminRoutes = require('./routes/admin');
 
 const uploadRoutes = require('./routes/upload');
 const agentRoutes = require('./routes/agents');
+const giftRoutes = require('./routes/gifts');
 
 // Import database
 const sequelize = require('./config/database');
@@ -75,6 +76,7 @@ app.use('/api/admin', adminRoutes);
 
 app.use('/api/upload', uploadRoutes);
 app.use('/api/agents', agentRoutes);
+app.use('/api/gifts', giftRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

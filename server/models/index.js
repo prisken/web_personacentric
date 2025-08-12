@@ -23,6 +23,8 @@ const ClientUpgrade = require('./ClientUpgrade');
 
 const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
+const Gift = require('./Gift');
+const GiftCategory = require('./GiftCategory');
 
 // Define associations
 // User associations
@@ -117,6 +119,11 @@ Badge.hasMany(UserBadge, { foreignKey: 'badge_id', as: 'userBadges' });
 UserBadge.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
 
+// Gift associations
+Gift.belongsTo(GiftCategory, { foreignKey: 'category_id', as: 'category' });
+Gift.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+GiftCategory.hasMany(Gift, { foreignKey: 'category_id', as: 'gifts' });
+
 module.exports = {
   sequelize,
   User,
@@ -139,5 +146,7 @@ module.exports = {
   EventRegistration,
   ClientUpgrade,
   Badge,
-  UserBadge
+  UserBadge,
+  Gift,
+  GiftCategory
 };
