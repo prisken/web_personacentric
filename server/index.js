@@ -18,7 +18,6 @@ const aiRoutes = require('./routes/ai');
 const paymentRoutes = require('./routes/payments');
 const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
-
 const uploadRoutes = require('./routes/upload');
 const agentRoutes = require('./routes/agents');
 const giftRoutes = require('./routes/gifts');
@@ -73,7 +72,6 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
-
 app.use('/api/upload', uploadRoutes);
 app.use('/api/agents', agentRoutes);
 app.use('/api/gifts', giftRoutes);
@@ -140,20 +138,22 @@ async function startServer() {
     process.on('SIGINT', () => handleShutdown(server));
 
     // Check if seeding is needed
-    const { User, Event } = require('./models');
-    const [userCount, eventCount] = await Promise.all([
+    const { User, Event, Gift, GiftCategory } = require('./models');
+    const [userCount, eventCount, giftCount] = await Promise.all([
       User.count(),
-      Event.count()
+      Event.count(),
+      Gift.count()
     ]);
     
     console.log('Current database state:', {
       users: userCount,
-      events: eventCount
+      events: eventCount,
+      gifts: giftCount
     });
 
-    // Seed data if no events exist
-    if (eventCount === 0) {
-      console.log('No events found, running seed script...');
+    // Seed data if needed
+    if (eventCount === 0 || giftCount === 0) {
+      console.log('Missing data, running seed script...');
       const seedData = require('./seedData');
       try {
         await seedData();
@@ -166,7 +166,7 @@ async function startServer() {
         }
       }
     } else {
-      console.log('Events already exist, skipping seed script');
+      console.log('Data already exists, skipping seed script');
     }
   } catch (error) {
     console.error('Unable to start server:', error);
