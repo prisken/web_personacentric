@@ -118,33 +118,44 @@ async function startServer() {
     console.log('Database connected successfully');
     
     // Sync database (create tables if they don't exist)
-    // Use force: false to prevent conflicts with existing schema
     console.log('Syncing database...');
-    await sequelize.sync({ force: false, alter: false });
+    await sequelize.sync({ force: false, alter: true });
     console.log('Database synced successfully');
     
     console.log('Running migrations...');
     await runMigrations();
     console.log('Migrations completed');
+
+    // Check if seeding is needed
+    const { User, Event } = require('./models');
+    const [userCount, eventCount] = await Promise.all([
+      User.count(),
+      Event.count()
+    ]);
     
-    // Start server first, then seed data in background
+    console.log('Current database state:', {
+      users: userCount,
+      events: eventCount
+    });
+
+    // Seed data if no events exist
+    if (eventCount === 0) {
+      console.log('No events found, running seed script...');
+      const seedData = require('./seedData');
+      try {
+        await seedData();
+        console.log('Seed data created successfully');
+      } catch (error) {
+        console.error('Error seeding data:', error);
+      }
+    } else {
+      console.log('Events already exist, skipping seed script');
+    }
+    
+    // Start server
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });
-    
-    // Seed data if no users exist (in background)
-    setTimeout(async () => {
-      try {
-        const { User } = require('./models');
-        const userCount = await User.count();
-        if (userCount === 0) {
-          const seedData = require('./seedData');
-          await seedData();
-        }
-      } catch (error) {
-        console.error('Seeding error:', error);
-      }
-    }, 5000); // Wait 5 seconds before seeding
   } catch (error) {
     console.error('Unable to start server:', error);
     process.exit(1);
@@ -153,4 +164,4 @@ async function startServer() {
 
 startServer();
 
-module.exports = app; 
+module.exports = app;

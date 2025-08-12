@@ -8,7 +8,6 @@
     "healthcheckPath": "/api/health",
     "healthcheckTimeout": 600,
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10,
-    "postDeploy": "node -e \"const { sequelize } = require('./server/models'); sequelize.sync().then(() => require('./server/seedData.js')())\""
+    "restartPolicyMaxRetries": 10
   }
 }
