@@ -4,7 +4,8 @@ const { v4: uuidv4 } = require('uuid');
 
 async function seedData() {
   try {
-    console.log('Starting simplified data seeding...');
+    console.log('Starting data seeding...');
+    console.log('Environment:', process.env.NODE_ENV);
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({ where: { email: 'admin@personacentric.com' } });
@@ -14,6 +15,7 @@ async function seedData() {
       // Create admin user
       const adminPassword = await bcrypt.hash('admin123', 10);
       await User.create({
+        id: uuidv4(),
         email: 'admin@personacentric.com',
         password_hash: adminPassword,
         first_name: 'Admin',
@@ -58,6 +60,7 @@ async function seedData() {
       if (!existingAgent) {
         const agentPassword = await bcrypt.hash('agent123', 10);
         await User.create({
+          id: uuidv4(),
           email: agentEmails[i],
           password_hash: agentPassword,
           first_name: agentData[i].first_name,
@@ -185,13 +188,20 @@ async function seedData() {
         console.log(`Event "${eventTitles[i]}" created successfully with ID: ${createdEvent.id}`);
       } catch (error) {
         console.error(`Failed to create event "${eventTitles[i]}":`, error);
+        // In production, we want to continue creating other events even if one fails
+        if (process.env.NODE_ENV !== 'production') {
+          throw error;
+        }
       }
     }
 
-    console.log('Simplified user and event seeding completed successfully');
+    console.log('Data seeding completed successfully');
   } catch (error) {
     console.error('Seeding error:', error);
-    throw error;
+    // In production, we want to log the error but not crash the process
+    if (process.env.NODE_ENV !== 'production') {
+      throw error;
+    }
   }
 }
 
