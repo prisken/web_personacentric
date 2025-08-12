@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Gift, GiftCategory, User } = require('../models');
-const auth = require('../middleware/auth');
+const { authenticateToken: auth } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 
 // Get all gifts with their categories
