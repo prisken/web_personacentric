@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import apiService from '../services/api';
 
-const UserContext = createContext();
+export const UserContext = createContext();
 
 export const useUser = () => {
   const context = useContext(UserContext);
