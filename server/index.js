@@ -111,6 +111,8 @@ app.use('*', (req, res) => {
 
 // Database connection and server start
 async function startServer() {
+  let server;
+  
   try {
     console.log('Starting server...');
     console.log('Connecting to database...');
@@ -125,6 +127,15 @@ async function startServer() {
     console.log('Running migrations...');
     await runMigrations();
     console.log('Migrations completed');
+
+    // Start server first
+    server = app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+
+    // Handle graceful shutdown
+    process.on('SIGTERM', () => handleShutdown(server));
+    process.on('SIGINT', () => handleShutdown(server));
 
     // Check if seeding is needed
     const { User, Event } = require('./models');
@@ -147,19 +158,44 @@ async function startServer() {
         console.log('Seed data created successfully');
       } catch (error) {
         console.error('Error seeding data:', error);
+        // Don't exit on seeding error in production
+        if (process.env.NODE_ENV !== 'production') {
+          throw error;
+        }
       }
     } else {
       console.log('Events already exist, skipping seed script');
     }
-    
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   } catch (error) {
     console.error('Unable to start server:', error);
+    if (server) server.close();
     process.exit(1);
   }
+}
+
+// Graceful shutdown handler
+async function handleShutdown(server) {
+  console.log('Received shutdown signal');
+  
+  // Close server first to stop accepting new connections
+  server.close(() => {
+    console.log('Server closed');
+    
+    // Then close database connection
+    sequelize.close().then(() => {
+      console.log('Database connection closed');
+      process.exit(0);
+    }).catch((err) => {
+      console.error('Error closing database connection:', err);
+      process.exit(1);
+    });
+  });
+
+  // Force close after 10 seconds
+  setTimeout(() => {
+    console.error('Could not close connections in time, forcefully shutting down');
+    process.exit(1);
+  }, 10000);
 }
 
 startServer();
