@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import apiService from '../services/api';
 
 const ScrollingEvents = () => {
-  // Sample event images - replace with actual event images
-  const events = [
-    { id: 1, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Investment+Seminar', name: 'Investment Seminar', date: '2024-03-15' },
-    { id: 2, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Financial+Workshop', name: 'Financial Workshop', date: '2024-03-20' },
-    { id: 3, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Retirement+Planning', name: 'Retirement Planning', date: '2024-03-25' },
-    { id: 4, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Market+Analysis', name: 'Market Analysis', date: '2024-04-01' },
-    { id: 5, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Wealth+Management', name: 'Wealth Management', date: '2024-04-05' },
-    // Duplicate for seamless scrolling
-    { id: 6, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Investment+Seminar', name: 'Investment Seminar', date: '2024-03-15' },
-    { id: 7, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Financial+Workshop', name: 'Financial Workshop', date: '2024-03-20' },
-    { id: 8, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Retirement+Planning', name: 'Retirement Planning', date: '2024-03-25' },
-    { id: 9, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Market+Analysis', name: 'Market Analysis', date: '2024-04-01' },
-    { id: 10, image: 'https://placehold.co/400x300/e2e8f0/475569?text=Wealth+Management', name: 'Wealth Management', date: '2024-04-05' },
-  ];
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await apiService.get('/events');
+        // Duplicate events for seamless scrolling
+        const duplicatedEvents = [...response, ...response];
+        setEvents(duplicatedEvents);
+      } catch (error) {
+        console.error('Error fetching events:', error);
+        // Use placeholder data if API fails
+        const placeholderEvents = [
+          { id: 1, image_url: 'https://placehold.co/400x300/e2e8f0/475569?text=Event', name: 'Loading...', date: '' },
+        ];
+        setEvents([...placeholderEvents, ...placeholderEvents]);
+      }
+    };
+
+    fetchEvents();
+  }, []);
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg">
@@ -33,7 +41,7 @@ const ScrollingEvents = () => {
               <div className="bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="aspect-video overflow-hidden">
                   <img
-                    src={event.image}
+                    src={event.image_url || event.image}
                     alt={event.name}
                     className="w-full h-full object-cover"
                   />

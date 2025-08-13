@@ -171,29 +171,18 @@ const HomePage = () => {
           
           {/* Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-end text-center pb-20 sm:pb-16 px-4">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6 max-w-3xl">
-              {t('home.hero.title')}
-            </h1>
             <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl">
-              {t('home.hero.subtitle')}
+              10月30號中環街市
             </p>
             {/* CTA Button */}
             <Link
               to="/register"
-              className="group relative w-full sm:w-auto px-8 py-4 rounded-xl text-xl font-bold transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden backdrop-blur-md"
+              className="group relative w-full sm:w-auto px-6 py-3 rounded-xl text-base font-bold transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden"
               style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.24) 0%, rgba(255, 255, 255, 0.12) 100%)',
-                boxShadow: '0 4px 24px -1px rgba(0, 0, 0, 0.2), 0 2px 8px -1px rgba(0, 0, 0, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.4)',
-                borderTop: '1px solid rgba(255, 255, 255, 0.2)',
-                borderLeft: '1px solid rgba(255, 255, 255, 0.2)',
-                transform: 'translateY(-2px)',
+                border: '2px solid rgba(255, 255, 255, 0.8)',
                 textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
               }}
             >
-              <span className="absolute inset-0 bg-white/10 translate-y-12 group-hover:translate-y-0 transition-transform duration-300"></span>
-              <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{
-                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%)',
-              }}></span>
               <span className="relative inline-flex items-center text-white">
                 {t('home.hero.registerNow')}
                 <svg 
@@ -225,46 +214,62 @@ const HomePage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Smart Matching */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">🎯</div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                {t('home.about.benefit1.title')}
-              </h3>
-              <p className="text-sm sm:text-base text-blue-200">
-                {t('home.about.benefit1.desc')}
-              </p>
+              <div className="flex items-center">
+                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">🎯</div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    {t('home.about.benefit1.title')}
+                  </h3>
+                  <p className="text-sm sm:text-base text-blue-200">
+                    {t('home.about.benefit1.desc')}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Professional Community */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">👥</div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                {t('home.about.benefit2.title')}
-              </h3>
-              <p className="text-sm sm:text-base text-blue-200">
-                {t('home.about.benefit2.desc')}
-              </p>
+              <div className="flex items-center">
+                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">👥</div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    {t('home.about.benefit2.title')}
+                  </h3>
+                  <p className="text-sm sm:text-base text-blue-200">
+                    {t('home.about.benefit2.desc')}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Reward System */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">🏆</div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                {t('home.about.benefit3.title')}
-              </h3>
-              <p className="text-sm sm:text-base text-blue-200">
-                {t('home.about.benefit3.desc')}
-              </p>
+              <div className="flex items-center">
+                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">🏆</div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    {t('home.about.benefit3.title')}
+                  </h3>
+                  <p className="text-sm sm:text-base text-blue-200">
+                    {t('home.about.benefit3.desc')}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Continuous Learning */}
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
-              <div className="text-yellow-500 text-3xl sm:text-4xl mb-3 sm:mb-4">📚</div>
-              <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
-                {t('home.about.benefit4.title')}
-              </h3>
-              <p className="text-sm sm:text-base text-blue-200">
-                {t('home.about.benefit4.desc')}
-              </p>
+              <div className="flex items-center">
+                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">📚</div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                    {t('home.about.benefit4.title')}
+                  </h3>
+                  <p className="text-sm sm:text-base text-blue-200">
+                    {t('home.about.benefit4.desc')}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -280,7 +285,7 @@ const HomePage = () => {
               <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8">{t('home.gifts.subtitle')}</p>
               <Link
                 to="/register"
-                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
               >
                 {t('home.gifts.cta')}
               </Link>
@@ -322,26 +327,56 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Investment Game Section */}
+      <section className="py-12 sm:py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
+            {/* Left side - Text and CTA */}
+            <div className="w-1/2 text-left">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.investmentGame.title')}</h2>
+              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
+                {t('home.investmentGame.subtitle')}
+              </p>
+              <Link
+                to="/investment-game"
+                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
+              >
+                {t('home.investmentGame.cta')}
+              </Link>
+            </div>
+
+            {/* Right side - Game preview */}
+            <div className="w-1/2 h-[300px] sm:h-[400px] bg-white rounded-lg shadow-xl p-4">
+              <img
+                src="/images/investment-game-preview.jpg"
+                alt="Investment Game Preview"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Events Section */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
+          <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left">
+            <div className="w-1/2 text-left">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.events.title')}</h2>
-              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl mx-auto lg:mx-0">
+              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
                 {t('home.events.subtitle')}
               </p>
               <Link
                 to="/events"
-                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
+                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
               >
                 {t('home.events.cta')}
               </Link>
             </div>
 
             {/* Right side - Scrolling events */}
-            <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] mt-8 lg:mt-0">
+            <div className="w-1/2 h-[300px] sm:h-[400px]">
               <ScrollingEvents />
             </div>
           </div>
@@ -357,12 +392,12 @@ const HomePage = () => {
             </h2>
           </div>
           
-          {/* Mobile: 2 rows of 4, Tablet: 2 rows of 4, Desktop: 2 rows of 4 */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 xl:gap-8">
-            {[...Array(8)].map((_, index) => (
-              <div key={index} className="bg-gray-100 rounded-2xl p-3 sm:p-4 lg:p-6 xl:p-8 flex items-center justify-center hover:bg-gray-200 transition-all duration-300 group hover:scale-105">
-                <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 xl:w-20 xl:h-20 bg-gray-300 rounded-xl flex items-center justify-center group-hover:bg-gray-400 transition-all duration-300">
-                  <span className="text-gray-600 font-semibold text-xs sm:text-sm lg:text-base">Partner {index + 1}</span>
+          {/* Mobile: 5 per row, Tablet: 5 per row, Desktop: 5 per row */}
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
+            {[...Array(10)].map((_, index) => (
+              <div key={index} className="bg-gray-100 rounded-lg p-2 sm:p-3 flex items-center justify-center hover:bg-gray-200 transition-all duration-300 group hover:scale-105">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-300 rounded-lg flex items-center justify-center group-hover:bg-gray-400 transition-all duration-300">
+                  <span className="text-gray-600 font-semibold text-[10px] sm:text-xs lg:text-sm">Partner {index + 1}</span>
                 </div>
               </div>
             ))}
@@ -379,36 +414,49 @@ const HomePage = () => {
             </h2>
           </div>
           
-          {/* Mobile: 2 columns, Tablet: 3 columns */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 xl:gap-12">
-            {blogPosts.map((post, index) => (
-              <div key={post.id} className="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
-                <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
-                  <img 
-                    src={post.image} 
-                    alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
+          {/* Horizontal scrolling container for mobile */}
+          <div className="relative">
+            <div className="flex overflow-x-auto pb-4 gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-6 lg:gap-8 xl:gap-12 hide-scrollbar">
+              {blogPosts.map((post, index) => (
+                <div key={post.id} className="flex-none w-[85vw] sm:w-auto bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 group hover:scale-105">
+                  <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
+                    <img 
+                      src={post.image} 
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
+                    <h3 className="text-sm sm:text-base lg:text-xl xl:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">{post.title}</h3>
+                    <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-600 mb-2 sm:mb-3 lg:mb-4 xl:mb-6 leading-relaxed">{post.excerpt}</p>
+                    <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-500 mb-3 sm:mb-4 lg:mb-6 xl:mb-8">{post.date}</p>
+                    <Link
+                      to="/blogs"
+                      className="text-black hover:text-gray-800 font-medium text-xs sm:text-sm lg:text-base xl:text-lg transition-all duration-200 hover:translate-x-1 inline-block"
+                    >
+                      {t('blogs.readMore')} →
+                    </Link>
+                  </div>
                 </div>
-                <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
-                  <h3 className="text-sm sm:text-base lg:text-xl xl:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4">{post.title}</h3>
-                  <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-600 mb-2 sm:mb-3 lg:mb-4 xl:mb-6 leading-relaxed">{post.excerpt}</p>
-                  <p className="text-xs sm:text-sm lg:text-base xl:text-lg text-gray-500 mb-3 sm:mb-4 lg:mb-6 xl:mb-8">{post.date}</p>
-                  <Link
-                    to="/blogs"
-                    className="text-black hover:text-gray-800 font-medium text-xs sm:text-sm lg:text-base xl:text-lg transition-all duration-200 hover:translate-x-1 inline-block"
-                  >
-                    {t('blogs.readMore')} →
-                  </Link>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+
+          {/* Add custom scrollbar styles */}
+          <style jsx>{`
+            .hide-scrollbar {
+              scrollbar-width: none;
+              -ms-overflow-style: none;
+            }
+            .hide-scrollbar::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
           
           <div className="text-center mt-8 sm:mt-12 lg:mt-16">
             <Link
               to="/blogs"
-              className="inline-block bg-black text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-lg text-base sm:text-lg lg:text-xl font-medium hover:bg-gray-800 transition-all duration-300"
+              className="inline-block bg-black text-white px-4 py-2 sm:px-6 sm:py-3 lg:px-8 lg:py-4 rounded-lg text-sm sm:text-base lg:text-lg font-medium hover:bg-gray-800 transition-all duration-300"
             >
               {t('blogs.viewAll')}
             </Link>
@@ -428,7 +476,7 @@ const HomePage = () => {
             </p>
             <Link
               to="/register"
-              className="inline-block bg-black text-white px-8 py-4 sm:px-10 sm:py-5 lg:px-12 lg:py-6 rounded-lg text-base sm:text-lg lg:text-xl font-medium hover:bg-gray-800 transition-all duration-300"
+              className="inline-block bg-black text-white px-6 py-3 sm:px-8 sm:py-4 lg:px-10 lg:py-5 rounded-lg text-sm sm:text-base lg:text-lg font-medium hover:bg-gray-800 transition-all duration-300"
             >
               {t('member.cta')}
             </Link>

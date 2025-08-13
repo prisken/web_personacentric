@@ -4,7 +4,7 @@ import { UserContext } from '../../contexts/UserContext';
 import apiService from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../LoadingSpinner';
-import ImageUpload from '../ImageUpload';
+import GiftImageUpload from '../GiftImageUpload';
 
 const GiftManagement = () => {
   const { user } = useContext(UserContext);
@@ -96,8 +96,8 @@ const GiftManagement = () => {
     }
   };
 
-  const handleImageUpload = async (imageUrl) => {
-    setFormData({ ...formData, image_url: imageUrl });
+  const handleImageUpload = (imageData) => {
+    setFormData({ ...formData, image_url: imageData.url });
   };
 
   const handleSeedGifts = async () => {
@@ -347,9 +347,9 @@ const GiftManagement = () => {
                 <label className="block text-sm font-medium text-gray-700">
                   禮品圖片
                 </label>
-                <ImageUpload
-                  onUploadSuccess={handleImageUpload}
-                  currentImage={formData.image_url}
+                <GiftImageUpload
+                  onImageUploaded={handleImageUpload}
+                  currentImageUrl={formData.image_url}
                 />
               </div>
               <div className="flex justify-end space-x-4 mt-6">

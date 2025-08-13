@@ -1,20 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import apiService from '../services/api';
 
 const ScrollingGifts = () => {
-  // Sample gift images - replace with actual gift images
-  const gifts = [
-    { id: 1, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+1', name: 'Gift Card' },
-    { id: 2, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+2', name: 'Premium Account' },
-    { id: 3, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+3', name: 'Investment Course' },
-    { id: 4, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+4', name: 'Financial Report' },
-    { id: 5, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+5', name: 'Market Analysis' },
-    // Duplicate for seamless scrolling
-    { id: 6, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+1', name: 'Gift Card' },
-    { id: 7, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+2', name: 'Premium Account' },
-    { id: 8, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+3', name: 'Investment Course' },
-    { id: 9, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+4', name: 'Financial Report' },
-    { id: 10, image: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift+5', name: 'Market Analysis' },
-  ];
+  const [gifts, setGifts] = useState([]);
+
+  useEffect(() => {
+    const fetchGifts = async () => {
+      try {
+        const response = await apiService.get('/gifts');
+        // Filter only active gifts
+        const activeGifts = response.filter(gift => gift.status === 'active');
+        // Duplicate gifts for seamless scrolling
+        const duplicatedGifts = [...activeGifts, ...activeGifts];
+        setGifts(duplicatedGifts);
+      } catch (error) {
+        console.error('Error fetching gifts:', error);
+        // Use placeholder data if API fails
+        const placeholderGifts = [
+          { id: 1, image_url: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift', name: 'Loading...', points_required: 0 },
+        ];
+        setGifts([...placeholderGifts, ...placeholderGifts]);
+      }
+    };
+
+    fetchGifts();
+  }, []);
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg">
@@ -33,7 +43,7 @@ const ScrollingGifts = () => {
               <div className="bg-gray-50 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="aspect-square overflow-hidden rounded-lg mb-3">
                   <img
-                    src={gift.image}
+                    src={gift.image_url || gift.image}
                     alt={gift.name}
                     className="w-full h-full object-cover"
                   />
