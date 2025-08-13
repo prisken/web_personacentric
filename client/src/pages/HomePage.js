@@ -327,35 +327,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Investment Game Section */}
-      <section className="py-12 sm:py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
-            {/* Left side - Text and CTA */}
-            <div className="w-1/2 text-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.investmentGame.title')}</h2>
-              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
-                {t('home.investmentGame.subtitle')}
-              </p>
-              <Link
-                to="/investment-game"
-                className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
-              >
-                {t('home.investmentGame.cta')}
-              </Link>
-            </div>
-
-            {/* Right side - Game preview */}
-            <div className="w-1/2 h-[300px] sm:h-[400px] bg-white rounded-lg shadow-xl p-4">
-              <img
-                src="/images/investment-game-preview.jpg"
-                alt="Investment Game Preview"
-                className="w-full h-full object-cover rounded-lg"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Events Section */}
       <section className="py-12 sm:py-16 bg-white">
