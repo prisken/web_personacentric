@@ -32,8 +32,28 @@ export const LanguageProvider = ({ children }) => {
       'lifestyle.student': '學生族',
       'lifestyle.retiree': '退休族',
 
-      // Homepage - Events
+      // Events Page
       'events.title': '最新活動',
+      'events.description': '探索我們的活動，與專業人士交流，獲取最新的財務知識',
+      'events.upcoming': '即將舉行',
+      'events.past': '過往活動',
+      'events.noUpcoming': '暫無即將舉行的活動',
+      'events.noPast': '暫無過往活動',
+      'events.checkBackLater': '請稍後再來查看新活動',
+      'events.noPastEvents': '目前沒有過往活動記錄',
+      'events.registered': '人已報名',
+      'events.register': '立即報名',
+      'events.cancelRegistration': '取消報名',
+      'events.loginToRegister': '登入以報名',
+      'events.details': '活動詳情',
+      
+      // Event Types
+      'events.workshop': '工作坊',
+      'events.seminar': '研討會',
+      'events.consultation': '諮詢',
+      'events.webinar': '網路研討會',
+      
+      // Homepage - Events
       'events.financialPlanning': '財務規劃工作坊',
       'events.investmentStrategy': '投資策略研討會',
       'events.retirementPlanning': '退休規劃大師班',
@@ -591,8 +611,28 @@ export const LanguageProvider = ({ children }) => {
       'lifestyle.student': 'Student',
       'lifestyle.retiree': 'Retiree',
 
-      // Homepage - Events
+      // Events Page
       'events.title': 'Latest Events',
+      'events.description': 'Explore our events, connect with professionals, and gain the latest financial knowledge',
+      'events.upcoming': 'Upcoming',
+      'events.past': 'Past Events',
+      'events.noUpcoming': 'No upcoming events',
+      'events.noPast': 'No past events',
+      'events.checkBackLater': 'Please check back later for new events',
+      'events.noPastEvents': 'No past events available',
+      'events.registered': 'registered',
+      'events.register': 'Register Now',
+      'events.cancelRegistration': 'Cancel Registration',
+      'events.loginToRegister': 'Login to Register',
+      'events.details': 'Event Details',
+      
+      // Event Types
+      'events.workshop': 'Workshop',
+      'events.seminar': 'Seminar',
+      'events.consultation': 'Consultation',
+      'events.webinar': 'Webinar',
+      
+      // Homepage - Events
       'events.financialPlanning': 'Financial Planning Workshop',
       'events.investmentStrategy': 'Investment Strategy Seminar',
       'events.retirementPlanning': 'Retirement Planning Masterclass',

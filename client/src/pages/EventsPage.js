@@ -49,12 +49,12 @@ const EventsPage = () => {
     try {
       const response = await apiService.registerForEvent(eventId);
       if (response.success) {
-        alert(language === 'zh-TW' ? '註冊成功！' : 'Registration successful!');
+        alert(t('common.success'));
         fetchUserRegistrations();
         fetchEvents(); // Refresh events to update registration count
       }
     } catch (error) {
-      alert(language === 'zh-TW' ? '註冊失敗：' + error.message : 'Registration failed: ' + error.message);
+      alert(t('common.error') + ': ' + error.message);
     }
   };
 
@@ -62,12 +62,12 @@ const EventsPage = () => {
     try {
       const response = await apiService.cancelEventRegistration(eventId);
       if (response.success) {
-        alert(language === 'zh-TW' ? '取消註冊成功！' : 'Registration cancelled successfully!');
+        alert(t('common.success'));
         fetchUserRegistrations();
         fetchEvents(); // Refresh events to update registration count
       }
     } catch (error) {
-      alert(language === 'zh-TW' ? '取消註冊失敗：' + error.message : 'Failed to cancel registration: ' + error.message);
+      alert(t('common.error') + ': ' + error.message);
     }
   };
 
@@ -91,13 +91,7 @@ const EventsPage = () => {
   };
 
   const getEventTypeLabel = (eventType) => {
-    const labels = {
-      workshop: language === 'zh-TW' ? '工作坊' : 'Workshop',
-      seminar: language === 'zh-TW' ? '研討會' : 'Seminar',
-      consultation: language === 'zh-TW' ? '諮詢' : 'Consultation',
-      webinar: language === 'zh-TW' ? '網路研討會' : 'Webinar'
-    };
-    return labels[eventType] || eventType;
+    return t(`events.${eventType}`) || eventType;
   };
 
   const getEventTypeColor = (eventType) => {
