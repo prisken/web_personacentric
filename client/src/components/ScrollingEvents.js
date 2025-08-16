@@ -7,15 +7,24 @@ const ScrollingEvents = () => {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await apiService.get('/events');
-        // Duplicate events for seamless scrolling
-        const duplicatedEvents = [...response, ...response];
-        setEvents(duplicatedEvents);
+        const response = await apiService.getEvents({ status: 'published' });
+        if (response.success && response.events) {
+          // Map the events to the required format
+          const formattedEvents = response.events.map(event => ({
+            id: event.id,
+            image: event.image || '/images/food-for-talk.jpg',
+            name: event.title,
+            date: new Date(event.start_date).toLocaleDateString()
+          }));
+          // Duplicate events for seamless scrolling
+          const duplicatedEvents = [...formattedEvents, ...formattedEvents];
+          setEvents(duplicatedEvents);
+        }
       } catch (error) {
         console.error('Error fetching events:', error);
         // Use placeholder data if API fails
         const placeholderEvents = [
-          { id: 1, image_url: 'https://placehold.co/400x300/e2e8f0/475569?text=Event', name: 'Loading...', date: '' },
+          { id: 1, image: '/images/food-for-talk.jpg', name: 'Loading...', date: '' },
         ];
         setEvents([...placeholderEvents, ...placeholderEvents]);
       }
@@ -41,7 +50,7 @@ const ScrollingEvents = () => {
               <div className="bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="aspect-video overflow-hidden">
                   <img
-                    src={event.image_url || event.image}
+                    src={event.image}
                     alt={event.name}
                     className="w-full h-full object-cover"
                   />

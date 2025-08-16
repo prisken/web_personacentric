@@ -334,9 +334,9 @@ const HomePage = () => {
           <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
             <div className="w-1/2 text-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.events.title')}</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">我們的活動</h2>
               <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
-                {t('home.events.subtitle')}
+                探索我們的活動，與專業人士交流，獲取最新的財務知識
               </p>
               <Link
                 to="/events"
