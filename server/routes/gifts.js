@@ -3,6 +3,23 @@ const router = express.Router();
 const { Gift, GiftCategory, User } = require('../models');
 const { authenticateToken: auth } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
+const multer = require('multer');
+const { uploadImage } = require('../utils/imageUpload');
+
+// Configure multer for memory storage
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  },
+});
 
 // Public endpoint to get active gifts
 router.get('/public', async (req, res) => {
@@ -98,16 +115,32 @@ router.put('/categories/:id', auth, async (req, res) => {
   }
 });
 
-// Create a new gift
-router.post('/', auth, async (req, res) => {
+// Create a new gift with image upload
+router.post('/', auth, upload.single('image'), async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Only admins can create gifts' });
     }
 
+    // Handle image upload if provided
+    let imageUrl = null;
+    if (req.file) {
+      const result = await uploadImage(req.file, 'gifts');
+      
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to upload gift image: ' + result.error
+        });
+      }
+      
+      imageUrl = result.url;
+    }
+
     const gift = await Gift.create({
       id: uuidv4(),
       ...req.body,
+      image_url: imageUrl,
       created_by: req.user.id
     });
 
@@ -125,8 +158,8 @@ router.post('/', auth, async (req, res) => {
   }
 });
 
-// Update a gift
-router.put('/:id', auth, async (req, res) => {
+// Update a gift with image upload
+router.put('/:id', auth, upload.single('image'), async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Only admins can update gifts' });
@@ -137,7 +170,25 @@ router.put('/:id', auth, async (req, res) => {
       return res.status(404).json({ error: 'Gift not found' });
     }
 
-    await gift.update(req.body);
+    // Handle image upload if provided
+    let imageUrl = gift.image_url; // Keep existing image if no new one provided
+    if (req.file) {
+      const result = await uploadImage(req.file, 'gifts');
+      
+      if (!result.success) {
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to upload gift image: ' + result.error
+        });
+      }
+      
+      imageUrl = result.url;
+    }
+
+    await gift.update({
+      ...req.body,
+      image_url: imageUrl
+    });
 
     const updatedGift = await Gift.findByPk(gift.id, {
       include: [

@@ -275,24 +275,26 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Gifts Section */}
+      {/* Investment Game Section */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
-            {/* Text and CTA - Moved to top for mobile */}
-            <div className="w-full lg:w-1/2 text-center lg:text-left order-1 lg:order-2">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6">{t('home.gifts.title')}</h2>
-              <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8">{t('home.gifts.subtitle')}</p>
+          <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
+            {/* Left side - Text and CTA */}
+            <div className="w-1/2 text-left">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">投資遊戲</h2>
+              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
+                參與我們的投資遊戲活動，學習投資策略，贏取豐富獎品
+              </p>
               <Link
                 to="/register"
                 className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
               >
-                {t('home.gifts.cta')}
+                立即參與
               </Link>
             </div>
 
-            {/* Scrolling gifts - Moved to bottom for mobile */}
-            <div className="w-full lg:w-1/2 h-[300px] sm:h-[400px] order-2 lg:order-1 mt-8 lg:mt-0">
+            {/* Right side - Scrolling gifts */}
+            <div className="w-1/2 h-[300px] sm:h-[400px]">
               <ScrollingGifts />
             </div>
           </div>
