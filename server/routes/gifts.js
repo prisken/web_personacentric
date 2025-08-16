@@ -1,10 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const { Gift, GiftCategory, User } = require('../models');
+const { Gift, GiftCategory, User, GiftRedemption, sequelize } = require('../models');
 const { authenticateToken: auth } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
 const { uploadImage } = require('../utils/imageUpload');
+const { Op } = require('sequelize');
+
+// Middleware to check if user is admin
+const requireAdmin = (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      error: 'Admin access required'
+    });
+  }
+  next();
+};
 
 // Configure multer for memory storage
 const upload = multer({
@@ -164,6 +176,176 @@ router.get('/public', async (req, res) => {
     res.status(500).json({ 
       error: 'Failed to fetch gifts',
       details: error.message
+    });
+  }
+});
+
+// Redeem a gift
+router.post('/:id/redeem', auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    // Check gift availability
+    const gift = await Gift.findByPk(id);
+    if (!gift) {
+      return res.status(404).json({
+        success: false,
+        error: 'Gift not found'
+      });
+    }
+
+    if (gift.status !== 'active') {
+      return res.status(400).json({
+        success: false,
+        error: 'Gift is not available for redemption'
+      });
+    }
+
+    if (gift.stock_quantity <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Gift is out of stock'
+      });
+    }
+
+    // Check availability dates
+    const now = new Date();
+    if (gift.availability_start && now < gift.availability_start) {
+      return res.status(400).json({
+        success: false,
+        error: 'Gift is not yet available'
+      });
+    }
+    if (gift.availability_end && now > gift.availability_end) {
+      return res.status(400).json({
+        success: false,
+        error: 'Gift redemption period has ended'
+      });
+    }
+
+    // Check user points
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+
+    if (user.points < gift.points_required) {
+      return res.status(400).json({
+        success: false,
+        error: 'Insufficient points'
+      });
+    }
+
+    // Create redemption and update stock in a transaction
+    const result = await sequelize.transaction(async (t) => {
+      // Create redemption record
+      const redemption = await GiftRedemption.create({
+        id: uuidv4(),
+        gift_id: id,
+        user_id: userId,
+        points_used: gift.points_required,
+        status: 'completed'
+      }, { transaction: t });
+
+      // Update gift stock
+      await gift.update({
+        stock_quantity: gift.stock_quantity - 1,
+        status: gift.stock_quantity - 1 <= 0 ? 'out_of_stock' : 'active'
+      }, { transaction: t });
+
+      // Update user points
+      await user.update({
+        points: user.points - gift.points_required
+      }, { transaction: t });
+
+      return redemption;
+    });
+
+    res.json({
+      success: true,
+      message: 'Gift redeemed successfully',
+      redemption: result
+    });
+  } catch (error) {
+    console.error('Gift redemption error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to redeem gift'
+    });
+  }
+});
+
+// Get user's gift redemption history
+router.get('/user/redemptions', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const redemptions = await GiftRedemption.findAll({
+      where: { user_id: userId },
+      include: [
+        {
+          model: Gift,
+          as: 'gift',
+          include: [{ model: GiftCategory, as: 'category' }]
+        }
+      ],
+      order: [['redemption_date', 'DESC']]
+    });
+
+    res.json({
+      success: true,
+      redemptions: redemptions
+    });
+  } catch (error) {
+    console.error('Get user redemptions error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch redemptions'
+    });
+  }
+});
+
+// Get gift redemption statistics (admin only)
+router.get('/stats', auth, requireAdmin, async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const whereClause = {};
+    
+    if (startDate && endDate) {
+      whereClause.redemption_date = {
+        [Op.between]: [new Date(startDate), new Date(endDate)]
+      };
+    }
+
+    const stats = await GiftRedemption.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Gift,
+          as: 'gift',
+          include: [{ model: GiftCategory, as: 'category' }]
+        }
+      ],
+      attributes: [
+        [sequelize.fn('COUNT', sequelize.col('id')), 'total_redemptions'],
+        [sequelize.fn('SUM', sequelize.col('points_used')), 'total_points_used']
+      ],
+      group: ['gift.id', 'gift.category.id']
+    });
+
+    res.json({
+      success: true,
+      stats: stats
+    });
+  } catch (error) {
+    console.error('Get redemption stats error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch redemption statistics'
     });
   }
 });

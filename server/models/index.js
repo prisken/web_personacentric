@@ -25,6 +25,7 @@ const Badge = require('./Badge');
 const UserBadge = require('./UserBadge');
 const Gift = require('./Gift');
 const GiftCategory = require('./GiftCategory');
+const GiftRedemption = require('./GiftRedemption');
 
 // Define associations
 // User associations
@@ -122,7 +123,13 @@ UserBadge.belongsTo(Badge, { foreignKey: 'badge_id', as: 'badge' });
 // Gift associations
 Gift.belongsTo(GiftCategory, { foreignKey: 'category_id', as: 'category' });
 Gift.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+Gift.hasMany(GiftRedemption, { foreignKey: 'gift_id', as: 'redemptions' });
 GiftCategory.hasMany(Gift, { foreignKey: 'category_id', as: 'gifts' });
+
+// Gift redemption associations
+GiftRedemption.belongsTo(Gift, { foreignKey: 'gift_id', as: 'gift' });
+GiftRedemption.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+User.hasMany(GiftRedemption, { foreignKey: 'user_id', as: 'giftRedemptions' });
 
 module.exports = {
   sequelize,

@@ -39,8 +39,16 @@ const Gift = sequelize.define('Gift', {
     defaultValue: 0
   },
   status: {
-    type: DataTypes.ENUM('active', 'inactive', 'out_of_stock'),
-    defaultValue: 'active'
+    type: DataTypes.ENUM('draft', 'active', 'inactive', 'out_of_stock', 'discontinued'),
+    defaultValue: 'draft'
+  },
+  availability_start: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
+  availability_end: {
+    type: DataTypes.DATE,
+    allowNull: true
   },
   display_order: {
     type: DataTypes.INTEGER,
