@@ -7,10 +7,10 @@ const ScrollingGifts = () => {
   useEffect(() => {
     const fetchGifts = async () => {
       try {
-        const response = await apiService.getGifts();
-        if (response.success && response.gifts) {
+        const response = await apiService.get('/gifts');
+        if (response) {
           // Filter only active gifts and map to required format
-          const activeGifts = response.gifts
+          const activeGifts = response
             .filter(gift => gift.status === 'active')
             .map(gift => ({
               id: gift.id,
@@ -25,7 +25,9 @@ const ScrollingGifts = () => {
         console.error('Error fetching gifts:', error);
         // Use placeholder data if API fails
         const placeholderGifts = [
-          { id: 1, image: '/images/food-for-talk.jpg', name: 'Loading...' },
+          { id: 1, image: '/images/food-for-talk.jpg', name: 'HKD500 超市禮品卡' },
+          { id: 2, image: '/images/food-for-talk.jpg', name: '高級咖啡機' },
+          { id: 3, image: '/images/food-for-talk.jpg', name: 'Apple AirPods Pro' }
         ];
         setGifts([...placeholderGifts, ...placeholderGifts]);
       }
