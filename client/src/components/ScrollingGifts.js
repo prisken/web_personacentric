@@ -9,7 +9,7 @@ const ScrollingGifts = () => {
     const fetchGifts = async () => {
       try {
         setLoading(true);
-        const response = await apiService.get('/gifts');
+        const response = await apiService.get('/public/gifts');
         if (response) {
           // Filter only active gifts
           const activeGifts = response.filter(gift => gift.status === 'active');
