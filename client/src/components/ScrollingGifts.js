@@ -9,16 +9,28 @@ const ScrollingGifts = () => {
     const fetchGifts = async () => {
       try {
         setLoading(true);
+        console.log('Fetching gifts...');
         const response = await apiService.get('/public/gifts');
+        console.log('Gifts API response:', response);
+        
         if (response) {
           // Filter only active gifts
           const activeGifts = response.filter(gift => gift.status === 'active');
+          console.log('Active gifts:', activeGifts);
+          
           // Duplicate gifts for seamless scrolling
           const duplicatedGifts = [...activeGifts, ...activeGifts];
+          console.log('Duplicated gifts for scrolling:', duplicatedGifts);
+          
           setGifts(duplicatedGifts);
         }
       } catch (error) {
         console.error('Error fetching gifts:', error);
+        console.error('Error details:', {
+          message: error.message,
+          response: error.response,
+          stack: error.stack
+        });
       } finally {
         setLoading(false);
       }

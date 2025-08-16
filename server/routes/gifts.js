@@ -24,6 +24,7 @@ const upload = multer({
 // Public endpoint to get active gifts
 router.get('/public', async (req, res) => {
   try {
+    console.log('Fetching public gifts...');
     const gifts = await Gift.findAll({
       where: { status: 'active' },
       include: [
@@ -34,10 +35,25 @@ router.get('/public', async (req, res) => {
         ['created_at', 'DESC']
       ]
     });
+    console.log('Found gifts:', gifts.length);
+    console.log('Gift data:', gifts.map(gift => ({
+      id: gift.id,
+      name: gift.name,
+      status: gift.status,
+      image_url: gift.image_url,
+      category: gift.category ? gift.category.name : null
+    })));
     res.json(gifts);
   } catch (error) {
-    console.error('Error fetching public gifts:', error);
-    res.status(500).json({ error: 'Failed to fetch gifts' });
+    console.error('Error fetching public gifts:', {
+      message: error.message,
+      stack: error.stack,
+      details: error.original || error
+    });
+    res.status(500).json({ 
+      error: 'Failed to fetch gifts',
+      details: error.message
+    });
   }
 });
 
