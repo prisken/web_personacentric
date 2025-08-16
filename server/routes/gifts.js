@@ -25,6 +25,40 @@ const upload = multer({
 router.get('/public', async (req, res) => {
   try {
     console.log('Fetching public gifts...');
+    
+    // First check if we have any gift categories
+    const categories = await GiftCategory.findAll();
+    console.log('Found categories:', categories.length);
+    
+    if (categories.length === 0) {
+      console.log('No gift categories found, creating default categories...');
+      // Create default categories if none exist
+      await GiftCategory.bulkCreate([
+        {
+          id: uuidv4(),
+          name: '電子產品',
+          description: '各種電子產品和配件',
+          status: 'active',
+          display_order: 1
+        },
+        {
+          id: uuidv4(),
+          name: '生活用品',
+          description: '日常生活必需品和家居用品',
+          status: 'active',
+          display_order: 2
+        },
+        {
+          id: uuidv4(),
+          name: '禮品卡',
+          description: '各種商店和服務的禮品卡',
+          status: 'active',
+          display_order: 3
+        }
+      ]);
+    }
+
+    // Now fetch gifts with their categories
     const gifts = await Gift.findAll({
       where: { status: 'active' },
       include: [
@@ -35,6 +69,7 @@ router.get('/public', async (req, res) => {
         ['created_at', 'DESC']
       ]
     });
+    
     console.log('Found gifts:', gifts.length);
     console.log('Gift data:', gifts.map(gift => ({
       id: gift.id,
@@ -43,7 +78,50 @@ router.get('/public', async (req, res) => {
       image_url: gift.image_url,
       category: gift.category ? gift.category.name : null
     })));
-    res.json(gifts);
+
+    // If no gifts exist, create some default ones
+    if (gifts.length === 0) {
+      console.log('No gifts found, creating default gifts...');
+      const categories = await GiftCategory.findAll();
+      const defaultGifts = [
+        {
+          id: uuidv4(),
+          name: 'HKD500 超市禮品卡',
+          description: '可在各大超市使用的禮品卡',
+          category_id: categories.find(c => c.name === '禮品卡').id,
+          points_required: 1000,
+          stock_quantity: 100,
+          status: 'active',
+          created_by: '00000000-0000-0000-0000-000000000000', // System user ID
+          image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg'
+        },
+        {
+          id: uuidv4(),
+          name: '高級咖啡機',
+          description: '專業級咖啡機，在家享受咖啡館品質的咖啡',
+          category_id: categories.find(c => c.name === '生活用品').id,
+          points_required: 3000,
+          stock_quantity: 50,
+          status: 'active',
+          created_by: '00000000-0000-0000-0000-000000000000',
+          image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/coffee-machine.jpg'
+        }
+      ];
+
+      await Gift.bulkCreate(defaultGifts);
+      
+      // Fetch gifts again after creating defaults
+      const updatedGifts = await Gift.findAll({
+        where: { status: 'active' },
+        include: [{ model: GiftCategory, as: 'category' }],
+        order: [['display_order', 'ASC'], ['created_at', 'DESC']]
+      });
+      
+      console.log('Created default gifts:', updatedGifts.length);
+      res.json(updatedGifts);
+    } else {
+      res.json(gifts);
+    }
   } catch (error) {
     console.error('Error fetching public gifts:', {
       message: error.message,
