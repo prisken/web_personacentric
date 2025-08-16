@@ -7,17 +7,25 @@ const ScrollingGifts = () => {
   useEffect(() => {
     const fetchGifts = async () => {
       try {
-        const response = await apiService.get('/gifts');
-        // Filter only active gifts
-        const activeGifts = response.filter(gift => gift.status === 'active');
-        // Duplicate gifts for seamless scrolling
-        const duplicatedGifts = [...activeGifts, ...activeGifts];
-        setGifts(duplicatedGifts);
+        const response = await apiService.getGifts();
+        if (response.success && response.gifts) {
+          // Filter only active gifts and map to required format
+          const activeGifts = response.gifts
+            .filter(gift => gift.status === 'active')
+            .map(gift => ({
+              id: gift.id,
+              image: gift.image_url || '/images/food-for-talk.jpg',
+              name: gift.name
+            }));
+          // Duplicate gifts for seamless scrolling
+          const duplicatedGifts = [...activeGifts, ...activeGifts];
+          setGifts(duplicatedGifts);
+        }
       } catch (error) {
         console.error('Error fetching gifts:', error);
         // Use placeholder data if API fails
         const placeholderGifts = [
-          { id: 1, image_url: 'https://placehold.co/300x300/e2e8f0/475569?text=Gift', name: 'Loading...', points_required: 0 },
+          { id: 1, image: '/images/food-for-talk.jpg', name: 'Loading...' },
         ];
         setGifts([...placeholderGifts, ...placeholderGifts]);
       }
@@ -43,7 +51,7 @@ const ScrollingGifts = () => {
               <div className="bg-gray-50 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div className="aspect-square overflow-hidden rounded-lg mb-3">
                   <img
-                    src={gift.image_url || gift.image}
+                    src={gift.image}
                     alt={gift.name}
                     className="w-full h-full object-cover"
                   />
