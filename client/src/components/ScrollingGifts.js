@@ -3,38 +3,39 @@ import apiService from '../services/api';
 
 const ScrollingGifts = () => {
   const [gifts, setGifts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchGifts = async () => {
       try {
+        setLoading(true);
         const response = await apiService.get('/gifts');
         if (response) {
-          // Filter only active gifts and map to required format
-          const activeGifts = response
-            .filter(gift => gift.status === 'active')
-            .map(gift => ({
-              id: gift.id,
-              image: gift.image_url || 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg',
-              name: gift.name
-            }));
+          // Filter only active gifts
+          const activeGifts = response.filter(gift => gift.status === 'active');
           // Duplicate gifts for seamless scrolling
           const duplicatedGifts = [...activeGifts, ...activeGifts];
           setGifts(duplicatedGifts);
         }
       } catch (error) {
         console.error('Error fetching gifts:', error);
-        // Use placeholder data if API fails
-                  const placeholderGifts = [
-          { id: 1, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg', name: 'HKD500 超市禮品卡' },
-          { id: 2, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/coffee-maker.jpg', name: '高級咖啡機' },
-          { id: 3, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/airpods-pro.jpg', name: 'Apple AirPods Pro' }
-        ];
-        setGifts([...placeholderGifts, ...placeholderGifts]);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchGifts();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg">
+        <div className="flex justify-center items-center h-48 sm:h-64">
+          <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16 border-b-2 border-blue-600"></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-full w-full overflow-hidden rounded-2xl bg-white shadow-lg">
@@ -50,15 +51,17 @@ const ScrollingGifts = () => {
               key={gift.id}
               className="w-full px-4"
             >
-              <div className="bg-gray-50 rounded-xl p-4 shadow-md hover:shadow-lg transition-shadow duration-300">
-                <div className="aspect-square overflow-hidden rounded-lg mb-3">
-                  <img
-                    src={gift.image}
+              <div className="bg-gray-50 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
+                  <img 
+                    src={gift.image_url || 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg'}
                     alt={gift.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
-                <h3 className="text-gray-800 font-medium text-center">{gift.name}</h3>
+                <div className="p-4">
+                  <h3 className="text-gray-800 font-medium text-center">{gift.name}</h3>
+                </div>
               </div>
             </div>
           ))}
