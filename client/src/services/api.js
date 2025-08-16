@@ -312,6 +312,43 @@ class ApiService {
     return this.put(`/admin/users/${userId}/role`, { role });
   }
 
+  // Gift endpoints
+  async getPublicGifts() {
+    return this.get('/gifts/public');
+  }
+
+  async getGifts() {
+    return this.get('/gifts');
+  }
+
+  async getGiftCategories() {
+    return this.get('/gifts/categories');
+  }
+
+  async createGift(giftData) {
+    return this.post('/gifts', giftData);
+  }
+
+  async updateGift(giftId, giftData) {
+    return this.put(`/gifts/${giftId}`, giftData);
+  }
+
+  async deleteGift(giftId) {
+    return this.delete(`/gifts/${giftId}`);
+  }
+
+  async redeemGift(giftId) {
+    return this.post(`/gifts/${giftId}/redeem`, {});
+  }
+
+  async getGiftRedemptions() {
+    return this.get('/gifts/user/redemptions');
+  }
+
+  async getGiftStats() {
+    return this.get('/gifts/stats');
+  }
+
   // Health check
   async healthCheck() {
     return this.get('/health');

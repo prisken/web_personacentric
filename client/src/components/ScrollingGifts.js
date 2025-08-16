@@ -10,7 +10,7 @@ const ScrollingGifts = () => {
       try {
         setLoading(true);
         console.log('Fetching gifts...');
-        const response = await apiService.get('/public/gifts');
+        const response = await apiService.getPublicGifts();
         console.log('Gifts API response:', response);
         
         if (response) {
