@@ -14,7 +14,7 @@ const ScrollingGifts = () => {
             .filter(gift => gift.status === 'active')
             .map(gift => ({
               id: gift.id,
-              image: gift.image_url || '/images/food-for-talk.jpg',
+              image: gift.image_url || 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg',
               name: gift.name
             }));
           // Duplicate gifts for seamless scrolling
@@ -24,10 +24,10 @@ const ScrollingGifts = () => {
       } catch (error) {
         console.error('Error fetching gifts:', error);
         // Use placeholder data if API fails
-        const placeholderGifts = [
-          { id: 1, image: '/images/food-for-talk.jpg', name: 'HKD500 超市禮品卡' },
-          { id: 2, image: '/images/food-for-talk.jpg', name: '高級咖啡機' },
-          { id: 3, image: '/images/food-for-talk.jpg', name: 'Apple AirPods Pro' }
+                  const placeholderGifts = [
+          { id: 1, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg', name: 'HKD500 超市禮品卡' },
+          { id: 2, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/coffee-maker.jpg', name: '高級咖啡機' },
+          { id: 3, image: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/airpods-pro.jpg', name: 'Apple AirPods Pro' }
         ];
         setGifts([...placeholderGifts, ...placeholderGifts]);
       }
