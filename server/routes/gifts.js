@@ -32,31 +32,46 @@ router.get('/public', async (req, res) => {
     
     if (categories.length === 0) {
       console.log('No gift categories found, creating default categories...');
-      // Create default categories if none exist
-      await GiftCategory.bulkCreate([
-        {
-          id: uuidv4(),
-          name: '電子產品',
-          description: '各種電子產品和配件',
-          status: 'active',
-          display_order: 1
-        },
-        {
-          id: uuidv4(),
-          name: '生活用品',
-          description: '日常生活必需品和家居用品',
-          status: 'active',
-          display_order: 2
-        },
-        {
-          id: uuidv4(),
-          name: '禮品卡',
-          description: '各種商店和服務的禮品卡',
-          status: 'active',
-          display_order: 3
+      try {
+        // Create default categories if none exist
+        const defaultCategories = [
+          {
+            id: uuidv4(),
+            name: '電子產品',
+            description: '各種電子產品和配件',
+            status: 'active',
+            display_order: 1
+          },
+          {
+            id: uuidv4(),
+            name: '生活用品',
+            description: '日常生活必需品和家居用品',
+            status: 'active',
+            display_order: 2
+          },
+          {
+            id: uuidv4(),
+            name: '禮品卡',
+            description: '各種商店和服務的禮品卡',
+            status: 'active',
+            display_order: 3
+          }
+        ];
+
+        // Create categories one by one to handle potential errors
+        for (const category of defaultCategories) {
+          await GiftCategory.create(category);
+          console.log(`Created category: ${category.name}`);
         }
-      ]);
+      } catch (error) {
+        console.error('Error creating default categories:', error);
+        throw error;
+      }
     }
+
+    // Fetch all categories again to ensure we have the latest data
+    const updatedCategories = await GiftCategory.findAll();
+    console.log('Categories after creation:', updatedCategories.map(c => ({ id: c.id, name: c.name })));
 
     // Now fetch gifts with their categories
     const gifts = await Gift.findAll({
@@ -82,43 +97,61 @@ router.get('/public', async (req, res) => {
     // If no gifts exist, create some default ones
     if (gifts.length === 0) {
       console.log('No gifts found, creating default gifts...');
-      const categories = await GiftCategory.findAll();
-      const defaultGifts = [
-        {
-          id: uuidv4(),
-          name: 'HKD500 超市禮品卡',
-          description: '可在各大超市使用的禮品卡',
-          category_id: categories.find(c => c.name === '禮品卡').id,
-          points_required: 1000,
-          stock_quantity: 100,
-          status: 'active',
-          created_by: '00000000-0000-0000-0000-000000000000', // System user ID
-          image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg'
-        },
-        {
-          id: uuidv4(),
-          name: '高級咖啡機',
-          description: '專業級咖啡機，在家享受咖啡館品質的咖啡',
-          category_id: categories.find(c => c.name === '生活用品').id,
-          points_required: 3000,
-          stock_quantity: 50,
-          status: 'active',
-          created_by: '00000000-0000-0000-0000-000000000000',
-          image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/coffee-machine.jpg'
-        }
-      ];
+      try {
+        // Get the category IDs
+        const giftCardCategory = updatedCategories.find(c => c.name === '禮品卡');
+        const lifestyleCategory = updatedCategories.find(c => c.name === '生活用品');
 
-      await Gift.bulkCreate(defaultGifts);
-      
-      // Fetch gifts again after creating defaults
-      const updatedGifts = await Gift.findAll({
-        where: { status: 'active' },
-        include: [{ model: GiftCategory, as: 'category' }],
-        order: [['display_order', 'ASC'], ['created_at', 'DESC']]
-      });
-      
-      console.log('Created default gifts:', updatedGifts.length);
-      res.json(updatedGifts);
+        if (!giftCardCategory || !lifestyleCategory) {
+          throw new Error('Required categories not found');
+        }
+
+        const defaultGifts = [
+          {
+            id: uuidv4(),
+            name: 'HKD500 超市禮品卡',
+            description: '可在各大超市使用的禮品卡',
+            category_id: giftCardCategory.id,
+            points_required: 1000,
+            stock_quantity: 100,
+            status: 'active',
+            created_by: process.env.SYSTEM_USER_ID || '00000000-0000-0000-0000-000000000000',
+            image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/gift-card.jpg',
+            display_order: 1
+          },
+          {
+            id: uuidv4(),
+            name: '高級咖啡機',
+            description: '專業級咖啡機，在家享受咖啡館品質的咖啡',
+            category_id: lifestyleCategory.id,
+            points_required: 3000,
+            stock_quantity: 50,
+            status: 'active',
+            created_by: process.env.SYSTEM_USER_ID || '00000000-0000-0000-0000-000000000000',
+            image_url: 'https://res.cloudinary.com/personacentric/image/upload/v1/gifts/coffee-machine.jpg',
+            display_order: 2
+          }
+        ];
+
+        // Create gifts one by one to handle potential errors
+        for (const gift of defaultGifts) {
+          await Gift.create(gift);
+          console.log(`Created gift: ${gift.name}`);
+        }
+        
+        // Fetch gifts again after creating defaults
+        const updatedGifts = await Gift.findAll({
+          where: { status: 'active' },
+          include: [{ model: GiftCategory, as: 'category' }],
+          order: [['display_order', 'ASC'], ['created_at', 'DESC']]
+        });
+        
+        console.log('Created default gifts:', updatedGifts.length);
+        res.json(updatedGifts);
+      } catch (error) {
+        console.error('Error creating default gifts:', error);
+        throw error;
+      }
     } else {
       res.json(gifts);
     }
