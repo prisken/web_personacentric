@@ -4,7 +4,27 @@ const { Gift, GiftCategory, User } = require('../models');
 const { authenticateToken: auth } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 
-// Get all gifts with their categories
+// Public endpoint to get active gifts
+router.get('/public', async (req, res) => {
+  try {
+    const gifts = await Gift.findAll({
+      where: { status: 'active' },
+      include: [
+        { model: GiftCategory, as: 'category' }
+      ],
+      order: [
+        ['display_order', 'ASC'],
+        ['created_at', 'DESC']
+      ]
+    });
+    res.json(gifts);
+  } catch (error) {
+    console.error('Error fetching public gifts:', error);
+    res.status(500).json({ error: 'Failed to fetch gifts' });
+  }
+});
+
+// Get all gifts with their categories (admin access)
 router.get('/', auth, async (req, res) => {
   try {
     const gifts = await Gift.findAll({
