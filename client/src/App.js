@@ -16,7 +16,7 @@ const AboutPage = lazy(() => import('./pages/AboutPage'));
 const EventsPage = lazy(() => import('./pages/EventsPage'));
 const BlogsPage = lazy(() => import('./pages/BlogsPage'));
 const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
-const ContestsPage = lazy(() => import('./pages/ContestsPage'));
+       const AboutUsPage = lazy(() => import('./pages/AboutUsPage'));
 const AgentMatchingPage = lazy(() => import('./pages/AgentMatchingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
@@ -57,7 +57,7 @@ function App() {
                     <Route path="/events" element={<EventsPage />} />
                     <Route path="/blogs" element={<BlogsPage />} />
                     <Route path="/blogs/:slug" element={<BlogDetailPage />} />
-                    <Route path="/contests" element={<ContestsPage />} />
+                                         <Route path="/about" element={<AboutUsPage />} />
                     <Route path="/agent-matching" element={<AgentMatchingPage />} />
                     <Route path="/all-agents" element={<AllAgentsPage />} />
                     <Route path="/login" element={<LoginPage />} />

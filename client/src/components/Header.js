@@ -45,7 +45,7 @@ const Header = () => {
     { key: 'nav.events', path: '/events', label: t('nav.events') },
     { key: 'nav.agentPairing', path: '/agent-matching', label: t('nav.agentPairing') },
     { key: 'nav.blogs', path: '/blogs', label: t('nav.blogs') },
-    { key: 'nav.contests', path: '/contests', label: t('nav.contests') },
+    { key: 'nav.about', path: '/about', label: t('nav.about') },
   ];
 
   useEffect(() => {
