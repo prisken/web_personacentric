@@ -26,7 +26,8 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    if (user.subscription_status === 'suspended') {
+    // Check subscription status if it exists
+    if (user.subscription_status && user.subscription_status === 'suspended') {
       return res.status(403).json({
         success: false,
         error: 'Account suspended'

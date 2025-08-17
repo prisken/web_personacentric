@@ -5,12 +5,18 @@ class DashboardController {
   // Get dashboard data based on user role
   async getDashboard(req, res) {
     try {
+      console.log('Dashboard request received:', { user: req.user });
       const { user } = req;
       const userId = user.userId;
       const userRole = user.role;
 
+      console.log('Looking up user with ID:', userId);
+
       // Get user data
-      const userData = await User.findByPk(userId, { include: [{ model: Agent, as: 'agent' }] });
+      console.log('Fetching user data from database...');
+      const userData = await User.findByPk(userId);
+      console.log('User data fetched:', userData ? 'User found' : 'User not found');
+      
       if (!userData) {
         return res.status(404).json({
           success: false,
@@ -27,16 +33,7 @@ class DashboardController {
           points: userData.points,
           subscription_status: userData.subscription_status
         },
-        agent: userData.agent ? {
-          id: userData.agent.id,
-          user_id: userData.agent.user_id,
-          profile_image: userData.agent.profile_image,
-          bio: userData.agent.bio,
-          professional_field: userData.agent.professional_field,
-          certifications: userData.agent.certifications,
-          created_at: userData.agent.created_at,
-          updated_at: userData.agent.updated_at
-        } : null,
+        agent: null, // Simplified for now
         statistics: {},
         notifications: [],
         recent_point_transactions: []
@@ -47,10 +44,14 @@ class DashboardController {
       // Role-specific data
       switch (userRole) {
         case 'admin':
+          console.log('Processing admin dashboard...');
           // Get real user statistics
           const totalUsers = await User.count();
+          console.log('Total users:', totalUsers);
           const totalAgents = await User.count({ where: { role: 'agent' } });
+          console.log('Total agents:', totalAgents);
           const totalClients = await User.count({ where: { role: 'client' } });
+          console.log('Total clients:', totalClients);
           
           // Get recent users (last 10)
           const recentUsers = await User.findAll({
@@ -60,16 +61,20 @@ class DashboardController {
           });
 
           // Get event statistics
+          console.log('Getting event statistics...');
           const totalEvents = await Event.count();
+          console.log('Total events:', totalEvents);
           const upcomingEvents = await Event.count({
             where: {
               start_date: { [Op.gt]: new Date() },
               status: 'published'
             }
           });
+          console.log('Upcoming events:', upcomingEvents);
           const totalRegistrations = await EventRegistration.count({
             where: { status: 'registered' }
           });
+          console.log('Total registrations:', totalRegistrations);
 
           dashboardData.statistics = {
             total_users: totalUsers,
@@ -272,9 +277,11 @@ class DashboardController {
 
     } catch (error) {
       console.error('Dashboard error:', error);
+      console.error('Error stack:', error.stack);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
       });
     }
   }
