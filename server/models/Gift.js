@@ -23,11 +23,7 @@ const Gift = sequelize.define('Gift', {
       key: 'id'
     }
   },
-  image_url: {
-    type: DataTypes.STRING(500),
-    allowNull: true,
-    comment: 'Cloudinary URL for gift image'
-  },
+
   points_required: {
     type: DataTypes.INTEGER,
     allowNull: false,

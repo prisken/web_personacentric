@@ -4,13 +4,15 @@ const LoadingSpinner = ({ size = 'default', text = 'Loading...', className = '' 
   const sizeClasses = {
     small: 'h-6 w-6',
     default: 'h-8 w-8 lg:h-12 lg:w-12',
-    large: 'h-16 w-16 lg:h-20 lg:w-20'
+    large: 'h-16 w-16 lg:h-20 lg:w-20',
+    lg: 'h-16 w-16 lg:h-20 lg:w-20'
   };
 
   const textSizes = {
     small: 'text-sm lg:text-base',
     default: 'text-base lg:text-lg',
-    large: 'text-lg lg:text-xl'
+    large: 'text-lg lg:text-xl',
+    lg: 'text-lg lg:text-xl'
   };
 
   return (

@@ -5,26 +5,19 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
-const app = express();
-const PORT = process.env.PORT || 5001;
-
-// Import routes
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/users');
-const eventRoutes = require('./routes/events');
-const blogRoutes = require('./routes/blogs');
-const contestRoutes = require('./routes/contests');
-const aiRoutes = require('./routes/ai');
-const paymentRoutes = require('./routes/payments');
-const dashboardRoutes = require('./routes/dashboard');
-const adminRoutes = require('./routes/admin');
-const uploadRoutes = require('./routes/upload');
-const agentRoutes = require('./routes/agents');
-const giftRoutes = require('./routes/gifts');
-
-// Import database
+// Import configurations
 const sequelize = require('./config/database');
 const { runMigrations } = require('./utils/databaseMigration');
+
+// Import middleware
+const errorHandler = require('./middleware/errorHandler');
+const notFoundHandler = require('./middleware/notFoundHandler');
+
+// Import routes
+const routes = require('./routes');
+
+const app = express();
+const PORT = process.env.PORT || 5001;
 
 // Security middleware
 app.use(helmet({
@@ -43,17 +36,21 @@ app.use(helmet({
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  message: { error: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use('/api/', limiter);
 
 // CORS configuration
-app.use(cors({
+const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? [process.env.CORS_ORIGIN || 'https://web-personacentric.vercel.app'] 
     : ['http://localhost:3000'],
-  credentials: true
-}));
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
@@ -63,18 +60,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/blogs', blogRoutes);
-app.use('/api/contests', contestRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes);
-app.use('/api/agents', agentRoutes);
-app.use('/api/gifts', giftRoutes);
+app.use('/api', routes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -82,7 +68,8 @@ app.get('/api/health', (req, res) => {
     status: 'OK', 
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || 'development',
-    uptime: process.uptime()
+    uptime: process.uptime(),
+    version: process.env.npm_package_version || '1.0.0'
   });
 });
 
@@ -96,56 +83,74 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ 
-    error: 'Something went wrong!',
-    message: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
-  });
-});
-
-// 404 handler
-app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 // Database connection and server start
 async function startServer() {
   let server;
   
   try {
-    console.log('Starting server...');
-    console.log('Connecting to database...');
+    console.log('🚀 Starting server...');
+    console.log('📊 Environment:', process.env.NODE_ENV || 'development');
+    
+    // Connect to database
+    console.log('🔌 Connecting to database...');
     await sequelize.authenticate();
-    console.log('Database connected successfully');
+    console.log('✅ Database connected successfully');
     
     // Sync database (create tables if they don't exist)
-    console.log('Syncing database...');
-    await sequelize.sync({ force: false, alter: true });
-    console.log('Database synced successfully');
+    console.log('🔄 Syncing database...');
+    try {
+      // Disable foreign key constraints temporarily for SQLite
+      if (sequelize.getDialect() === 'sqlite') {
+        await sequelize.query('PRAGMA foreign_keys = OFF;');
+      }
+      await sequelize.sync({ force: false, alter: false });
+      if (sequelize.getDialect() === 'sqlite') {
+        await sequelize.query('PRAGMA foreign_keys = ON;');
+      }
+      console.log('✅ Database synced successfully');
+    } catch (error) {
+      console.log('⚠️ Database sync failed, continuing with existing schema:', error.message);
+    }
     
-    console.log('Running migrations...');
+    // Run migrations
+    console.log('📦 Running migrations...');
     await runMigrations();
-    console.log('Migrations completed');
+    console.log('✅ Migrations completed');
 
-    // Start server first
+    // Start server
     server = app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
+      console.log(`🎉 Server running on port ${PORT}`);
+      console.log(`🌐 Health check: http://localhost:${PORT}/api/health`);
     });
 
     // Handle graceful shutdown
     process.on('SIGTERM', () => handleShutdown(server));
     process.on('SIGINT', () => handleShutdown(server));
 
-    // Check if seeding is needed
-    const { User, Event, Gift, GiftCategory } = require('./models');
+    // Check database state and seed if needed
+    await checkAndSeedDatabase();
+
+  } catch (error) {
+    console.error('❌ Unable to start server:', error);
+    if (server) server.close();
+    process.exit(1);
+  }
+}
+
+// Check database state and seed if needed
+async function checkAndSeedDatabase() {
+  try {
+    const { User, Event, Gift } = require('./models');
     const [userCount, eventCount, giftCount] = await Promise.all([
       User.count(),
       Event.count(),
       Gift.count()
     ]);
     
-    console.log('Current database state:', {
+    console.log('📊 Current database state:', {
       users: userCount,
       events: eventCount,
       gifts: giftCount
@@ -153,49 +158,50 @@ async function startServer() {
 
     // Seed data if needed
     if (eventCount === 0 || giftCount === 0) {
-      console.log('Missing data, running seed script...');
+      console.log('🌱 Missing data, running seed script...');
       const seedData = require('./seedData');
       try {
         await seedData();
-        console.log('Seed data created successfully');
+        console.log('✅ Seed data created successfully');
       } catch (error) {
-        console.error('Error seeding data:', error);
+        console.error('❌ Error seeding data:', error);
         // Don't exit on seeding error in production
         if (process.env.NODE_ENV !== 'production') {
           throw error;
         }
       }
     } else {
-      console.log('Data already exists, skipping seed script');
+      console.log('✅ Data already exists, skipping seed script');
     }
   } catch (error) {
-    console.error('Unable to start server:', error);
-    if (server) server.close();
-    process.exit(1);
+    console.error('❌ Error checking database state:', error);
+    if (process.env.NODE_ENV !== 'production') {
+      throw error;
+    }
   }
 }
 
 // Graceful shutdown handler
 async function handleShutdown(server) {
-  console.log('Received shutdown signal');
+  console.log('🛑 Received shutdown signal');
   
   // Close server first to stop accepting new connections
   server.close(() => {
-    console.log('Server closed');
+    console.log('🔒 Server closed');
     
     // Then close database connection
     sequelize.close().then(() => {
-      console.log('Database connection closed');
+      console.log('🔌 Database connection closed');
       process.exit(0);
     }).catch((err) => {
-      console.error('Error closing database connection:', err);
+      console.error('❌ Error closing database connection:', err);
       process.exit(1);
     });
   });
 
   // Force close after 10 seconds
   setTimeout(() => {
-    console.error('Could not close connections in time, forcefully shutting down');
+    console.error('⏰ Could not close connections in time, forcefully shutting down');
     process.exit(1);
   }, 10000);
 }
