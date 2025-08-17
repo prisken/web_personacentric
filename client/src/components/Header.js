@@ -144,11 +144,9 @@ const Header = () => {
   return (
     <header className={headerClasses}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-14 lg:h-16 relative">
-          {user && <div className="w-[200px]"></div>}
-
-          {/* Logo - Centered when logged in, left aligned when logged out */}
-          <div className={`flex items-center ${user ? 'absolute left-1/2 transform -translate-x-1/2' : ''}`}>
+        <div className="flex justify-between items-center h-14 lg:h-16">
+          {/* Logo - Left aligned for all users */}
+          <div className="flex items-center">
             <Link to={user ? '/dashboard' : '/'} className="flex items-center group">
               <div className="w-7 h-7 lg:w-8 lg:h-8 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg flex items-center justify-center mr-2 lg:mr-3 transition-transform duration-200 group-hover:scale-110 shadow-lg">
                 <span className="text-white text-xs lg:text-sm font-bold">📈</span>
@@ -159,28 +157,26 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Desktop Navigation - Only shown for non-logged-in users */}
-          {!user && (
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
-              {navItems.map((item) => (
-                <Link
-                  key={item.key}
-                  to={item.path}
-                  className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
-                >
-                  {item.label}
-                  <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-                </Link>
-              ))}
-              <a
-                href="/all-agents"
+          {/* Desktop Navigation - Always shown */}
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.key}
+                to={item.path}
                 className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
               >
-                {t('actions.allAgents')}
+                {item.label}
                 <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-              </a>
-            </nav>
-          )}
+              </Link>
+            ))}
+            <a
+              href="/all-agents"
+              className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+            >
+              {t('actions.allAgents')}
+              <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
+            </a>
+          </nav>
 
           {/* Right Side: Language Switcher & Auth Buttons */}
           <div className="flex items-center space-x-2 lg:space-x-4 min-w-[200px] justify-end">
@@ -274,27 +270,24 @@ const Header = () => {
                   ? 'bg-black/80 backdrop-blur-sm border-gray-600' 
                   : 'bg-white/95 border-gray-200'
             }`}>
-              {!user && (
-                <>
-                  {navItems.map((item) => (
-                    <Link
-                      key={item.key}
-                      to={item.path}
-                      className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
-                  <a
-                    href="/all-agents"
-                    className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {t('actions.allAgents')}
-                  </a>
-                </>
-              )}
+              {/* Navigation Links - Always shown */}
+              {navItems.map((item) => (
+                <Link
+                  key={item.key}
+                  to={item.path}
+                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <a
+                href="/all-agents"
+                className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('actions.allAgents')}
+              </a>
 
               <div className="pt-3 border-t border-gray-300/30">
                 {/* Language Toggle */}
