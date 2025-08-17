@@ -155,5 +155,6 @@ module.exports = {
   Badge,
   UserBadge,
   Gift,
-  GiftCategory
+  GiftCategory,
+  GiftRedemption
 };

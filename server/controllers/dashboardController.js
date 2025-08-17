@@ -1,4 +1,5 @@
 const { User, Event, EventRegistration, Agent } = require('../models');
+const { Op } = require('sequelize');
 
 class DashboardController {
   // Get dashboard data based on user role
@@ -62,7 +63,7 @@ class DashboardController {
           const totalEvents = await Event.count();
           const upcomingEvents = await Event.count({
             where: {
-              start_date: { [require('sequelize').Op.gt]: new Date() },
+              start_date: { [Op.gt]: new Date() },
               status: 'published'
             }
           });
@@ -115,7 +116,7 @@ class DashboardController {
           const agentUpcomingEvents = await Event.count({
             where: {
               agent_id: userData.agent?.id,
-              start_date: { [require('sequelize').Op.gt]: new Date() },
+              start_date: { [Op.gt]: new Date() },
               status: 'published'
             }
           });
@@ -210,7 +211,7 @@ class DashboardController {
           });
           dashboardData.available_events = await Event.findAll({
             where: {
-              start_date: { [require('sequelize').Op.gt]: new Date() },
+              start_date: { [Op.gt]: new Date() },
               status: 'published'
             },
             order: [['start_date', 'ASC']],
