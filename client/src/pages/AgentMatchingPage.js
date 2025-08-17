@@ -13,123 +13,123 @@ const AgentMatchingPage = () => {
   const questions = language === 'zh-TW' ? [
     {
       id: 1,
-      question: "您的主要財務目標是什麼？",
+      question: "您目前最關心的財務規劃重點是什麼？",
       options: [
-        { value: 'retirement', label: '退休規劃', icon: '🏖️' },
-        { value: 'investment', label: '投資成長', icon: '📈' },
-        { value: 'debt', label: '債務管理', icon: '💳' },
-        { value: 'tax', label: '稅務優化', icon: '📊' }
+        { value: 'retirement', label: '退休規劃與養老金準備', icon: '🏖️' },
+        { value: 'investment', label: '投資組合優化與財富增長', icon: '📈' },
+        { value: 'debt', label: '債務整合與信用管理', icon: '💳' },
+        { value: 'tax', label: '稅務規劃與節稅策略', icon: '📊' }
       ]
     },
     {
       id: 2,
-      question: "您的投資時間框架是？",
+      question: "您計劃在多長時間內實現您的財務目標？",
       options: [
-        { value: 'short', label: '1-3年', icon: '⚡' },
-        { value: 'medium', label: '3-10年', icon: '📅' },
-        { value: 'long', label: '10年以上', icon: '🌱' },
-        { value: 'flexible', label: '靈活', icon: '🔄' }
+        { value: 'short', label: '短期目標（1-3年）', icon: '⚡' },
+        { value: 'medium', label: '中期規劃（3-10年）', icon: '📅' },
+        { value: 'long', label: '長期投資（10年以上）', icon: '🌱' },
+        { value: 'flexible', label: '彈性時間框架', icon: '🔄' }
       ]
     },
     {
       id: 3,
-      question: "您的風險承受度是？",
+      question: "面對投資風險，您的態度是？",
       options: [
-        { value: 'conservative', label: '保守', icon: '🛡️' },
-        { value: 'moderate', label: '適中', icon: '⚖️' },
-        { value: 'aggressive', label: '積極', icon: '🚀' },
-        { value: 'unsure', label: '不確定', icon: '❓' }
+        { value: 'conservative', label: '保守穩健，優先保本', icon: '🛡️' },
+        { value: 'moderate', label: '平衡風險與收益', icon: '⚖️' },
+        { value: 'aggressive', label: '積極追求高回報', icon: '🚀' },
+        { value: 'unsure', label: '需要專業建議', icon: '❓' }
       ]
     },
     {
       id: 4,
-      question: "您目前的財務狀況是？",
+      question: "您目前的財務規劃經驗如何？",
       options: [
-        { value: 'beginner', label: '剛開始', icon: '🌱' },
-        { value: 'established', label: '已建立', icon: '🏢' },
-        { value: 'advanced', label: '進階', icon: '🎯' },
-        { value: 'complex', label: '複雜需求', icon: '🧩' }
+        { value: 'beginner', label: '財務規劃新手', icon: '🌱' },
+        { value: 'established', label: '已有基本財務基礎', icon: '🏢' },
+        { value: 'advanced', label: '具備豐富投資經驗', icon: '🎯' },
+        { value: 'complex', label: '複雜財務需求與結構', icon: '🧩' }
       ]
     },
     {
       id: 5,
-      question: "您希望如何與顧問溝通？",
+      question: "您偏好與財務顧問的溝通方式？",
       options: [
-        { value: 'in-person', label: '面對面會議', icon: '🤝' },
-        { value: 'video', label: '視訊通話', icon: '📹' },
-        { value: 'phone', label: '電話通話', icon: '📞' },
-        { value: 'digital', label: '數位/文字', icon: '💬' }
+        { value: 'in-person', label: '面對面諮詢會議', icon: '🤝' },
+        { value: 'video', label: '視訊會議與線上諮詢', icon: '📹' },
+        { value: 'phone', label: '電話諮詢與語音通話', icon: '📞' },
+        { value: 'digital', label: '數位平台與文字溝通', icon: '💬' }
       ]
     },
     {
       id: 6,
-      question: "您希望顧問在哪個地區？",
+      question: "您希望財務顧問的服務地區？",
       options: [
-        { value: 'hong kong', label: '香港', icon: '🇭🇰' },
-        { value: 'taipei', label: '台北', icon: '🇹🇼' },
-        { value: 'singapore', label: '新加坡', icon: '🇸🇬' },
-        { value: 'anywhere', label: '任何地方', icon: '🌍' }
+        { value: 'hong kong', label: '香港地區', icon: '🇭🇰' },
+        { value: 'taipei', label: '台北地區', icon: '🇹🇼' },
+        { value: 'singapore', label: '新加坡地區', icon: '🇸🇬' },
+        { value: 'anywhere', label: '不限地區，線上服務', icon: '🌍' }
       ]
     }
   ] : [
     {
       id: 1,
-      question: "What is your primary financial goal?",
+      question: "What is your primary financial planning focus?",
       options: [
-        { value: 'retirement', label: 'Retirement Planning', icon: '🏖️' },
-        { value: 'investment', label: 'Investment Growth', icon: '📈' },
-        { value: 'debt', label: 'Debt Management', icon: '💳' },
-        { value: 'tax', label: 'Tax Optimization', icon: '📊' }
+        { value: 'retirement', label: 'Retirement Planning & Pension Preparation', icon: '🏖️' },
+        { value: 'investment', label: 'Investment Portfolio Optimization & Wealth Growth', icon: '📈' },
+        { value: 'debt', label: 'Debt Consolidation & Credit Management', icon: '💳' },
+        { value: 'tax', label: 'Tax Planning & Tax Optimization Strategies', icon: '📊' }
       ]
     },
     {
       id: 2,
-      question: "What is your investment timeline?",
+      question: "What is your timeline for achieving your financial goals?",
       options: [
-        { value: 'short', label: '1-3 years', icon: '⚡' },
-        { value: 'medium', label: '3-10 years', icon: '📅' },
-        { value: 'long', label: '10+ years', icon: '🌱' },
-        { value: 'flexible', label: 'Flexible', icon: '🔄' }
+        { value: 'short', label: 'Short-term Goals (1-3 years)', icon: '⚡' },
+        { value: 'medium', label: 'Medium-term Planning (3-10 years)', icon: '📅' },
+        { value: 'long', label: 'Long-term Investment (10+ years)', icon: '🌱' },
+        { value: 'flexible', label: 'Flexible Timeline', icon: '🔄' }
       ]
     },
     {
       id: 3,
-      question: "What is your risk tolerance?",
+      question: "What is your attitude toward investment risk?",
       options: [
-        { value: 'conservative', label: 'Conservative', icon: '🛡️' },
-        { value: 'moderate', label: 'Moderate', icon: '⚖️' },
-        { value: 'aggressive', label: 'Aggressive', icon: '🚀' },
-        { value: 'unsure', label: 'Not Sure', icon: '❓' }
+        { value: 'conservative', label: 'Conservative - Capital Preservation First', icon: '🛡️' },
+        { value: 'moderate', label: 'Balanced Risk & Return', icon: '⚖️' },
+        { value: 'aggressive', label: 'Aggressive Growth Seeking', icon: '🚀' },
+        { value: 'unsure', label: 'Need Professional Guidance', icon: '❓' }
       ]
     },
     {
       id: 4,
-      question: "What is your current financial situation?",
+      question: "What is your current financial planning experience?",
       options: [
-        { value: 'beginner', label: 'Just Starting Out', icon: '🌱' },
-        { value: 'established', label: 'Established', icon: '🏢' },
-        { value: 'advanced', label: 'Advanced', icon: '🎯' },
-        { value: 'complex', label: 'Complex Needs', icon: '🧩' }
+        { value: 'beginner', label: 'Financial Planning Beginner', icon: '🌱' },
+        { value: 'established', label: 'Established Financial Foundation', icon: '🏢' },
+        { value: 'advanced', label: 'Experienced Investor', icon: '🎯' },
+        { value: 'complex', label: 'Complex Financial Needs & Structures', icon: '🧩' }
       ]
     },
     {
       id: 5,
-      question: "How do you prefer to communicate with your advisor?",
+      question: "How do you prefer to communicate with your financial advisor?",
       options: [
-        { value: 'in-person', label: 'In-Person Meetings', icon: '🤝' },
-        { value: 'video', label: 'Video Calls', icon: '📹' },
-        { value: 'phone', label: 'Phone Calls', icon: '📞' },
-        { value: 'digital', label: 'Digital/Text', icon: '💬' }
+        { value: 'in-person', label: 'In-Person Consultation Meetings', icon: '🤝' },
+        { value: 'video', label: 'Video Conferencing & Online Consultations', icon: '📹' },
+        { value: 'phone', label: 'Phone Consultations & Voice Calls', icon: '📞' },
+        { value: 'digital', label: 'Digital Platform & Text Communication', icon: '💬' }
       ]
     },
     {
       id: 6,
-      question: "Where would you prefer your advisor to be located?",
+      question: "Where would you prefer your financial advisor to be located?",
       options: [
-        { value: 'hong kong', label: 'Hong Kong', icon: '🇭🇰' },
-        { value: 'taipei', label: 'Taipei', icon: '🇹🇼' },
-        { value: 'singapore', label: 'Singapore', icon: '🇸🇬' },
-        { value: 'anywhere', label: 'Anywhere', icon: '🌍' }
+        { value: 'hong kong', label: 'Hong Kong Region', icon: '🇭🇰' },
+        { value: 'taipei', label: 'Taipei Region', icon: '🇹🇼' },
+        { value: 'singapore', label: 'Singapore Region', icon: '🇸🇬' },
+        { value: 'anywhere', label: 'Anywhere - Online Services', icon: '🌍' }
       ]
     }
   ];
@@ -202,13 +202,10 @@ const AgentMatchingPage = () => {
         <section className="py-20 bg-gradient-to-r from-green-600 to-blue-600 text-white">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h1 className="text-5xl font-bold mb-6">
-              {language === 'zh-TW' ? '您的完美配對' : 'Your Perfect Matches'}
+              {t('matching.yourPerfectMatches')}
             </h1>
             <p className="text-xl max-w-3xl mx-auto">
-              {language === 'zh-TW'
-                ? '根據您的答案，以下是最適合幫助您實現財務目標的顧問。'
-                : 'Based on your answers, here are the advisors best suited to help you achieve your financial goals.'
-              }
+              {t('matching.basedOnAnswers')}
             </p>
           </div>
         </section>
@@ -217,7 +214,7 @@ const AgentMatchingPage = () => {
         <section className="py-12">
           <div className="max-w-7xl mx-auto px-4">
             {loadingResults ? (
-              <div className="text-center py-12 text-lg text-gray-500">配對中...</div>
+              <div className="text-center py-12 text-lg text-gray-500">{t('matching.matching')}</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {matchedAgents.map((agent) => (
@@ -236,7 +233,7 @@ const AgentMatchingPage = () => {
                         <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-green-600 px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                           <div className="flex items-center">
                             <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
-                            {agent.matchScore}% {language === 'zh-TW' ? '配對' : 'Match'}
+                            {agent.matchScore}% {t('matching.match')}
                           </div>
                         </div>
 
@@ -317,7 +314,7 @@ const AgentMatchingPage = () => {
                             <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>
-                            {language === 'zh-TW' ? '配對優勢' : 'Match Highlights'}
+                            {t('matching.matchHighlights')}
                           </h4>
                           <div className="space-y-1">
                             {Object.entries(agent.matchDetails).slice(0, 2).map(([key, value]) => (
@@ -334,10 +331,10 @@ const AgentMatchingPage = () => {
                       {/* Action Buttons */}
                       <div className="space-y-3">
                         <button className="w-full bg-gradient-to-r from-green-600 to-blue-600 text-white py-3 rounded-xl font-bold hover:from-green-700 hover:to-blue-700 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                          {language === 'zh-TW' ? '立即聯繫' : 'Contact Now'}
+                          {t('matching.contactNow')}
                         </button>
                         <button className="w-full bg-gray-100 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200 text-sm">
-                          {language === 'zh-TW' ? '查看完整資料' : 'View Full Profile'}
+                          {t('matching.viewFullProfile')}
                         </button>
                       </div>
                     </div>
@@ -357,7 +354,7 @@ const AgentMatchingPage = () => {
                 href="/all-agents"
                 className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-200"
               >
-                {language === 'zh-TW' ? '查看所有顧問' : 'View All Agents'}
+                {t('matching.viewAllAgents')}
               </a>
             </div>
           </div>
@@ -388,7 +385,7 @@ const AgentMatchingPage = () => {
             <div className="mb-8">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm text-gray-600">
-                  {language === 'zh-TW' ? `問題 ${currentQuestion + 1} / ${questions.length}` : `Question ${currentQuestion + 1} of ${questions.length}`}
+                  {language === 'zh-TW' ? `配對問題 ${currentQuestion + 1} / ${questions.length}` : `Matching Question ${currentQuestion + 1} of ${questions.length}`}
                 </span>
                 <span className="text-sm text-gray-600">
                   {Math.round(((currentQuestion + 1) / questions.length) * 100)}% {language === 'zh-TW' ? '完成' : 'Complete'}
@@ -448,12 +445,12 @@ const AgentMatchingPage = () => {
               </button>
             </div>
             <div className="text-center mt-8">
-              <a
-                href="/all-agents"
-                className="inline-block bg-blue-100 text-blue-700 px-6 py-2 rounded-lg font-semibold hover:bg-blue-200 transition-colors duration-200"
-              >
-                {language === 'zh-TW' ? '查看所有顧問' : 'View All Agents'}
-              </a>
+                          <a
+              href="/all-agents"
+              className="inline-block bg-blue-100 text-blue-700 px-6 py-2 rounded-lg font-semibold hover:bg-blue-200 transition-colors duration-200"
+            >
+              {t('matching.viewAllAgents')}
+            </a>
             </div>
           </div>
         </div>
@@ -463,7 +460,7 @@ const AgentMatchingPage = () => {
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">
-            {language === 'zh-TW' ? '為什麼使用我們的配對系統？' : 'Why Use Our Matching System?'}
+            {t('matching.whyUseOurSystem')}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -472,13 +469,10 @@ const AgentMatchingPage = () => {
                 <i className="fas fa-bullseye text-white text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '精確配對' : 'Precise Matching'}
+                {t('matching.preciseMatching')}
               </h3>
               <p className="text-gray-600">
-                {language === 'zh-TW'
-                  ? 'AI驅動算法找到符合您特定需求和偏好的顧問'
-                  : 'AI-powered algorithm finds advisors who match your specific needs and preferences'
-                }
+                {t('matching.preciseMatchingDesc')}
               </p>
             </div>
             
@@ -487,13 +481,10 @@ const AgentMatchingPage = () => {
                 <i className="fas fa-clock text-white text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '節省時間' : 'Save Time'}
+                {t('matching.saveTime')}
               </h3>
               <p className="text-gray-600">
-                {language === 'zh-TW'
-                  ? '跳過研究，在幾分鐘內與合格顧問配對'
-                  : 'Skip the research and get matched with qualified advisors in minutes'
-                }
+                {t('matching.saveTimeDesc')}
               </p>
             </div>
             
@@ -502,13 +493,10 @@ const AgentMatchingPage = () => {
                 <i className="fas fa-star text-white text-2xl"></i>
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">
-                {language === 'zh-TW' ? '驗證顧問' : 'Verified Advisors'}
+                {t('matching.verifiedAdvisors')}
               </h3>
               <p className="text-gray-600">
-                {language === 'zh-TW'
-                  ? '所有顧問都是經過驗證的專業人士，擁有證實的記錄'
-                  : 'All advisors are verified professionals with proven track records'
-                }
+                {t('matching.verifiedAdvisorsDesc')}
               </p>
             </div>
           </div>
