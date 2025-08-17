@@ -24,7 +24,8 @@ const AdminEventPage = () => {
     points_reward: '',
     agent_id: '',
     status: 'draft',
-    image: ''
+    image: '',
+    video_url: ''
   });
   const [showImageSuccess, setShowImageSuccess] = useState(false);
 
@@ -73,7 +74,8 @@ const AdminEventPage = () => {
           points_reward: event.points_reward || '',
           agent_id: event.agent_id || '',
           status: event.status || 'draft',
-          image: event.image || ''
+          image: event.image || '',
+          video_url: event.video_url || ''
         });
       }
     } catch (error) {
@@ -310,6 +312,24 @@ const AdminEventPage = () => {
                     // Event image uploaded successfully
                   }}
                 />
+              </div>
+
+              {/* Video URL */}
+              <div className="mt-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {language === 'zh-TW' ? '影片連結 (YouTube)' : 'Video URL (YouTube)'}
+                </label>
+                <input
+                  type="url"
+                  name="video_url"
+                  value={eventData.video_url}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder={language === 'zh-TW' ? 'https://www.youtube.com/watch?v=...' : 'https://www.youtube.com/watch?v=...'}
+                />
+                <p className="mt-1 text-sm text-gray-500">
+                  {language === 'zh-TW' ? '支援 YouTube 影片連結，將在活動詳情中顯示' : 'Supports YouTube video links, will be displayed in event details'}
+                </p>
               </div>
             </div>
 

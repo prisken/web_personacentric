@@ -71,6 +71,11 @@ const Event = sequelize.define('Event', {
     type: DataTypes.STRING(500),
     allowNull: true,
     comment: 'Cloudinary URL for event image'
+  },
+  video_url: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+    comment: 'YouTube or video URL for event'
   }
 }, {
   tableName: 'events',

@@ -46,6 +46,14 @@ export const LanguageProvider = ({ children }) => {
       'events.cancelRegistration': '取消報名',
       'events.loginToRegister': '登入以報名',
       'events.details': '活動詳情',
+      'events.dateAndTime': '日期和時間',
+      'events.locationAndCapacity': '地點和容量',
+      'events.pricingAndRewards': '定價和獎勵',
+      'events.price': '價格',
+      'events.free': '免費',
+      'events.pointsReward': '積分獎勵',
+      'events.points': '積分',
+      'events.participants': '參與者',
       
       // Event Types
       'events.workshop': '工作坊',
@@ -625,6 +633,14 @@ export const LanguageProvider = ({ children }) => {
       'events.cancelRegistration': 'Cancel Registration',
       'events.loginToRegister': 'Login to Register',
       'events.details': 'Event Details',
+      'events.dateAndTime': 'Date and Time',
+      'events.locationAndCapacity': 'Location and Capacity',
+      'events.pricingAndRewards': 'Pricing and Rewards',
+      'events.price': 'Price',
+      'events.free': 'Free',
+      'events.pointsReward': 'Points Reward',
+      'events.points': 'Points',
+      'events.participants': 'Participants',
       
       // Event Types
       'events.workshop': 'Workshop',

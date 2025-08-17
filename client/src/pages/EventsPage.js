@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
 import apiService from '../services/api';
+import EventDetailsOverlay from '../components/EventDetailsOverlay';
 
 const EventsPage = () => {
   const { t, language } = useLanguage();
@@ -10,7 +11,7 @@ const EventsPage = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userRegistrations, setUserRegistrations] = useState([]);
-  const [showEventModal, setShowEventModal] = useState(false);
+  const [showEventOverlay, setShowEventOverlay] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
@@ -277,7 +278,7 @@ const EventsPage = () => {
                     <button
                       onClick={() => {
                         setSelectedEvent(event);
-                        setShowEventModal(true);
+                        setShowEventOverlay(true);
                       }}
                       className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 border border-gray-300 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-gray-50 transition-all duration-300"
                     >
@@ -290,6 +291,17 @@ const EventsPage = () => {
           </div>
         )}
       </div>
+
+      {/* Event Details Overlay */}
+      <EventDetailsOverlay
+        event={selectedEvent}
+        isOpen={showEventOverlay}
+        onClose={() => setShowEventOverlay(false)}
+        onRegistrationChange={() => {
+          fetchUserRegistrations();
+          fetchEvents();
+        }}
+      />
     </div>
   );
 };
