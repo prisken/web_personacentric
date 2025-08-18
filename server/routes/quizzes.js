@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { Quiz, QuizAttempt, User } = require('../models');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const { Op } = require('sequelize');
 
 // Get all quizzes (admin)
-router.get('/admin', auth, async (req, res) => {
+router.get('/admin', authenticateToken, async (req, res) => {
   try {
     const quizzes = await Quiz.findAll({
       include: [
@@ -32,7 +32,7 @@ router.get('/admin', auth, async (req, res) => {
 });
 
 // Get active quizzes for clients
-router.get('/active', auth, async (req, res) => {
+router.get('/active', authenticateToken, async (req, res) => {
   try {
     const quizzes = await Quiz.findAll({
       where: {
@@ -59,7 +59,7 @@ router.get('/active', auth, async (req, res) => {
 });
 
 // Get quiz by ID
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const quiz = await Quiz.findByPk(req.params.id, {
       include: [
@@ -92,7 +92,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // Create new quiz (admin only)
-router.post('/', auth, async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({
@@ -144,7 +144,7 @@ router.post('/', auth, async (req, res) => {
 });
 
 // Update quiz (admin only)
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({
@@ -205,7 +205,7 @@ router.put('/:id', auth, async (req, res) => {
 });
 
 // Delete quiz (admin only)
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({
@@ -238,7 +238,7 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // Submit quiz attempt
-router.post('/:id/attempt', auth, async (req, res) => {
+router.post('/:id/attempt', authenticateToken, async (req, res) => {
   try {
     const quiz = await Quiz.findByPk(req.params.id);
     if (!quiz || !quiz.is_active) {
@@ -310,7 +310,7 @@ router.post('/:id/attempt', auth, async (req, res) => {
 });
 
 // Get user's quiz attempts
-router.get('/user/attempts', auth, async (req, res) => {
+router.get('/user/attempts', authenticateToken, async (req, res) => {
   try {
     const attempts = await QuizAttempt.findAll({
       where: {
@@ -340,7 +340,7 @@ router.get('/user/attempts', auth, async (req, res) => {
 });
 
 // Get quiz statistics (admin)
-router.get('/:id/stats', auth, async (req, res) => {
+router.get('/:id/stats', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({
