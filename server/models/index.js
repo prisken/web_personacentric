@@ -11,8 +11,18 @@ const BlogPostCategory = require('./BlogPostCategory');
 const QuizQuestion = require('./QuizQuestion');
 const QuizResponse = require('./QuizResponse');
 const QuizSession = require('./QuizSession');
-const Quiz = require('./Quiz');
-const QuizAttempt = require('./QuizAttempt');
+
+// Import quiz models with error handling
+let Quiz, QuizAttempt;
+try {
+  Quiz = require('./Quiz');
+  QuizAttempt = require('./QuizAttempt');
+} catch (error) {
+  console.warn('Quiz models not available:', error.message);
+  Quiz = null;
+  QuizAttempt = null;
+}
+
 const Contest = require('./Contest');
 const ContestSubmission = require('./ContestSubmission');
 const PointTransaction = require('./PointTransaction');
@@ -45,8 +55,10 @@ User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
 User.hasMany(EventRegistration, { foreignKey: 'user_id', as: 'eventRegistrations' });
 User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
 User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
-User.hasMany(Quiz, { foreignKey: 'created_by', as: 'createdQuizzes' });
-User.hasMany(QuizAttempt, { foreignKey: 'user_id', as: 'quizAttempts' });
+if (Quiz) {
+  User.hasMany(Quiz, { foreignKey: 'created_by', as: 'createdQuizzes' });
+  User.hasMany(QuizAttempt, { foreignKey: 'user_id', as: 'quizAttempts' });
+}
 User.hasOne(ClientUpgrade, { foreignKey: 'user_id', as: 'upgradeApplication' });
 User.hasMany(UserBadge, { foreignKey: 'user_id', as: 'userBadges' });
 
@@ -93,11 +105,13 @@ QuizResponse.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 QuizSession.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // New Quiz associations
-Quiz.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
-Quiz.hasMany(QuizAttempt, { foreignKey: 'quiz_id', as: 'attempts' });
+if (Quiz) {
+  Quiz.belongsTo(User, { foreignKey: 'created_by', as: 'creator' });
+  Quiz.hasMany(QuizAttempt, { foreignKey: 'quiz_id', as: 'attempts' });
 
-QuizAttempt.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
-QuizAttempt.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+  QuizAttempt.belongsTo(Quiz, { foreignKey: 'quiz_id', as: 'quiz' });
+  QuizAttempt.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+}
 
 // Points and payments
 PointTransaction.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
