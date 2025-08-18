@@ -14,6 +14,7 @@ const adminRoutes = require('./admin');
 const uploadRoutes = require('./upload');
 const agentRoutes = require('./agents');
 const giftRoutes = require('./gifts');
+const quizRoutes = require('./quizzes');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -28,5 +29,6 @@ router.use('/admin', adminRoutes);
 router.use('/upload', uploadRoutes);
 router.use('/agents', agentRoutes);
 router.use('/gifts', giftRoutes);
+router.use('/quizzes', quizRoutes);
 
 module.exports = router; 

@@ -1,4 +1,5 @@
 const { User, Event, Agent } = require('./models');
+const { seedQuizzes } = require('./seedData/quizSeeds');
 const bcrypt = require('bcryptjs');
 const { v4: uuidv4 } = require('uuid');
 
@@ -198,6 +199,9 @@ async function seedData() {
     // Seed gifts and categories
     const seedGifts = require('./seedData/giftSeeds');
     await seedGifts();
+
+    // Seed quizzes
+    await seedQuizzes(adminUser.id);
 
     console.log('Data seeding completed successfully');
   } catch (error) {

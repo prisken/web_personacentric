@@ -4,6 +4,7 @@ import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import BlogManagement from './BlogManagement';
 import GiftManagement from './GiftManagement';
+import QuizManagement from './QuizManagement';
 
 const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -147,6 +148,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'blogs', label: '部落格管理', icon: '📝' },
     { id: 'gifts', label: '禮品管理', icon: '🎁' },
+    { id: 'quizzes', label: '測驗管理', icon: '📋' },
     { id: 'accessCodes', label: '訪問碼', icon: '🔑' },
     { id: 'analytics', label: '數據分析', icon: '📈' },
     { id: 'settings', label: '系統設定', icon: '⚙️' }
@@ -842,6 +844,11 @@ const AdminDashboard = ({ data, onRefresh }) => {
         {/* Gifts Management Tab */}
         {activeTab === 'gifts' && (
           <GiftManagement />
+        )}
+
+        {/* Quizzes Management Tab */}
+        {activeTab === 'quizzes' && (
+          <QuizManagement />
         )}
 
         {/* Settings Tab */}
