@@ -26,6 +26,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AdminEventPage = lazy(() => import('./pages/AdminEventPage'));
 const RecommendationViewPage = lazy(() => import('./pages/RecommendationViewPage'));
 const AllAgentsPage = lazy(() => import('./pages/AllAgentsPage'));
+const GiftsPage = lazy(() => import('./pages/GiftsPage'));
 
 // Loading component for Suspense
 const PageLoader = () => (
@@ -53,11 +54,11 @@ function App() {
                   <Routes>
                     {/* Public Routes */}
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/about" element={<AboutPage />} />
+                    <Route path="/about" element={<AboutUsPage />} />
                     <Route path="/events" element={<EventsPage />} />
                     <Route path="/blogs" element={<BlogsPage />} />
                     <Route path="/blogs/:slug" element={<BlogDetailPage />} />
-                                         <Route path="/about" element={<AboutUsPage />} />
+                    <Route path="/gifts" element={<GiftsPage />} />
                     <Route path="/agent-matching" element={<AgentMatchingPage />} />
                     <Route path="/all-agents" element={<AllAgentsPage />} />
                     <Route path="/login" element={<LoginPage />} />

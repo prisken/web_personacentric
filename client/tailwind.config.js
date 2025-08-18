@@ -35,6 +35,7 @@ module.exports = {
         'slide-up': 'slideUp 0.6s ease-out',
         'bounce-slow': 'bounce 2s infinite',
         'scroll-up': 'scrollUp 25s linear infinite',
+        'count-up': 'countUp 2s ease-out',
       },
       keyframes: {
         fadeIn: {
@@ -54,6 +55,16 @@ module.exports = {
         scrollUp: {
           '0%': { transform: 'translateY(0)' },
           '100%': { transform: 'translateY(-50%)' },
+        },
+        countUp: {
+          '0%': { 
+            opacity: '0',
+            transform: 'translateY(20px)'
+          },
+          '100%': { 
+            opacity: '1',
+            transform: 'translateY(0)'
+          },
         }
       }
     },
