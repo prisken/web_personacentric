@@ -278,11 +278,22 @@ class DashboardController {
     } catch (error) {
       console.error('Dashboard error:', error);
       console.error('Error stack:', error.stack);
-      res.status(500).json({
-        success: false,
-        error: 'Internal server error',
-        details: process.env.NODE_ENV === 'development' ? error.message : undefined
-      });
+      
+      // Check if it's a table not found error
+      if (error.message && error.message.includes('no such table')) {
+        console.error('Database table missing:', error.message);
+        res.status(500).json({
+          success: false,
+          error: 'Database schema issue - please contact administrator',
+          details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          error: 'Internal server error',
+          details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+      }
     }
   }
 

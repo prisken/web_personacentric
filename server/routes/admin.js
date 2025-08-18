@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const { User, Agent } = require('../models');
+const createQuizTablesProduction = require('../createQuizTablesProduction');
 
 // Middleware to check if user is admin
 const requireAdmin = (req, res, next) => {
@@ -144,6 +145,32 @@ router.post('/access-codes/generate', authenticateToken, requireAdmin, async (re
     res.status(500).json({
       success: false,
       error: 'Failed to generate access code'
+    });
+  }
+});
+
+// Create quiz tables in production (admin only)
+router.post('/create-quiz-tables', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Access denied'
+      });
+    }
+
+    await createQuizTablesProduction();
+    
+    res.json({
+      success: true,
+      message: 'Quiz tables created successfully'
+    });
+  } catch (error) {
+    console.error('Create quiz tables error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create quiz tables',
+      error: error.message
     });
   }
 });
