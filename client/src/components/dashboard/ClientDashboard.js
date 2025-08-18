@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import InvestmentGame from './InvestmentGame';
+import EarnPointsTab from './EarnPointsTab';
 
 const ClientDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -33,6 +34,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
     { id: 'agent', label: '顧問連接', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'investment', label: '投資遊戲', icon: '📈' },
+    { id: 'earn-points', label: '賺取積分', icon: '🎁' },
     { id: 'points', label: '積分管理', icon: '🎯' },
     { id: 'contests', label: '競賽參與', icon: '🏆' },
     { id: 'blogs', label: t('nav.blogs'), icon: '📝' },
@@ -352,6 +354,11 @@ const ClientDashboard = ({ data, onRefresh }) => {
         {/* Investment Game Tab */}
         {activeTab === 'investment' && (
           <InvestmentGame />
+        )}
+
+        {/* Earn Points Tab */}
+        {activeTab === 'earn-points' && (
+          <EarnPointsTab />
         )}
 
         {/* Points Management Tab */}
