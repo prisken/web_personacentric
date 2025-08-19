@@ -19,12 +19,24 @@ const ClientDashboard = ({ data, onRefresh }) => {
   const handleEventRegistration = async (eventId) => {
     try {
       setLoading(true);
-      await apiService.post(`/events/${eventId}/register`);
-      onRefresh();
-      alert('活動註冊成功！');
+      
+      // Check if user is already registered for this event
+      const isRegistered = data.registered_events?.some(reg => reg.event_id === eventId && reg.status === 'registered');
+      
+      if (isRegistered) {
+        // Cancel registration
+        await apiService.delete(`/events/${eventId}/register`);
+        onRefresh();
+        alert('活動註冊已取消！');
+      } else {
+        // Register for event
+        await apiService.post(`/events/${eventId}/register`);
+        onRefresh();
+        alert('活動註冊成功！');
+      }
     } catch (error) {
       console.error('Event registration error:', error);
-      alert('註冊失敗，請重試');
+      alert('操作失敗，請重試');
     } finally {
       setLoading(false);
     }
@@ -290,87 +302,117 @@ const ClientDashboard = ({ data, onRefresh }) => {
 
         {/* Events Management Tab */}
         {activeTab === 'events' && (
-          <div className="space-y-6">
-            {/* My Events */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">我的活動</h3>
-              </div>
-              <div className="p-6">
-                {data.registered_events?.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.registered_events.map((registration) => (
-                      <div key={registration.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-lg font-medium text-gray-900">{registration.event.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{registration.event.description}</p>
-                            <p className="text-xs text-gray-500 mt-2">
-                              開始時間: {formatDate(registration.event.start_date)}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                              {registration.status === 'registered' ? '已註冊' : registration.status}
-                            </span>
-                            <button className="text-blue-600 hover:text-blue-900 text-sm">
-                              查看詳情
-                            </button>
-                          </div>
-                        </div>
+          <div className="space-y-8">
+            {/* Events Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              {data.available_events?.map((event) => (
+                <div key={event.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
+                  {/* Event Image */}
+                  <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
+                    <img 
+                      src={event.image ? event.image : "/images/food-for-talk.jpg"}
+                      alt={event.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+
+                  {/* Event Content */}
+                  <div className="p-4 sm:p-6 lg:p-8">
+                    {/* Event Type Badge */}
+                    <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
+                      <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs lg:text-sm font-medium text-white bg-blue-500">
+                        {event.event_type || '活動'}
+                      </span>
+                      <span className="text-xs lg:text-sm text-gray-500">
+                        {event.registrations_count || 0} 已註冊
+                      </span>
+                    </div>
+
+                    {/* Event Title */}
+                    <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4 line-clamp-2">
+                      {event.title}
+                    </h3>
+
+                    {/* Event Description */}
+                    <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 lg:mb-6 line-clamp-3">
+                      {event.description}
+                    </p>
+
+                    {/* Event Details */}
+                    <div className="space-y-1 sm:space-y-2 lg:space-y-3 mb-4 sm:mb-6 lg:mb-8">
+                      <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        {formatDate(event.start_date)}
                       </div>
-                    ))}
+                      <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {new Date(event.start_date).toLocaleTimeString('zh-TW', {
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </div>
+                      {event.location && (
+                        <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          {event.location}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                      {data.registered_events?.some(reg => reg.event_id === event.id && reg.status === 'registered') ? (
+                        <button
+                          onClick={() => handleEventRegistration(event.id)}
+                          disabled={loading}
+                          className="flex-1 bg-red-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
+                        >
+                          {loading ? '取消中...' : '取消註冊'}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleEventRegistration(event.id)}
+                          disabled={loading}
+                          className="flex-1 bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
+                        >
+                          {loading ? '註冊中...' : '立即註冊'}
+                        </button>
+                      )}
+                      
+                      <button
+                        className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 border border-gray-300 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-gray-50 transition-all duration-300"
+                      >
+                        查看詳情
+                      </button>
+                    </div>
                   </div>
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="mt-2">暫無註冊活動</p>
-                  </div>
-                )}
-              </div>
+                </div>
+              ))}
             </div>
 
-            {/* Available Events */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">可參加活動</h3>
+            {/* Empty State */}
+            {(!data.available_events || data.available_events.length === 0) && (
+              <div className="text-center py-8 sm:py-12 lg:py-16">
+                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 lg:p-12 max-w-md mx-auto">
+                  <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <h3 className="text-base sm:text-lg lg:text-xl font-medium text-gray-900 mb-2">
+                    暫無可參加活動
+                  </h3>
+                  <p className="text-sm sm:text-base lg:text-lg text-gray-500">
+                    請稍後再來查看新的活動
+                  </p>
+                </div>
               </div>
-              <div className="p-6">
-                {data.available_events?.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.available_events.map((event) => (
-                      <div key={event.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-lg font-medium text-gray-900">{event.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{event.description}</p>
-                            <p className="text-xs text-gray-500 mt-2">
-                              開始時間: {formatDate(event.start_date)}
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => handleEventRegistration(event.id)}
-                            disabled={loading}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
-                          >
-                            {loading ? '註冊中...' : '立即註冊'}
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p className="mt-2">暫無可參加活動</p>
-                  </div>
-                )}
-              </div>
-            </div>
+            )}
           </div>
         )}
 
