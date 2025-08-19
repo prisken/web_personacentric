@@ -451,4 +451,34 @@ router.get('/simple-test', (req, res) => {
   });
 });
 
+// Test JWT configuration
+router.get('/test-jwt', (req, res) => {
+  try {
+    const jwt = require('jsonwebtoken');
+    const secret = process.env.JWT_SECRET || 'your-secret-key';
+    
+    // Test JWT signing
+    const testToken = jwt.sign(
+      { test: 'data' },
+      secret,
+      { expiresIn: '1h' }
+    );
+    
+    res.json({
+      success: true,
+      message: 'JWT configuration working',
+      hasSecret: !!process.env.JWT_SECRET,
+      secretLength: process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 0,
+      testToken: testToken.substring(0, 20) + '...',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('JWT test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'JWT test failed: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
