@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { User, ClientRelationship, EventRegistration, PointTransaction, Event } = require('../models');
 const { Op } = require('sequelize');
-const auth = require('../middleware/auth');
+const { authenticateToken } = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 
 // Get agent's clients
-router.get('/clients', auth, async (req, res) => {
+router.get('/clients', authenticateToken, async (req, res) => {
   try {
     // Only allow agents to access this endpoint
     if (req.user.role !== 'agent') {
@@ -42,7 +42,7 @@ router.get('/clients', auth, async (req, res) => {
 });
 
 // Get specific client details
-router.get('/clients/:clientId', auth, async (req, res) => {
+router.get('/clients/:clientId', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'agent') {
       return res.status(403).json({
@@ -112,7 +112,7 @@ router.get('/clients/:clientId', auth, async (req, res) => {
 });
 
 // Add new client relationship
-router.post('/clients', auth, async (req, res) => {
+router.post('/clients', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'agent') {
       return res.status(403).json({
@@ -173,7 +173,7 @@ router.post('/clients', auth, async (req, res) => {
 });
 
 // Update client relationship
-router.put('/clients/:clientId', auth, async (req, res) => {
+router.put('/clients/:clientId', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'agent') {
       return res.status(403).json({
@@ -220,7 +220,7 @@ router.put('/clients/:clientId', auth, async (req, res) => {
 });
 
 // Remove client relationship
-router.delete('/clients/:clientId', auth, async (req, res) => {
+router.delete('/clients/:clientId', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'agent') {
       return res.status(403).json({
@@ -258,7 +258,7 @@ router.delete('/clients/:clientId', auth, async (req, res) => {
 });
 
 // Get client statistics
-router.get('/clients/:clientId/stats', auth, async (req, res) => {
+router.get('/clients/:clientId/stats', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'agent') {
       return res.status(403).json({
