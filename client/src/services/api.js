@@ -391,6 +391,11 @@ class ApiService {
   async rejectRelationship(relationshipId) {
     return this.post(`/client-management/client/relationships/${relationshipId}/reject`);
   }
+
+  // Generate invitation code for client
+  async generateInvitationCode() {
+    return this.post('/client-management/client/generate-invitation-code');
+  }
 }
 
 // Create a singleton instance

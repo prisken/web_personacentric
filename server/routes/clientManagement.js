@@ -333,6 +333,39 @@ router.get('/clients/:clientId/stats', authenticateToken, async (req, res) => {
 
 // Client endpoints for managing relationships
 
+// Generate/Regenerate client invitation code
+router.post('/client/generate-invitation-code', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only clients can generate invitation codes'
+      });
+    }
+
+    // Generate a new 6-character alphanumeric code
+    const newClientId = Math.random().toString(36).substring(2, 8).toUpperCase();
+    
+    // Update the user's client_id
+    await User.update(
+      { client_id: newClientId },
+      { where: { id: req.user.userId } }
+    );
+
+    res.json({
+      success: true,
+      message: '邀請碼已成功生成',
+      client_id: newClientId
+    });
+  } catch (error) {
+    console.error('Generate invitation code error:', error);
+    res.status(500).json({
+      success: false,
+      error: '生成邀請碼失敗'
+    });
+  }
+});
+
 // Get client's relationship requests and active relationships
 router.get('/client/relationships', authenticateToken, async (req, res) => {
   try {

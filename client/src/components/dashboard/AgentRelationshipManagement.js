@@ -25,6 +25,19 @@ const AgentRelationshipManagement = () => {
     }
   };
 
+  const generateInvitationCode = async () => {
+    try {
+      const response = await apiService.generateInvitationCode();
+      if (response.success) {
+        setClientId(response.client_id);
+        alert('邀請碼已成功生成！');
+      }
+    } catch (error) {
+      console.error('Error generating invitation code:', error);
+      alert('生成邀請碼失敗，請稍後再試。');
+    }
+  };
+
   const handleConfirmRelationship = async (relationshipId) => {
     try {
       const response = await apiService.confirmRelationship(relationshipId);
@@ -105,6 +118,14 @@ const AgentRelationshipManagement = () => {
               className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
             >
               📋 複製
+            </button>
+          )}
+          {!clientId && (
+            <button
+              onClick={generateInvitationCode}
+              className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+            >
+              🔗 生成邀請碼
             </button>
           )}
         </div>
