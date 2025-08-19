@@ -111,53 +111,89 @@ async function startServer() {
     if (process.env.NODE_ENV === 'production') {
       console.log('🔧 Checking and fixing production database schema...');
       try {
-        // Check if client_id column exists
-        const [results] = await sequelize.query(`
-          SELECT column_name 
-          FROM information_schema.columns 
-          WHERE table_name = 'users' AND column_name = 'client_id'
-        `);
-        
-        if (results.length === 0) {
-          console.log('⚠️ client_id column missing, adding it...');
-          await sequelize.query(`
-            ALTER TABLE users 
-            ADD COLUMN client_id VARCHAR(10)
-          `);
-          console.log('✅ client_id column added successfully');
-        } else {
-          console.log('✅ client_id column already exists');
-        }
-        
-        // Check for other missing columns
-        const requiredColumns = [
-          'subscription_end_date',
-          'grace_period_end_date',
-          'verification_token',
-          'reset_password_token',
-          'reset_password_expires'
+        // Fix users table
+        const userColumns = [
+          { name: 'client_id', type: 'VARCHAR(10)' },
+          { name: 'subscription_end_date', type: 'TIMESTAMP' },
+          { name: 'grace_period_end_date', type: 'TIMESTAMP' },
+          { name: 'verification_token', type: 'VARCHAR(255)' },
+          { name: 'reset_password_token', type: 'VARCHAR(255)' },
+          { name: 'reset_password_expires', type: 'TIMESTAMP' }
         ];
         
-        for (const column of requiredColumns) {
-          const [columnCheck] = await sequelize.query(`
-            SELECT column_name 
-            FROM information_schema.columns 
-            WHERE table_name = 'users' AND column_name = '${column}'
+        for (const column of userColumns) {
+          await sequelize.query(`
+            ALTER TABLE users 
+            ADD COLUMN IF NOT EXISTS ${column.name} ${column.type}
           `);
-          
-          if (columnCheck.length === 0) {
-            console.log(`⚠️ ${column} column missing, adding it...`);
-            let columnType = 'VARCHAR(255)';
-            if (column.includes('_date') || column.includes('_expires')) {
-              columnType = 'TIMESTAMP';
-            }
-            await sequelize.query(`
-              ALTER TABLE users 
-              ADD COLUMN ${column} ${columnType}
-            `);
-            console.log(`✅ ${column} column added successfully`);
-          }
         }
+        console.log('✅ Fixed users table');
+        
+        // Fix client_relationships table
+        const clientRelationshipColumns = [
+          { name: 'requested_at', type: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP' },
+          { name: 'confirmed_at', type: 'TIMESTAMP' },
+          { name: 'commission_rate', type: 'DECIMAL(5,4) DEFAULT 0.10' },
+          { name: 'total_commission', type: 'DECIMAL(10,2) DEFAULT 0.00' },
+          { name: 'notes', type: 'TEXT' },
+          { name: 'relationship_start_date', type: 'TIMESTAMP' },
+          { name: 'last_contact_date', type: 'TIMESTAMP' },
+          { name: 'client_goals', type: 'JSON' },
+          { name: 'risk_tolerance', type: 'VARCHAR(20)' },
+          { name: 'investment_horizon', type: 'VARCHAR(20)' }
+        ];
+        
+        for (const column of clientRelationshipColumns) {
+          await sequelize.query(`
+            ALTER TABLE client_relationships 
+            ADD COLUMN IF NOT EXISTS ${column.name} ${column.type}
+          `);
+        }
+        console.log('✅ Fixed client_relationships table');
+        
+        // Fix agents table
+        const agentColumns = [
+          { name: 'rating', type: 'DECIMAL(3,2)' },
+          { name: 'total_reviews', type: 'INTEGER DEFAULT 0' },
+          { name: 'profile_image', type: 'VARCHAR(500)' },
+          { name: 'areas_of_expertise', type: 'JSON' },
+          { name: 'languages', type: 'JSON' },
+          { name: 'preferred_client_types', type: 'JSON' },
+          { name: 'communication_modes', type: 'JSON' },
+          { name: 'availability', type: 'TEXT' },
+          { name: 'location', type: 'VARCHAR(255)' },
+          { name: 'status', type: 'VARCHAR(20) DEFAULT \'pending\'' },
+          { name: 'in_matching_pool', type: 'BOOLEAN DEFAULT false' }
+        ];
+        
+        for (const column of agentColumns) {
+          await sequelize.query(`
+            ALTER TABLE agents 
+            ADD COLUMN IF NOT EXISTS ${column.name} ${column.type}
+          `);
+        }
+        console.log('✅ Fixed agents table');
+        
+        // Fix events table
+        const eventColumns = [
+          { name: 'video_url', type: 'VARCHAR(500)' },
+          { name: 'image', type: 'VARCHAR(500)' }
+        ];
+        
+        for (const column of eventColumns) {
+          await sequelize.query(`
+            ALTER TABLE events 
+            ADD COLUMN IF NOT EXISTS ${column.name} ${column.type}
+          `);
+        }
+        console.log('✅ Fixed events table');
+        
+        // Fix blog_posts table
+        await sequelize.query(`
+          ALTER TABLE blog_posts 
+          ADD COLUMN IF NOT EXISTS featured BOOLEAN DEFAULT false
+        `);
+        console.log('✅ Fixed blog_posts table');
         
         console.log('🎉 Production database schema fix completed');
       } catch (error) {
