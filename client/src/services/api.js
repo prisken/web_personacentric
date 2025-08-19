@@ -378,6 +378,19 @@ class ApiService {
   async getClientStats(clientId) {
     return this.get(`/client-management/clients/${clientId}/stats`);
   }
+
+  // Client relationship management (for clients)
+  async getClientRelationships() {
+    return this.get('/client-management/client/relationships');
+  }
+
+  async confirmRelationship(relationshipId) {
+    return this.post(`/client-management/client/relationships/${relationshipId}/confirm`);
+  }
+
+  async rejectRelationship(relationshipId) {
+    return this.post(`/client-management/client/relationships/${relationshipId}/reject`);
+  }
 }
 
 // Create a singleton instance

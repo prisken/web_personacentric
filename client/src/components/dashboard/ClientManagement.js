@@ -11,7 +11,7 @@ const ClientManagement = ({ onRefresh }) => {
   const [filterStatus, setFilterStatus] = useState('all');
 
   const [newClientData, setNewClientData] = useState({
-    client_id: '',
+    client_referral_id: '',
     commission_rate: 0.10,
     notes: '',
     client_goals: { primary_goal: '', secondary_goals: [] },
@@ -42,7 +42,7 @@ const ClientManagement = ({ onRefresh }) => {
       await apiService.addClient(newClientData);
       setShowAddModal(false);
       setNewClientData({
-        client_id: '',
+        client_referral_id: '',
         commission_rate: 0.10,
         notes: '',
         client_goals: { primary_goal: '', secondary_goals: [] },
@@ -252,14 +252,15 @@ const ClientManagement = ({ onRefresh }) => {
             <h3 className="text-xl font-semibold text-gray-900 mb-4">新增客戶關係</h3>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">客戶 ID</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">客戶邀請碼</label>
                 <input
                   type="text"
-                  value={newClientData.client_id}
-                  onChange={(e) => setNewClientData({...newClientData, client_id: e.target.value})}
+                  value={newClientData.client_referral_id}
+                  onChange={(e) => setNewClientData({...newClientData, client_referral_id: e.target.value})}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  placeholder="輸入客戶 ID"
+                  placeholder="輸入客戶邀請碼 (例如: ABC123)"
                 />
+                <p className="text-xs text-gray-500 mt-1">客戶可在其個人面板中找到邀請碼</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">佣金率 (%)</label>

@@ -127,23 +127,30 @@ router.post('/clients', authenticateToken, async (req, res) => {
       });
     }
 
-    const { client_id, commission_rate, notes, client_goals, risk_tolerance, investment_horizon } = req.body;
+    const { client_referral_id, commission_rate, notes, client_goals, risk_tolerance, investment_horizon } = req.body;
 
-    // Check if client exists and is actually a client
+    if (!client_referral_id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Client referral ID is required'
+      });
+    }
+
+    // Find client by their referral client_id
     const client = await User.findOne({
-      where: { id: client_id, role: 'client' }
+      where: { client_id: client_referral_id, role: 'client' }
     });
 
     if (!client) {
       return res.status(404).json({
         success: false,
-        error: 'Client not found'
+        error: 'Client not found with this referral ID'
       });
     }
 
     // Check if relationship already exists
     const existingRelationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.userId, client_id }
+      where: { agent_id: req.user.userId, client_id: client.id }
     });
 
     if (existingRelationship) {
@@ -156,13 +163,13 @@ router.post('/clients', authenticateToken, async (req, res) => {
     const relationship = await ClientRelationship.create({
       id: uuidv4(),
       agent_id: req.user.userId,
-      client_id,
+      client_id: client.id,
       commission_rate: commission_rate || 0.10,
       notes,
       client_goals,
       risk_tolerance,
       investment_horizon,
-      relationship_start_date: new Date()
+      status: 'pending'
     });
 
     res.json({
@@ -320,6 +327,142 @@ router.get('/clients/:clientId/stats', authenticateToken, async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to fetch client statistics'
+    });
+  }
+});
+
+// Client endpoints for managing relationships
+
+// Get client's relationship requests and active relationships
+router.get('/client/relationships', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only clients can access this endpoint'
+      });
+    }
+
+    const relationships = await ClientRelationship.findAll({
+      where: { client_id: req.user.userId },
+      include: [
+        {
+          model: User,
+          as: 'agent',
+          attributes: ['id', 'first_name', 'last_name', 'email', 'phone']
+        }
+      ],
+      order: [['created_at', 'DESC']]
+    });
+
+    // Get user's client_id for sharing
+    const user = await User.findByPk(req.user.userId, {
+      attributes: ['client_id']
+    });
+
+    res.json({
+      success: true,
+      relationships: relationships,
+      client_id: user?.client_id
+    });
+  } catch (error) {
+    console.error('Get client relationships error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch relationships'
+    });
+  }
+});
+
+// Confirm/Accept agent relationship
+router.post('/client/relationships/:relationshipId/confirm', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only clients can confirm relationships'
+      });
+    }
+
+    const { relationshipId } = req.params;
+
+    const relationship = await ClientRelationship.findOne({
+      where: { 
+        id: relationshipId, 
+        client_id: req.user.userId,
+        status: 'pending'
+      }
+    });
+
+    if (!relationship) {
+      return res.status(404).json({
+        success: false,
+        error: 'Relationship request not found or already processed'
+      });
+    }
+
+    await relationship.update({
+      status: 'active',
+      confirmed_at: new Date(),
+      relationship_start_date: new Date()
+    });
+
+    res.json({
+      success: true,
+      message: 'Relationship confirmed successfully',
+      relationship: relationship
+    });
+  } catch (error) {
+    console.error('Confirm relationship error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to confirm relationship'
+    });
+  }
+});
+
+// Reject agent relationship
+router.post('/client/relationships/:relationshipId/reject', authenticateToken, async (req, res) => {
+  try {
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only clients can reject relationships'
+      });
+    }
+
+    const { relationshipId } = req.params;
+
+    const relationship = await ClientRelationship.findOne({
+      where: { 
+        id: relationshipId, 
+        client_id: req.user.userId,
+        status: 'pending'
+      }
+    });
+
+    if (!relationship) {
+      return res.status(404).json({
+        success: false,
+        error: 'Relationship request not found or already processed'
+      });
+    }
+
+    await relationship.update({
+      status: 'rejected',
+      confirmed_at: new Date()
+    });
+
+    res.json({
+      success: true,
+      message: 'Relationship rejected',
+      relationship: relationship
+    });
+  } catch (error) {
+    console.error('Reject relationship error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to reject relationship'
     });
   }
 });

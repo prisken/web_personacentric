@@ -24,8 +24,16 @@ const ClientRelationship = sequelize.define('ClientRelationship', {
     }
   },
   status: {
-    type: DataTypes.ENUM('active', 'inactive', 'pending'),
-    defaultValue: 'active'
+    type: DataTypes.ENUM('pending', 'active', 'rejected', 'inactive'),
+    defaultValue: 'pending'
+  },
+  requested_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  confirmed_at: {
+    type: DataTypes.DATE,
+    allowNull: true
   },
   commission_rate: {
     type: DataTypes.DECIMAL(5, 4),
