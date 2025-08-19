@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
-import InvestmentGame from './InvestmentGame';
 import EarnPointsTab from './EarnPointsTab';
 
 const ClientDashboard = ({ data, onRefresh }) => {
@@ -33,11 +32,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
     { id: 'overview', label: '總覽', icon: '📊' },
     { id: 'agent', label: '顧問連接', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
-    { id: 'investment', label: '投資遊戲', icon: '📈' },
     { id: 'earn-points', label: '賺取積分', icon: '🎁' },
-    { id: 'points', label: '積分管理', icon: '🎯' },
-    { id: 'contests', label: '競賽參與', icon: '🏆' },
-    { id: 'blogs', label: t('nav.blogs'), icon: '📝' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
@@ -351,144 +346,9 @@ const ClientDashboard = ({ data, onRefresh }) => {
           </div>
         )}
 
-        {/* Investment Game Tab */}
-        {activeTab === 'investment' && (
-          <InvestmentGame />
-        )}
-
         {/* Earn Points Tab */}
         {activeTab === 'earn-points' && (
           <EarnPointsTab />
-        )}
-
-        {/* Points Management Tab */}
-        {activeTab === 'points' && (
-          <div className="space-y-6">
-            {/* Points Summary */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">積分摘要</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-green-600">
-                    {data.statistics?.total_points_earned || 0}
-                  </p>
-                  <p className="text-sm text-gray-500">總積分</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-600">
-                    {data.statistics?.points_balance || 0}
-                  </p>
-                  <p className="text-sm text-gray-500">當前餘額</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-purple-600">
-                    {data.statistics?.total_events_attended || 0}
-                  </p>
-                  <p className="text-sm text-gray-500">參與活動</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Points History */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">積分歷史</h3>
-              </div>
-              <div className="p-6">
-                {data.recent_point_transactions?.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.recent_point_transactions.map((transaction) => (
-                      <div key={transaction.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{transaction.description}</p>
-                          <p className="text-xs text-gray-500">
-                            {transaction.transaction_type === 'earned' ? '獲得' : '使用'}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className={`text-sm font-medium ${
-                            transaction.points_amount > 0 ? 'text-green-600' : 'text-red-600'
-                          }`}>
-                            {transaction.points_amount > 0 ? '+' : ''}{transaction.points_amount}
-                          </span>
-                          <span className="text-xs text-gray-500">
-                            {formatDate(transaction.created_at)}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                    <p className="mt-2">暫無積分記錄</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Contest Participation Tab */}
-        {activeTab === 'contests' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">競賽參與</h3>
-                  <button
-                    onClick={() => setShowContestModal(true)}
-                    className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700"
-                  >
-                    參與競賽
-                  </button>
-                </div>
-              </div>
-              <div className="p-6">
-                {data.contest_participations?.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.contest_participations.map((participation) => (
-                      <div key={participation.id} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1">
-                            <h4 className="text-lg font-medium text-gray-900">{participation.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">
-                              競賽: {participation.contest.title}
-                            </p>
-                            <p className="text-xs text-gray-500 mt-2">
-                              提交時間: {formatDate(participation.created_at)}
-                            </p>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <span className={`px-2 py-1 text-xs rounded-full ${
-                              participation.status === 'approved' ? 'bg-green-100 text-green-800' :
-                              participation.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
-                            }`}>
-                              {participation.status === 'approved' ? '已通過' : 
-                               participation.status === 'pending' ? '審核中' : '未通過'}
-                            </span>
-                            <button className="text-blue-600 hover:text-blue-900 text-sm">
-                              查看詳情
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500 py-8">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                    </svg>
-                    <p className="mt-2">暫無競賽參與記錄</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
         )}
 
         {/* Profile Tab */}
