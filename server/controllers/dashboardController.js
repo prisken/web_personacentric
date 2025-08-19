@@ -74,15 +74,17 @@ class DashboardController {
             
             // Get registration statistics
             const totalRegistrations = await EventRegistration.count();
-            const clientRegistrations = await EventRegistration.count({
+            const clientRegistrationsCount = await EventRegistration.count({
               include: [{
                 model: User,
+                as: 'user',
                 where: { role: 'client' }
               }]
             });
-            const agentRegistrations = await EventRegistration.count({
+            const agentRegistrationsCount = await EventRegistration.count({
               include: [{
                 model: User,
+                as: 'user',
                 where: { role: 'agent' }
               }]
             });
@@ -94,8 +96,8 @@ class DashboardController {
               total_events: totalEvents,
               upcoming_events: upcomingEvents,
               total_registrations: totalRegistrations,
-              total_clients_registered: clientRegistrations,
-              total_agents_registered: agentRegistrations,
+              total_clients_registered: clientRegistrationsCount,
+              total_agents_registered: agentRegistrationsCount,
               monthly_revenue: 2000,
               pending_upgrades: 1,
               pending_contests: 0
