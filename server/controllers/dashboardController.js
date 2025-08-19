@@ -1,4 +1,4 @@
-const { User, Event, EventRegistration, Agent } = require('../models');
+const { User, Event, EventRegistration, Agent, ClientRelationship } = require('../models');
 const { Op } = require('sequelize');
 
 class DashboardController {
@@ -79,13 +79,30 @@ class DashboardController {
           case 'agent':
             console.log('Processing agent dashboard...');
             // Get agent-specific statistics
+            const clientRelationships = await ClientRelationship.findAll({
+              where: { agent_id: userId },
+              include: [
+                {
+                  model: User,
+                  as: 'client',
+                  attributes: ['id', 'first_name', 'last_name', 'email']
+                }
+              ]
+            });
+
+            const totalCommission = clientRelationships.reduce((sum, rel) => sum + parseFloat(rel.total_commission || 0), 0);
+            const activeClients = clientRelationships.filter(rel => rel.status === 'active').length;
+
             dashboardData.statistics = {
-              total_commission: 1500.00,
-              active_clients: 3,
+              total_commission: totalCommission,
+              active_clients: activeClients,
               hosted_events: 0,
               upcoming_events: 0,
               total_registrations: 0
             };
+
+            // Add client relationships data
+            dashboardData.client_relationships = clientRelationships;
             break;
 
           case 'client':

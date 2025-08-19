@@ -353,6 +353,31 @@ class ApiService {
   async healthCheck() {
     return this.get('/health');
   }
+
+  // Client Management endpoints (for agents)
+  async getAgentClients() {
+    return this.get('/client-management/clients');
+  }
+
+  async getClientDetails(clientId) {
+    return this.get(`/client-management/clients/${clientId}`);
+  }
+
+  async addClient(clientData) {
+    return this.post('/client-management/clients', clientData);
+  }
+
+  async updateClient(clientId, updateData) {
+    return this.put(`/client-management/clients/${clientId}`, updateData);
+  }
+
+  async removeClient(clientId) {
+    return this.delete(`/client-management/clients/${clientId}`);
+  }
+
+  async getClientStats(clientId) {
+    return this.get(`/client-management/clients/${clientId}/stats`);
+  }
 }
 
 // Create a singleton instance
