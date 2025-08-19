@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { User, ClientRelationship, EventRegistration, PointTransaction, Event } = require('../models');
+const { User, EventRegistration, PointTransaction, Event } = require('../models');
+// const { ClientRelationship } = require('../models'); // Temporarily commented out for debugging
 const { Op } = require('sequelize');
 const auth = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
@@ -16,21 +17,10 @@ router.get('/clients', auth, async (req, res) => {
       });
     }
 
-    const relationships = await ClientRelationship.findAll({
-      where: { agent_id: req.user.id },
-      include: [
-        {
-          model: User,
-          as: 'client',
-          attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'created_at']
-        }
-      ],
-      order: [['created_at', 'DESC']]
-    });
-
+    // Temporarily return empty data for debugging
     res.json({
       success: true,
-      relationships: relationships
+      relationships: []
     });
   } catch (error) {
     console.error('Get clients error:', error);
@@ -51,56 +41,10 @@ router.get('/clients/:clientId', auth, async (req, res) => {
       });
     }
 
-    const { clientId } = req.params;
-
-    // Check if the relationship exists
-    const relationship = await ClientRelationship.findOne({
-      where: { 
-        agent_id: req.user.id,
-        client_id: clientId
-      },
-      include: [
-        {
-          model: User,
-          as: 'client',
-          attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'created_at', 'points']
-        }
-      ]
-    });
-
-    if (!relationship) {
-      return res.status(404).json({
-        success: false,
-        error: 'Client relationship not found'
-      });
-    }
-
-    // Get client's recent activities
-    const recentActivities = await EventRegistration.findAll({
-      where: { user_id: clientId },
-      include: [
-        {
-          model: Event,
-          as: 'event',
-          attributes: ['id', 'title', 'start_date']
-        }
-      ],
-      order: [['created_at', 'DESC']],
-      limit: 10
-    });
-
-    // Get client's point transactions
-    const pointTransactions = await PointTransaction.findAll({
-      where: { user_id: clientId },
-      order: [['created_at', 'DESC']],
-      limit: 10
-    });
-
-    res.json({
-      success: true,
-      relationship: relationship,
-      recentActivities: recentActivities,
-      pointTransactions: pointTransactions
+    // Temporarily return error for debugging
+    res.status(404).json({
+      success: false,
+      error: 'Client relationship not found'
     });
   } catch (error) {
     console.error('Get client details error:', error);
@@ -121,47 +65,10 @@ router.post('/clients', auth, async (req, res) => {
       });
     }
 
-    const { client_id, commission_rate, notes, client_goals, risk_tolerance, investment_horizon } = req.body;
-
-    // Check if client exists and is actually a client
-    const client = await User.findOne({
-      where: { id: client_id, role: 'client' }
-    });
-
-    if (!client) {
-      return res.status(404).json({
-        success: false,
-        error: 'Client not found'
-      });
-    }
-
-    // Check if relationship already exists
-    const existingRelationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id }
-    });
-
-    if (existingRelationship) {
-      return res.status(400).json({
-        success: false,
-        error: 'Client relationship already exists'
-      });
-    }
-
-    const relationship = await ClientRelationship.create({
-      id: uuidv4(),
-      agent_id: req.user.id,
-      client_id,
-      commission_rate: commission_rate || 0.10,
-      notes,
-      client_goals,
-      risk_tolerance,
-      investment_horizon,
-      relationship_start_date: new Date()
-    });
-
-    res.json({
-      success: true,
-      relationship: relationship
+    // Temporarily return error for debugging
+    res.status(500).json({
+      success: false,
+      error: 'Client management temporarily disabled'
     });
   } catch (error) {
     console.error('Add client error:', error);
@@ -182,33 +89,10 @@ router.put('/clients/:clientId', auth, async (req, res) => {
       });
     }
 
-    const { clientId } = req.params;
-    const { status, commission_rate, notes, client_goals, risk_tolerance, investment_horizon, last_contact_date } = req.body;
-
-    const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
-    });
-
-    if (!relationship) {
-      return res.status(404).json({
-        success: false,
-        error: 'Client relationship not found'
-      });
-    }
-
-    await relationship.update({
-      status,
-      commission_rate,
-      notes,
-      client_goals,
-      risk_tolerance,
-      investment_horizon,
-      last_contact_date: last_contact_date || new Date()
-    });
-
-    res.json({
-      success: true,
-      relationship: relationship
+    // Temporarily return error for debugging
+    res.status(500).json({
+      success: false,
+      error: 'Client management temporarily disabled'
     });
   } catch (error) {
     console.error('Update client error:', error);
@@ -229,24 +113,10 @@ router.delete('/clients/:clientId', auth, async (req, res) => {
       });
     }
 
-    const { clientId } = req.params;
-
-    const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
-    });
-
-    if (!relationship) {
-      return res.status(404).json({
-        success: false,
-        error: 'Client relationship not found'
-      });
-    }
-
-    await relationship.destroy();
-
-    res.json({
-      success: true,
-      message: 'Client relationship removed successfully'
+    // Temporarily return error for debugging
+    res.status(500).json({
+      success: false,
+      error: 'Client management temporarily disabled'
     });
   } catch (error) {
     console.error('Remove client error:', error);
@@ -267,47 +137,10 @@ router.get('/clients/:clientId/stats', auth, async (req, res) => {
       });
     }
 
-    const { clientId } = req.params;
-
-    // Check if relationship exists
-    const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
-    });
-
-    if (!relationship) {
-      return res.status(404).json({
-        success: false,
-        error: 'Client relationship not found'
-      });
-    }
-
-    // Get client statistics
-    const totalEvents = await EventRegistration.count({
-      where: { user_id: clientId }
-    });
-
-    const totalPoints = await PointTransaction.sum('points_amount', {
-      where: { user_id: clientId }
-    });
-
-    const recentActivity = await EventRegistration.count({
-      where: { 
-        user_id: clientId,
-        created_at: {
-          [Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
-        }
-      }
-    });
-
-    res.json({
-      success: true,
-      stats: {
-        totalEvents,
-        totalPoints: totalPoints || 0,
-        recentActivity,
-        relationshipStartDate: relationship.relationship_start_date,
-        lastContactDate: relationship.last_contact_date
-      }
+    // Temporarily return error for debugging
+    res.status(500).json({
+      success: false,
+      error: 'Client management temporarily disabled'
     });
   } catch (error) {
     console.error('Get client stats error:', error);
