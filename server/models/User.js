@@ -31,13 +31,13 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING(20),
     allowNull: true
   },
-  // client_id: {
-  //   type: DataTypes.STRING(10),
-  //   allowNull: true,
-  //   validate: {
-  //     len: [6, 10]
-  //   }
-  // },
+  client_id: {
+    type: DataTypes.STRING(10),
+    allowNull: true,
+    validate: {
+      len: [6, 10]
+    }
+  },
   role: {
     type: DataTypes.ENUM('admin', 'agent', 'client'),
     defaultValue: 'client'
@@ -103,9 +103,9 @@ const User = sequelize.define('User', {
     {
       fields: ['is_verified']
     },
-    // {
-    //   fields: ['client_id']
-    // }
+    {
+      fields: ['client_id']
+    }
   ]
 });
 
