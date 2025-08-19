@@ -8,10 +8,9 @@ module.exports = {
       allowNull: true
     });
 
-    // Add unique index for client_id  
+    // Add index for client_id (non-unique for now to avoid migration issues)
     await queryInterface.addIndex('users', ['client_id'], {
-      name: 'idx_users_client_id',
-      unique: true
+      name: 'idx_users_client_id'
     });
 
     // Update client_relationships table - add new columns

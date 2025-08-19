@@ -34,7 +34,6 @@ const User = sequelize.define('User', {
   client_id: {
     type: DataTypes.STRING(10),
     allowNull: true,
-    unique: true,
     validate: {
       len: [6, 10]
     }
