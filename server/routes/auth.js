@@ -398,4 +398,25 @@ router.post('/create-test-users', async (req, res) => {
   }
 });
 
+// Test database connection endpoint
+router.get('/test-db', async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const userCount = await User.count();
+    
+    res.json({
+      success: true,
+      message: 'Database connection successful',
+      userCount: userCount,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Database test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Database connection failed: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
