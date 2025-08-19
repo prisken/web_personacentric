@@ -15,7 +15,7 @@ const uploadRoutes = require('./upload');
 const agentRoutes = require('./agents');
 const giftRoutes = require('./gifts');
 const quizRoutes = require('./quizzes');
-// const clientManagementRoutes = require('./clientManagement'); // Temporarily commented out for debugging
+const clientManagementRoutes = require('./clientManagement');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -31,6 +31,6 @@ router.use('/upload', uploadRoutes);
 router.use('/agents', agentRoutes);
 router.use('/gifts', giftRoutes);
 router.use('/quizzes', quizRoutes);
-// router.use('/client-management', clientManagementRoutes); // Temporarily commented out for debugging
+router.use('/client-management', clientManagementRoutes);
 
 module.exports = router; 
