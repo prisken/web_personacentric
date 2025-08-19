@@ -295,4 +295,23 @@ router.post('/create-all-users', async (req, res) => {
   }
 });
 
+// Temporary endpoint to create test users in production (remove in production)
+router.post('/create-test-users', async (req, res) => {
+  try {
+    const createProductionUsers = require('../createProductionUsers');
+    await createProductionUsers();
+    
+    res.json({
+      success: true,
+      message: 'Test users created successfully in production'
+    });
+  } catch (error) {
+    console.error('Create test users error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create test users: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
