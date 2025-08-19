@@ -419,4 +419,14 @@ router.get('/test-db', async (req, res) => {
   }
 });
 
+// Simple test endpoint without database
+router.get('/simple-test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Server is working',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 module.exports = router; 
