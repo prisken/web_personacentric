@@ -107,6 +107,64 @@ async function startServer() {
     await sequelize.authenticate();
     console.log('✅ Database connected successfully');
     
+    // Fix database schema if needed (production only)
+    if (process.env.NODE_ENV === 'production') {
+      console.log('🔧 Checking and fixing production database schema...');
+      try {
+        // Check if client_id column exists
+        const [results] = await sequelize.query(`
+          SELECT column_name 
+          FROM information_schema.columns 
+          WHERE table_name = 'users' AND column_name = 'client_id'
+        `);
+        
+        if (results.length === 0) {
+          console.log('⚠️ client_id column missing, adding it...');
+          await sequelize.query(`
+            ALTER TABLE users 
+            ADD COLUMN client_id VARCHAR(10)
+          `);
+          console.log('✅ client_id column added successfully');
+        } else {
+          console.log('✅ client_id column already exists');
+        }
+        
+        // Check for other missing columns
+        const requiredColumns = [
+          'subscription_end_date',
+          'grace_period_end_date',
+          'verification_token',
+          'reset_password_token',
+          'reset_password_expires'
+        ];
+        
+        for (const column of requiredColumns) {
+          const [columnCheck] = await sequelize.query(`
+            SELECT column_name 
+            FROM information_schema.columns 
+            WHERE table_name = 'users' AND column_name = '${column}'
+          `);
+          
+          if (columnCheck.length === 0) {
+            console.log(`⚠️ ${column} column missing, adding it...`);
+            let columnType = 'VARCHAR(255)';
+            if (column.includes('_date') || column.includes('_expires')) {
+              columnType = 'TIMESTAMP';
+            }
+            await sequelize.query(`
+              ALTER TABLE users 
+              ADD COLUMN ${column} ${columnType}
+            `);
+            console.log(`✅ ${column} column added successfully`);
+          }
+        }
+        
+        console.log('🎉 Production database schema fix completed');
+      } catch (error) {
+        console.log('⚠️ Database schema fix failed, continuing with existing schema:', error.message);
+      }
+    }
+    
     // Sync database (create tables if they don't exist)
     console.log('🔄 Syncing database...');
     try {
