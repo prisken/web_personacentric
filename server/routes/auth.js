@@ -481,4 +481,34 @@ router.get('/test-jwt', (req, res) => {
   }
 });
 
+// Check database schema endpoint
+router.get('/check-schema', async (req, res) => {
+  try {
+    const { sequelize } = require('../models');
+    
+    // Check users table columns
+    const [columns] = await sequelize.query(`
+      SELECT column_name, data_type, is_nullable
+      FROM information_schema.columns 
+      WHERE table_name = 'users'
+      ORDER BY ordinal_position
+    `);
+    
+    res.json({
+      success: true,
+      message: 'Database schema check',
+      tableName: 'users',
+      columns: columns,
+      hasClientId: columns.some(col => col.column_name === 'client_id'),
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Schema check error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Schema check failed: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
