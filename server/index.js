@@ -73,13 +73,21 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Serve React app in production
+// Serve React app in production (only if build directory exists)
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
+  const buildPath = path.join(__dirname, '../client/build');
+  const indexPath = path.join(buildPath, 'index.html');
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-  });
+  // Check if build directory exists before serving static files
+  if (require('fs').existsSync(buildPath) && require('fs').existsSync(indexPath)) {
+    app.use(express.static(buildPath));
+    
+    app.get('*', (req, res) => {
+      res.sendFile(indexPath);
+    });
+  } else {
+    console.log('⚠️ Frontend build not found, serving API only');
+  }
 }
 
 // Error handling middleware
