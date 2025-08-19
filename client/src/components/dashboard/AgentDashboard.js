@@ -92,6 +92,25 @@ const AgentDashboard = ({ data, onRefresh }) => {
         </div>
       </div>
 
+      {/* Points Display */}
+      <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
+          <div className="flex items-center justify-center">
+            <div className="flex items-center space-x-3 lg:space-x-4">
+              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-lg lg:text-xl">🎯</span>
+              </div>
+              <div className="text-center">
+                <p className="text-sm lg:text-base font-medium opacity-90">當前積分餘額</p>
+                <p className="text-2xl lg:text-3xl xl:text-4xl font-bold">
+                  {data.statistics?.points_balance || 0} 積分
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-16 z-10">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
