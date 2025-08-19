@@ -8,7 +8,13 @@ const { v4: uuidv4 } = require('uuid');
 // Get agent's clients
 router.get('/clients', authenticateToken, async (req, res) => {
   try {
-    // Only allow agents to access this endpoint
+    // Debug logging
+    console.log('Client management request received:', {
+      user: req.user,
+      userId: req.user?.userId,
+      userRole: req.user?.role
+    });
+
     if (req.user.role !== 'agent') {
       return res.status(403).json({
         success: false,
@@ -17,7 +23,7 @@ router.get('/clients', authenticateToken, async (req, res) => {
     }
 
     const relationships = await ClientRelationship.findAll({
-      where: { agent_id: req.user.id },
+      where: { agent_id: req.user.userId },
       include: [
         {
           model: User,
@@ -56,7 +62,7 @@ router.get('/clients/:clientId', authenticateToken, async (req, res) => {
     // Check if the relationship exists
     const relationship = await ClientRelationship.findOne({
       where: { 
-        agent_id: req.user.id,
+        agent_id: req.user.userId,
         client_id: clientId
       },
       include: [
@@ -137,7 +143,7 @@ router.post('/clients', authenticateToken, async (req, res) => {
 
     // Check if relationship already exists
     const existingRelationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id }
+      where: { agent_id: req.user.userId, client_id }
     });
 
     if (existingRelationship) {
@@ -149,7 +155,7 @@ router.post('/clients', authenticateToken, async (req, res) => {
 
     const relationship = await ClientRelationship.create({
       id: uuidv4(),
-      agent_id: req.user.id,
+      agent_id: req.user.userId,
       client_id,
       commission_rate: commission_rate || 0.10,
       notes,
@@ -186,7 +192,7 @@ router.put('/clients/:clientId', authenticateToken, async (req, res) => {
     const { status, commission_rate, notes, client_goals, risk_tolerance, investment_horizon, last_contact_date } = req.body;
 
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
+      where: { agent_id: req.user.userId, client_id: clientId }
     });
 
     if (!relationship) {
@@ -232,7 +238,7 @@ router.delete('/clients/:clientId', authenticateToken, async (req, res) => {
     const { clientId } = req.params;
 
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
+      where: { agent_id: req.user.userId, client_id: clientId }
     });
 
     if (!relationship) {
@@ -271,7 +277,7 @@ router.get('/clients/:clientId/stats', authenticateToken, async (req, res) => {
 
     // Check if relationship exists
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.id, client_id: clientId }
+      where: { agent_id: req.user.userId, client_id: clientId }
     });
 
     if (!relationship) {
