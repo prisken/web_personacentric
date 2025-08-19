@@ -5,6 +5,8 @@ import apiService from '../../services/api';
 import BlogManagement from './BlogManagement';
 import GiftManagement from './GiftManagement';
 import QuizManagement from './QuizManagement';
+import EventCard from './EventCard';
+import StatisticsCard from './StatisticsCard';
 
 const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -232,77 +234,30 @@ const AdminDashboard = ({ data, onRefresh }) => {
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">總用戶</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.total_users || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">活躍用戶</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.active_users || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-yellow-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">總活動</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.total_events || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">月收入</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {formatCurrency(data.statistics?.monthly_revenue || 0)}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <StatisticsCard
+                title="總用戶"
+                value={data.statistics?.total_users || 0}
+                icon="👥"
+                color="blue"
+              />
+              <StatisticsCard
+                title="活躍用戶"
+                value={data.statistics?.active_users || 0}
+                icon="✅"
+                color="green"
+              />
+              <StatisticsCard
+                title="總活動"
+                value={data.statistics?.total_events || 0}
+                icon="📅"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="月收入"
+                value={formatCurrency(data.statistics?.monthly_revenue || 0)}
+                icon="💰"
+                color="purple"
+              />
             </div>
 
             {/* Recent Activity */}
@@ -623,65 +578,65 @@ const AdminDashboard = ({ data, onRefresh }) => {
 
         {/* Events Management Tab */}
         {activeTab === 'events' && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">活動管理</h3>
-                <button
-                  onClick={() => navigate('/admin/events')}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  新增活動
-                </button>
-              </div>
+          <div className="space-y-8">
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              <StatisticsCard
+                title="總活動"
+                value={data.statistics?.total_events || 0}
+                icon="📅"
+                color="blue"
+              />
+              <StatisticsCard
+                title="即將舉行"
+                value={data.statistics?.upcoming_events || 0}
+                icon="⏰"
+                color="green"
+              />
+              <StatisticsCard
+                title="總註冊"
+                value={data.statistics?.total_registrations || 0}
+                icon="👥"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="客戶註冊"
+                value={data.statistics?.total_clients_registered || 0}
+                icon="👤"
+                color="purple"
+              />
             </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      活動
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      類型
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      日期
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      狀態
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      參與人數
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      操作
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {(events || []).map((event) => (
-                    <tr key={event.id}>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div>
-                          <div className="text-sm font-medium text-gray-900">
-                            {event.title}
-                          </div>
-                          <div className="text-sm text-gray-500">{event.location || '線上活動'}</div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">
-                          {event.event_type === 'workshop' ? '工作坊' :
-                           event.event_type === 'seminar' ? '研討會' :
-                           event.event_type === 'consultation' ? '諮詢' :
-                           event.event_type === 'webinar' ? '網路研討會' : event.event_type}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(event.start_date)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+
+            {/* All Events Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">📊 所有活動</h2>
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm lg:text-base text-gray-500">
+                    共 {data.all_events?.length || 0} 個活動
+                  </span>
+                  <button
+                    onClick={() => navigate('/admin/events')}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    新增活動
+                  </button>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                {data.all_events?.map((event) => (
+                  <div key={event.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
+                    {/* Event Image */}
+                    <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden relative">
+                      <img 
+                        src={event.image ? event.image : "/images/food-for-talk.jpg"}
+                        alt={event.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      
+                      {/* Status Badge */}
+                      <div className="absolute top-2 right-2">
                         <span className={`px-2 py-1 text-xs rounded-full ${
                           event.status === 'published' ? 'bg-green-100 text-green-800' :
                           event.status === 'draft' ? 'bg-gray-100 text-gray-800' :
@@ -692,30 +647,104 @@ const AdminDashboard = ({ data, onRefresh }) => {
                            event.status === 'draft' ? '草稿' :
                            event.status === 'cancelled' ? '已取消' : event.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {event.current_participants || 0}/{event.max_participants || '∞'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => navigate(`/admin/events/${event.id}`)}
-                            className="text-blue-600 hover:text-blue-900"
-                          >
-                            編輯
-                          </button>
-                          <button
-                            onClick={() => handleEventAction(event.id, 'delete')}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            刪除
-                          </button>
+                      </div>
+                    </div>
+
+                    {/* Event Content */}
+                    <div className="p-4 sm:p-6 lg:p-8">
+                      {/* Event Type Badge */}
+                      <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
+                        <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs lg:text-sm font-medium text-white bg-blue-500">
+                          {event.event_type === 'workshop' ? '工作坊' :
+                           event.event_type === 'seminar' ? '研討會' :
+                           event.event_type === 'consultation' ? '諮詢' :
+                           event.event_type === 'webinar' ? '網路研討會' : event.event_type}
+                        </span>
+                        <span className="text-xs lg:text-sm text-gray-500">
+                          {event.registrations?.total || 0} 已註冊
+                        </span>
+                      </div>
+
+                      {/* Event Title */}
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4 line-clamp-2">
+                        {event.title}
+                      </h3>
+
+                      {/* Event Description */}
+                      <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 lg:mb-6 line-clamp-3">
+                        {event.description}
+                      </p>
+
+                      {/* Registration Statistics */}
+                      <div className="mb-4 sm:mb-6 lg:mb-8 p-3 bg-gray-50 rounded-lg">
+                        <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                          <div className="text-center">
+                            <p className="font-medium text-gray-900">{event.registrations?.clients || 0}</p>
+                            <p className="text-gray-500">客戶</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="font-medium text-gray-900">{event.registrations?.agents || 0}</p>
+                            <p className="text-gray-500">顧問</p>
+                          </div>
                         </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                      </div>
+
+                      {/* Event Details */}
+                      <div className="space-y-1 sm:space-y-2 lg:space-y-3 mb-4 sm:mb-6 lg:mb-8">
+                        <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
+                          <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          {formatDate(event.start_date)}
+                        </div>
+                        {event.location && (
+                          <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
+                            <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            {event.location}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                        <button
+                          onClick={() => navigate(`/admin/events/${event.id}`)}
+                          className="flex-1 bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        >
+                          編輯活動
+                        </button>
+                        
+                        <button
+                          onClick={() => navigate(`/admin/events/${event.id}/registrations`)}
+                          className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 border border-gray-300 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-gray-50 transition-all duration-300"
+                        >
+                          查看註冊
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Empty State */}
+              {(!data.all_events || data.all_events.length === 0) && (
+                <div className="text-center py-8 sm:py-12 lg:py-16">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 lg:p-12 max-w-md mx-auto">
+                    <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <h3 className="text-base sm:text-lg lg:text-xl font-medium text-gray-900 mb-2">
+                      暫無活動
+                    </h3>
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-500">
+                      開始創建您的第一個活動
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -4,6 +4,8 @@ import apiService from '../../services/api';
 import EarnPointsTab from './EarnPointsTab';
 import GiftRedemptionOverlay from '../GiftRedemptionOverlay';
 import AgentRelationshipManagement from './AgentRelationshipManagement';
+import EventCard from './EventCard';
+import StatisticsCard from './StatisticsCard';
 
 const ClientDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
@@ -41,6 +43,26 @@ const ClientDashboard = ({ data, onRefresh }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEventUnregistration = async (eventId) => {
+    try {
+      setLoading(true);
+      await apiService.delete(`/events/${eventId}/register`);
+      onRefresh();
+      alert('活動註冊已取消！');
+    } catch (error) {
+      console.error('Event unregistration error:', error);
+      alert('操作失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewEventDetails = (event) => {
+    // TODO: Implement event details modal or navigation
+    console.log('View event details:', event);
+    alert(`查看活動詳情: ${event.title}`);
   };
 
   const tabs = [
@@ -148,77 +170,32 @@ const ClientDashboard = ({ data, onRefresh }) => {
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">投資總額</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      $50,000
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-green-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">投資回報</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      +12.5%
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-yellow-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">參與活動</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.attended_events || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-6 h-6 lg:w-8 lg:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">積分餘額</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.points_balance || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <StatisticsCard
+                title="投資總額"
+                value="$50,000"
+                icon="💰"
+                color="blue"
+              />
+              <StatisticsCard
+                title="投資回報"
+                value="+12.5%"
+                icon="📈"
+                color="green"
+                trend="+2.3%"
+                trendDirection="up"
+              />
+              <StatisticsCard
+                title="參與活動"
+                value={data.statistics?.total_events_attended || 0}
+                icon="📅"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="積分餘額"
+                value={data.statistics?.points_balance || 0}
+                icon="🎯"
+                color="purple"
+              />
             </div>
 
             {/* Recent Activity */}
@@ -295,113 +272,99 @@ const ClientDashboard = ({ data, onRefresh }) => {
         {/* Events Management Tab */}
         {activeTab === 'events' && (
           <div className="space-y-8">
-            {/* Events Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-              {data.available_events?.map((event) => (
-                <div key={event.id} className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                  {/* Event Image */}
-                  <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden">
-                    <img 
-                      src={event.image ? event.image : "/images/food-for-talk.jpg"}
-                      alt={event.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
-                  </div>
-
-                  {/* Event Content */}
-                  <div className="p-4 sm:p-6 lg:p-8">
-                    {/* Event Type Badge */}
-                    <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
-                      <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs lg:text-sm font-medium text-white bg-blue-500">
-                        {event.event_type || '活動'}
-                      </span>
-                      <span className="text-xs lg:text-sm text-gray-500">
-                        {event.registrations_count || 0} 已註冊
-                      </span>
-                    </div>
-
-                    {/* Event Title */}
-                    <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4 line-clamp-2">
-                      {event.title}
-                    </h3>
-
-                    {/* Event Description */}
-                    <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 lg:mb-6 line-clamp-3">
-                      {event.description}
-                    </p>
-
-                    {/* Event Details */}
-                    <div className="space-y-1 sm:space-y-2 lg:space-y-3 mb-4 sm:mb-6 lg:mb-8">
-                      <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
-                        <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        {formatDate(event.start_date)}
-                      </div>
-                      <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
-                        <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {new Date(event.start_date).toLocaleTimeString('zh-TW', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </div>
-                      {event.location && (
-                        <div className="flex items-center text-xs sm:text-sm lg:text-base text-gray-500">
-                          <svg className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 mr-1 sm:mr-2 lg:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          {event.location}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                      {data.registered_events?.some(reg => reg.event_id === event.id && reg.status === 'registered') ? (
-                        <button
-                          onClick={() => handleEventRegistration(event.id)}
-                          disabled={loading}
-                          className="flex-1 bg-red-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-red-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
-                        >
-                          {loading ? '取消中...' : '取消註冊'}
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleEventRegistration(event.id)}
-                          disabled={loading}
-                          className="flex-1 bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
-                        >
-                          {loading ? '註冊中...' : '立即註冊'}
-                        </button>
-                      )}
-                      
-                      <button
-                        className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 border border-gray-300 text-gray-700 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-gray-50 transition-all duration-300"
-                      >
-                        查看詳情
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              <StatisticsCard
+                title="可參加活動"
+                value={data.available_events?.length || 0}
+                icon="📅"
+                color="blue"
+              />
+              <StatisticsCard
+                title="已註冊活動"
+                value={data.statistics?.total_events_registered || 0}
+                icon="✅"
+                color="green"
+              />
+              <StatisticsCard
+                title="已參加活動"
+                value={data.statistics?.total_events_attended || 0}
+                icon="🎉"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="即將舉行"
+                value={data.statistics?.upcoming_events || 0}
+                icon="⏰"
+                color="purple"
+              />
             </div>
 
-            {/* Empty State */}
-            {(!data.available_events || data.available_events.length === 0) && (
-              <div className="text-center py-8 sm:py-12 lg:py-16">
-                <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 lg:p-12 max-w-md mx-auto">
-                  <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <h3 className="text-base sm:text-lg lg:text-xl font-medium text-gray-900 mb-2">
-                    暫無可參加活動
-                  </h3>
-                  <p className="text-sm sm:text-base lg:text-lg text-gray-500">
-                    請稍後再來查看新的活動
-                  </p>
+            {/* Available Events Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">🎯 可參加活動</h2>
+                <span className="text-sm lg:text-base text-gray-500">
+                  共 {data.available_events?.length || 0} 個活動
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                {data.available_events?.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onRegister={handleEventRegistration}
+                    onUnregister={handleEventUnregistration}
+                    onViewDetails={handleViewEventDetails}
+                    loading={loading}
+                  />
+                ))}
+              </div>
+
+              {/* Empty State for Available Events */}
+              {(!data.available_events || data.available_events.length === 0) && (
+                <div className="text-center py-8 sm:py-12 lg:py-16">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 lg:p-12 max-w-md mx-auto">
+                    <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <h3 className="text-base sm:text-lg lg:text-xl font-medium text-gray-900 mb-2">
+                      暫無可參加活動
+                    </h3>
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-500">
+                      請稍後再來查看新的活動
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* My Registrations Section */}
+            {data.registered_events && data.registered_events.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">📋 我的註冊</h2>
+                  <span className="text-sm lg:text-base text-gray-500">
+                    共 {data.registered_events.length} 個註冊
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                  {data.registered_events.map((registration) => (
+                    <EventCard
+                      key={registration.id}
+                      event={{
+                        ...registration.event,
+                        registration_status: registration.status,
+                        is_registered: true
+                      }}
+                      onRegister={handleEventRegistration}
+                      onUnregister={handleEventUnregistration}
+                      onViewDetails={handleViewEventDetails}
+                      loading={loading}
+                    />
+                  ))}
                 </div>
               </div>
             )}

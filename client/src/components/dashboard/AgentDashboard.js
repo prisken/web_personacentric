@@ -4,6 +4,8 @@ import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
 import FinancialPlanningTab from './FinancialPlanningTab';
 import ClientManagement from './ClientManagement';
+import EventCard from './EventCard';
+import StatisticsCard from './StatisticsCard';
 
 const AgentDashboard = ({ data, onRefresh }) => {
   // Persist activeTab in localStorage
@@ -49,6 +51,40 @@ const AgentDashboard = ({ data, onRefresh }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEventRegistration = async (eventId) => {
+    try {
+      setLoading(true);
+      await apiService.post(`/events/${eventId}/register`);
+      onRefresh();
+      alert('活動註冊成功！');
+    } catch (error) {
+      console.error('Event registration error:', error);
+      alert('操作失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEventUnregistration = async (eventId) => {
+    try {
+      setLoading(true);
+      await apiService.delete(`/events/${eventId}/register`);
+      onRefresh();
+      alert('活動註冊已取消！');
+    } catch (error) {
+      console.error('Event unregistration error:', error);
+      alert('操作失敗，請重試');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleViewEventDetails = (event) => {
+    // TODO: Implement event details modal or navigation
+    console.log('View event details:', event);
+    alert(`查看活動詳情: ${event.title}`);
   };
 
   const { t } = useTranslation();
@@ -138,56 +174,31 @@ const AgentDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 xl:gap-8">
-              <div className="bg-white rounded-xl lg:rounded-2xl shadow-lg p-4 lg:p-6 xl:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 bg-green-500 rounded-lg lg:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white text-lg sm:text-xl lg:text-2xl">💰</span>
-                    </div>
-                  </div>
-                  <div className="ml-3 lg:ml-4 xl:ml-6">
-                    <p className="text-xs sm:text-sm lg:text-base font-medium text-gray-500">總佣金</p>
-                    <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl font-bold text-gray-900">
-                      {formatCurrency(data.statistics?.total_commission || 0)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-blue-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white text-xl lg:text-2xl">👥</span>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">活躍客戶</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.active_clients || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-yellow-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white text-xl lg:text-2xl">📅</span>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">舉辦活動</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.hosted_events || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 xl:gap-8">
+              <StatisticsCard
+                title="總佣金"
+                value={formatCurrency(data.statistics?.total_commission || 0)}
+                icon="💰"
+                color="green"
+              />
+              <StatisticsCard
+                title="活躍客戶"
+                value={data.statistics?.active_clients || 0}
+                icon="👥"
+                color="blue"
+              />
+              <StatisticsCard
+                title="舉辦活動"
+                value={data.statistics?.hosted_events || 0}
+                icon="📅"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="即將舉行"
+                value={data.statistics?.upcoming_events || 0}
+                icon="⏰"
+                color="purple"
+              />
             </div>
 
             {/* Recent Activity */}
@@ -266,63 +277,134 @@ const AgentDashboard = ({ data, onRefresh }) => {
 
         {/* Events Management Tab */}
         {activeTab === 'events' && (
-          <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg lg:text-xl font-bold text-gray-900">活動管理</h3>
-                <button
-                  onClick={() => setShowEventModal(true)}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                >
-                  新增活動
-                </button>
-              </div>
+          <div className="space-y-8">
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+              <StatisticsCard
+                title="可參加活動"
+                value={data.available_events?.length || 0}
+                icon="📅"
+                color="blue"
+              />
+              <StatisticsCard
+                title="我的註冊"
+                value={data.my_registrations?.length || 0}
+                icon="✅"
+                color="green"
+              />
+              <StatisticsCard
+                title="客戶註冊"
+                value={data.my_clients_registrations?.length || 0}
+                icon="👥"
+                color="yellow"
+              />
+              <StatisticsCard
+                title="即將舉行"
+                value={data.statistics?.upcoming_events || 0}
+                icon="⏰"
+                color="purple"
+              />
             </div>
-            <div className="p-6">
-              {data.recent_events?.length > 0 ? (
-                <div className="space-y-4">
-                  {data.recent_events.map((event) => (
-                    <div key={event.id} className="border border-gray-200 rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h4 className="text-lg lg:text-xl font-medium text-gray-900">{event.title}</h4>
-                          <p className="text-sm lg:text-base text-gray-600 mt-1">{event.description}</p>
-                          <p className="text-xs lg:text-sm text-gray-500 mt-2">
-                            開始時間: {formatDate(event.start_date)}
-                          </p>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 text-xs rounded-full ${
-                            event.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
-                            event.status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {event.status === 'upcoming' ? '即將舉行' : 
-                             event.status === 'ongoing' ? '進行中' : '已結束'}
-                          </span>
-                          <button className="text-blue-600 hover:text-blue-900 text-sm">
-                            編輯
-                          </button>
-                          <button
-                            onClick={() => handleEventAction(event.id, 'delete')}
-                            className="text-red-600 hover:text-red-900 text-sm"
-                          >
-                            刪除
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <p className="mt-2">暫無活動</p>
+
+            {/* Available Events Section */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">🎯 可參加活動</h2>
+                <span className="text-sm lg:text-base text-gray-500">
+                  共 {data.available_events?.length || 0} 個活動
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                {data.available_events?.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onRegister={handleEventRegistration}
+                    onUnregister={handleEventUnregistration}
+                    onViewDetails={handleViewEventDetails}
+                    loading={loading}
+                  />
+                ))}
+              </div>
+
+              {/* Empty State for Available Events */}
+              {(!data.available_events || data.available_events.length === 0) && (
+                <div className="text-center py-8 sm:py-12 lg:py-16">
+                  <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg p-6 sm:p-8 lg:p-12 max-w-md mx-auto">
+                    <svg className="mx-auto h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20 text-gray-400 mb-4 sm:mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <h3 className="text-base sm:text-lg lg:text-xl font-medium text-gray-900 mb-2">
+                      暫無可參加活動
+                    </h3>
+                    <p className="text-sm sm:text-base lg:text-lg text-gray-500">
+                      請稍後再來查看新的活動
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
+
+            {/* My Registrations Section */}
+            {data.my_registrations && data.my_registrations.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">📋 我的註冊</h2>
+                  <span className="text-sm lg:text-base text-gray-500">
+                    共 {data.my_registrations.length} 個註冊
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                  {data.my_registrations.map((registration) => (
+                    <EventCard
+                      key={registration.id}
+                      event={{
+                        ...registration.event,
+                        registration_status: registration.status,
+                        is_registered: true
+                      }}
+                      onRegister={handleEventRegistration}
+                      onUnregister={handleEventUnregistration}
+                      onViewDetails={handleViewEventDetails}
+                      loading={loading}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* My Clients' Registrations Section */}
+            {data.my_clients_registrations && data.my_clients_registrations.length > 0 && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-gray-900">👥 我的客戶註冊</h2>
+                  <span className="text-sm lg:text-base text-gray-500">
+                    共 {data.my_clients_registrations.length} 個註冊
+                  </span>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                  {data.my_clients_registrations.map((registration) => (
+                    <EventCard
+                      key={registration.id}
+                      event={{
+                        ...registration.event,
+                        registration_status: registration.status,
+                        is_registered: true,
+                        user: registration.user
+                      }}
+                      onRegister={handleEventRegistration}
+                      onUnregister={handleEventUnregistration}
+                      onViewDetails={handleViewEventDetails}
+                      showClientInfo={true}
+                      loading={loading}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
