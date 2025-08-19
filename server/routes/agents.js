@@ -8,7 +8,7 @@ router.get('/', async (req, res) => {
     // Fetch users with role='agent' since we temporarily removed Agent model
     const agents = await User.findAll({
       where: { role: 'agent' },
-      attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'language_preference', 'points', 'created_at']
+      attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'language_preference', 'created_at']
     });
 
     // Add placeholder data for agent profiles since we don't have Agent model data
@@ -165,7 +165,7 @@ router.post('/match', async (req, res) => {
     // Fetch all agents in the matching pool
     const agents = await User.findAll({
       where: { role: 'agent' },
-      attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'language_preference', 'points', 'created_at']
+      attributes: ['id', 'first_name', 'last_name', 'email', 'phone', 'language_preference', 'created_at']
     });
 
     // Add placeholder profiles (same as above)

@@ -183,6 +183,14 @@ router.get('/public', async (req, res) => {
 // Redeem a gift
 router.post('/:id/redeem', auth, async (req, res) => {
   try {
+    // Only allow client users to redeem gifts
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only client users can redeem gifts'
+      });
+    }
+
     const { id } = req.params;
     const userId = req.user.id;
 
@@ -282,6 +290,14 @@ router.post('/:id/redeem', auth, async (req, res) => {
 // Get user's gift redemption history
 router.get('/user/redemptions', auth, async (req, res) => {
   try {
+    // Only allow client users to view their redemption history
+    if (req.user.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        error: 'Only client users can view redemption history'
+      });
+    }
+
     const userId = req.user.id;
 
     const redemptions = await GiftRedemption.findAll({

@@ -40,14 +40,18 @@ class DashboardController {
           name: `${userData.first_name} ${userData.last_name}`,
           email: userData.email,
           role: userData.role,
-          points: userData.points,
           subscription_status: userData.subscription_status
         },
         agent: null,
         statistics: {},
-        notifications: [],
-        recent_point_transactions: []
+        notifications: []
       };
+
+      // Only include points for client users
+      if (userRole === 'client') {
+        dashboardData.user.points = userData.points;
+        dashboardData.recent_point_transactions = [];
+      }
 
       // Role-specific data with error handling
       try {
@@ -80,8 +84,7 @@ class DashboardController {
               active_clients: 3,
               hosted_events: 0,
               upcoming_events: 0,
-              total_registrations: 0,
-              points_balance: 1500
+              total_registrations: 0
             };
             break;
 
@@ -164,13 +167,19 @@ class DashboardController {
         });
       }
 
+      const responseData = {
+        role: userData.role,
+        subscription_status: userData.subscription_status
+      };
+
+      // Only include points for client users
+      if (userData.role === 'client') {
+        responseData.points = userData.points;
+      }
+
       res.json({
         success: true,
-        data: {
-          points: userData.points,
-          role: userData.role,
-          subscription_status: userData.subscription_status
-        }
+        data: responseData
       });
 
     } catch (error) {
