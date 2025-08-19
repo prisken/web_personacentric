@@ -3,7 +3,6 @@ import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
 import FinancialPlanningTab from './FinancialPlanningTab';
-import GiftRedemptionOverlay from '../GiftRedemptionOverlay';
 
 const AgentDashboard = ({ data, onRefresh }) => {
   // Persist activeTab in localStorage
@@ -18,7 +17,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const [loading, setLoading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
   const [showProfileSuccess, setShowProfileSuccess] = useState(false);
-  const [showGiftOverlay, setShowGiftOverlay] = useState(false);
   // Update local image state if parent data changes (e.g., after refresh)
   useEffect(() => {
     setProfileImageUrl(data.agent?.profile_image || null);
@@ -94,31 +92,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
         </div>
       </div>
 
-      {/* Points Display */}
-      <div className="bg-gradient-to-r from-purple-500 to-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 lg:space-x-4">
-              <div className="w-8 h-8 lg:w-10 lg:h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <span className="text-lg lg:text-xl">🎯</span>
-              </div>
-              <div className="text-center">
-                <p className="text-sm lg:text-base font-medium opacity-90">當前積分餘額</p>
-                <p className="text-2xl lg:text-3xl xl:text-4xl font-bold">
-                  {data.statistics?.points_balance || 0} 積分
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={() => setShowGiftOverlay(true)}
-              className="bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 lg:px-6 py-2 lg:py-3 rounded-lg lg:rounded-xl font-semibold text-sm lg:text-base transition-all duration-300 transform hover:scale-105 flex items-center space-x-2"
-            >
-              <span className="text-lg lg:text-xl">🎁</span>
-              <span>兌換禮品</span>
-            </button>
-          </div>
-        </div>
-      </div>
+
 
       {/* Tab Navigation */}
       <div className="bg-white border-b border-gray-200 shadow-sm sticky top-16 z-10">
@@ -163,7 +137,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 xl:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6 xl:gap-8">
               <div className="bg-white rounded-xl lg:rounded-2xl shadow-lg p-4 lg:p-6 xl:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -212,21 +186,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 lg:w-16 lg:h-16 bg-purple-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                      <span className="text-white text-xl lg:text-2xl">🎯</span>
-                    </div>
-                  </div>
-                  <div className="ml-4 lg:ml-6">
-                    <p className="text-sm lg:text-base font-medium text-gray-500">積分餘額</p>
-                    <p className="text-2xl lg:text-3xl font-bold text-gray-900">
-                      {data.statistics?.points_balance || 0}
-                    </p>
-                  </div>
-                </div>
-              </div>
+
             </div>
 
             {/* Recent Activity */}
@@ -578,13 +538,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
         )}
       </div>
 
-      {/* Gift Redemption Overlay */}
-      <GiftRedemptionOverlay
-        isOpen={showGiftOverlay}
-        onClose={() => setShowGiftOverlay(false)}
-        userPoints={data.statistics?.points_balance || 0}
-        onPointsUpdate={onRefresh}
-      />
+
     </div>
   );
 };
