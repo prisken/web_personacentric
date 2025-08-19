@@ -46,6 +46,90 @@ router.post('/create-admin', async (req, res) => {
   }
 });
 
+// Temporary endpoint to create all test users (remove in production)
+router.post('/create-all-test-users', async (req, res) => {
+  try {
+    // Create admin user
+    const adminPassword = await bcrypt.hash('admin123', 10);
+    const admin = await User.create({
+      email: 'admin@personacentric.com',
+      password_hash: adminPassword,
+      first_name: 'Admin',
+      last_name: 'User',
+      role: 'admin',
+      subscription_status: 'active',
+      is_verified: true
+    });
+    console.log('Admin user created successfully');
+
+    // Create agent1 user
+    const agent1Password = await bcrypt.hash('agent123', 10);
+    const agent1 = await User.create({
+      email: 'agent1@personacentric.com',
+      password_hash: agent1Password,
+      first_name: '張',
+      last_name: '顧問',
+      role: 'agent',
+      subscription_status: 'active',
+      is_verified: true
+    });
+    console.log('Agent1 user created successfully');
+
+    // Create agent profile
+    await Agent.create({
+      user_id: agent1.id,
+      specialization: '投資規劃',
+      experience_years: 5,
+      certifications: 'CFP, CFA',
+      bio: '專注於個人投資規劃和退休規劃',
+      commission_rate: 0.15,
+      is_verified: true
+    });
+    console.log('Agent1 profile created successfully');
+
+    // Create client1 user
+    const client1Password = await bcrypt.hash('client123', 10);
+    const client1 = await User.create({
+      email: 'client1@personacentric.com',
+      password_hash: client1Password,
+      first_name: '王',
+      last_name: '客戶',
+      role: 'client',
+      subscription_status: 'active',
+      is_verified: true
+    });
+    console.log('Client1 user created successfully');
+    
+    res.json({
+      success: true,
+      message: 'All test users created successfully',
+      users: {
+        admin: {
+          email: 'admin@personacentric.com',
+          password: 'admin123',
+          role: 'admin'
+        },
+        agent: {
+          email: 'agent1@personacentric.com',
+          password: 'agent123',
+          role: 'agent'
+        },
+        client: {
+          email: 'client1@personacentric.com',
+          password: 'client123',
+          role: 'client'
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Create all test users error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create test users: ' + error.message
+    });
+  }
+});
+
 // Temporary endpoint to create agent users (remove in production)
 router.post('/create-agents', async (req, res) => {
   try {
