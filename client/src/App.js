@@ -24,6 +24,7 @@ const PricingPage = lazy(() => import('./pages/PricingPage'));
 const HelpCenterPage = lazy(() => import('./pages/HelpCenterPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const AdminEventPage = lazy(() => import('./pages/AdminEventPage'));
+const EventRegistrationsPage = lazy(() => import('./pages/EventRegistrationsPage'));
 const RecommendationViewPage = lazy(() => import('./pages/RecommendationViewPage'));
 const AllAgentsPage = lazy(() => import('./pages/AllAgentsPage'));
 const GiftsPage = lazy(() => import('./pages/GiftsPage'));
@@ -70,6 +71,7 @@ function App() {
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/admin/events" element={<AdminEventPage />} />
                     <Route path="/admin/events/:id" element={<AdminEventPage />} />
+                    <Route path="/admin/events/:id/registrations" element={<EventRegistrationsPage />} />
                     <Route path="/recommendation/:shareCode" element={<RecommendationViewPage />} />
                   </Routes>
                 </Suspense>
