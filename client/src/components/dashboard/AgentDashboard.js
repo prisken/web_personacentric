@@ -4,6 +4,7 @@ import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
 import FinancialPlanningTab from './FinancialPlanningTab';
 import ClientManagement from './ClientManagement';
+import EventDetailsOverlay from '../EventDetailsOverlay';
 import EventCard from './EventCard';
 import StatisticsCard from './StatisticsCard';
 
@@ -20,6 +21,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const [loading, setLoading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
   const [showProfileSuccess, setShowProfileSuccess] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
   // Update local image state if parent data changes (e.g., after refresh)
   useEffect(() => {
     setProfileImageUrl(data.agent?.profile_image || null);
@@ -82,9 +85,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
   };
 
   const handleViewEventDetails = (event) => {
-    // TODO: Implement event details modal or navigation
-    console.log('View event details:', event);
-    alert(`查看活動詳情: ${event.title}`);
+    setSelectedEvent(event);
+    setShowEventDetails(true);
   };
 
   const { t } = useTranslation();
@@ -552,6 +554,16 @@ const AgentDashboard = ({ data, onRefresh }) => {
         )}
       </div>
 
+      {/* Event Details Overlay */}
+      <EventDetailsOverlay
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => {
+          setShowEventDetails(false);
+          setSelectedEvent(null);
+        }}
+        onRegistrationChange={onRefresh}
+      />
 
     </div>
   );

@@ -3,6 +3,7 @@ import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import EarnPointsTab from './EarnPointsTab';
 import GiftRedemptionOverlay from '../GiftRedemptionOverlay';
+import EventDetailsOverlay from '../EventDetailsOverlay';
 import AgentRelationshipManagement from './AgentRelationshipManagement';
 import EventCard from './EventCard';
 import StatisticsCard from './StatisticsCard';
@@ -14,6 +15,8 @@ const ClientDashboard = ({ data, onRefresh }) => {
   const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showGiftOverlay, setShowGiftOverlay] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('zh-TW');
@@ -60,9 +63,8 @@ const ClientDashboard = ({ data, onRefresh }) => {
   };
 
   const handleViewEventDetails = (event) => {
-    // TODO: Implement event details modal or navigation
-    console.log('View event details:', event);
-    alert(`查看活動詳情: ${event.title}`);
+    setSelectedEvent(event);
+    setShowEventDetails(true);
   };
 
   const tabs = [
@@ -441,6 +443,17 @@ const ClientDashboard = ({ data, onRefresh }) => {
         onClose={() => setShowGiftOverlay(false)}
         userPoints={data.statistics?.points_balance || 0}
         onPointsUpdate={onRefresh}
+      />
+
+      {/* Event Details Overlay */}
+      <EventDetailsOverlay
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => {
+          setShowEventDetails(false);
+          setSelectedEvent(null);
+        }}
+        onRegistrationChange={onRefresh}
       />
     </div>
   );

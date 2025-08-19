@@ -5,6 +5,7 @@ import apiService from '../../services/api';
 import BlogManagement from './BlogManagement';
 import GiftManagement from './GiftManagement';
 import QuizManagement from './QuizManagement';
+import EventDetailsOverlay from '../EventDetailsOverlay';
 import EventCard from './EventCard';
 import StatisticsCard from './StatisticsCard';
 
@@ -21,6 +22,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const [events, setEvents] = useState([]);
   const [showEventModal, setShowEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [showEventDetails, setShowEventDetails] = useState(false);
   const [userManagementSubTab, setUserManagementSubTab] = useState('clients'); // Add this line
 
   const formatCurrency = (amount) => {
@@ -711,8 +713,18 @@ const AdminDashboard = ({ data, onRefresh }) => {
                       {/* Action Buttons */}
                       <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                         <button
+                          onClick={() => {
+                            setSelectedEvent(event);
+                            setShowEventDetails(true);
+                          }}
+                          className="flex-1 bg-green-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                        >
+                          查看詳情
+                        </button>
+                        
+                        <button
                           onClick={() => navigate(`/admin/events/${event.id}`)}
-                          className="flex-1 bg-blue-600 text-white px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                          className="px-3 py-2 sm:px-4 sm:py-3 lg:px-6 lg:py-4 bg-blue-600 text-white rounded-lg sm:rounded-xl text-xs sm:text-sm lg:text-base font-semibold hover:bg-blue-700 transition-all duration-300"
                         >
                           編輯活動
                         </button>
@@ -923,6 +935,17 @@ const AdminDashboard = ({ data, onRefresh }) => {
           </div>
         )}
       </div>
+
+      {/* Event Details Overlay */}
+      <EventDetailsOverlay
+        event={selectedEvent}
+        isOpen={showEventDetails}
+        onClose={() => {
+          setShowEventDetails(false);
+          setSelectedEvent(null);
+        }}
+        onRegistrationChange={onRefresh}
+      />
     </div>
   );
 };
