@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { User, ClientRelationship, EventRegistration, PointTransaction } = require('../models');
+const { User, ClientRelationship, EventRegistration, PointTransaction, Event } = require('../models');
+const { Op } = require('sequelize');
 const auth = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 
@@ -293,7 +294,7 @@ router.get('/clients/:clientId/stats', auth, async (req, res) => {
       where: { 
         user_id: clientId,
         created_at: {
-          [require('sequelize').Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
+          [Op.gte]: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // Last 30 days
         }
       }
     });
