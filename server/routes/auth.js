@@ -398,6 +398,28 @@ router.post('/create-test-users', async (req, res) => {
   }
 });
 
+// Debug login endpoint
+router.post('/debug-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    res.json({
+      success: true,
+      message: 'Debug endpoint working',
+      receivedEmail: email,
+      receivedPassword: password ? '***' : 'not provided',
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    console.error('Debug login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Debug endpoint failed: ' + error.message
+    });
+  }
+});
+
 // Test database connection endpoint
 router.get('/test-db', async (req, res) => {
   try {
