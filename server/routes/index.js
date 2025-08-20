@@ -16,6 +16,7 @@ const contestRoutes = require('./contests');
 const quizRoutes = require('./quizzes');
 const clientManagementRoutes = require('./clientManagement');
 const externalQuizRoutes = require('./external-quiz');
+const dashboardRoutes = require('./dashboard');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -32,5 +33,6 @@ router.use('/contests', contestRoutes);
 router.use('/quizzes', quizRoutes);
 router.use('/client-management', clientManagementRoutes);
 router.use('/external-quiz', externalQuizRoutes);
+router.use('/dashboard', dashboardRoutes);
 
 module.exports = router; 
