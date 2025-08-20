@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
+import QuizImageUpload from '../QuizImageUpload';
 
 const QuizManagement = () => {
   const { t } = useTranslation();
@@ -92,6 +93,13 @@ const QuizManagement = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleImageUploaded = (imageData) => {
+    setFormData(prev => ({
+      ...prev,
+      image_url: imageData.url
+    }));
   };
 
   const handleDeleteQuiz = async (quizId) => {
@@ -405,18 +413,10 @@ const QuizManagement = () => {
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">圖片網址</label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
-
-              
+              <QuizImageUpload
+                currentImageUrl={formData.image_url}
+                onImageUploaded={handleImageUploaded}
+              />
 
               <div className="flex justify-end space-x-3">
                 <button
@@ -595,16 +595,10 @@ const QuizManagement = () => {
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">圖片網址</label>
-                <input
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                  placeholder="https://example.com/image.jpg"
-                />
-              </div>
+              <QuizImageUpload
+                currentImageUrl={formData.image_url}
+                onImageUploaded={handleImageUploaded}
+              />
 
               
 
