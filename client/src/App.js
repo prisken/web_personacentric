@@ -28,6 +28,9 @@ const EventRegistrationsPage = lazy(() => import('./pages/EventRegistrationsPage
 const RecommendationViewPage = lazy(() => import('./pages/RecommendationViewPage'));
 const AllAgentsPage = lazy(() => import('./pages/AllAgentsPage'));
 const GiftsPage = lazy(() => import('./pages/GiftsPage'));
+const QuizPage = lazy(() => import('./pages/QuizPage'));
+const QuizTakerPage = lazy(() => import('./pages/QuizTakerPage'));
+const QuizResultsPage = lazy(() => import('./pages/QuizResultsPage'));
 
 // Loading component for Suspense
 const PageLoader = () => (
@@ -73,6 +76,9 @@ function App() {
                     <Route path="/admin/events/:id" element={<AdminEventPage />} />
                     <Route path="/admin/events/:id/registrations" element={<EventRegistrationsPage />} />
                     <Route path="/recommendation/:shareCode" element={<RecommendationViewPage />} />
+                    <Route path="/quiz/:id" element={<QuizPage />} />
+                    <Route path="/quiz/:id/take" element={<QuizTakerPage />} />
+                    <Route path="/quiz/:id/results" element={<QuizResultsPage />} />
                   </Routes>
                 </Suspense>
               </main>
