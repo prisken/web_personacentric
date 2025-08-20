@@ -19,7 +19,6 @@ const QuizManagement = () => {
     image_url: '',
     instructions: '',
     passing_score: 70,
-    questions: [],
     scoring_rules: {},
     quiz_type: 'internal',
     external_quiz_url: '',
@@ -121,7 +120,6 @@ const QuizManagement = () => {
       image_url: quiz.image_url || '',
       instructions: quiz.instructions || '',
       passing_score: quiz.passing_score,
-      questions: quiz.questions,
       scoring_rules: quiz.scoring_rules || {},
       is_active: quiz.is_active,
       quiz_type: quiz.quiz_type || 'internal',
@@ -133,39 +131,7 @@ const QuizManagement = () => {
     setShowEditModal(true);
   };
 
-  const addQuestion = () => {
-    const newQuestion = {
-      id: Date.now(),
-      question_text: '',
-      question_type: 'multiple_choice',
-      options: ['', '', '', ''],
-      correct_answer: '',
-      points: 1
-    };
-    setFormData(prev => ({
-      ...prev,
-      questions: [...prev.questions, newQuestion]
-    }));
-  };
 
-  const updateQuestion = (index, field, value) => {
-    const updatedQuestions = [...formData.questions];
-    updatedQuestions[index] = {
-      ...updatedQuestions[index],
-      [field]: value
-    };
-    setFormData(prev => ({
-      ...prev,
-      questions: updatedQuestions
-    }));
-  };
-
-  const removeQuestion = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      questions: prev.questions.filter((_, i) => i !== index)
-    }));
-  };
 
   const getDifficultyColor = (difficulty) => {
     switch (difficulty) {
@@ -243,7 +209,7 @@ const QuizManagement = () => {
                         {quiz.quiz_type === 'external' ? (
                           <span className="text-purple-600">外部測驗</span>
                         ) : (
-                          `題目: ${quiz.questions?.length || 0} 題`
+                          <span className="text-blue-600">內部測驗</span>
                         )}
                       </div>
                     </div>
@@ -450,96 +416,7 @@ const QuizManagement = () => {
                 />
               </div>
 
-              {/* Questions Section - Only for internal quizzes */}
-              {formData.quiz_type === 'internal' && (
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="block text-sm font-medium text-gray-700">題目</label>
-                    <button
-                      onClick={addQuestion}
-                      className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                    >
-                      新增題目
-                    </button>
-                  </div>
-                
-                {formData.questions.map((question, index) => (
-                  <div key={question.id} className="border border-gray-200 rounded-lg p-4 mb-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="text-sm font-medium">題目 {index + 1}</h4>
-                      <button
-                        onClick={() => removeQuestion(index)}
-                        className="text-red-600 hover:text-red-900 text-sm"
-                      >
-                        刪除
-                      </button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">題目文字</label>
-                        <textarea
-                          value={question.question_text}
-                          onChange={(e) => updateQuestion(index, 'question_text', e.target.value)}
-                          rows={2}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">題目類型</label>
-                        <select
-                          value={question.question_type}
-                          onChange={(e) => updateQuestion(index, 'question_type', e.target.value)}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        >
-                          <option value="multiple_choice">選擇題</option>
-                          <option value="scale">評分題</option>
-                          <option value="text">文字題</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">積分</label>
-                        <input
-                          type="number"
-                          value={question.points}
-                          onChange={(e) => updateQuestion(index, 'points', parseInt(e.target.value))}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">正確答案</label>
-                        <input
-                          type="text"
-                          value={question.correct_answer}
-                          onChange={(e) => updateQuestion(index, 'correct_answer', e.target.value)}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                    </div>
-
-                    {question.question_type === 'multiple_choice' && (
-                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">選項</label>
-                        {question.options.map((option, optionIndex) => (
-                          <input
-                            key={optionIndex}
-                            type="text"
-                            value={option}
-                            onChange={(e) => {
-                              const newOptions = [...question.options];
-                              newOptions[optionIndex] = e.target.value;
-                              updateQuestion(index, 'options', newOptions);
-                            }}
-                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                            placeholder={`選項 ${optionIndex + 1}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-              )}
+              
 
               <div className="flex justify-end space-x-3">
                 <button
@@ -729,96 +606,7 @@ const QuizManagement = () => {
                 />
               </div>
 
-              {/* Questions Section - Only for internal quizzes */}
-              {formData.quiz_type === 'internal' && (
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <label className="block text-sm font-medium text-gray-700">題目</label>
-                    <button
-                      onClick={addQuestion}
-                      className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                    >
-                      新增題目
-                    </button>
-                  </div>
-                
-                {formData.questions.map((question, index) => (
-                  <div key={question.id || index} className="border border-gray-200 rounded-lg p-4 mb-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="text-sm font-medium">題目 {index + 1}</h4>
-                      <button
-                        onClick={() => removeQuestion(index)}
-                        className="text-red-600 hover:text-red-900 text-sm"
-                      >
-                        刪除
-                      </button>
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">題目文字</label>
-                        <textarea
-                          value={question.question_text}
-                          onChange={(e) => updateQuestion(index, 'question_text', e.target.value)}
-                          rows={2}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">題目類型</label>
-                        <select
-                          value={question.question_type}
-                          onChange={(e) => updateQuestion(index, 'question_type', e.target.value)}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        >
-                          <option value="multiple_choice">選擇題</option>
-                          <option value="scale">評分題</option>
-                          <option value="text">文字題</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">積分</label>
-                        <input
-                          type="number"
-                          value={question.points}
-                          onChange={(e) => updateQuestion(index, 'points', parseInt(e.target.value))}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">正確答案</label>
-                        <input
-                          type="text"
-                          value={question.correct_answer}
-                          onChange={(e) => updateQuestion(index, 'correct_answer', e.target.value)}
-                          className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                    </div>
-
-                    {question.question_type === 'multiple_choice' && (
-                      <div className="mt-4">
-                        <label className="block text-sm font-medium text-gray-700">選項</label>
-                        {question.options.map((option, optionIndex) => (
-                          <input
-                            key={optionIndex}
-                            type="text"
-                            value={option}
-                            onChange={(e) => {
-                              const newOptions = [...question.options];
-                              newOptions[optionIndex] = e.target.value;
-                              updateQuestion(index, 'options', newOptions);
-                            }}
-                            className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                            placeholder={`選項 ${optionIndex + 1}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-              )}
+              
 
               <div className="flex justify-end space-x-3">
                 <button
