@@ -240,7 +240,11 @@ const QuizManagement = () => {
                         {quiz.description}
                       </div>
                       <div className="text-xs text-gray-400">
-                        題目: {quiz.questions?.length || 0} 題
+                        {quiz.quiz_type === 'external' ? (
+                          <span className="text-purple-600">外部測驗</span>
+                        ) : (
+                          `題目: ${quiz.questions?.length || 0} 題`
+                        )}
                       </div>
                     </div>
                   </td>
@@ -446,17 +450,18 @@ const QuizManagement = () => {
                 />
               </div>
 
-              {/* Questions Section */}
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700">題目</label>
-                  <button
-                    onClick={addQuestion}
-                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                  >
-                    新增題目
-                  </button>
-                </div>
+              {/* Questions Section - Only for internal quizzes */}
+              {formData.quiz_type === 'internal' && (
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium text-gray-700">題目</label>
+                    <button
+                      onClick={addQuestion}
+                      className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                    >
+                      新增題目
+                    </button>
+                  </div>
                 
                 {formData.questions.map((question, index) => (
                   <div key={question.id} className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -534,6 +539,7 @@ const QuizManagement = () => {
                   </div>
                 ))}
               </div>
+              )}
 
               <div className="flex justify-end space-x-3">
                 <button
@@ -723,17 +729,18 @@ const QuizManagement = () => {
                 />
               </div>
 
-              {/* Questions Section */}
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="block text-sm font-medium text-gray-700">題目</label>
-                  <button
-                    onClick={addQuestion}
-                    className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
-                  >
-                    新增題目
-                  </button>
-                </div>
+              {/* Questions Section - Only for internal quizzes */}
+              {formData.quiz_type === 'internal' && (
+                <div className="mb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-medium text-gray-700">題目</label>
+                    <button
+                      onClick={addQuestion}
+                      className="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700"
+                    >
+                      新增題目
+                    </button>
+                  </div>
                 
                 {formData.questions.map((question, index) => (
                   <div key={question.id || index} className="border border-gray-200 rounded-lg p-4 mb-4">
@@ -811,6 +818,7 @@ const QuizManagement = () => {
                   </div>
                 ))}
               </div>
+              )}
 
               <div className="flex justify-end space-x-3">
                 <button
