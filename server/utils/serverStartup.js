@@ -78,6 +78,31 @@ class ServerStartup {
             console.log('ℹ️ quiz_id column may already exist:', error.message);
           }
           
+          // Ensure quiz_attempts table exists and has all required columns
+          try {
+            await sequelize.query(`
+              CREATE TABLE IF NOT EXISTS "quiz_attempts" (
+                "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                "user_id" UUID NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
+                "quiz_id" UUID NOT NULL REFERENCES "quizzes"("id") ON DELETE CASCADE,
+                "score" INTEGER NOT NULL DEFAULT 0,
+                "max_score" INTEGER NOT NULL,
+                "percentage" DECIMAL(5,2) NOT NULL DEFAULT 0,
+                "points_earned" INTEGER NOT NULL DEFAULT 0,
+                "answers" JSONB NOT NULL,
+                "time_taken" INTEGER,
+                "completed" BOOLEAN DEFAULT false,
+                "started_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                "completed_at" TIMESTAMP WITH TIME ZONE,
+                "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+                "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
+              );
+            `);
+            console.log('✅ Ensured quiz_attempts table exists');
+          } catch (error) {
+            console.log('ℹ️ quiz_attempts table may already exist:', error.message);
+          }
+          
           console.log('✅ Production database schema updated successfully');
         } catch (schemaError) {
           console.log('ℹ️ Schema update skipped (columns may already exist):', schemaError.message);
