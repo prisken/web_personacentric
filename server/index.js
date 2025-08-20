@@ -61,7 +61,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// API Routes
+// API Routes - MUST come before the catch-all route
 app.use('/api', routes);
 
 // Health check endpoint
@@ -76,6 +76,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Serve React app in production (only if build directory exists)
+// This MUST come after all API routes
 if (process.env.NODE_ENV === 'production') {
   const buildPath = path.join(__dirname, '../client/build');
   const indexPath = path.join(buildPath, 'index.html');
@@ -84,6 +85,7 @@ if (process.env.NODE_ENV === 'production') {
   if (require('fs').existsSync(buildPath) && require('fs').existsSync(indexPath)) {
     app.use(express.static(buildPath));
     
+    // Catch-all route for React app - MUST be last
     app.get('*', (req, res) => {
       res.sendFile(indexPath);
     });
