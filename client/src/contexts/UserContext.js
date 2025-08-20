@@ -82,6 +82,7 @@ export const UserProvider = ({ children }) => {
   const value = {
     user,
     loading,
+    isAuthenticated: !!user, // Add this line to fix authentication detection
     login,
     register,
     logout,
