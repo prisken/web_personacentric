@@ -20,7 +20,12 @@ const QuizManagement = () => {
     instructions: '',
     passing_score: 70,
     questions: [],
-    scoring_rules: {}
+    scoring_rules: {},
+    quiz_type: 'internal',
+    external_quiz_url: '',
+    external_quiz_id: '',
+    point_calculation_method: 'percentage',
+    min_score_for_points: 70
   });
 
   useEffect(() => {
@@ -58,7 +63,12 @@ const QuizManagement = () => {
           instructions: '',
           passing_score: 70,
           questions: [],
-          scoring_rules: {}
+          scoring_rules: {},
+          quiz_type: 'internal',
+          external_quiz_url: '',
+          external_quiz_id: '',
+          point_calculation_method: 'percentage',
+          min_score_for_points: 70
         });
         await fetchQuizzes();
       }
@@ -113,7 +123,12 @@ const QuizManagement = () => {
       passing_score: quiz.passing_score,
       questions: quiz.questions,
       scoring_rules: quiz.scoring_rules || {},
-      is_active: quiz.is_active
+      is_active: quiz.is_active,
+      quiz_type: quiz.quiz_type || 'internal',
+      external_quiz_url: quiz.external_quiz_url || '',
+      external_quiz_id: quiz.external_quiz_id || '',
+      point_calculation_method: quiz.point_calculation_method || 'percentage',
+      min_score_for_points: quiz.min_score_for_points || 70
     });
     setShowEditModal(true);
   };
@@ -340,7 +355,64 @@ const QuizManagement = () => {
                     className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">測驗類型</label>
+                  <select
+                    value={formData.quiz_type}
+                    onChange={(e) => setFormData(prev => ({ ...prev, quiz_type: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  >
+                    <option value="internal">內部測驗</option>
+                    <option value="external">外部測驗</option>
+                  </select>
+                </div>
               </div>
+
+              {formData.quiz_type === 'external' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">外部測驗網址</label>
+                    <input
+                      type="url"
+                      value={formData.external_quiz_url}
+                      onChange={(e) => setFormData(prev => ({ ...prev, external_quiz_url: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      placeholder="https://example.com/quiz"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">外部測驗ID</label>
+                    <input
+                      type="text"
+                      value={formData.external_quiz_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, external_quiz_id: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      placeholder="external_quiz_123"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">積分計算方式</label>
+                    <select
+                      value={formData.point_calculation_method}
+                      onChange={(e) => setFormData(prev => ({ ...prev, point_calculation_method: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    >
+                      <option value="percentage">按百分比計算</option>
+                      <option value="fixed">固定積分</option>
+                      <option value="custom">自定義計算</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">最低得分要求 (%)</label>
+                    <input
+                      type="number"
+                      value={formData.min_score_for_points}
+                      onChange={(e) => setFormData(prev => ({ ...prev, min_score_for_points: parseInt(e.target.value) }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">描述</label>
@@ -560,7 +632,64 @@ const QuizManagement = () => {
                     <option value={false}>停用</option>
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">測驗類型</label>
+                  <select
+                    value={formData.quiz_type}
+                    onChange={(e) => setFormData(prev => ({ ...prev, quiz_type: e.target.value }))}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                  >
+                    <option value="internal">內部測驗</option>
+                    <option value="external">外部測驗</option>
+                  </select>
+                </div>
               </div>
+
+              {formData.quiz_type === 'external' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">外部測驗網址</label>
+                    <input
+                      type="url"
+                      value={formData.external_quiz_url}
+                      onChange={(e) => setFormData(prev => ({ ...prev, external_quiz_url: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      placeholder="https://example.com/quiz"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">外部測驗ID</label>
+                    <input
+                      type="text"
+                      value={formData.external_quiz_id}
+                      onChange={(e) => setFormData(prev => ({ ...prev, external_quiz_id: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                      placeholder="external_quiz_123"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">積分計算方式</label>
+                    <select
+                      value={formData.point_calculation_method}
+                      onChange={(e) => setFormData(prev => ({ ...prev, point_calculation_method: e.target.value }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    >
+                      <option value="percentage">按百分比計算</option>
+                      <option value="fixed">固定積分</option>
+                      <option value="custom">自定義計算</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">最低得分要求 (%)</label>
+                    <input
+                      type="number"
+                      value={formData.min_score_for_points}
+                      onChange={(e) => setFormData(prev => ({ ...prev, min_score_for_points: parseInt(e.target.value) }))}
+                      className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">描述</label>

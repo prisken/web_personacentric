@@ -55,6 +55,14 @@ const PointTransaction = sequelize.define('PointTransaction', {
       key: 'id'
     }
   },
+  quiz_id: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'quizzes',
+      key: 'id'
+    }
+  },
   description: {
     type: DataTypes.TEXT,
     allowNull: true

@@ -63,6 +63,29 @@ const Quiz = sequelize.define('Quiz', {
       model: 'users',
       key: 'id'
     }
+  },
+  external_quiz_url: {
+    type: DataTypes.STRING(500),
+    allowNull: true,
+    comment: 'URL to external quiz platform'
+  },
+  quiz_type: {
+    type: DataTypes.ENUM('internal', 'external'),
+    defaultValue: 'internal'
+  },
+  external_quiz_id: {
+    type: DataTypes.STRING(100),
+    allowNull: true,
+    comment: 'External quiz platform ID'
+  },
+  point_calculation_method: {
+    type: DataTypes.ENUM('percentage', 'fixed', 'custom'),
+    defaultValue: 'percentage'
+  },
+  min_score_for_points: {
+    type: DataTypes.INTEGER,
+    defaultValue: 70,
+    comment: 'Minimum score percentage to earn points'
   }
 }, {
   tableName: 'quizzes',

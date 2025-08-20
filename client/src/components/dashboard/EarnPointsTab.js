@@ -171,6 +171,21 @@ const EarnPointsTab = () => {
                       查看結果
                     </button>
                   </div>
+                ) : quiz.quiz_type === 'external' ? (
+                  <div className="space-y-2">
+                    <div className="text-center">
+                      <div className="text-sm text-gray-600">外部測驗</div>
+                      <div className="text-xs text-gray-500">點擊前往外部平台</div>
+                    </div>
+                    <a
+                      href={quiz.external_quiz_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-center block"
+                    >
+                      開始外部測驗
+                    </a>
+                  </div>
                 ) : (
                   <button
                     onClick={() => handleStartQuiz(quiz)}

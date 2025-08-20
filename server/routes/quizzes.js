@@ -112,7 +112,12 @@ router.post('/', authenticateToken, async (req, res) => {
       instructions,
       passing_score,
       questions,
-      scoring_rules
+      scoring_rules,
+      quiz_type,
+      external_quiz_url,
+      external_quiz_id,
+      point_calculation_method,
+      min_score_for_points
     } = req.body;
 
     const quiz = await Quiz.create({
@@ -127,7 +132,12 @@ router.post('/', authenticateToken, async (req, res) => {
       passing_score: parseInt(passing_score),
       questions,
       scoring_rules,
-      created_by: req.user.id
+      created_by: req.user.id,
+      quiz_type: quiz_type || 'internal',
+      external_quiz_url,
+      external_quiz_id,
+      point_calculation_method: point_calculation_method || 'percentage',
+      min_score_for_points: parseInt(min_score_for_points) || 70
     });
 
     res.status(201).json({
@@ -173,7 +183,12 @@ router.put('/:id', authenticateToken, async (req, res) => {
       passing_score,
       questions,
       scoring_rules,
-      is_active
+      is_active,
+      quiz_type,
+      external_quiz_url,
+      external_quiz_id,
+      point_calculation_method,
+      min_score_for_points
     } = req.body;
 
     await quiz.update({
@@ -188,7 +203,12 @@ router.put('/:id', authenticateToken, async (req, res) => {
       passing_score: parseInt(passing_score),
       questions,
       scoring_rules,
-      is_active
+      is_active,
+      quiz_type: quiz_type || 'internal',
+      external_quiz_url,
+      external_quiz_id,
+      point_calculation_method: point_calculation_method || 'percentage',
+      min_score_for_points: parseInt(min_score_for_points) || 70
     });
 
     res.json({
@@ -288,8 +308,24 @@ router.post('/:id/attempt', authenticateToken, async (req, res) => {
 
     // Add points to user if earned
     if (points_earned > 0) {
-      // You'll need to implement point addition logic here
-      // This could involve updating the user's points or creating a point transaction
+      await User.increment('points', { 
+        where: { id: req.user.id },
+        by: points_earned 
+      });
+      
+      // Create point transaction record
+      await PointTransaction.create({
+        user_id: req.user.id,
+        transaction_type: 'earned',
+        points_amount: points_earned,
+        quiz_id: quiz.id,
+        description: `完成測驗: ${quiz.title}`,
+        metadata: {
+          quiz_attempt_id: attempt.id,
+          score_percentage: percentage,
+          source: 'internal_quiz'
+        }
+      });
     }
 
     res.json({
