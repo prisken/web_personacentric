@@ -140,7 +140,7 @@ router.get('/:id', async (req, res) => {
 router.post('/:id/register', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     // Check if event exists and is published
     const event = await Event.findByPk(id);
@@ -207,7 +207,7 @@ router.post('/:id/register', authenticateToken, async (req, res) => {
 router.post('/:id/cancel', authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const registration = await EventRegistration.findOne({
       where: { event_id: id, user_id: userId, status: 'registered' }
@@ -238,7 +238,7 @@ router.post('/:id/cancel', authenticateToken, async (req, res) => {
 // Get user's event registrations (authenticated users)
 router.get('/user/registrations', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const registrations = await EventRegistration.findAll({
       where: { user_id: userId },
@@ -313,7 +313,7 @@ router.post('/', authenticateToken, requireAdmin, upload.single('image'), async 
       points_reward,
       agent_id,
       image: imageUrl,
-      created_by: req.user.userId,
+      created_by: req.user.id,
       status: 'published'
     });
 
@@ -483,7 +483,7 @@ router.put('/:id/registrations/:registrationId', authenticateToken, requireAdmin
 // Get agent's events (agent only)
 router.get('/agent/my-events', authenticateToken, requireAgent, async (req, res) => {
   try {
-    const agentId = req.user.userId;
+    const agentId = req.user.id;
 
     const events = await Event.findAll({
       where: { agent_id: agentId },
@@ -521,7 +521,7 @@ router.post('/:id/add-participant', authenticateToken, requireAgent, async (req,
   try {
     const { id } = req.params;
     const { user_id } = req.body;
-    const agentId = req.user.userId;
+    const agentId = req.user.id;
 
     // Check if event belongs to agent
     const event = await Event.findOne({
@@ -572,7 +572,7 @@ router.post('/:id/add-participant', authenticateToken, requireAgent, async (req,
 router.delete('/:id/remove-participant/:userId', authenticateToken, requireAgent, async (req, res) => {
   try {
     const { id, userId } = req.params;
-    const agentId = req.user.userId;
+    const agentId = req.user.id;
 
     // Check if event belongs to agent
     const event = await Event.findOne({

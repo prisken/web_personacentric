@@ -135,7 +135,7 @@ class AuthController {
   // Get current user
   async getCurrentUser(req, res) {
     try {
-      const user = await User.findByPk(req.user.userId);
+      const user = await User.findByPk(req.user.id);
       if (!user) {
         return res.status(404).json({
           success: false,

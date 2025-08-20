@@ -40,7 +40,7 @@ router.put('/profile', authenticateToken, (req, res) => {
 // Update agent profile with image upload or JSON update
 router.put('/agent/profile', authenticateToken, upload.single('profile_image'), async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     
     // Find the agent record for this user
     const agent = await Agent.findOne({ where: { user_id: userId } });
@@ -110,7 +110,7 @@ router.put('/agent/profile', authenticateToken, upload.single('profile_image'), 
 // Get current agent profile for logged-in user
 router.get('/agent/me', authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
     const agent = await Agent.findOne({ where: { user_id: userId } });
     if (!agent) {
       return res.status(404).json({ success: false, error: 'Agent profile not found' });

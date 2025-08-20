@@ -210,7 +210,7 @@ router.post('/', authenticateToken, async (req, res) => {
       slug,
       excerpt,
       content,
-      author_id: req.user.userId,
+              author_id: req.user.id,
       status,
       featured_image_url,
       meta_title,

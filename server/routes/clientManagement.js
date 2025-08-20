@@ -23,7 +23,7 @@ router.get('/clients', authenticateToken, async (req, res) => {
     }
 
     const relationships = await ClientRelationship.findAll({
-      where: { agent_id: req.user.userId },
+      where: { agent_id: req.user.id },
       include: [
         {
           model: User,
@@ -62,7 +62,7 @@ router.get('/clients/:clientId', authenticateToken, async (req, res) => {
     // Check if the relationship exists
     const relationship = await ClientRelationship.findOne({
       where: { 
-        agent_id: req.user.userId,
+        agent_id: req.user.id,
         client_id: clientId
       },
       include: [
@@ -150,7 +150,7 @@ router.post('/clients', authenticateToken, async (req, res) => {
 
     // Check if relationship already exists
     const existingRelationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.userId, client_id: client.id }
+      where: { agent_id: req.user.id, client_id: client.id }
     });
 
     if (existingRelationship) {
@@ -162,7 +162,7 @@ router.post('/clients', authenticateToken, async (req, res) => {
 
     const relationship = await ClientRelationship.create({
       id: uuidv4(),
-      agent_id: req.user.userId,
+      agent_id: req.user.id,
       client_id: client.id,
       commission_rate: commission_rate || 0.10,
       notes,
@@ -199,7 +199,7 @@ router.put('/clients/:clientId', authenticateToken, async (req, res) => {
     const { status, commission_rate, notes, client_goals, risk_tolerance, investment_horizon, last_contact_date } = req.body;
 
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.userId, client_id: clientId }
+      where: { agent_id: req.user.id, client_id: clientId }
     });
 
     if (!relationship) {
@@ -245,7 +245,7 @@ router.delete('/clients/:clientId', authenticateToken, async (req, res) => {
     const { clientId } = req.params;
 
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.userId, client_id: clientId }
+      where: { agent_id: req.user.id, client_id: clientId }
     });
 
     if (!relationship) {
@@ -284,7 +284,7 @@ router.get('/clients/:clientId/stats', authenticateToken, async (req, res) => {
 
     // Check if relationship exists
     const relationship = await ClientRelationship.findOne({
-      where: { agent_id: req.user.userId, client_id: clientId }
+      where: { agent_id: req.user.id, client_id: clientId }
     });
 
     if (!relationship) {
@@ -349,7 +349,7 @@ router.post('/client/generate-invitation-code', authenticateToken, async (req, r
     // Update the user's client_id
     await User.update(
       { client_id: newClientId },
-      { where: { id: req.user.userId } }
+      { where: { id: req.user.id } }
     );
 
     res.json({
@@ -377,7 +377,7 @@ router.get('/client/relationships', authenticateToken, async (req, res) => {
     }
 
     const relationships = await ClientRelationship.findAll({
-      where: { client_id: req.user.userId },
+      where: { client_id: req.user.id },
       include: [
         {
           model: User,
@@ -389,7 +389,7 @@ router.get('/client/relationships', authenticateToken, async (req, res) => {
     });
 
     // Get user's client_id for sharing
-    const user = await User.findByPk(req.user.userId, {
+    const user = await User.findByPk(req.user.id, {
       attributes: ['client_id']
     });
 
@@ -422,7 +422,7 @@ router.post('/client/relationships/:relationshipId/confirm', authenticateToken, 
     const relationship = await ClientRelationship.findOne({
       where: { 
         id: relationshipId, 
-        client_id: req.user.userId,
+        client_id: req.user.id,
         status: 'pending'
       }
     });
@@ -469,7 +469,7 @@ router.post('/client/relationships/:relationshipId/reject', authenticateToken, a
     const relationship = await ClientRelationship.findOne({
       where: { 
         id: relationshipId, 
-        client_id: req.user.userId,
+        client_id: req.user.id,
         status: 'pending'
       }
     });

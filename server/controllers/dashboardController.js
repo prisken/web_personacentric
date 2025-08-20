@@ -7,7 +7,7 @@ class DashboardController {
     try {
       console.log('Dashboard request received:', { user: req.user });
       const { user } = req;
-      const userId = user.userId;
+      const userId = user.id;
       const userRole = user.role;
 
       console.log('Looking up user with ID:', userId);
@@ -376,7 +376,7 @@ class DashboardController {
   async getUserStats(req, res) {
     try {
       const { user } = req;
-      const userId = user.userId;
+      const userId = user.id;
 
       const userData = await User.findByPk(userId);
       if (!userData) {
