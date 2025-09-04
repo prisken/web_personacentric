@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaInstagram, FaLinkedin } from 'react-icons/fa';
 
 const Footer = () => {
   const { t } = useLanguage();
@@ -15,25 +15,19 @@ const Footer = () => {
   const socialLinks = [
     { 
       icon: FaFacebook, 
-      url: 'https://facebook.com/personacentric', 
+      url: 'https://www.facebook.com/profile.php?id=61572397062919', 
       label: t('footer.socialMedia.facebook'),
       color: 'hover:text-blue-500'
     },
     { 
-      icon: FaTwitter, 
-      url: 'https://twitter.com/personacentric', 
-      label: t('footer.socialMedia.twitter'),
-      color: 'hover:text-blue-400'
-    },
-    { 
       icon: FaInstagram, 
-      url: 'https://instagram.com/personacentric', 
+      url: 'https://www.instagram.com/personacentric/', 
       label: t('footer.socialMedia.instagram'),
       color: 'hover:text-pink-500'
     },
     { 
       icon: FaLinkedin, 
-      url: 'https://linkedin.com/company/personacentric', 
+      url: 'https://www.linkedin.com/company/persona-centric/about/', 
       label: t('footer.socialMedia.linkedin'),
       color: 'hover:text-blue-600'
     },

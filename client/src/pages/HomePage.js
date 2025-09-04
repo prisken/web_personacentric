@@ -301,33 +301,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* 5 Questions Section */}
-      <section className="py-12 sm:py-16 bg-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4">{t('home.match.title')}</h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 mb-6 sm:mb-8">{t('home.match.subtitle')}</p>
-            <div className="flex flex-wrap justify-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-              {/* Emoji circles */}
-              {['💼', '🏠', '💰', '📈', '🎯'].map((emoji, index) => (
-                <div 
-                  key={index} 
-                  className="w-10 h-10 sm:w-12 sm:h-12 lg:w-16 lg:h-16 rounded-full bg-white flex items-center justify-center text-xl sm:text-2xl lg:text-3xl shadow-md border-2 border-yellow-500 transform hover:scale-110 transition-transform duration-200"
-                >
-                  {emoji}
-                </div>
-              ))}
-            </div>
-
-            <Link
-              to="/agent-matching"
-              className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-medium hover:bg-blue-700 transition-all duration-300"
-            >
-              {t('home.match.cta')}
-            </Link>
-          </div>
-        </div>
-      </section>
 
 
       {/* Events Section */}

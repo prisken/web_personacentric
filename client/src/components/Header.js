@@ -43,9 +43,10 @@ const Header = () => {
 
   const navItems = [
     { key: 'nav.events', path: '/events', label: t('nav.events') },
-    { key: 'nav.agentPairing', path: '/agent-matching', label: t('nav.agentPairing') },
     { key: 'nav.blogs', path: '/blogs', label: t('nav.blogs') },
     { key: 'nav.about', path: '/about', label: t('nav.about') },
+    { key: 'actions.allAgents', path: '/all-agents', label: t('actions.allAgents'), comingSoon: true },
+    { key: 'nav.agentPairing', path: '/agent-matching', label: t('nav.agentPairing'), comingSoon: true },
   ];
 
   useEffect(() => {
@@ -71,16 +72,6 @@ const Header = () => {
     '/help-center'
   ].includes(location.pathname);
 
-  // Check if we're on a page with light background (most pages)
-  const hasLightBackground = [
-    '/events',
-    '/agent-matching',
-    '/blogs',
-    '/contests',
-    '/login',
-    '/register',
-    '/dashboard'
-  ].includes(location.pathname);
 
   // Improved header background logic
   const getHeaderBackground = () => {
@@ -163,19 +154,14 @@ const Header = () => {
               <Link
                 key={item.key}
                 to={item.path}
-                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
+                className={`font-medium text-sm lg:text-base ${textClasses} ${item.comingSoon ? 'text-gray-400 cursor-not-allowed' : hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 ${item.comingSoon ? '' : 'hover:bg-white/10'}`}
+                onClick={item.comingSoon ? (e) => e.preventDefault() : undefined}
               >
                 {item.label}
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
+                {item.comingSoon && <span className="text-xs ml-1">(即將推出)</span>}
+                {!item.comingSoon && <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>}
               </Link>
             ))}
-            <a
-              href="/all-agents"
-              className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
-            >
-              {t('actions.allAgents')}
-              <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-            </a>
           </nav>
 
           {/* Right Side: Language Switcher & Auth Buttons */}
@@ -275,19 +261,13 @@ const Header = () => {
                 <Link
                   key={item.key}
                   to={item.path}
-                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${item.comingSoon ? 'text-gray-400 cursor-not-allowed' : hoverClasses} ${item.comingSoon ? '' : 'hover:bg-white/10'}`}
+                  onClick={item.comingSoon ? (e) => { e.preventDefault(); setIsMobileMenuOpen(false); } : () => setIsMobileMenuOpen(false)}
                 >
                   {item.label}
+                  {item.comingSoon && <span className="text-xs ml-1">(即將推出)</span>}
                 </Link>
               ))}
-              <a
-                href="/all-agents"
-                className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {t('actions.allAgents')}
-              </a>
 
               <div className="pt-3 border-t border-gray-300/30">
                 {/* Language Toggle */}
