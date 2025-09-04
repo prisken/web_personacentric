@@ -69,9 +69,9 @@ const ClientDashboard = ({ data, onRefresh }) => {
 
   const tabs = [
     { id: 'overview', label: '總覽', icon: '📊' },
-    { id: 'agent', label: '顧問連接', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'earn-points', label: '賺取積分', icon: '🎁' },
+    { id: 'agent', label: '顧問連接', icon: '👥', comingSoon: true },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
@@ -139,8 +139,8 @@ const ClientDashboard = ({ data, onRefresh }) => {
               className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium"
             >
               {tabs.map((tab) => (
-                <option key={tab.id} value={tab.id}>
-                  {tab.icon} {tab.label}
+                <option key={tab.id} value={tab.id} disabled={tab.comingSoon}>
+                  {tab.icon} {tab.label} {tab.comingSoon ? '(即將推出)' : ''}
                 </option>
               ))}
             </select>
@@ -151,15 +151,19 @@ const ClientDashboard = ({ data, onRefresh }) => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => !tab.comingSoon && setActiveTab(tab.id)}
+                disabled={tab.comingSoon}
                 className={`py-3 lg:py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
-                  activeTab === tab.id
+                  tab.comingSoon
+                    ? 'border-transparent text-gray-400 bg-gray-100 cursor-not-allowed opacity-60'
+                    : activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 bg-blue-50'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 <span className="mr-2 lg:mr-3">{tab.icon}</span>
                 {tab.label}
+                {tab.comingSoon && <span className="ml-2 text-xs text-gray-400">(即將推出)</span>}
               </button>
             ))}
           </nav>
@@ -171,21 +175,7 @@ const ClientDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-              <StatisticsCard
-                title="投資總額"
-                value="$50,000"
-                icon="💰"
-                color="blue"
-              />
-              <StatisticsCard
-                title="投資回報"
-                value="+12.5%"
-                icon="📈"
-                color="green"
-                trend="+2.3%"
-                trendDirection="up"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8">
               <StatisticsCard
                 title="參與活動"
                 value={data.statistics?.total_events_attended || 0}

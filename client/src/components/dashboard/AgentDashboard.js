@@ -92,11 +92,11 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
   
   const tabs = [
-    { id: 'overview', label: t('dashboard.tabs.overview'), icon: '📊' },
-    { id: 'clients', label: t('dashboard.tabs.agentConnection'), icon: '👥' },
-    { id: 'events', label: t('dashboard.tabs.events'), icon: '📅' },
-    { id: 'financial_planning', label: t('financialPlanning.tab'), icon: '💰' },
-    { id: 'profile', label: t('dashboard.tabs.profile'), icon: '👤' }
+    { id: 'overview', label: '概覽', icon: '📊' },
+    { id: 'events', label: '活動', icon: '📅' },
+    { id: 'financial_planning', label: '理財產品配置', icon: '💰' },
+    { id: 'clients', label: '客戶配對', icon: '👥', comingSoon: true },
+    { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
   // Utility to notify other components (like Header) of profile image update
@@ -144,8 +144,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
               className="w-full p-3 border border-gray-300 rounded-lg bg-white text-gray-900 font-medium"
             >
               {tabs.map((tab) => (
-                <option key={tab.id} value={tab.id}>
-                  {tab.icon} {tab.label}
+                <option key={tab.id} value={tab.id} disabled={tab.comingSoon}>
+                  {tab.icon} {tab.label} {tab.comingSoon ? '(即將推出)' : ''}
                 </option>
               ))}
             </select>
@@ -156,15 +156,19 @@ const AgentDashboard = ({ data, onRefresh }) => {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => !tab.comingSoon && setActiveTab(tab.id)}
+                disabled={tab.comingSoon}
                 className={`py-3 lg:py-4 px-3 lg:px-6 border-b-2 font-medium text-sm lg:text-base whitespace-nowrap transition-all duration-300 ${
-                  activeTab === tab.id
+                  tab.comingSoon
+                    ? 'border-transparent text-gray-400 bg-gray-100 cursor-not-allowed opacity-60'
+                    : activeTab === tab.id
                     ? 'border-blue-500 text-blue-600 bg-blue-50'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 hover:bg-gray-50'
                 }`}
               >
                 <span className="mr-2 lg:mr-3">{tab.icon}</span>
                 {tab.label}
+                {tab.comingSoon && <span className="ml-2 text-xs text-gray-400">(即將推出)</span>}
               </button>
             ))}
           </nav>
@@ -176,19 +180,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 xl:gap-8">
-              <StatisticsCard
-                title="總佣金"
-                value={formatCurrency(data.statistics?.total_commission || 0)}
-                icon="💰"
-                color="green"
-              />
-              <StatisticsCard
-                title="活躍客戶"
-                value={data.statistics?.active_clients || 0}
-                icon="👥"
-                color="blue"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-6 xl:gap-8">
               <StatisticsCard
                 title="舉辦活動"
                 value={data.statistics?.hosted_events || 0}
