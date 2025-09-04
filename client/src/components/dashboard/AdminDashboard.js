@@ -235,7 +235,7 @@ const AdminDashboard = ({ data, onRefresh }) => {
         {activeTab === 'overview' && (
           <div className="space-y-8 lg:space-y-12">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               <StatisticsCard
                 title="總用戶"
                 value={data.statistics?.total_users || 0}
@@ -253,12 +253,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
                 value={data.statistics?.total_events || 0}
                 icon="📅"
                 color="yellow"
-              />
-              <StatisticsCard
-                title="月收入"
-                value={formatCurrency(data.statistics?.monthly_revenue || 0)}
-                icon="💰"
-                color="purple"
               />
             </div>
 
