@@ -45,8 +45,8 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Upcoming Event */}
-      <section className="relative min-h-[80vh] sm:h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
+      {/* Hero Section - Mobile Optimized */}
+      <section className="relative min-h-[70vh] sm:min-h-[80vh] lg:h-screen w-full flex items-center justify-center overflow-hidden -mt-16">
         <div className="absolute inset-0">
           {/* Background Image */}
           <div className="absolute inset-0">
@@ -60,14 +60,14 @@ const HomePage = () => {
           </div>
           
           {/* Content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-end text-center pb-20 sm:pb-16 px-4">
-            <p className="text-lg sm:text-xl text-white/90 mb-8 max-w-2xl">
+          <div className="absolute inset-0 flex flex-col items-center justify-end text-center pb-12 sm:pb-16 px-3 sm:px-4">
+            <p className="text-base sm:text-lg lg:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
               10月30號中環街市
             </p>
             {/* CTA Button */}
             <Link
               to="/register"
-              className="group relative w-full sm:w-auto px-6 py-3 rounded-xl text-base font-bold transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden"
+              className="group relative w-full sm:w-auto px-4 sm:px-6 py-2.5 sm:py-3 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 transform hover:scale-105 flex items-center justify-center overflow-hidden"
               style={{
                 border: '2px solid rgba(255, 255, 255, 0.8)',
                 textShadow: '0 1px 4px rgba(0, 0, 0, 0.4)',
@@ -92,25 +92,25 @@ const HomePage = () => {
       {/* About Section */}
       <section className="py-12 sm:py-16 bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4 text-white">
+          <div className="text-center mb-6 sm:mb-8 lg:mb-12">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2 sm:mb-3 lg:mb-4 text-white">
               {t('home.about.title')}
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-blue-200 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-blue-200 max-w-3xl mx-auto">
               {t('home.about.subtitle')}
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
             {/* Smart Matching */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 lg:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
               <div className="flex items-center">
-                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">🎯</div>
+                <div className="text-yellow-500 text-2xl sm:text-3xl lg:text-4xl mr-3 sm:mr-4">🎯</div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2">
                     {t('home.about.benefit1.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-blue-200">
+                  <p className="text-xs sm:text-sm lg:text-base text-blue-200">
                     {t('home.about.benefit1.desc')}
                   </p>
                 </div>
@@ -118,14 +118,14 @@ const HomePage = () => {
             </div>
 
             {/* Professional Community */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 lg:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
               <div className="flex items-center">
-                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">👥</div>
+                <div className="text-yellow-500 text-2xl sm:text-3xl lg:text-4xl mr-3 sm:mr-4">👥</div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2">
                     {t('home.about.benefit2.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-blue-200">
+                  <p className="text-xs sm:text-sm lg:text-base text-blue-200">
                     {t('home.about.benefit2.desc')}
                   </p>
                 </div>
@@ -133,14 +133,14 @@ const HomePage = () => {
             </div>
 
             {/* Reward System */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 lg:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
               <div className="flex items-center">
-                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">🏆</div>
+                <div className="text-yellow-500 text-2xl sm:text-3xl lg:text-4xl mr-3 sm:mr-4">🏆</div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2">
                     {t('home.about.benefit3.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-blue-200">
+                  <p className="text-xs sm:text-sm lg:text-base text-blue-200">
                     {t('home.about.benefit3.desc')}
                   </p>
                 </div>
@@ -148,14 +148,14 @@ const HomePage = () => {
             </div>
 
             {/* Continuous Learning */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg p-3 sm:p-4 lg:p-6 transform hover:scale-105 transition-all duration-300 border border-yellow-500/30">
               <div className="flex items-center">
-                <div className="text-yellow-500 text-3xl sm:text-4xl mr-4">📚</div>
+                <div className="text-yellow-500 text-2xl sm:text-3xl lg:text-4xl mr-3 sm:mr-4">📚</div>
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-2">
+                  <h3 className="text-sm sm:text-base lg:text-lg font-bold text-white mb-1 sm:mb-2">
                     {t('home.about.benefit4.title')}
                   </h3>
-                  <p className="text-sm sm:text-base text-blue-200">
+                  <p className="text-xs sm:text-sm lg:text-base text-blue-200">
                     {t('home.about.benefit4.desc')}
                   </p>
                 </div>

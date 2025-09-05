@@ -53,12 +53,12 @@ const StatisticsCard = ({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg p-6 lg:p-8 hover:shadow-xl transition-all duration-300 group hover:scale-105">
+    <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 hover:shadow-lg transition-all duration-300 group">
       <div className="flex items-center">
         <div className="flex-shrink-0">
-          <div className={`w-12 h-12 lg:w-16 lg:h-16 ${getColorClasses(color)} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 ${getColorClasses(color)} rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-300`}>
             {typeof icon === 'string' ? (
-              <span className="text-white text-lg lg:text-xl">{icon}</span>
+              <span className="text-white text-base sm:text-lg">{icon}</span>
             ) : (
               <div className="text-white">
                 {icon}
@@ -66,16 +66,16 @@ const StatisticsCard = ({
             )}
           </div>
         </div>
-        <div className="ml-4 lg:ml-6 flex-1">
-          <p className="text-sm lg:text-base font-medium text-gray-500">{title}</p>
-          <div className="flex items-center space-x-2">
-            <p className="text-2xl lg:text-3xl font-bold text-gray-900">
+        <div className="ml-3 sm:ml-4 flex-1 min-w-0">
+          <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">{title}</p>
+          <div className="flex items-center space-x-1 sm:space-x-2">
+            <p className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900">
               {formatValue(value)}
             </p>
             {trend && (
               <div className="flex items-center space-x-1">
                 {getTrendIcon(trendDirection)}
-                <span className={`text-sm font-medium ${
+                <span className={`text-xs sm:text-sm font-medium ${
                   trendDirection === 'up' ? 'text-green-600' : 'text-red-600'
                 }`}>
                   {trend}
@@ -84,7 +84,7 @@ const StatisticsCard = ({
             )}
           </div>
           {subtitle && (
-            <p className="text-xs lg:text-sm text-gray-400 mt-1">{subtitle}</p>
+            <p className="text-xs text-gray-400 mt-1 truncate">{subtitle}</p>
           )}
         </div>
       </div>

@@ -86,23 +86,23 @@ const AgentDashboard = ({ data, onRefresh }) => {
 
   return (
     <div className="pt-16 bg-gray-50 min-h-screen">
-      {/* Dashboard Header */}
+      {/* Dashboard Header - Mobile Optimized */}
       <div className="bg-white shadow-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-6 lg:py-8 xl:py-12 space-y-4 sm:space-y-0">
-            <div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-gray-900 mb-2 lg:mb-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="flex flex-col space-y-4 py-4 sm:py-6 lg:py-8">
+            <div className="text-center sm:text-left">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">
                 👨‍💼 顧問儀表板
               </h1>
-              <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-600">
+              <p className="text-sm sm:text-base lg:text-lg text-gray-600">
                 管理您的客戶和業務
               </p>
             </div>
-            <div className="flex items-center space-x-4 w-full sm:w-auto">
+            <div className="flex justify-center sm:justify-start">
               <button
                 onClick={onRefresh}
                 disabled={loading}
-                className="w-full sm:w-auto bg-blue-600 text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 lg:py-4 rounded-xl hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm sm:text-base lg:text-lg"
+                className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2.5 rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm"
               >
                 {loading ? '更新中...' : '刷新數據'}
               </button>

@@ -66,9 +66,9 @@ const EventCard = ({
   const isPast = new Date(event.start_date) < new Date();
 
   return (
-    <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 group hover:scale-105">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 group">
       {/* Event Image */}
-      <div className="h-32 sm:h-40 lg:h-48 xl:h-56 overflow-hidden relative">
+      <div className="h-24 sm:h-32 lg:h-40 overflow-hidden relative">
         <img 
           src={event.image ? event.image : "/images/food-for-talk.jpg"}
           alt={event.title}
@@ -106,24 +106,24 @@ const EventCard = ({
       </div>
 
       {/* Event Content */}
-      <div className="p-4 sm:p-6 lg:p-8">
+      <div className="p-3 sm:p-4 lg:p-6">
         {/* Event Type Badge */}
-        <div className="flex items-center justify-between mb-3 sm:mb-4 lg:mb-6">
-          <span className="inline-flex items-center px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs lg:text-sm font-medium text-white bg-blue-500">
+        <div className="flex items-center justify-between mb-2 sm:mb-3">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white bg-blue-500">
             {getEventTypeLabel(event.event_type)}
           </span>
-          <span className="text-xs lg:text-sm text-gray-500">
+          <span className="text-xs text-gray-500">
             {event.current_participants || 0}/{event.max_participants || '∞'} 已註冊
           </span>
         </div>
 
         {/* Event Title */}
-        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-2 sm:mb-3 lg:mb-4 line-clamp-2">
+        <h3 className="text-sm sm:text-base lg:text-lg font-bold text-gray-900 mb-2 line-clamp-2">
           {event.title}
         </h3>
 
         {/* Event Description */}
-        <p className="text-xs sm:text-sm lg:text-base text-gray-600 mb-3 sm:mb-4 lg:mb-6 line-clamp-3">
+        <p className="text-xs sm:text-sm text-gray-600 mb-3 line-clamp-2">
           {event.description}
         </p>
 
