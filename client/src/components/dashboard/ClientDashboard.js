@@ -9,10 +9,7 @@ import EventCard from './EventCard';
 import StatisticsCard from './StatisticsCard';
 
 const ClientDashboard = ({ data, onRefresh }) => {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('overview');
-  const [showEventModal, setShowEventModal] = useState(false);
-  const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showGiftOverlay, setShowGiftOverlay] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);

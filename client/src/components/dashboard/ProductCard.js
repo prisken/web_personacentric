@@ -6,12 +6,6 @@ const ProductCard = ({ product, updateProduct, removeProduct, duplicateProduct }
   const [showInfoDialog, setShowInfoDialog] = useState(false);
   const [infoContent, setInfoContent] = useState({ title: '', formula: '', description: '' });
   
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('zh-TW', {
-      style: 'currency',
-      currency: 'HKD'
-    }).format(amount);
-  };
 
   const getProductIcon = (subType) => {
     const icons = {

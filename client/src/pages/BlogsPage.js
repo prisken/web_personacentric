@@ -5,7 +5,7 @@ import apiService from '../services/api';
 import { Helmet } from 'react-helmet';
 
 const BlogsPage = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [blogPosts, setBlogPosts] = useState([]);

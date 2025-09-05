@@ -5,7 +5,7 @@ import { useUser } from '../contexts/UserContext';
 import apiService from '../services/api';
 
 const EventRegistrationsPage = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { user } = useUser();
   const { id } = useParams();
   const navigate = useNavigate();

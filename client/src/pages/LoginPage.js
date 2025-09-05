@@ -4,7 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
 
 const LoginPage = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { login } = useUser();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

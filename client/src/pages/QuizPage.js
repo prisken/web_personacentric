@@ -8,7 +8,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const QuizPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { t } = useTranslation();
   const { user, isAuthenticated } = useUser();
   const [quiz, setQuiz] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -7,7 +7,6 @@ import LoadingSpinner from '../LoadingSpinner';
 import GiftImageUpload from '../GiftImageUpload';
 
 const GiftManagement = () => {
-  const { user } = useContext(UserContext);
   const [gifts, setGifts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);

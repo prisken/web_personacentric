@@ -21,12 +21,6 @@ const ProductConfigurationPage = ({
   currentUser
 }) => {
   const { t } = useTranslation();
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('zh-TW', {
-      style: 'currency',
-      currency: 'HKD'
-    }).format(amount);
-  };
 
   return (
     <div className="space-y-6">

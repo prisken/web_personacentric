@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const PricingPage = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [showAccessCode, setShowAccessCode] = useState(false);
   const [accessCode, setAccessCode] = useState('');
 

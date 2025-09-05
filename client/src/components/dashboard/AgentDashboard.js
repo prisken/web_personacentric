@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
@@ -16,8 +16,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
     localStorage.setItem('agentDashboardActiveTab', activeTab);
   }, [activeTab]);
 
-  const [showEventModal, setShowEventModal] = useState(false);
-  const [showContestModal, setShowContestModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [profileImageUrl, setProfileImageUrl] = useState(data.agent?.profile_image || null);
   const [showProfileSuccess, setShowProfileSuccess] = useState(false);
@@ -39,22 +37,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
     return new Date(dateString).toLocaleDateString('zh-TW');
   };
 
-  const handleEventAction = async (eventId, action) => {
-    try {
-      setLoading(true);
-      if (action === 'delete') {
-        if (window.confirm('確定要刪除此活動嗎？')) {
-          await apiService.delete(`/events/${eventId}`);
-        }
-      }
-      onRefresh();
-    } catch (error) {
-      console.error('Event action error:', error);
-      alert('操作失敗，請重試');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEventRegistration = async (eventId) => {
     try {
@@ -89,7 +71,6 @@ const AgentDashboard = ({ data, onRefresh }) => {
     setShowEventDetails(true);
   };
 
-  const { t } = useTranslation();
   
   const tabs = [
     { id: 'overview', label: '概覽', icon: '📊' },

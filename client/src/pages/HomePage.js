@@ -6,7 +6,6 @@ import ScrollingEvents from '../components/ScrollingEvents';
 
 const HomePage = () => {
   const { t } = useLanguage();
-  const [currentSlide, setCurrentSlide] = useState(0);
 
   // Hero carousel data with single CTAs
   const heroSlides = [
@@ -28,23 +27,8 @@ const HomePage = () => {
     }
   ];
 
-  // Auto-rotate hero carousel
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [heroSlides.length]);
 
-  // Statistics data
-  const stats = [
-    { number: '30', label: t('stats.agents'), description: t('stats.activeAdvisors') },
-    { number: '1,250+', label: t('stats.clients'), description: t('stats.successfulClients') },
-    { number: '85%', label: t('stats.growth'), description: t('stats.averageGrowth') }
-  ];
 
-  // Add carousel state for contest winners
-  const [winnerIndex, setWinnerIndex] = useState(0);
 
   // Contest winners data (replace with real data as needed)
   const contestWinners = [
@@ -78,13 +62,6 @@ const HomePage = () => {
     }
   ];
 
-  // Auto-rotate contest winners
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWinnerIndex((prev) => (prev + 1) % contestWinners.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [contestWinners.length]);
 
   // Events data
   const events = [
@@ -139,19 +116,6 @@ const HomePage = () => {
     }
   ];
 
-  // Add lifestyle options for the dropdown
-  const lifestyleOptions = [
-    { value: 'active', label: t('lifestyle.active') },
-    { value: 'family', label: t('lifestyle.family') },
-    { value: 'traveler', label: t('lifestyle.traveler') },
-    { value: 'foodie', label: t('lifestyle.foodie') },
-    { value: 'creative', label: t('lifestyle.creative') },
-    { value: 'tech', label: t('lifestyle.tech') },
-    { value: 'wellness', label: t('lifestyle.wellness') },
-    { value: 'finance', label: t('lifestyle.finance') },
-    { value: 'student', label: t('lifestyle.student') },
-    { value: 'retiree', label: t('lifestyle.retiree') },
-  ];
 
   return (
     <div className="min-h-screen">

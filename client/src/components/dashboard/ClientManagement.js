@@ -57,18 +57,6 @@ const ClientManagement = ({ onRefresh }) => {
     }
   };
 
-  const handleUpdateClient = async (clientId, updateData) => {
-    try {
-      await apiService.updateClient(clientId, updateData);
-      setShowDetailsModal(false);
-      setSelectedClient(null);
-      fetchClients();
-      onRefresh();
-    } catch (error) {
-      console.error('Error updating client:', error);
-      alert('Failed to update client');
-    }
-  };
 
   const handleRemoveClient = async (clientId) => {
     if (!window.confirm('確定要移除這個客戶關係嗎？')) {

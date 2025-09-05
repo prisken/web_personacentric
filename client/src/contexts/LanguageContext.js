@@ -399,7 +399,6 @@ export const LanguageProvider = ({ children }) => {
       // Product Card Fields - Rental
       'productCard.monthlyRentExpense': '每月租金開支 (HKD)',
       'productCard.leaseStartAge': '租約開始年齡',
-      'productCard.rentIncreaseRate': '租金增幅 (%)',
       'productCard.rentIncreaseRatePlaceholder': '例如: 3',
       'productCard.expectedEndAge': '預期結束年齡',
       'productCard.totalRentPaid': '總租金支出',
@@ -593,12 +592,6 @@ export const LanguageProvider = ({ children }) => {
       'roles.agent.emoji': '👨‍💼',
       'roles.client.emoji': '👤',
 
-      // Client Management
-      'financialPlanning.clientName': '客戶姓名',
-      'financialPlanning.enterClientName': '輸入客戶姓名',
-      'financialPlanning.editRecommendations': '編輯建議',
-      'financialPlanning.editRecommendationsButton': '編輯建議',
-      'financialPlanning.currentUser': '當前用戶',
 
       // Common
       'common.retry': '重試',
@@ -711,29 +704,11 @@ export const LanguageProvider = ({ children }) => {
       'footer.terms': '服務條款',
       'footer.copyright': '版權所有',
 
-      // Financial Planning Additional
-      'financialPlanning.yearsOld': '歲',
-      'financialPlanning.property': '物業',
-      'financialPlanning.cash': '現金',
-      'financialPlanning.investments': '投資',
-      'financialPlanning.other': '其他',
-      'financialPlanning.workIncome': '工作收入',
-      'financialPlanning.fundIncome': '基金收入',
-      'financialPlanning.mpfIncome': '強積金收入',
-      'financialPlanning.savingIncome': '儲蓄收入',
-      'financialPlanning.bankIncome': '銀行收入',
-      'financialPlanning.retirementIncome': '退休收入',
       'financialPlanning.rentalIncome': '租金收入',
       'financialPlanning.incomeSources': '收入來源',
       'financialPlanning.retirementPeriod': '退休期',
       'financialPlanning.longTerm': '長期',
       'financialPlanning.workingPeriod': '工作期',
-      'financialPlanning.reportGeneration': '報告生成',
-      'financialPlanning.reportGenerationDescription': '生成客戶財務規劃報告',
-      'financialPlanning.completed': '已完成',
-      'financialPlanning.required': '需要完成',
-      'financialPlanning.products': '產品',
-      'financialPlanning.generateReport': '生成報告',
     },
     'en': {
       // Lifestyle Options
@@ -1110,7 +1085,6 @@ export const LanguageProvider = ({ children }) => {
       // Product Card Fields - Rental
       'productCard.monthlyRentExpense': 'Monthly Rent Expense',
       'productCard.leaseStartAge': 'Lease Start Age',
-      'productCard.rentIncreaseRate': 'Rent Increase Rate (%)',
       'productCard.rentIncreaseRatePlaceholder': 'e.g., 3',
       'productCard.expectedEndAge': 'Expected End Age',
       'productCard.totalRentPaid': 'Total Rent Paid',
@@ -1304,12 +1278,6 @@ export const LanguageProvider = ({ children }) => {
       'roles.agent.emoji': '👨‍💼',
       'roles.client.emoji': '👤',
 
-      // Client Management
-      'financialPlanning.clientName': 'Client Name',
-      'financialPlanning.enterClientName': 'Enter client name',
-      'financialPlanning.editRecommendations': 'Edit Recommendations',
-      'financialPlanning.editRecommendationsButton': 'Edit Recommendations',
-      'financialPlanning.currentUser': 'Current User',
 
       // Common
       'common.retry': 'Retry',
@@ -1422,29 +1390,11 @@ export const LanguageProvider = ({ children }) => {
       'footer.terms': 'Terms of Service',
       'footer.copyright': 'All rights reserved',
 
-      // Financial Planning Additional
-      'financialPlanning.yearsOld': 'years old',
-      'financialPlanning.property': 'Property',
-      'financialPlanning.cash': 'Cash',
-      'financialPlanning.investments': 'Investments',
-      'financialPlanning.other': 'Other',
-      'financialPlanning.workIncome': 'Work Income',
-      'financialPlanning.fundIncome': 'Fund Income',
-      'financialPlanning.mpfIncome': 'MPF Income',
-      'financialPlanning.savingIncome': 'Saving Income',
-      'financialPlanning.bankIncome': 'Bank Income',
-      'financialPlanning.retirementIncome': 'Retirement Income',
       'financialPlanning.rentalIncome': 'Rental Income',
       'financialPlanning.incomeSources': 'Income Sources',
       'financialPlanning.retirementPeriod': 'Retirement Period',
       'financialPlanning.longTerm': 'Long Term',
       'financialPlanning.workingPeriod': 'Working Period',
-      'financialPlanning.reportGeneration': 'Report Generation',
-      'financialPlanning.reportGenerationDescription': 'Generate client financial planning report',
-      'financialPlanning.completed': 'Completed',
-      'financialPlanning.required': 'Required',
-      'financialPlanning.products': 'Products',
-      'financialPlanning.generateReport': 'Generate Report',
     }
   };
 

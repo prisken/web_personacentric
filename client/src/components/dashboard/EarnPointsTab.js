@@ -4,7 +4,6 @@ import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 
 const EarnPointsTab = () => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);

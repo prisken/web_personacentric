@@ -9,7 +9,6 @@ const QuizResultsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
   const { user, isAuthenticated } = useUser();
   const [quiz, setQuiz] = useState(null);
   const [attempt, setAttempt] = useState(null);

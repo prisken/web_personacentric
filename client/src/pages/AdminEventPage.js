@@ -6,7 +6,7 @@ import apiService from '../services/api';
 import EventImageUpload from '../components/EventImageUpload';
 
 const AdminEventPage = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const { user } = useUser();
   const { id } = useParams(); // For editing existing events
   const navigate = useNavigate();

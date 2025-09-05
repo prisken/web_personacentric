@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet';
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);

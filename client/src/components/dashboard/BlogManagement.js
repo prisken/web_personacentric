@@ -3,7 +3,7 @@ import { useLanguage } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 
 const BlogManagement = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [blogs, setBlogs] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);

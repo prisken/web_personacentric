@@ -4,7 +4,6 @@ import apiService from '../../services/api';
 import QuizImageUpload from '../QuizImageUpload';
 
 const QuizManagement = () => {
-  const { t } = useTranslation();
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);

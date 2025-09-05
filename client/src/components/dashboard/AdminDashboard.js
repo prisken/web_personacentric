@@ -6,7 +6,6 @@ import BlogManagement from './BlogManagement';
 import GiftManagement from './GiftManagement';
 import QuizManagement from './QuizManagement';
 import EventDetailsOverlay from '../EventDetailsOverlay';
-import EventCard from './EventCard';
 import StatisticsCard from './StatisticsCard';
 
 const AdminDashboard = ({ data, onRefresh }) => {
@@ -15,12 +14,10 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedUser, setSelectedUser] = useState(null);
   const [showUserModal, setShowUserModal] = useState(false);
-  const [showAccessCodeModal, setShowAccessCodeModal] = useState(false);
   const [accessCodes, setAccessCodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
-  const [showEventModal, setShowEventModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [userManagementSubTab, setUserManagementSubTab] = useState('clients'); // Add this line
@@ -75,23 +72,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
     }
   };
 
-  const handleEventAction = async (eventId, action) => {
-    try {
-      setLoading(true);
-      if (action === 'delete') {
-        if (window.confirm(t('common.confirmDelete'))) {
-          await apiService.deleteEvent(eventId);
-          await fetchEvents(); // Refresh events list
-        }
-      }
-      onRefresh();
-    } catch (error) {
-      console.error('Event action error:', error);
-      alert(t('common.operationFailed'));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleSeedData = async () => {
     try {
