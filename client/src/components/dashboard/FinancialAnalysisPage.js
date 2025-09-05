@@ -26,6 +26,7 @@ const FinancialAnalysisPage = ({
   const [isCalculating, setIsCalculating] = useState(false);
   const [showFormulaDialog, setShowFormulaDialog] = useState(false);
   const [currentFormula, setCurrentFormula] = useState({ title: '', formula: '', description: '' });
+  const { t } = useTranslation();
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {

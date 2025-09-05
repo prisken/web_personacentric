@@ -704,8 +704,6 @@ export const LanguageProvider = ({ children }) => {
       'footer.terms': '服務條款',
       'footer.copyright': '版權所有',
 
-      'financialPlanning.rentalIncome': '租金收入',
-      'financialPlanning.incomeSources': '收入來源',
       'financialPlanning.retirementPeriod': '退休期',
       'financialPlanning.longTerm': '長期',
       'financialPlanning.workingPeriod': '工作期',
@@ -1390,8 +1388,6 @@ export const LanguageProvider = ({ children }) => {
       'footer.terms': 'Terms of Service',
       'footer.copyright': 'All rights reserved',
 
-      'financialPlanning.rentalIncome': 'Rental Income',
-      'financialPlanning.incomeSources': 'Income Sources',
       'financialPlanning.retirementPeriod': 'Retirement Period',
       'financialPlanning.longTerm': 'Long Term',
       'financialPlanning.workingPeriod': 'Working Period',

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 import EarnPointsTab from './EarnPointsTab';
 import GiftRedemptionOverlay from '../GiftRedemptionOverlay';

@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useContext } from 'react';
-import { UserContext } from '../../contexts/UserContext';
 import apiService from '../../services/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../LoadingSpinner';

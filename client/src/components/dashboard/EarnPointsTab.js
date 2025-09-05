@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from '../../contexts/LanguageContext';
 import apiService from '../../services/api';
 
 const EarnPointsTab = () => {

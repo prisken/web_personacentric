@@ -12,12 +12,12 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [accessCodes, setAccessCodes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserModal, setShowUserModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [userManagementSubTab, setUserManagementSubTab] = useState('clients'); // Add this line

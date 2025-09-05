@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollingGifts from '../components/ScrollingGifts';
@@ -7,86 +7,12 @@ import ScrollingEvents from '../components/ScrollingEvents';
 const HomePage = () => {
   const { t } = useLanguage();
 
-  // Hero carousel data with single CTAs
-  const heroSlides = [
-    {
-      id: 1,
-      title: t('home.hero.slide1.title'),
-      subtitle: t('home.hero.slide1.subtitle'),
-      cta: t('hero.eventCTA'),
-      ctaLink: '/events',
-      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
-    },
-    {
-      id: 2,
-      title: t('home.hero.slide2.title'),
-      subtitle: t('home.hero.slide2.subtitle'),
-      cta: t('hero.pairingCTA'),
-      ctaLink: '/agent-matching',
-      bgImage: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2071&q=80'
-    }
-  ];
 
 
 
 
-  // Contest winners data (replace with real data as needed)
-  const contestWinners = [
-    {
-      id: 1,
-      type: t('contest.winners.socialMedia'),
-      icon: 'fas fa-share-alt',
-      winner: 'Sarah Chen',
-      content: t('contest.winners.bestViralPost'),
-    },
-    {
-      id: 2,
-      type: t('contest.winners.blogArticle'),
-      icon: 'fas fa-blog',
-      winner: 'Michael Wong',
-      content: t('contest.winners.insightfulBlog'),
-    },
-    {
-      id: 3,
-      type: t('contest.winners.posterDesign'),
-      icon: 'fas fa-image',
-      winner: 'Emily Liu',
-      content: t('contest.winners.creativePoster'),
-    },
-    {
-      id: 4,
-      type: t('contest.winners.videoContent'),
-      icon: 'fas fa-video',
-      winner: 'David Kim',
-      content: t('contest.winners.engagingVideo'),
-    }
-  ];
 
 
-  // Events data
-  const events = [
-    {
-      id: 1,
-      title: t('events.financialPlanning'),
-      date: '2024-03-15',
-      location: 'Hong Kong',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      id: 2,
-      title: t('events.investmentStrategy'),
-      date: '2024-03-20',
-      location: 'Hong Kong',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
-    },
-    {
-      id: 3,
-      title: t('events.retirementPlanning'),
-      date: '2024-03-25',
-      location: 'Hong Kong',
-      image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
-    }
-  ];
 
   // Blog posts data
   const blogPosts = [
