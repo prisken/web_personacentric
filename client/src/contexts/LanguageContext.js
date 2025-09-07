@@ -112,7 +112,7 @@ export const LanguageProvider = ({ children }) => {
       'home.hero.eventDate': '10月 2025',
       'home.gifts.description': '完成問卷，贏取豐富獎品',
       'home.gifts.participate': '立即參與',
-      'home.events.description': '參與活動，與專業人士交流',
+      'home.events.description': '參與活動，識朋友，長知識',
       'partners.placeholder': '合作夥伴 {number}',
 
       // Homepage - Small CTA
@@ -806,7 +806,7 @@ export const LanguageProvider = ({ children }) => {
       'home.hero.eventDate': 'October 2025',
       'home.gifts.description': 'Complete quizzes and win prizes',
       'home.gifts.participate': 'Join Now',
-      'home.events.description': 'Join our events, connect with professionals',
+      'home.events.description': 'Join our events, make friends and more',
       'partners.placeholder': 'Partner {number}',
 
       // Homepage - Small CTA
@@ -1367,7 +1367,7 @@ export const LanguageProvider = ({ children }) => {
       'aiTrial.download': 'Download',
 
       // Contest
-      'contest.title': 'Creative Contests',
+      'contest.title': 'Creative Contests', // Updated
       'contest.current': 'Current Contest',
       'contest.pastWinners': 'Past Winners',
       'contest.deadline': 'Deadline',
