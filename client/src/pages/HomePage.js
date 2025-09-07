@@ -172,7 +172,7 @@ const HomePage = () => {
             {/* Left side - Text and CTA */}
             <div className="w-1/2 text-left">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.gifts.title')}</h2>
-              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
+              <p className="text-sm sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
                 {t('home.gifts.description')}
               </p>
               <Link
@@ -200,7 +200,7 @@ const HomePage = () => {
             {/* Left side - Text and CTA */}
             <div className="w-1/2 text-left">
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.events.title')}</h2>
-              <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
+              <p className="text-sm sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
                 {t('home.events.description')}
               </p>
               <Link
