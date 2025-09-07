@@ -69,10 +69,10 @@ export const LanguageProvider = ({ children }) => {
       'events.viewAll': '查看所有活動',
 
       // Homepage - Partners
-      'partners.title': '合作夥伴',
+      'partners.title': '夥伴',
 
       // Homepage - Blogs
-      'blogs.title': '最新部落格',
+      'blogs.title': '市場資訊',
       'blogs.investmentStrategies2024': '2024年投資策略',
       'blogs.investmentStrategiesExcerpt': '探索2024年最新的投資趨勢和機會，幫助您做出明智的投資決策。',
       'blogs.insurancePolicies': '了解保險政策',
@@ -84,11 +84,11 @@ export const LanguageProvider = ({ children }) => {
 
       // Homepage - Become a Member
       'member.title': '成為會員',
-      'member.subtitle': '立即加入獲得10,000積分',
+      'member.subtitle': '登記馬上獲得1,000積分',
       'member.cta': '立即註冊',
 
       // Homepage - Hero Section
-      'home.hero.registerNow': '立即報名',
+      'home.hero.registerNow': '立即報名留位',
       
       // Homepage - About Section
       'home.about.title': 'Persona Centric是什麼？',
@@ -98,17 +98,22 @@ export const LanguageProvider = ({ children }) => {
       'home.about.benefit2.title': '活動',
       'home.about.benefit2.desc': '參加活動，認識新朋友，贏取獎品',
       'home.about.benefit3.title': '積分遊戲',
-      'home.about.benefit3.desc': '參與平台活動，獲積分及禮品優惠',
+      'home.about.benefit3.desc': '參與活動，獲積分及禮品優惠',
       'home.about.benefit4.title': '知識庫',
-      'home.about.benefit4.desc': '獲取最新的財經知識和投資策略',
-      'home.gifts.title': '投資遊戲',
+      'home.about.benefit4.desc': '最新財經知識，投資策略',
+      'home.gifts.title': '積分問答',
       'home.gifts.subtitle': '獲得免費禮品！（本月大獎iPhone16）',
       'home.gifts.cta': '登記立即獲得10000積分',
       'home.match.title': '5個問題',
       'home.match.subtitle': '配對最適合您的財務規劃師',
       'home.match.cta': '立即配對',
-      'home.events.title': '我們的活動',
+      'home.events.title': '活動',
       'home.events.cta': '立即加入',
+      'home.hero.eventDate': '10月 2025',
+      'home.gifts.description': '完成問卷，贏取豐富獎品',
+      'home.gifts.participate': '立即參與',
+      'home.events.description': '參與活動，與專業人士交流',
+      'partners.placeholder': '合作夥伴 {number}',
 
       // Homepage - Small CTA
       'home.getRightAgent': 'AI技術，匹配最適合您的財務顧問',
@@ -758,10 +763,10 @@ export const LanguageProvider = ({ children }) => {
       'events.viewAll': 'View All Events',
 
       // Homepage - Partners
-      'partners.title': 'Partnering Organizations',
+      'partners.title': 'Partners',
 
       // Homepage - Blogs
-      'blogs.title': 'Latest Blogs',
+      'blogs.title': 'Market News',
       'blogs.investmentStrategies2024': 'Investment Strategies for 2024',
       'blogs.investmentStrategiesExcerpt': 'Explore the latest investment trends and opportunities for 2024 to make informed investment decisions.',
       'blogs.insurancePolicies': 'Understanding Insurance Policies',
@@ -773,11 +778,11 @@ export const LanguageProvider = ({ children }) => {
 
       // Homepage - Become a Member
       'member.title': 'Become a Member',
-      'member.subtitle': 'Join now and get 10,000 points free',
+      'member.subtitle': 'Join now and get 1,000 points free',
       'member.cta': 'Register Now',
 
       // Homepage - Hero Section
-      'home.hero.registerNow': 'Register Now',
+      'home.hero.registerNow': 'Reserve your seat NOW',
       
       // Homepage - About Section
       'home.about.title': 'What is Persona Centric?',
@@ -789,15 +794,20 @@ export const LanguageProvider = ({ children }) => {
       'home.about.benefit3.title': 'Points Game',
       'home.about.benefit3.desc': 'Earn points and rewards by participating in platform activities',
       'home.about.benefit4.title': 'Knowledge Base',
-      'home.about.benefit4.desc': 'Access the latest financial knowledge and investment strategies',
-      'home.gifts.title': 'Investment Game',
+      'home.about.benefit4.desc': 'latest financial knowledge and investment strategies',
+      'home.gifts.title': 'Quizzes',
       'home.gifts.subtitle': 'Get free gifts! (This month\'s grand prize: iPhone16)',
       'home.gifts.cta': 'Register now and get 10000 points',
       'home.match.title': '5 Questions',
       'home.match.subtitle': 'to Match with your perfect Financial planner',
       'home.match.cta': 'Match Now',
-      'home.events.title': 'Our Events',
+      'home.events.title': 'Events',
       'home.events.cta': 'Join Now',
+      'home.hero.eventDate': 'October 2025',
+      'home.gifts.description': 'Complete quizzes and win prizes',
+      'home.gifts.participate': 'Join Now',
+      'home.events.description': 'Join our events, connect with professionals',
+      'partners.placeholder': 'Partner {number}',
 
       // Homepage - Small CTA
       'home.getRightAgent': 'AI technology matches you with the perfect financial advisor',

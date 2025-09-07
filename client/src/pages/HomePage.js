@@ -62,7 +62,7 @@ const HomePage = () => {
           {/* Content */}
           <div className="absolute inset-0 flex flex-col items-center justify-end text-center pb-12 sm:pb-16 px-3 sm:px-4">
             <p className="text-base sm:text-lg lg:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl">
-              10月30號中環街市
+              {t('home.hero.eventDate')}
             </p>
             {/* CTA Button */}
             <Link
@@ -171,15 +171,15 @@ const HomePage = () => {
           <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
             <div className="w-1/2 text-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">投資遊戲</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.gifts.title')}</h2>
               <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
-                參與我們的投資遊戲活動，學習投資策略，贏取豐富獎品
+                {t('home.gifts.description')}
               </p>
               <Link
                 to="/register"
                 className="w-full sm:w-auto inline-flex justify-center items-center bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg text-sm sm:text-base font-medium hover:bg-blue-700 transition-all duration-300"
               >
-                立即參與
+                {t('home.gifts.participate')}
               </Link>
             </div>
 
@@ -199,9 +199,9 @@ const HomePage = () => {
           <div className="flex flex-row items-center justify-between gap-6 sm:gap-8 lg:gap-16">
             {/* Left side - Text and CTA */}
             <div className="w-1/2 text-left">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">我們的活動</h2>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8">{t('home.events.title')}</h2>
               <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8 max-w-xl">
-                探索我們的活動，與專業人士交流，獲取最新的財務知識
+                {t('home.events.description')}
               </p>
               <Link
                 to="/events"
@@ -233,7 +233,7 @@ const HomePage = () => {
             {[...Array(10)].map((_, index) => (
               <div key={index} className="bg-gray-100 rounded-lg p-2 sm:p-3 flex items-center justify-center hover:bg-gray-200 transition-all duration-300 group hover:scale-105">
                 <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-300 rounded-lg flex items-center justify-center group-hover:bg-gray-400 transition-all duration-300">
-                  <span className="text-gray-600 font-semibold text-[10px] sm:text-xs lg:text-sm">Partner {index + 1}</span>
+                  <span className="text-gray-600 font-semibold text-[10px] sm:text-xs lg:text-sm">{t('partners.placeholder', { number: index + 1 })}</span>
                 </div>
               </div>
             ))}
