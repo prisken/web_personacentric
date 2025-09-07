@@ -72,7 +72,7 @@ const ScrollingGifts = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-gray-800 font-medium text-center">{gift.name}</h3>
+                  <h3 className="text-gray-800 font-medium text-center truncate text-sm sm:text-base">{gift.name}</h3>
                 </div>
               </div>
             </div>

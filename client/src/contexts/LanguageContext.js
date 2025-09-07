@@ -110,9 +110,9 @@ export const LanguageProvider = ({ children }) => {
       'home.events.title': '活動',
       'home.events.cta': '立即加入',
       'home.hero.eventDate': '10月 2025',
-      'home.gifts.description': '完成問卷，贏取豐富獎品',
+      'home.gifts.description': '問卷贏獎',
       'home.gifts.participate': '立即參與',
-      'home.events.description': '參與活動，與專業人士交流',
+      'home.events.description': '活動交流',
       'partners.placeholder': '合作夥伴 {number}',
 
       // Homepage - Small CTA
@@ -804,9 +804,9 @@ export const LanguageProvider = ({ children }) => {
       'home.events.title': 'Events',
       'home.events.cta': 'Join Now',
       'home.hero.eventDate': 'October 2025',
-      'home.gifts.description': 'Complete quizzes and win prizes',
+      'home.gifts.description': 'Quiz & Win',
       'home.gifts.participate': 'Join Now',
-      'home.events.description': 'Join our events, connect with professionals',
+      'home.events.description': 'Events & Connect',
       'partners.placeholder': 'Partner {number}',
 
       // Homepage - Small CTA

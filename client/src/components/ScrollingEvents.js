@@ -56,8 +56,8 @@ const ScrollingEvents = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-gray-800 font-medium">{event.name}</h3>
-                  <p className="text-gray-500 text-sm mt-1">{event.date}</p>
+                  <h3 className="text-gray-800 font-medium truncate text-sm sm:text-base">{event.name}</h3>
+                  <p className="text-gray-500 text-xs sm:text-sm mt-1">{event.date}</p>
                 </div>
               </div>
             </div>
