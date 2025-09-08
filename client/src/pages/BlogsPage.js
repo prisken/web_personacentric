@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
@@ -11,19 +11,14 @@ const BlogsPage = () => {
   const [blogPosts, setBlogPosts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
+  const [, setPagination] = useState({
     current_page: 1,
     total_pages: 1,
     total_items: 0,
     items_per_page: 10
   });
 
-  useEffect(() => {
-    fetchBlogs();
-    fetchCategories();
-  }, []);
-
-  const fetchBlogs = async (page = 1, category = null) => {
+  const fetchBlogs = useCallback(async (page = 1, category = null) => {
     try {
       setLoading(true);
       let url = `/blogs?page=${page}&limit=12&status=published`;
@@ -68,9 +63,9 @@ const BlogsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const response = await apiService.get('/blogs/categories/all');
       if (response.success && response.data) {
@@ -96,9 +91,12 @@ const BlogsPage = () => {
         : ['All', 'Investment', 'Retirement', 'Tax Planning', 'Insurance', 'Real Estate', 'Financial Planning', 'Market Analysis']
       );
     }
-  };
+  }, [language]);
 
-
+  useEffect(() => {
+    fetchBlogs();
+    fetchCategories();
+  }, [fetchBlogs, fetchCategories]);
 
   const filteredPosts = selectedCategory === 'All' || selectedCategory === '全部'
     ? blogPosts
@@ -119,9 +117,6 @@ const BlogsPage = () => {
     });
   };
 
-  const formatReadingTime = (minutes) => {
-    return language === 'zh-TW' ? `${minutes} 分鐘閱讀` : `${minutes} min read`;
-  };
 
   return (
     <>

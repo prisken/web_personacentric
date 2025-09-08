@@ -594,6 +594,7 @@ export const LanguageProvider = ({ children }) => {
       'about.testimonials.testimonial3.text': '活動很有趣，認識了很多志同道合的朋友，還賺到了積分！',
 
       // Roles
+      'roles.super_admin.emoji': '👑',
       'roles.admin.emoji': '👑',
       'roles.agent.emoji': '👨‍💼',
       'roles.client.emoji': '👤',
@@ -1284,6 +1285,7 @@ export const LanguageProvider = ({ children }) => {
       'about.testimonials.testimonial3.text': 'The activities are very interesting, and I made new friends and earned points!',
 
       // Roles
+      'roles.super_admin.emoji': '👑',
       'roles.admin.emoji': '👑',
       'roles.agent.emoji': '👨‍💼',
       'roles.client.emoji': '👤',

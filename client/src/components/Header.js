@@ -53,10 +53,7 @@ const Header = () => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
       setIsScrolled(scrollTop > 50);
-      // For pages with dark hero sections, check if we're still over the hero
-      // Account for the header height (4rem = 64px) when calculating hero height
-      const heroHeight = window.innerHeight - 64; // 64px is the header height
-      setIsOverHero(scrollTop < heroHeight);
+      setIsOverHero(scrollTop < window.innerHeight);
     };
 
     window.addEventListener('scroll', handleScroll);

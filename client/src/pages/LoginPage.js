@@ -83,27 +83,84 @@ const LoginPage = () => {
               🧪 測試帳號快速登入
             </h3>
             <div className="space-y-2">
+              {/* Super Admin Login */}
+              <button
+                onClick={() => handleQuickLogin('superadmin@personacentric.com', 'superadmin123')}
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-purple-600 to-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:from-purple-700 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+              >
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">👑</span>
+                  <span className="font-semibold">超級管理員</span>
+                  <span className="ml-2 text-xs opacity-90">(superadmin@personacentric.com)</span>
+                </span>
+              </button>
+              
+              {/* Admin Login */}
               <button
                 onClick={() => handleQuickLogin('admin@personacentric.com', 'admin123')}
                 disabled={loading}
                 className="w-full bg-red-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                👑 管理員登入 (admin@personacentric.com)
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">👑</span>
+                  <span>管理員</span>
+                  <span className="ml-2 text-xs opacity-90">(admin@personacentric.com)</span>
+                </span>
               </button>
+              
+              {/* Agent Login */}
               <button
                 onClick={() => handleQuickLogin('agent1@personacentric.com', 'agent123')}
                 disabled={loading}
                 className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                👨‍💼 顧問登入 (agent1@personacentric.com)
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">👨‍💼</span>
+                  <span>顧問</span>
+                  <span className="ml-2 text-xs opacity-90">(agent1@personacentric.com)</span>
+                </span>
               </button>
+              
+              {/* Client Login */}
               <button
                 onClick={() => handleQuickLogin('client1@personacentric.com', 'client123')}
                 disabled={loading}
                 className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                👤 客戶登入 (client1@personacentric.com)
+                <span className="flex items-center justify-center">
+                  <span className="mr-2">👤</span>
+                  <span>客戶</span>
+                  <span className="ml-2 text-xs opacity-90">(client1@personacentric.com)</span>
+                </span>
               </button>
+            </div>
+            
+            {/* Role Information */}
+            <div className="mt-3 p-3 bg-gray-50 rounded-md">
+              <h4 className="text-xs font-medium text-gray-600 mb-2">角色權限說明：</h4>
+              <div className="text-xs text-gray-500 space-y-1">
+                <div className="flex items-center">
+                  <span className="mr-2">👑</span>
+                  <span className="font-medium">超級管理員：</span>
+                  <span>完整系統管理權限（用戶、積分、付款、內容）</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">👑</span>
+                  <span className="font-medium">管理員：</span>
+                  <span>內容管理權限（活動、部落格、測驗）</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">👨‍💼</span>
+                  <span className="font-medium">顧問：</span>
+                  <span>活動管理與客戶關係</span>
+                </div>
+                <div className="flex items-center">
+                  <span className="mr-2">👤</span>
+                  <span className="font-medium">客戶：</span>
+                  <span>基本存取權限（查看內容、參與活動）</span>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -169,9 +226,16 @@ const LoginPage = () => {
               </div>
 
               <div className="text-sm">
-                <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
+                <button 
+                  type="button"
+                  className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline"
+                  onClick={() => {
+                    // TODO: Implement forgot password functionality
+                    console.log('Forgot password clicked');
+                  }}
+                >
                   {t('login.forgotPassword')}
-                </a>
+                </button>
               </div>
             </div>
 
@@ -204,23 +268,31 @@ const LoginPage = () => {
 
             <div className="mt-6 grid grid-cols-2 gap-3">
               <div>
-                <a
-                  href="#"
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={() => {
+                    // TODO: Implement Google OAuth
+                    console.log('Google login clicked');
+                  }}
                 >
                   <i className="fab fa-google text-red-500"></i>
                   <span className="ml-2">{t('login.google')}</span>
-                </a>
+                </button>
               </div>
 
               <div>
-                <a
-                  href="#"
-                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={() => {
+                    // TODO: Implement Facebook OAuth
+                    console.log('Facebook login clicked');
+                  }}
                 >
                   <i className="fab fa-facebook text-blue-600"></i>
                   <span className="ml-2">{t('login.facebook')}</span>
-                </a>
+                </button>
               </div>
             </div>
           </div>

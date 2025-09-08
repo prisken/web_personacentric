@@ -39,7 +39,7 @@ const User = sequelize.define('User', {
     }
   },
   role: {
-    type: DataTypes.ENUM('admin', 'agent', 'client'),
+    type: DataTypes.ENUM('admin', 'agent', 'client', 'super_admin'),
     defaultValue: 'client'
   },
   language_preference: {
@@ -81,6 +81,24 @@ const User = sequelize.define('User', {
   reset_password_expires: {
     type: DataTypes.DATE,
     allowNull: true
+  },
+  permissions: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: {}
+  },
+  created_by_super_admin: {
+    type: DataTypes.UUID,
+    allowNull: true,
+    references: {
+      model: 'users',
+      key: 'id'
+    }
+  },
+  is_system_admin: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
   }
 }, {
   tableName: 'users',
@@ -105,6 +123,15 @@ const User = sequelize.define('User', {
     },
     {
       fields: ['client_id']
+    },
+    {
+      fields: ['permissions']
+    },
+    {
+      fields: ['created_by_super_admin']
+    },
+    {
+      fields: ['is_system_admin']
     }
   ]
 });

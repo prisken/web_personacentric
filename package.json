@@ -14,7 +14,16 @@
     "dev-full": "concurrently \"npm run dev\" \"npm run client\"",
     "db:reset": "node server/utils/resetDatabase.js",
     "seed": "node server/utils/seeder.js",
-    "db:fix": "node -e \"const DatabaseFixer = require('./server/utils/databaseFixer'); new DatabaseFixer().fixAll().then(() => process.exit(0)).catch(() => process.exit(1));\""
+    "db:fix": "node -e \"const DatabaseFixer = require('./server/utils/databaseFixer'); new DatabaseFixer().fixAll().then(() => process.exit(0)).catch(() => process.exit(1));\"",
+    "migrate": "node server/utils/runMigrations.js up",
+    "migrate:up": "node server/utils/runMigrations.js up",
+    "migrate:down": "node server/utils/runMigrations.js down",
+    "migrate:status": "node server/utils/runMigrations.js status",
+    "super-admin:create": "node server/scripts/createSuperAdmin.js",
+    "super-admin:migrate": "node server/scripts/migrateAdmins.js",
+    "super-admin:bootstrap": "node server/scripts/bootstrapSuperAdmin.js bootstrap",
+    "super-admin:test": "node server/scripts/bootstrapSuperAdmin.js test",
+    "migrate:mark-existing": "node server/scripts/markExistingMigrations.js"
   },
   "dependencies": {
     "axios": "^1.6.0",
