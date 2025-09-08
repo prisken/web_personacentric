@@ -151,11 +151,11 @@ const BlogsPage = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
             <div className="text-center">
               <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-6">
-                {language === 'zh-TW' ? '財務知識專欄' : 'Financial Knowledge Hub'}
+                {language === 'zh-TW' ? '市場追擊' : 'Financial Knowledge Hub'}
               </h1>
               <p className="text-base sm:text-lg lg:text-xl xl:text-2xl mb-6 sm:mb-8 max-w-3xl mx-auto opacity-90">
                 {language === 'zh-TW' 
-                  ? '由專業財務顧問撰寫的深度文章，助您掌握投資理財要訣'
+                  ? '由財務顧問撰寫的市場分析，掌握投資理財要訣'
                   : 'In-depth articles written by professional financial advisors to help you master investment and financial planning'
                 }
               </p>
