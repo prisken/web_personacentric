@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import ScrollingGifts from '../components/ScrollingGifts';
 import ScrollingEvents from '../components/ScrollingEvents';
+import LiveActivityPopup from '../components/LiveActivityPopup';
 
 const HomePage = () => {
   const { t } = useLanguage();
@@ -497,6 +498,9 @@ const HomePage = () => {
           display: none;
         }
       `}</style>
+      
+      {/* Live Activity Popup */}
+      <LiveActivityPopup />
     </div>
   );
 };
