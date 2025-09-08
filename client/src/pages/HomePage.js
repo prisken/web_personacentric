@@ -307,8 +307,8 @@ const HomePage = () => {
             </h2>
           </div>
           
-          {/* Responsive grid: Mobile: 3 per row, Tablet: 4 per row, Desktop: 6 per row */}
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+          {/* Responsive grid: Mobile: 5 per row, Tablet: 4 per row, Desktop: 6 per row */}
+          <div className="grid grid-cols-5 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4 lg:gap-6">
             {[...Array(26)].map((_, index) => (
               <div 
                 key={index} 
@@ -319,8 +319,8 @@ const HomePage = () => {
                   alt={`Partner ${index + 1}`}
                   className="max-w-full max-h-full object-contain transition-all duration-300"
                   style={{
-                    maxHeight: '60px',
-                    maxWidth: '120px'
+                    maxHeight: '40px',
+                    maxWidth: '80px'
                   }}
                   onError={(e) => {
                     e.target.style.display = 'none';
