@@ -29,7 +29,7 @@ const AboutUsPage = () => {
   return (
     <div className="pt-16 bg-white min-h-screen">
       {/* Hero Section - Inspired by Airbnb/Notion */}
-      <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white overflow-hidden">
+      <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white overflow-hidden">
         {/* Animated background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full animate-bounce"></div>
