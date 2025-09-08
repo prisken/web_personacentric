@@ -347,15 +347,16 @@ const EventsPage = () => {
                     </div>
                   </div>
 
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  {/* Enhanced Action Buttons */}
+                  <div className="space-y-3">
+                    {/* Primary Action Button */}
                     {user ? (
                       isUserRegistered(event.id) ? (
                         <button
                           onClick={() => handleCancelRegistration(event.id)}
-                          className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-3 sm:px-6 sm:py-4 rounded-xl text-sm sm:text-base font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
+                          className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-4 rounded-2xl text-base font-bold hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center space-x-3 group"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                           </svg>
                           <span>{t('events.cancelRegistration')}</span>
@@ -363,9 +364,9 @@ const EventsPage = () => {
                       ) : (
                         <button
                           onClick={() => handleRegisterForEvent(event.id)}
-                          className="flex-1 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-3 sm:px-6 sm:py-4 rounded-xl text-sm sm:text-base font-bold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-4 rounded-2xl text-base font-bold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center space-x-3 group"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                           </svg>
                           <span>{t('events.register')}</span>
@@ -374,23 +375,24 @@ const EventsPage = () => {
                     ) : (
                       <button
                         onClick={() => window.location.href = '/login'}
-                        className="flex-1 bg-gradient-to-r from-gray-500 to-gray-600 text-white px-4 py-3 sm:px-6 sm:py-4 rounded-xl text-sm sm:text-base font-bold hover:from-gray-600 hover:to-gray-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center space-x-2"
+                        className="w-full bg-gradient-to-r from-indigo-500 to-blue-600 text-white px-6 py-4 rounded-2xl text-base font-bold hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02] flex items-center justify-center space-x-3 group"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                         </svg>
                         <span>{t('events.loginToRegister')}</span>
                       </button>
                     )}
                     
+                    {/* Secondary Action Button */}
                     <button
                       onClick={() => {
                         setSelectedEvent(event);
                         setShowEventOverlay(true);
                       }}
-                      className="px-4 py-3 sm:px-6 sm:py-4 border-2 border-gray-300 text-gray-700 rounded-xl text-sm sm:text-base font-bold hover:border-gray-400 hover:bg-gray-50 transition-all duration-300 flex items-center justify-center space-x-2"
+                      className="w-full bg-white border-2 border-gray-200 text-gray-700 px-6 py-4 rounded-2xl text-base font-semibold hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] flex items-center justify-center space-x-3 group"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>{t('events.details')}</span>
