@@ -307,12 +307,31 @@ const HomePage = () => {
             </h2>
           </div>
           
-          {/* Mobile: 5 per row, Tablet: 5 per row, Desktop: 5 per row */}
-          <div className="grid grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
-            {[...Array(10)].map((_, index) => (
-              <div key={index} className="bg-gray-100 rounded-lg p-2 sm:p-3 flex items-center justify-center hover:bg-gray-200 transition-all duration-300 group hover:scale-105">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 bg-gray-300 rounded-lg flex items-center justify-center group-hover:bg-gray-400 transition-all duration-300">
-                  <span className="text-gray-600 font-semibold text-[10px] sm:text-xs lg:text-sm">{t('partners.placeholder', { number: index + 1 })}</span>
+          {/* Responsive grid: Mobile: 3 per row, Tablet: 4 per row, Desktop: 6 per row */}
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+            {[...Array(26)].map((_, index) => (
+              <div 
+                key={index} 
+                className="bg-white rounded-lg p-2 sm:p-3 lg:p-4 flex items-center justify-center hover:shadow-lg transition-all duration-300 group hover:scale-105 border border-gray-100"
+              >
+                <img
+                  src={`/images/PC partners/logo_${index.toString().padStart(2, '0')}.jpg`}
+                  alt={`Partner ${index + 1}`}
+                  className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                  style={{
+                    maxHeight: '60px',
+                    maxWidth: '120px'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div 
+                  className="w-full h-16 bg-gray-100 rounded flex items-center justify-center text-gray-500 text-xs font-medium"
+                  style={{ display: 'none' }}
+                >
+                  Logo {index + 1}
                 </div>
               </div>
             ))}
