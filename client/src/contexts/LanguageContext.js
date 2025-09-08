@@ -33,8 +33,8 @@ export const LanguageProvider = ({ children }) => {
       'lifestyle.retiree': '退休族',
 
       // Events Page
-      'events.title': '最新活動',
-      'events.description': '探索我們的活動，與專業人士交流，獲取最新的財務知識',
+      'events.title': '活動',
+      'events.description': '參與活動，認識新朋友，得到財務自由!',
       'events.upcoming': '即將舉行',
       'events.past': '過往活動',
       'events.noUpcoming': '暫無即將舉行的活動',
