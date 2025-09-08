@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const LiveActivityPopup = () => {
-  const { t } = useTranslation();
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
   const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
 
