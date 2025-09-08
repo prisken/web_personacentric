@@ -133,12 +133,21 @@ const EventsPage = () => {
     <div className="pt-16 bg-gradient-to-br from-blue-50 via-white to-purple-50 min-h-screen">
       {/* Enhanced Hero Section */}
       <div className="relative overflow-hidden">
+        {/* Hero Background Image */}
+        <div className="absolute inset-0">
+          <img 
+            src="/images/event hero image.jpg" 
+            alt="Event Hero Background" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-purple-900/60 to-pink-900/70"></div>
+        </div>
+        
         {/* Background decorative elements */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full -translate-y-48 translate-x-48"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-pink-400/20 to-orange-400/20 rounded-full translate-y-40 -translate-x-40"></div>
         
-        <div className="relative bg-white/80 backdrop-blur-sm shadow-xl border-b border-gray-200">
+        <div className="relative bg-transparent backdrop-blur-sm shadow-xl border-b border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="py-8 sm:py-12 lg:py-16">
               <div className="text-center">
@@ -147,15 +156,15 @@ const EventsPage = () => {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-4 sm:mb-6">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-white mb-4 sm:mb-6 drop-shadow-lg">
                   {t('events.title')}
                 </h1>
-                <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed">
+                <p className="text-lg sm:text-xl lg:text-2xl text-white/90 max-w-4xl mx-auto leading-relaxed drop-shadow-md">
                   {t('events.description')}
                 </p>
                 <div className="mt-8 flex justify-center">
-                  <div className="flex items-center space-x-2 text-sm text-gray-500">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <div className="flex items-center space-x-2 text-sm text-white/80 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                     <span>{events.filter(e => new Date(e.start_date) >= new Date()).length} {t('events.upcoming')} {t('events.events')}</span>
                   </div>
                 </div>
