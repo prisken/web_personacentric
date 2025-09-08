@@ -317,7 +317,7 @@ const HomePage = () => {
                 <img
                   src={`/images/PC partners/logo_${index.toString().padStart(2, '0')}.jpg`}
                   alt={`Partner ${index + 1}`}
-                  className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                  className="max-w-full max-h-full object-contain transition-all duration-300"
                   style={{
                     maxHeight: '60px',
                     maxWidth: '120px'
