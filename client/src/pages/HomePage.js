@@ -312,15 +312,15 @@ const HomePage = () => {
             {[...Array(26)].map((_, index) => (
               <div 
                 key={index} 
-                className="bg-white rounded-lg p-2 sm:p-3 lg:p-4 flex items-center justify-center hover:shadow-lg transition-all duration-300 group hover:scale-105 border border-gray-100"
+                className="sm:bg-white sm:rounded-lg p-1 sm:p-3 lg:p-4 flex items-center justify-center sm:hover:shadow-lg transition-all duration-300 group hover:scale-105 sm:border sm:border-gray-100"
               >
                 <img
                   src={`/images/PC partners/logo_${index.toString().padStart(2, '0')}.jpg`}
                   alt={`Partner ${index + 1}`}
                   className="max-w-full max-h-full object-contain transition-all duration-300"
                   style={{
-                    maxHeight: '40px',
-                    maxWidth: '80px'
+                    maxHeight: '30px',
+                    maxWidth: '60px'
                   }}
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -328,7 +328,7 @@ const HomePage = () => {
                   }}
                 />
                 <div 
-                  className="w-full h-16 bg-gray-100 rounded flex items-center justify-center text-gray-500 text-xs font-medium"
+                  className="w-full h-12 sm:h-16 bg-gray-100 rounded flex items-center justify-center text-gray-500 text-xs font-medium"
                   style={{ display: 'none' }}
                 >
                   Logo {index + 1}
