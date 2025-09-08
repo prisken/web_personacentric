@@ -41,7 +41,7 @@ const AboutUsPage = () => {
         <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
           <div className="mb-8">
             <span className="inline-block bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-medium mb-6">
-              {language === 'zh-TW' ? '🌟 超過10,000名會員信任我們' : '🌟 Trusted by 10,000+ members'}
+              {language === 'zh-TW' ? '🌟 超過1,000名滿意客戶' : '🌟 Trusted by 1,000+ clients'}
             </span>
           </div>
           
@@ -71,12 +71,12 @@ const AboutUsPage = () => {
           {/* Social proof - Inspired by Dropbox */}
           <div className="flex flex-wrap justify-center items-center gap-8 opacity-80">
             <div className="text-center">
-              <div className="text-3xl font-bold">500+</div>
+              <div className="text-3xl font-bold">50+</div>
               <div className="text-sm">{t('about.stats.advisors')}</div>
             </div>
             <div className="w-px h-8 bg-white/30"></div>
             <div className="text-center">
-              <div className="text-3xl font-bold">10,000+</div>
+              <div className="text-3xl font-bold">1,000+</div>
               <div className="text-sm">{t('about.stats.members')}</div>
             </div>
             <div className="w-px h-8 bg-white/30"></div>
@@ -117,11 +117,11 @@ const AboutUsPage = () => {
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              {language === 'zh-TW' ? '我們的使命與價值觀' : 'Our Mission & Values'}
+              {language === 'zh-TW' ? '使命與價值觀' : 'Mission & Values'}
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               {language === 'zh-TW' 
-                ? '我們相信每個人都應該獲得個性化的財務規劃服務，建立長期的信任關係'
+                ? '每個人的財務規劃需求都不一樣，建立長期的信任關係'
                 : 'We believe everyone deserves personalized financial planning services and long-term trust relationships'
               }
             </p>
@@ -185,11 +185,11 @@ const AboutUsPage = () => {
               <div className="text-center">
                 <div className="text-6xl mb-8">🌟</div>
                 <h3 className="text-3xl font-bold text-gray-900 mb-6">
-                  {language === 'zh-TW' ? '我們的影響力' : 'Our Impact'}
+                  {language === 'zh-TW' ? '影響力' : 'Our Impact'}
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center">
-                    <div className="text-4xl font-bold text-blue-600 mb-2">10,000+</div>
+                    <div className="text-4xl font-bold text-blue-600 mb-2">1,000+</div>
                     <div className="text-gray-600">{language === 'zh-TW' ? '會員獲得財務建議' : 'Members receiving financial advice'}</div>
                   </div>
                   <div className="text-center">
@@ -216,7 +216,7 @@ const AboutUsPage = () => {
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="text-center mb-16">
             <span className="inline-block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-2 rounded-full text-sm font-medium mb-6">
-              {language === 'zh-TW' ? '🎁 獨家獎勵系統' : '🎁 Exclusive Reward System'}
+              {language === 'zh-TW' ? '🎁 獨家獎勵' : '🎁 Exclusive Reward System'}
             </span>
             <h2 className="text-5xl font-bold text-gray-900 mb-6">
               {t('about.giftSystem.title')}
@@ -282,9 +282,9 @@ const AboutUsPage = () => {
             <h3 className="text-3xl font-bold text-gray-900 mb-8">{t('about.giftSystem.featured.title')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { icon: '🎧', name: t('about.giftSystem.featured.airpods'), points: '5,000', color: 'from-blue-500 to-purple-600' },
-                { icon: '☕', name: t('about.giftSystem.featured.coffee'), points: '3,000', color: 'from-green-500 to-blue-600' },
-                { icon: '💳', name: t('about.giftSystem.featured.giftcard'), points: '1,000', color: 'from-orange-500 to-red-600' }
+                { icon: '🎧', name: t('about.giftSystem.featured.airpods'), points: '50,000', color: 'from-blue-500 to-purple-600' },
+                { icon: '☕', name: t('about.giftSystem.featured.coffee'), points: '60,000', color: 'from-green-500 to-blue-600' },
+                { icon: '💳', name: t('about.giftSystem.featured.giftcard'), points: '5,000', color: 'from-orange-500 to-red-600' }
               ].map((gift, index) => (
                 <div key={index} className="group">
                   <div className="bg-white rounded-3xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
@@ -362,44 +362,6 @@ const AboutUsPage = () => {
         </div>
       </section>
 
-      {/* Testimonials - Inspired by Airbnb */}
-      <section className="py-24 bg-gradient-to-br from-blue-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-bold text-gray-900 mb-6">
-              {t('about.testimonials.title')}
-            </h2>
-            <p className="text-xl text-gray-600">
-              {t('about.testimonials.subtitle')}
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { name: t('about.testimonials.testimonial1.name'), role: t('about.testimonials.testimonial1.role'), text: t('about.testimonials.testimonial1.text'), emoji: '👨‍💼', color: 'from-blue-500 to-purple-600' },
-              { name: t('about.testimonials.testimonial2.name'), role: t('about.testimonials.testimonial2.role'), text: t('about.testimonials.testimonial2.text'), emoji: '👩‍🏫', color: 'from-purple-500 to-pink-600' },
-              { name: t('about.testimonials.testimonial3.name'), role: t('about.testimonials.testimonial3.role'), text: t('about.testimonials.testimonial3.text'), emoji: '👨‍💼', color: 'from-green-500 to-blue-600' }
-            ].map((testimonial, index) => (
-              <div key={index} className="group">
-                <div className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
-                  <div className="flex items-center mb-6">
-                    <div className={`w-16 h-16 bg-gradient-to-br ${testimonial.color} rounded-2xl flex items-center justify-center text-2xl text-white mr-4 group-hover:scale-110 transition-transform duration-300`}>
-                      {testimonial.emoji}
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-900">{testimonial.name}</h4>
-                      <p className="text-gray-600">{testimonial.role}</p>
-                    </div>
-                  </div>
-                  <p className="text-gray-700 leading-relaxed italic">
-                    "{testimonial.text}"
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Enhanced Statistics - Inspired by Stripe */}
       <section className="py-24 bg-gradient-to-r from-blue-600 to-purple-600 text-white relative overflow-hidden">
@@ -413,8 +375,8 @@ const AboutUsPage = () => {
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { icon: '👨‍💼', number: '500+', label: t('about.stats.advisors') },
-              { icon: '👥', number: '10,000+', label: t('about.stats.members') },
+              { icon: '👨‍💼', number: '50+', label: t('about.stats.advisors') },
+              { icon: '👥', number: '1,000+', label: t('about.stats.members') },
               { icon: '🎉', number: '200+', label: t('about.stats.events') },
               { icon: '⭐', number: '98%', label: t('about.stats.satisfaction') }
             ].map((stat, index) => (
