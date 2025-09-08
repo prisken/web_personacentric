@@ -318,11 +318,7 @@ const HomePage = () => {
                 <img
                   src={`/images/PC partners/logo_${index.toString().padStart(2, '0')}.jpg`}
                   alt={`Partner ${index + 1}`}
-                  className="max-w-full max-h-full object-contain transition-all duration-300"
-                  style={{
-                    maxHeight: '30px',
-                    maxWidth: '60px'
-                  }}
+                  className="max-w-full max-h-full object-contain transition-all duration-300 h-[30px] w-[60px] sm:h-[50px] sm:w-[100px] lg:h-[70px] lg:w-[140px]"
                   onError={(e) => {
                     e.target.style.display = 'none';
                     e.target.nextSibling.style.display = 'flex';
