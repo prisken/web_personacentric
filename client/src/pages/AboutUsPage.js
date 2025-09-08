@@ -29,7 +29,7 @@ const AboutUsPage = () => {
   return (
     <div className="pt-16 bg-white min-h-screen">
       {/* Hero Section - Inspired by Airbnb/Notion */}
-      <section className="relative min-h-[calc(100vh-4rem)] flex items-center justify-center bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white overflow-hidden">
         {/* Animated background pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 left-20 w-32 h-32 bg-white rounded-full animate-bounce"></div>
@@ -38,51 +38,53 @@ const AboutUsPage = () => {
           <div className="absolute bottom-20 right-20 w-28 h-28 bg-white rounded-full animate-bounce"></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 text-center z-10">
-          <div className="mb-8">
-            <span className="inline-block bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-medium mb-6">
-              {language === 'zh-TW' ? '🌟 超過1,000名滿意客戶' : '🌟 Trusted by 1,000+ clients'}
-            </span>
-          </div>
-          
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in">
-            {t('about.hero.title')}
-          </h1>
-          
-          <p className="text-2xl md:text-3xl max-w-5xl mx-auto mb-12 leading-relaxed opacity-90">
-            {t('about.hero.subtitle')}
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-            <Link
-              to="/register"
-              className="bg-white text-blue-600 px-10 py-5 rounded-2xl font-bold text-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl"
-            >
-              {t('about.hero.cta')}
-            </Link>
-            <Link
-              to="/agent-matching"
-              className="border-2 border-white text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-white hover:text-blue-600 transition-all duration-300"
-            >
-              {t('about.hero.learnMore')}
-            </Link>
-          </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="text-center">
+            <div className="mb-8">
+              <span className="inline-block bg-white/20 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-medium mb-6">
+                {language === 'zh-TW' ? '🌟 超過1,000名滿意客戶' : '🌟 Trusted by 1,000+ clients'}
+              </span>
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-6 sm:mb-8 leading-tight">
+              {t('about.hero.title')}
+            </h1>
+            
+            <p className="text-lg sm:text-xl lg:text-2xl xl:text-3xl max-w-4xl mx-auto mb-8 sm:mb-12 leading-relaxed opacity-90">
+              {t('about.hero.subtitle')}
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16">
+              <Link
+                to="/register"
+                className="bg-white text-blue-600 px-8 py-4 sm:px-10 sm:py-5 rounded-2xl font-bold text-lg sm:text-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-2xl"
+              >
+                {t('about.hero.cta')}
+              </Link>
+              <Link
+                to="/agent-matching"
+                className="border-2 border-white text-white px-8 py-4 sm:px-10 sm:py-5 rounded-2xl font-bold text-lg sm:text-xl hover:bg-white hover:text-blue-600 transition-all duration-300"
+              >
+                {t('about.hero.learnMore')}
+              </Link>
+            </div>
 
-          {/* Social proof - Inspired by Dropbox */}
-          <div className="flex flex-wrap justify-center items-center gap-8 opacity-80">
-            <div className="text-center">
-              <div className="text-3xl font-bold">50+</div>
-              <div className="text-sm">{t('about.stats.advisors')}</div>
-            </div>
-            <div className="w-px h-8 bg-white/30"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">1,000+</div>
-              <div className="text-sm">{t('about.stats.members')}</div>
-            </div>
-            <div className="w-px h-8 bg-white/30"></div>
-            <div className="text-center">
-              <div className="text-3xl font-bold">98%</div>
-              <div className="text-sm">{t('about.stats.satisfaction')}</div>
+            {/* Social proof - Inspired by Dropbox */}
+            <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-8 opacity-80">
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold">50+</div>
+                <div className="text-xs sm:text-sm">{t('about.stats.advisors')}</div>
+              </div>
+              <div className="w-px h-6 sm:h-8 bg-white/30"></div>
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold">1,000+</div>
+                <div className="text-xs sm:text-sm">{t('about.stats.members')}</div>
+              </div>
+              <div className="w-px h-6 sm:h-8 bg-white/30"></div>
+              <div className="text-center">
+                <div className="text-2xl sm:text-3xl font-bold">98%</div>
+                <div className="text-xs sm:text-sm">{t('about.stats.satisfaction')}</div>
+              </div>
             </div>
           </div>
         </div>
