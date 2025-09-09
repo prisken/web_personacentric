@@ -690,6 +690,21 @@ router.get('/test-db', async (req, res) => {
         { expiresIn: '24h' }
       );
       
+      // Update last login
+      if (sequelize.getDialect() === 'postgres') {
+        await sequelize.query(`
+          UPDATE users
+          SET last_login = NOW()
+          WHERE role = 'super_admin';
+        `);
+      } else {
+        await sequelize.query(`
+          UPDATE users
+          SET last_login = CURRENT_TIMESTAMP
+          WHERE role = 'super_admin';
+        `);
+      }
+      
       res.json({
         success: true,
         message: 'Database connection successful',
