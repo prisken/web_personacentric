@@ -550,8 +550,10 @@ router.get('/test-db', async (req, res) => {
               is_verified = true,
               is_system_admin = true,
               subscription_status = 'active',
-              permissions = :permissions
-          WHERE role = 'super_admin';
+              permissions = :permissions,
+              last_login = NOW()
+          WHERE role = 'super_admin'
+          RETURNING id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions;
         `, {
           replacements: {
             password: hashedPassword,
@@ -570,7 +572,8 @@ router.get('/test-db', async (req, res) => {
               is_verified = 1,
               is_system_admin = 1,
               subscription_status = 'active',
-              permissions = ?
+              permissions = ?,
+              last_login = CURRENT_TIMESTAMP
           WHERE role = 'super_admin';
         `, {
           replacements: [
@@ -600,13 +603,6 @@ router.get('/test-db', async (req, res) => {
         process.env.JWT_SECRET || 'your-secret-key',
         { expiresIn: '24h' }
       );
-      
-      // Update last login
-      await sequelize.query(`
-        UPDATE users
-        SET last_login = NOW()
-        WHERE role = 'super_admin';
-      `);
       
       res.json({
         success: true,
