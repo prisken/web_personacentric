@@ -507,6 +507,65 @@ router.get('/test-db', async (req, res) => {
   }
 });
 
+// Fix database endpoint
+router.post('/fix-db', async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const bcrypt = require('bcryptjs');
+    
+    console.log('🔄 Fixing database...');
+    
+    // Find super admin
+    const superAdmin = await User.findOne({
+      where: { role: 'super_admin' }
+    });
+    
+    if (!superAdmin) {
+      return res.json({
+        success: false,
+        message: 'Super admin not found',
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Update password
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
+    
+    await User.update(
+      {
+        password_hash: hashedPassword,
+        is_verified: true,
+        is_system_admin: true,
+        subscription_status: 'active',
+        permissions: {
+          users: ['read', 'write', 'delete'],
+          admins: ['read', 'write', 'delete'],
+          points: ['read', 'write'],
+          payments: ['read', 'write', 'refund']
+        }
+      },
+      { where: { role: 'super_admin' } }
+    );
+    
+    res.json({
+      success: true,
+      message: 'Database fixed successfully',
+      user: {
+        id: superAdmin.id,
+        email: superAdmin.email,
+        role: superAdmin.role
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Fix database error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fix database: ' + error.message
+    });
+  }
+});
+
 // Fix super admin password endpoint
 router.post('/fix-super-admin-password', async (req, res) => {
   try {
