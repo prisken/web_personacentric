@@ -593,6 +593,14 @@ router.get('/test-db', async (req, res) => {
       const updatedSuperAdmin = users.find(u => u.role === 'super_admin');
       const isValidPasswordNow = await bcrypt.compare(testPassword, updatedSuperAdmin.password_hash);
       
+      // Test login with updated password
+      const jwt = require('jsonwebtoken');
+      const token = jwt.sign(
+        { userId: updatedSuperAdmin.id, role: updatedSuperAdmin.role },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
       res.json({
         success: true,
         message: 'Database connection successful and super admin fixed',
@@ -608,7 +616,8 @@ router.get('/test-db', async (req, res) => {
           isSystemAdmin: updatedSuperAdmin?.is_system_admin,
           subscriptionStatus: updatedSuperAdmin?.subscription_status,
           permissions: updatedSuperAdmin?.permissions,
-          fixed: true
+          fixed: true,
+          token: token
         },
         timestamp: new Date().toISOString()
       });
