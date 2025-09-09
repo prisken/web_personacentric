@@ -469,7 +469,7 @@ router.get('/test-db', async (req, res) => {
     
     // Get all users
     const users = await User.findAll({
-      attributes: ['email', 'role', 'is_system_admin']
+      attributes: ['id', 'email', 'role', 'is_system_admin', 'password_hash']
     });
     
     res.json({
@@ -484,6 +484,48 @@ router.get('/test-db', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Database connection failed: ' + error.message
+    });
+  }
+});
+
+// Fix super admin password endpoint
+router.post('/fix-super-admin-password', async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const bcrypt = require('bcryptjs');
+    
+    // Find super admin
+    const superAdmin = await User.findOne({
+      where: { role: 'super_admin' }
+    });
+    
+    if (!superAdmin) {
+      return res.status(404).json({
+        success: false,
+        error: 'Super admin not found'
+      });
+    }
+    
+    // Update password
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
+    
+    await superAdmin.update({
+      password_hash: hashedPassword
+    });
+    
+    res.json({
+      success: true,
+      message: 'Super admin password fixed successfully',
+      user: {
+        email: superAdmin.email,
+        role: superAdmin.role
+      }
+    });
+  } catch (error) {
+    console.error('Fix super admin password error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fix super admin password: ' + error.message
     });
   }
 });
