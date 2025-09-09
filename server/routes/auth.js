@@ -49,6 +49,47 @@ router.post('/create-admin', async (req, res) => {
 // Temporary endpoint to create all test users (remove in production)
 router.post('/create-all-test-users', async (req, res) => {
   try {
+    // First, try to fix the database schema
+    try {
+      const { sequelize } = require('../models');
+      
+      // Add missing columns if they don't exist
+      try {
+        await sequelize.query(`
+          ALTER TABLE users ADD COLUMN permissions JSONB DEFAULT '{}';
+        `);
+        console.log('✅ Added permissions column');
+      } catch (error) {
+        if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+          console.log('✅ Permissions column already exists');
+        }
+      }
+      
+      try {
+        await sequelize.query(`
+          ALTER TABLE users ADD COLUMN created_by_super_admin UUID REFERENCES users(id);
+        `);
+        console.log('✅ Added created_by_super_admin column');
+      } catch (error) {
+        if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+          console.log('✅ created_by_super_admin column already exists');
+        }
+      }
+      
+      try {
+        await sequelize.query(`
+          ALTER TABLE users ADD COLUMN is_system_admin BOOLEAN DEFAULT FALSE;
+        `);
+        console.log('✅ Added is_system_admin column');
+      } catch (error) {
+        if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+          console.log('✅ is_system_admin column already exists');
+        }
+      }
+    } catch (schemaError) {
+      console.log('Schema fix failed, continuing with user creation:', schemaError.message);
+    }
+
     // Create admin user
     const adminPassword = await bcrypt.hash('admin123', 10);
     const admin = await User.create({
