@@ -73,16 +73,32 @@ const requireRole = (roles) => {
 // Admin only middleware
 const requireAdmin = requireRole(['admin']);
 
+// Super admin only middleware
+const requireSuperAdminOnly = (req, res, next) => {
+  if (!req.user || req.user.role !== 'super_admin') {
+    return res.status(403).json({
+      success: false,
+      error: 'Super admin access required'
+    });
+  }
+  next();
+};
+
+// Admin or Super Admin middleware
+const requireAdminOrSuperAdmin = requireRole(['admin', 'super_admin']);
+
 // Agent or Admin middleware
 const requireAgentOrAdmin = requireRole(['agent', 'admin']);
 
 // Any authenticated user middleware
-const requireAuth = requireRole(['admin', 'agent', 'client']);
+const requireAuth = requireRole(['admin', 'agent', 'client', 'super_admin']);
 
 module.exports = {
   authenticateToken,
   requireRole,
   requireAdmin,
+  requireSuperAdminOnly,
+  requireAdminOrSuperAdmin,
   requireAgentOrAdmin,
   requireAuth
 }; 

@@ -40,7 +40,10 @@ const User = sequelize.define('User', {
   },
   role: {
     type: DataTypes.ENUM('admin', 'agent', 'client', 'super_admin'),
-    defaultValue: 'client'
+    defaultValue: 'client',
+    validate: {
+      isIn: [['admin', 'agent', 'client', 'super_admin']]
+    }
   },
   language_preference: {
     type: DataTypes.ENUM('en', 'zh-TW'),

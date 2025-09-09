@@ -23,7 +23,9 @@
     "super-admin:migrate": "node server/scripts/migrateAdmins.js",
     "super-admin:bootstrap": "node server/scripts/bootstrapSuperAdmin.js bootstrap",
     "super-admin:test": "node server/scripts/bootstrapSuperAdmin.js test",
-    "migrate:mark-existing": "node server/scripts/markExistingMigrations.js"
+    "migrate:mark-existing": "node server/scripts/markExistingMigrations.js",
+    "test": "jest --detectOpenHandles",
+    "test:super-admin": "jest server/tests/superAdmin.test.js --detectOpenHandles"
   },
   "dependencies": {
     "axios": "^1.6.0",

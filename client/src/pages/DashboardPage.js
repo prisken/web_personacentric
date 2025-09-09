@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
 import AdminDashboard from '../components/dashboard/AdminDashboard';
+import SuperAdminDashboard from '../components/dashboard/SuperAdminDashboard';
 import AgentDashboard from '../components/dashboard/AgentDashboard';
 import ClientDashboard from '../components/dashboard/ClientDashboard';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -90,6 +91,8 @@ const DashboardPage = () => {
     }
 
     switch (user.role) {
+      case 'super_admin':
+        return <SuperAdminDashboard data={dashboardData} onRefresh={fetchDashboardData} />;
       case 'admin':
         return <AdminDashboard data={dashboardData} onRefresh={fetchDashboardData} />;
       case 'agent':
