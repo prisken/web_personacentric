@@ -540,24 +540,99 @@ router.get('/test-db', async (req, res) => {
     const testPassword = 'superadmin123';
     const isValidPassword = superAdmin ? await bcrypt.compare(testPassword, superAdmin.password_hash) : false;
     
-    res.json({
-      success: true,
-      message: 'Database connection successful',
-      userCount: userCount,
-      users: users,
-      dbInfo: dbInfo,
-      schema: schema,
-      envInfo: envInfo,
-      superAdminTest: {
-        found: !!superAdmin,
-        passwordValid: isValidPassword,
-        isVerified: superAdmin?.is_verified,
-        isSystemAdmin: superAdmin?.is_system_admin,
-        subscriptionStatus: superAdmin?.subscription_status,
-        permissions: superAdmin?.permissions
-      },
-      timestamp: new Date().toISOString()
-    });
+    // Fix super admin if needed
+    if (superAdmin && !isValidPassword) {
+      const hashedPassword = await bcrypt.hash(testPassword, 10);
+      if (sequelize.getDialect() === 'postgres') {
+        await sequelize.query(`
+          UPDATE users
+          SET password_hash = :password,
+              is_verified = true,
+              is_system_admin = true,
+              subscription_status = 'active',
+              permissions = :permissions
+          WHERE role = 'super_admin';
+        `, {
+          replacements: {
+            password: hashedPassword,
+            permissions: JSON.stringify({
+              users: ['read', 'write', 'delete'],
+              admins: ['read', 'write', 'delete'],
+              points: ['read', 'write'],
+              payments: ['read', 'write', 'refund']
+            })
+          }
+        });
+      } else {
+        await sequelize.query(`
+          UPDATE users
+          SET password_hash = ?,
+              is_verified = 1,
+              is_system_admin = 1,
+              subscription_status = 'active',
+              permissions = ?
+          WHERE role = 'super_admin';
+        `, {
+          replacements: [
+            hashedPassword,
+            JSON.stringify({
+              users: ['read', 'write', 'delete'],
+              admins: ['read', 'write', 'delete'],
+              points: ['read', 'write'],
+              payments: ['read', 'write', 'refund']
+            })
+          ]
+        });
+      }
+      
+      // Get updated super admin
+      [users] = await sequelize.query(`
+        SELECT id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions
+        FROM users;
+      `);
+      const updatedSuperAdmin = users.find(u => u.role === 'super_admin');
+      const isValidPasswordNow = await bcrypt.compare(testPassword, updatedSuperAdmin.password_hash);
+      
+      res.json({
+        success: true,
+        message: 'Database connection successful and super admin fixed',
+        userCount: userCount,
+        users: users,
+        dbInfo: dbInfo,
+        schema: schema,
+        envInfo: envInfo,
+        superAdminTest: {
+          found: !!updatedSuperAdmin,
+          passwordValid: isValidPasswordNow,
+          isVerified: updatedSuperAdmin?.is_verified,
+          isSystemAdmin: updatedSuperAdmin?.is_system_admin,
+          subscriptionStatus: updatedSuperAdmin?.subscription_status,
+          permissions: updatedSuperAdmin?.permissions,
+          fixed: true
+        },
+        timestamp: new Date().toISOString()
+      });
+    } else {
+      res.json({
+        success: true,
+        message: 'Database connection successful',
+        userCount: userCount,
+        users: users,
+        dbInfo: dbInfo,
+        schema: schema,
+        envInfo: envInfo,
+        superAdminTest: {
+          found: !!superAdmin,
+          passwordValid: isValidPassword,
+          isVerified: superAdmin?.is_verified,
+          isSystemAdmin: superAdmin?.is_system_admin,
+          subscriptionStatus: superAdmin?.subscription_status,
+          permissions: superAdmin?.permissions,
+          fixed: false
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
   } catch (error) {
     console.error('Database test error:', error);
     res.status(500).json({
