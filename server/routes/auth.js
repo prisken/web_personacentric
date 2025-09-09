@@ -482,6 +482,65 @@ router.get('/test-db', async (req, res) => {
   }
 });
 
+// Initialize super admin endpoint
+router.post('/init-super-admin', async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const bcrypt = require('bcryptjs');
+    
+    // Check if super admin already exists
+    const existingSuperAdmin = await User.findOne({
+      where: { role: 'super_admin' }
+    });
+    
+    if (existingSuperAdmin) {
+      return res.json({
+        success: true,
+        message: 'Super admin already exists',
+        user: {
+          email: existingSuperAdmin.email,
+          role: existingSuperAdmin.role
+        }
+      });
+    }
+    
+    // Create super admin user
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
+    
+    const superAdmin = await User.create({
+      email: 'superadmin@personacentric.com',
+      password_hash: hashedPassword,
+      first_name: 'Super',
+      last_name: 'Admin',
+      role: 'super_admin',
+      is_verified: true,
+      is_system_admin: true,
+      subscription_status: 'active',
+      permissions: {
+        users: ['read', 'write', 'delete'],
+        admins: ['read', 'write', 'delete'],
+        points: ['read', 'write'],
+        payments: ['read', 'write', 'refund']
+      }
+    });
+    
+    res.json({
+      success: true,
+      message: 'Super admin created successfully',
+      user: {
+        email: superAdmin.email,
+        role: superAdmin.role
+      }
+    });
+  } catch (error) {
+    console.error('Init super admin error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to initialize super admin: ' + error.message
+    });
+  }
+});
+
 // Simple test endpoint without database
 router.get('/simple-test', (req, res) => {
   res.json({
