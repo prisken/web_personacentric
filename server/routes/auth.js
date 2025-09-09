@@ -682,6 +682,14 @@ router.get('/test-db', async (req, res) => {
         timestamp: new Date().toISOString()
       });
     } else {
+      // Test login with valid password
+      const jwt = require('jsonwebtoken');
+      const token = jwt.sign(
+        { userId: superAdmin.id, role: superAdmin.role },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
       res.json({
         success: true,
         message: 'Database connection successful',
@@ -697,7 +705,8 @@ router.get('/test-db', async (req, res) => {
           isSystemAdmin: superAdmin?.is_system_admin,
           subscriptionStatus: superAdmin?.subscription_status,
           permissions: superAdmin?.permissions,
-          fixed: false
+          fixed: false,
+          token: token
         },
         timestamp: new Date().toISOString()
       });
