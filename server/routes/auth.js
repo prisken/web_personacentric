@@ -502,12 +502,28 @@ router.get('/test-db', async (req, res) => {
       ssl: sequelize.config.dialectOptions?.ssl
     };
     
+    // Get table schema
+    let schema;
+    if (sequelize.getDialect() === 'postgres') {
+      [schema] = await sequelize.query(`
+        SELECT column_name, data_type, is_nullable
+        FROM information_schema.columns
+        WHERE table_name = 'users'
+        ORDER BY ordinal_position;
+      `);
+    } else {
+      [schema] = await sequelize.query(`
+        PRAGMA table_info(users);
+      `);
+    }
+    
     res.json({
       success: true,
       message: 'Database connection successful',
       userCount: userCount,
       users: users,
       dbInfo: dbInfo,
+      schema: schema,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
