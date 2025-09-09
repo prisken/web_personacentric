@@ -9,10 +9,9 @@ import EventDetailsOverlay from '../EventDetailsOverlay';
 import StatisticsCard from './StatisticsCard';
 
 const AdminDashboard = ({ data, onRefresh }) => {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);

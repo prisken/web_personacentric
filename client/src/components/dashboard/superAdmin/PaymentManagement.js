@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useUser } from '../../../contexts/UserContext';
 
 const PaymentManagement = () => {
-  const { t } = useTranslation();
   const { token } = useUser();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +14,7 @@ const PaymentManagement = () => {
 
   useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
 
   const fetchTransactions = async () => {
     try {

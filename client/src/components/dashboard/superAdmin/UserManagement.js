@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useUser } from '../../../contexts/UserContext';
 
 const UserManagement = () => {
-  const { t } = useTranslation();
   const { token } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +13,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const fetchUsers = async () => {
     try {

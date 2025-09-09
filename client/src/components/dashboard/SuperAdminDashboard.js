@@ -7,7 +7,6 @@ import PaymentManagement from './superAdmin/PaymentManagement';
 import AdminManagement from './superAdmin/AdminManagement';
 
 const SuperAdminDashboard = () => {
-  const { t } = useTranslation();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState('users');
   const [isVerifying, setIsVerifying] = useState(true);
