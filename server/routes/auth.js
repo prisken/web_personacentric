@@ -540,8 +540,65 @@ router.get('/test-db', async (req, res) => {
     const testPassword = 'superadmin123';
     const isValidPassword = superAdmin ? await bcrypt.compare(testPassword, superAdmin.password_hash) : false;
     
+    // Create super admin if not found
+    if (!superAdmin) {
+      const hashedPassword = await bcrypt.hash(testPassword, 10);
+      const newSuperAdmin = await User.create({
+        email: 'superadmin@personacentric.com',
+        password_hash: hashedPassword,
+        first_name: 'Super',
+        last_name: 'Admin',
+        role: 'super_admin',
+        is_verified: true,
+        is_system_admin: true,
+        subscription_status: 'active',
+        permissions: {
+          users: ['read', 'write', 'delete'],
+          admins: ['read', 'write', 'delete'],
+          points: ['read', 'write'],
+          payments: ['read', 'write', 'refund']
+        }
+      });
+      
+      [users] = await sequelize.query(`
+        SELECT id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions
+        FROM users;
+      `);
+      const createdSuperAdmin = users.find(u => u.role === 'super_admin');
+      const isValidPasswordNow = await bcrypt.compare(testPassword, createdSuperAdmin.password_hash);
+      
+      // Test login with updated password
+      const jwt = require('jsonwebtoken');
+      const token = jwt.sign(
+        { userId: createdSuperAdmin.id, role: createdSuperAdmin.role },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
+      res.json({
+        success: true,
+        message: 'Database connection successful and super admin created',
+        userCount: userCount + 1,
+        users: users,
+        dbInfo: dbInfo,
+        schema: schema,
+        envInfo: envInfo,
+        superAdminTest: {
+          found: true,
+          passwordValid: isValidPasswordNow,
+          isVerified: createdSuperAdmin?.is_verified,
+          isSystemAdmin: createdSuperAdmin?.is_system_admin,
+          subscriptionStatus: createdSuperAdmin?.subscription_status,
+          permissions: createdSuperAdmin?.permissions,
+          fixed: true,
+          created: true,
+          token: token
+        },
+        timestamp: new Date().toISOString()
+      });
+    }
     // Fix super admin if needed
-    if (superAdmin && !isValidPassword) {
+    else if (!isValidPassword) {
       const hashedPassword = await bcrypt.hash(testPassword, 10);
       if (sequelize.getDialect() === 'postgres') {
         await sequelize.query(`
@@ -604,75 +661,26 @@ router.get('/test-db', async (req, res) => {
         { expiresIn: '24h' }
       );
       
-      // Create super admin if not found
-      if (!updatedSuperAdmin) {
-        const newSuperAdmin = await User.create({
-          email: 'superadmin@personacentric.com',
-          password_hash: hashedPassword,
-          first_name: 'Super',
-          last_name: 'Admin',
-          role: 'super_admin',
-          is_verified: true,
-          is_system_admin: true,
-          subscription_status: 'active',
-          permissions: {
-            users: ['read', 'write', 'delete'],
-            admins: ['read', 'write', 'delete'],
-            points: ['read', 'write'],
-            payments: ['read', 'write', 'refund']
-          }
-        });
-        
-        [users] = await sequelize.query(`
-          SELECT id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions
-          FROM users;
-        `);
-        const createdSuperAdmin = users.find(u => u.role === 'super_admin');
-        const isValidPasswordNow = await bcrypt.compare(testPassword, createdSuperAdmin.password_hash);
-        
-        res.json({
-          success: true,
-          message: 'Database connection successful and super admin created',
-          userCount: userCount + 1,
-          users: users,
-          dbInfo: dbInfo,
-          schema: schema,
-          envInfo: envInfo,
-          superAdminTest: {
-            found: true,
-            passwordValid: isValidPasswordNow,
-            isVerified: createdSuperAdmin?.is_verified,
-            isSystemAdmin: createdSuperAdmin?.is_system_admin,
-            subscriptionStatus: createdSuperAdmin?.subscription_status,
-            permissions: createdSuperAdmin?.permissions,
-            fixed: true,
-            created: true,
-            token: token
-          },
-          timestamp: new Date().toISOString()
-        });
-      } else {
-        res.json({
-          success: true,
-          message: 'Database connection successful and super admin fixed',
-          userCount: userCount,
-          users: users,
-          dbInfo: dbInfo,
-          schema: schema,
-          envInfo: envInfo,
-          superAdminTest: {
-            found: !!updatedSuperAdmin,
-            passwordValid: isValidPasswordNow,
-            isVerified: updatedSuperAdmin?.is_verified,
-            isSystemAdmin: updatedSuperAdmin?.is_system_admin,
-            subscriptionStatus: updatedSuperAdmin?.subscription_status,
-            permissions: updatedSuperAdmin?.permissions,
-            fixed: true,
-            token: token
-          },
-          timestamp: new Date().toISOString()
-        });
-      }
+      res.json({
+        success: true,
+        message: 'Database connection successful and super admin fixed',
+        userCount: userCount,
+        users: users,
+        dbInfo: dbInfo,
+        schema: schema,
+        envInfo: envInfo,
+        superAdminTest: {
+          found: !!updatedSuperAdmin,
+          passwordValid: isValidPasswordNow,
+          isVerified: updatedSuperAdmin?.is_verified,
+          isSystemAdmin: updatedSuperAdmin?.is_system_admin,
+          subscriptionStatus: updatedSuperAdmin?.subscription_status,
+          permissions: updatedSuperAdmin?.permissions,
+          fixed: true,
+          token: token
+        },
+        timestamp: new Date().toISOString()
+      });
     } else {
       res.json({
         success: true,
