@@ -12,15 +12,10 @@ const AdminDashboard = ({ data, onRefresh }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
-  const [accessCodes, setAccessCodes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showUserModal, setShowUserModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
-  const [userManagementSubTab, setUserManagementSubTab] = useState('clients'); // Add this line
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('zh-TW', {
@@ -33,23 +28,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
     return new Date(dateString).toLocaleDateString('zh-TW');
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await apiService.get('/admin/users');
-      if (response.success) {
-        setUsers(response.users);
-      }
-    } catch (error) {
-      console.error('Fetch users error:', error);
-    }
-  };
-
-  // Fetch users when component mounts and when users tab is active
-  useEffect(() => {
-    if (activeTab === 'users') {
-      fetchUsers();
-    }
-  }, [activeTab]);
 
   // Fetch events when events tab is active
   useEffect(() => {
@@ -73,69 +51,13 @@ const AdminDashboard = ({ data, onRefresh }) => {
   };
 
 
-  const handleSeedData = async () => {
-    try {
-      setLoading(true);
-      if (window.confirm(t('dashboard.actions.confirmSeedData'))) {
-        await apiService.post('/admin/seed-data');
-        alert(t('dashboard.actions.seedDataSuccess'));
-        await fetchUsers(); // Refresh users list
-      }
-    } catch (error) {
-      console.error('Seed data error:', error);
-      alert(t('dashboard.actions.seedDataFailed'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleUserAction = async (userId, action, newRole = null) => {
-    try {
-      setLoading(true);
-      if (action === 'delete') {
-        if (window.confirm('確定要刪除此用戶嗎？此操作無法撤銷。')) {
-          await apiService.delete(`/admin/users/${userId}`);
-          await fetchUsers(); // Refresh users list
-        }
-      } else if (action === 'updateRole' && newRole) {
-        await apiService.put(`/admin/users/${userId}/role`, { role: newRole });
-        await fetchUsers(); // Refresh users list
-      }
-      onRefresh();
-    } catch (error) {
-      console.error('User action error:', error);
-      alert('操作失敗，請重試');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const generateAccessCode = async () => {
-    try {
-      setLoading(true);
-      const response = await apiService.post('/admin/access-codes');
-      if (response.success) {
-        setAccessCodes(prev => [response.accessCode, ...prev]);
-        alert('訪問碼已生成！');
-      }
-    } catch (error) {
-      console.error('Generate access code error:', error);
-      alert('生成訪問碼失敗，請重試');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const tabs = [
     { id: 'overview', label: '總覽', icon: '📊' },
-    { id: 'users', label: '用戶管理', icon: '👥' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'blogs', label: '部落格管理', icon: '📝' },
     { id: 'gifts', label: '禮品管理', icon: '🎁' },
-    { id: 'quizzes', label: '測驗管理', icon: '📋' },
-    { id: 'accessCodes', label: '訪問碼', icon: '🔑' },
-    { id: 'analytics', label: '數據分析', icon: '📈' },
-    { id: 'settings', label: '系統設定', icon: '⚙️' }
+    { id: 'quizzes', label: '測驗管理', icon: '📋' }
   ];
 
   return (
@@ -149,17 +71,10 @@ const AdminDashboard = ({ data, onRefresh }) => {
                 👑 管理員儀表板
               </h1>
               <p className="text-sm sm:text-base lg:text-lg text-gray-600">
-                管理平台用戶和系統設定
+                管理平台內容和活動
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-              <button
-                onClick={handleSeedData}
-                disabled={loading}
-                className="w-full sm:w-auto bg-green-600 text-white px-4 py-2.5 rounded-lg hover:bg-green-700 disabled:opacity-50 transition-all duration-300 shadow-md hover:shadow-lg font-medium text-sm"
-              >
-                {loading ? '添加中...' : '添加示例數據'}
-              </button>
               <button
                 onClick={onRefresh}
                 disabled={loading}
@@ -313,244 +228,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
           </div>
         )}
 
-        {/* Users Management Tab */}
-        {activeTab === 'users' && (
-          <div className="space-y-6">
-            {/* User Management Header */}
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-medium text-gray-900">用戶管理</h3>
-                  <button
-                    onClick={() => setShowUserModal(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                  >
-                    新增用戶
-                  </button>
-                </div>
-              </div>
-              
-              {/* Sub-tabs for user management */}
-              <div className="px-6 py-3 border-b border-gray-200">
-                <div className="flex space-x-1">
-                  <button
-                    onClick={() => setUserManagementSubTab('clients')}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      userManagementSubTab === 'clients'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    👥 客戶管理 ({users.filter(u => u.role === 'client').length})
-                  </button>
-                  <button
-                    onClick={() => setUserManagementSubTab('agents')}
-                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      userManagementSubTab === 'agents'
-                        ? 'bg-blue-100 text-blue-700'
-                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-                    }`}
-                  >
-                    🎯 顧問管理 ({users.filter(u => u.role === 'agent').length})
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Clients Management */}
-            {userManagementSubTab === 'clients' && (
-              <div className="bg-white rounded-lg shadow">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-md font-medium text-gray-900">客戶列表</h4>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500">
-                        共 {users.filter(u => u.role === 'client').length} 位客戶
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          客戶資訊
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          狀態
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          註冊日期
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          投資偏好
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          操作
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {users.filter(user => user.role === 'client').map((user) => (
-                        <tr key={user.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-green-700">
-                                  {user.first_name.charAt(0)}{user.last_name.charAt(0)}
-                                </span>
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {user.first_name} {user.last_name}
-                                </div>
-                                <div className="text-sm text-gray-500">{user.email}</div>
-                                <div className="text-xs text-gray-400">{user.phone || '無電話'}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                              活躍
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {formatDate(user.created_at)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {user.client ? (
-                              <div className="text-sm text-gray-900">
-                                <div><span className="font-medium">目標:</span> {user.client.primary_goal || '未設定'}</div>
-                                <div><span className="font-medium">風險:</span> {user.client.risk_tolerance || '未設定'}</div>
-                                <div><span className="font-medium">時長:</span> {user.client.investment_timeline || '未設定'}</div>
-                              </div>
-                            ) : (
-                              <span className="text-gray-400">未完成設定</span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => setSelectedUser(user)}
-                                className="text-blue-600 hover:text-blue-900"
-                              >
-                                查看詳情
-                              </button>
-                              <button
-                                onClick={() => handleUserAction(user.id, 'delete')}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                刪除
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Agents Management */}
-            {userManagementSubTab === 'agents' && (
-              <div className="bg-white rounded-lg shadow">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <div className="flex justify-between items-center">
-                    <h4 className="text-md font-medium text-gray-900">顧問列表</h4>
-                    <div className="flex items-center space-x-2">
-                      <span className="text-sm text-gray-500">
-                        共 {users.filter(u => u.role === 'agent').length} 位顧問
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          顧問資訊
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          狀態
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          註冊日期
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          專業資訊
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          操作
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {users.filter(user => user.role === 'agent').map((user) => (
-                        <tr key={user.id}>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="flex items-center">
-                              <div className="w-10 h-10 bg-blue-200 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-medium text-blue-700">
-                                  {user.first_name.charAt(0)}{user.last_name.charAt(0)}
-                                </span>
-                              </div>
-                              <div className="ml-4">
-                                <div className="text-sm font-medium text-gray-900">
-                                  {user.first_name} {user.last_name}
-                                </div>
-                                <div className="text-sm text-gray-500">{user.email}</div>
-                                <div className="text-xs text-gray-400">{user.phone || '無電話'}</div>
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                              活躍
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {formatDate(user.created_at)}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            {user.agent ? (
-                              <div className="text-sm text-gray-900">
-                                <div><span className="font-medium">專長:</span> {user.agent.areas_of_expertise?.join(', ') || '未設定'}</div>
-                                <div><span className="font-medium">經驗:</span> {user.agent.experience_years || 0} 年</div>
-                                <div><span className="font-medium">語言:</span> {user.agent.languages?.join(', ') || '未設定'}</div>
-                                <div><span className="font-medium">地點:</span> {user.agent.location || '未設定'}</div>
-                              </div>
-                            ) : (
-                              <span className="text-gray-400">未完成設定</span>
-                            )}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex space-x-2">
-                              <button
-                                onClick={() => setSelectedUser(user)}
-                                className="text-blue-600 hover:text-blue-900"
-                              >
-                                查看詳情
-                              </button>
-                              <button
-                                onClick={() => handleUserAction(user.id, 'delete')}
-                                className="text-red-600 hover:text-red-900"
-                              >
-                                刪除
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
 
         {/* Events Management Tab */}
         {activeTab === 'events' && (
@@ -735,121 +412,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
           </div>
         )}
 
-        {/* Content Moderation Tab */}
-        {activeTab === 'content' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow">
-              <div className="px-6 py-4 border-b border-gray-200">
-                <h3 className="text-lg font-medium text-gray-900">內容審核</h3>
-              </div>
-              <div className="p-6">
-                <div className="text-center text-gray-500 py-8">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="mt-2">暫無待審核內容</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Payments Management Tab */}
-        {activeTab === 'payments' && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">付款管理</h3>
-            </div>
-            <div className="p-6">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        用戶
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        金額
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        狀態
-                      </th>
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        日期
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {data.recent_payments?.map((payment) => (
-                      <tr key={payment.id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {payment.user.first_name} {payment.user.last_name}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">
-                            {formatCurrency(payment.amount)}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                            {payment.status === 'completed' ? '已完成' : payment.status}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {formatDate(payment.created_at)}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Access Codes Tab */}
-        {activeTab === 'accessCodes' && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <div className="flex justify-between items-center">
-                <h3 className="text-lg font-medium text-gray-900">訪問碼管理</h3>
-                <button
-                  onClick={generateAccessCode}
-                  disabled={loading}
-                  className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50"
-                >
-                  {loading ? '生成中...' : '生成新訪問碼'}
-                </button>
-              </div>
-            </div>
-            <div className="p-6">
-              {accessCodes.length > 0 ? (
-                <div className="space-y-4">
-                  {accessCodes.map((code, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">訪問碼: {code.code}</p>
-                        <p className="text-xs text-gray-500">生成時間: {formatDate(code.created_at)}</p>
-                      </div>
-                      <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                        未使用
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center text-gray-500 py-8">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                  </svg>
-                  <p className="mt-2">暫無訪問碼</p>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Blogs Management Tab */}
         {activeTab === 'blogs' && (
@@ -866,48 +428,6 @@ const AdminDashboard = ({ data, onRefresh }) => {
           <QuizManagement />
         )}
 
-        {/* Settings Tab */}
-        {activeTab === 'settings' && (
-          <div className="bg-white rounded-lg shadow">
-            <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="text-lg font-medium text-gray-900">系統設定</h3>
-            </div>
-            <div className="p-6 space-y-6">
-              <div>
-                <h4 className="text-md font-medium text-gray-900 mb-4">平台設定</h4>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">維護模式</p>
-                      <p className="text-sm text-gray-500">暫時關閉平台進行維護</p>
-                    </div>
-                    <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-                      關閉
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">新用戶註冊</p>
-                      <p className="text-sm text-gray-500">允許新用戶註冊</p>
-                    </div>
-                    <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                      開啟
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">內容審核</p>
-                      <p className="text-sm text-gray-500">自動審核內容</p>
-                    </div>
-                    <button className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
-                      關閉
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Event Details Overlay */}
