@@ -486,11 +486,6 @@ router.get('/test-db', async (req, res) => {
     const { User } = require('../models');
     const userCount = await User.count();
     
-    // Get all users
-    const users = await User.findAll({
-      attributes: ['id', 'email', 'role', 'is_system_admin', 'password_hash']
-    });
-    
     // Get database info
     const sequelize = require('../config/database');
     const dbInfo = {
@@ -514,6 +509,20 @@ router.get('/test-db', async (req, res) => {
     } else {
       [schema] = await sequelize.query(`
         PRAGMA table_info(users);
+      `);
+    }
+    
+    // Get all users with raw query
+    let users;
+    if (sequelize.getDialect() === 'postgres') {
+      [users] = await sequelize.query(`
+        SELECT id, email, role, is_system_admin, password_hash
+        FROM users;
+      `);
+    } else {
+      [users] = await sequelize.query(`
+        SELECT id, email, role, is_system_admin, password_hash
+        FROM users;
       `);
     }
     
