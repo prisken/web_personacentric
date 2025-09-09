@@ -13,13 +13,20 @@ const UserManagement = () => {
 
   const fetchUsers = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
       const response = await axios.get('/api/super-admin/users', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setUsers(response.data.users);
+      
+      // Ensure users is always an array
+      const usersData = response.data?.users || [];
+      setUsers(Array.isArray(usersData) ? usersData : []);
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching users:', error);
       setError(error.response?.data?.error || 'Failed to fetch users');
+      setUsers([]); // Set empty array on error
       setLoading(false);
     }
   }, [token]);
@@ -72,7 +79,7 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
+            {(users || []).map(user => (
               <tr key={user.id}>
                 <td>{user.email}</td>
                 <td>{`${user.first_name} ${user.last_name}`}</td>

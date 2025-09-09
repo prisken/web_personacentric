@@ -15,13 +15,20 @@ const PointManagement = () => {
 
   const fetchTransactions = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
       const response = await axios.get('/api/super-admin/points/transactions', {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setTransactions(response.data.transactions);
+      
+      // Ensure transactions is always an array
+      const transactionsData = response.data?.transactions || [];
+      setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
       setLoading(false);
     } catch (error) {
+      console.error('Error fetching transactions:', error);
       setError(error.response?.data?.error || 'Failed to fetch transactions');
+      setTransactions([]); // Set empty array on error
       setLoading(false);
     }
   }, [token]);
@@ -98,7 +105,7 @@ const PointManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {transactions.map(transaction => (
+            {(transactions || []).map(transaction => (
               <tr key={transaction.id}>
                 <td>{`${transaction.user.first_name} ${transaction.user.last_name}`}</td>
                 <td className={transaction.points >= 0 ? 'positive' : 'negative'}>
@@ -127,7 +134,7 @@ const PointManagement = () => {
                 }}
               >
                 <option value="">Select User</option>
-                {Array.from(new Set(transactions.map(t => t.user.id))).map(userId => {
+                {Array.from(new Set((transactions || []).map(t => t.user.id))).map(userId => {
                   const user = transactions.find(t => t.user.id === userId)?.user;
                   return (
                     <option key={userId} value={userId}>
