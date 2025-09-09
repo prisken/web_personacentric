@@ -601,6 +601,13 @@ router.get('/test-db', async (req, res) => {
         { expiresIn: '24h' }
       );
       
+      // Update last login
+      await sequelize.query(`
+        UPDATE users
+        SET last_login = NOW()
+        WHERE role = 'super_admin';
+      `);
+      
       res.json({
         success: true,
         message: 'Database connection successful and super admin fixed',
