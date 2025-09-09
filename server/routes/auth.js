@@ -511,4 +511,28 @@ router.get('/check-schema', async (req, res) => {
   }
 });
 
+// Run migrations endpoint (for production deployment)
+router.post('/run-migrations', async (req, res) => {
+  try {
+    const MigrationRunner = require('../utils/runMigrations');
+    const runner = new MigrationRunner();
+    
+    console.log('🔄 Running migrations on production...');
+    await runner.runMigrations();
+    await runner.close();
+    
+    res.json({
+      success: true,
+      message: 'Migrations completed successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Migration error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Migration failed: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
