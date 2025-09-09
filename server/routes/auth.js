@@ -492,6 +492,67 @@ router.get('/simple-test', (req, res) => {
   });
 });
 
+// Create super admin endpoint
+router.post('/create-super-admin', async (req, res) => {
+  try {
+    const { User } = require('../models');
+    const bcrypt = require('bcryptjs');
+    
+    console.log('🔄 Creating super admin user...');
+    
+    // Check if super admin already exists
+    const existingSuperAdmin = await User.findOne({
+      where: { role: 'super_admin' }
+    });
+    
+    if (existingSuperAdmin) {
+      return res.json({
+        success: true,
+        message: 'Super admin already exists',
+        user: {
+          email: existingSuperAdmin.email,
+          role: existingSuperAdmin.role
+        }
+      });
+    }
+    
+    // Create super admin user
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
+    
+    const superAdmin = await User.create({
+      email: 'superadmin@personacentric.com',
+      password_hash: hashedPassword,
+      first_name: 'Super',
+      last_name: 'Admin',
+      role: 'super_admin',
+      is_verified: true,
+      is_system_admin: true,
+      subscription_status: 'active',
+      permissions: {
+        users: ['read', 'write', 'delete'],
+        admins: ['read', 'write', 'delete'],
+        points: ['read', 'write'],
+        payments: ['read', 'write', 'refund']
+      }
+    });
+    
+    res.json({
+      success: true,
+      message: 'Super admin created successfully',
+      user: {
+        email: superAdmin.email,
+        role: superAdmin.role
+      }
+    });
+  } catch (error) {
+    console.error('Create super admin error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create super admin: ' + error.message
+    });
+  }
+});
+
 // Test JWT configuration
 router.get('/test-jwt', (req, res) => {
   try {
