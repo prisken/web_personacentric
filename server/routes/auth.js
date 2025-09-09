@@ -491,11 +491,23 @@ router.get('/test-db', async (req, res) => {
       attributes: ['id', 'email', 'role', 'is_system_admin', 'password_hash']
     });
     
+    // Get database info
+    const sequelize = require('../config/database');
+    const dbInfo = {
+      dialect: sequelize.getDialect(),
+      host: sequelize.config.host,
+      database: sequelize.config.database,
+      username: sequelize.config.username,
+      port: sequelize.config.port,
+      ssl: sequelize.config.dialectOptions?.ssl
+    };
+    
     res.json({
       success: true,
       message: 'Database connection successful',
       userCount: userCount,
       users: users,
+      dbInfo: dbInfo,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
