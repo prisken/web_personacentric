@@ -74,6 +74,8 @@ const AgentDashboard = ({ data, onRefresh }) => {
   const tabs = [
     { id: 'overview', label: '概覽', icon: '📊' },
     { id: 'events', label: '活動', icon: '📅' },
+    { id: 'blogs', label: '部落格', icon: '📝' },
+    { id: 'quizzes', label: '測驗', icon: '🧠' },
     { id: 'financial_planning', label: '理財產品配置', icon: '💰' },
     { id: 'clients', label: '客戶配對', icon: '👥', comingSoon: true },
     { id: 'profile', label: '個人資料', icon: '👤' }
@@ -385,6 +387,56 @@ const AgentDashboard = ({ data, onRefresh }) => {
 
 
 
+
+        {/* Blogs Tab */}
+        {activeTab === 'blogs' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">部落格文章</h3>
+              </div>
+              <div className="p-6">
+                <div className="text-center text-gray-500 py-8">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="mt-2">瀏覽最新的財務規劃文章</p>
+                  <button
+                    onClick={() => window.open('/blogs', '_blank')}
+                    className="mt-4 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+                  >
+                    查看所有文章
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quizzes Tab */}
+        {activeTab === 'quizzes' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900">財務知識測驗</h3>
+              </div>
+              <div className="p-6">
+                <div className="text-center text-gray-500 py-8">
+                  <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  <p className="mt-2">測試您的財務知識並賺取積分</p>
+                  <button
+                    onClick={() => window.open('/quizzes', '_blank')}
+                    className="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                  >
+                    開始測驗
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Financial Planning Tab */}
         {activeTab === 'financial_planning' && (
