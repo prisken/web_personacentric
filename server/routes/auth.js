@@ -467,10 +467,16 @@ router.get('/test-db', async (req, res) => {
     const { User } = require('../models');
     const userCount = await User.count();
     
+    // Get all users
+    const users = await User.findAll({
+      attributes: ['email', 'role', 'is_system_admin']
+    });
+    
     res.json({
       success: true,
       message: 'Database connection successful',
       userCount: userCount,
+      users: users,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
