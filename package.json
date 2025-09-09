@@ -24,6 +24,7 @@
     "super-admin:bootstrap": "node server/scripts/bootstrapSuperAdmin.js bootstrap",
     "super-admin:test": "node server/scripts/bootstrapSuperAdmin.js test",
     "super-admin:production": "node server/scripts/createProductionSuperAdmin.js",
+    "super-admin:fix": "node server/scripts/fixProductionSuperAdmin.js",
     "migrate:mark-existing": "node server/scripts/markExistingMigrations.js",
     "test": "jest --detectOpenHandles",
     "test:super-admin": "jest server/tests/superAdmin.test.js --detectOpenHandles"
