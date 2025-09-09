@@ -161,6 +161,115 @@ class DashboardController {
             dashboardData.event_registrations = allRegistrations;
             break;
 
+          case 'super_admin':
+            console.log('Processing super admin dashboard...');
+            // Super admin gets same data as admin but with additional super admin statistics
+            const superAdminTotalUsers = await User.count();
+            const superAdminTotalAgents = await User.count({ where: { role: 'agent' } });
+            const superAdminTotalClients = await User.count({ where: { role: 'client' } });
+            const superAdminTotalAdmins = await User.count({ where: { role: 'admin' } });
+            
+            // Get event statistics
+            const superAdminTotalEvents = await Event.count();
+            const superAdminUpcomingEvents = await Event.count({
+              where: {
+                start_date: { [Op.gte]: new Date() },
+                status: 'published'
+              }
+            });
+            
+            // Get registration statistics
+            const superAdminTotalRegistrations = await EventRegistration.count();
+            const superAdminClientRegistrationsCount = await EventRegistration.count({
+              include: [{
+                model: User,
+                as: 'user',
+                where: { role: 'client' }
+              }]
+            });
+            const superAdminAgentRegistrationsCount = await EventRegistration.count({
+              include: [{
+                model: User,
+                as: 'user',
+                where: { role: 'agent' }
+              }]
+            });
+            
+            dashboardData.statistics = {
+              total_users: superAdminTotalUsers,
+              total_agents: superAdminTotalAgents,
+              total_clients: superAdminTotalClients,
+              total_admins: superAdminTotalAdmins,
+              total_events: superAdminTotalEvents,
+              upcoming_events: superAdminUpcomingEvents,
+              total_registrations: superAdminTotalRegistrations,
+              total_clients_registered: superAdminClientRegistrationsCount,
+              total_agents_registered: superAdminAgentRegistrationsCount,
+              monthly_revenue: 5000,
+              pending_upgrades: 2,
+              pending_contests: 1,
+              super_admin_features: true
+            };
+
+            // Get all events with registration data (same as admin)
+            const superAdminAllEvents = await Event.findAll({
+              include: [
+                {
+                  model: User,
+                  as: 'creator',
+                  attributes: ['id', 'first_name', 'last_name', 'email']
+                },
+                {
+                  model: EventRegistration,
+                  as: 'registrations',
+                  include: [
+                    {
+                      model: User,
+                      as: 'user',
+                      attributes: ['id', 'first_name', 'last_name', 'email', 'role']
+                    }
+                  ]
+                }
+              ],
+              order: [['start_date', 'ASC']]
+            });
+
+            dashboardData.all_events = superAdminAllEvents.map(event => {
+              const eventData = event.toJSON();
+              const registrations = eventData.registrations || [];
+              return {
+                ...eventData,
+                registrations: {
+                  total: registrations.length,
+                  clients: registrations.filter(r => r.user.role === 'client').length,
+                  agents: registrations.filter(r => r.user.role === 'agent').length,
+                  admins: registrations.filter(r => r.user.role === 'admin').length,
+                  pending: registrations.filter(r => r.status === 'registered').length,
+                  confirmed: registrations.filter(r => r.status === 'attended').length
+                }
+              };
+            });
+
+            // Get all event registrations for super admin view
+            const superAdminAllRegistrations = await EventRegistration.findAll({
+              include: [
+                {
+                  model: Event,
+                  as: 'event',
+                  attributes: ['id', 'title', 'start_date', 'location']
+                },
+                {
+                  model: User,
+                  as: 'user',
+                  attributes: ['id', 'first_name', 'last_name', 'email', 'role']
+                }
+              ],
+              order: [['created_at', 'DESC']]
+            });
+
+            dashboardData.all_registrations = superAdminAllRegistrations;
+            break;
+
           case 'agent':
             console.log('Processing agent dashboard...');
             // Get agent-specific statistics
