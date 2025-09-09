@@ -526,6 +526,14 @@ router.get('/test-db', async (req, res) => {
       `);
     }
     
+    // Get environment info
+    const envInfo = {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL: process.env.DATABASE_URL ? 'set' : 'not set',
+      DB_URL: process.env.DB_URL ? 'set' : 'not set',
+      JWT_SECRET: process.env.JWT_SECRET ? 'set' : 'not set'
+    };
+    
     res.json({
       success: true,
       message: 'Database connection successful',
@@ -533,6 +541,7 @@ router.get('/test-db', async (req, res) => {
       users: users,
       dbInfo: dbInfo,
       schema: schema,
+      envInfo: envInfo,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
