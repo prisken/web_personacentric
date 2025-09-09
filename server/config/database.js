@@ -6,7 +6,10 @@ let sequelize;
 // Database configuration
 if (process.env.NODE_ENV === 'production') {
   // Production: Use PostgreSQL (Railway)
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
+  const dbUrl = process.env.DATABASE_URL || process.env.DB_URL;
+  console.log('🔄 Connecting to production database:', dbUrl);
+  
+  sequelize = new Sequelize(dbUrl, {
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
@@ -14,7 +17,7 @@ if (process.env.NODE_ENV === 'production') {
         rejectUnauthorized: false
       }
     },
-    logging: false,
+    logging: console.log,
     define: {
       timestamps: true,
       underscored: true,
