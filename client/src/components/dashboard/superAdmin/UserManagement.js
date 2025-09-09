@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useUser } from '../../../contexts/UserContext';
+import apiService from '../../../services/api';
 
 const UserManagement = () => {
-  const { token } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,21 +12,19 @@ const UserManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('/api/super-admin/users', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiService.get('/super-admin/users');
       
       // Ensure users is always an array
-      const usersData = response.data?.users || [];
+      const usersData = response?.users || [];
       setUsers(Array.isArray(usersData) ? usersData : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching users:', error);
-      setError(error.response?.data?.error || 'Failed to fetch users');
+      setError(error.message || 'Failed to fetch users');
       setUsers([]); // Set empty array on error
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchUsers();
@@ -37,27 +32,23 @@ const UserManagement = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await axios.put(`/api/super-admin/users/${userId}/role`, {
+      await apiService.put(`/super-admin/users/${userId}/role`, {
         role: newRole
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       fetchUsers();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to update user role');
+      setError(error.message || 'Failed to update user role');
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
+    if (!window.confirm('確定要刪除此用戶嗎？')) return;
 
     try {
-      await axios.delete(`/api/super-admin/users/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiService.delete(`/super-admin/users/${userId}`);
       fetchUsers();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to delete user');
+      setError(error.message || 'Failed to delete user');
     }
   };
 

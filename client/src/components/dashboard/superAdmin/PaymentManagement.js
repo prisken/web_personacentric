@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useUser } from '../../../contexts/UserContext';
+import apiService from '../../../services/api';
 
 const PaymentManagement = () => {
-  const { token } = useUser();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -16,21 +13,19 @@ const PaymentManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('/api/super-admin/payments/transactions', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiService.get('/super-admin/payments/transactions');
       
       // Ensure transactions is always an array
-      const transactionsData = response.data?.transactions || [];
+      const transactionsData = response?.transactions || [];
       setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching transactions:', error);
-      setError(error.response?.data?.error || 'Failed to fetch transactions');
+      setError(error.message || 'Failed to fetch transactions');
       setTransactions([]); // Set empty array on error
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchTransactions();
@@ -40,18 +35,16 @@ const PaymentManagement = () => {
     if (!selectedTransaction || !refundReason) return;
 
     try {
-      await axios.post('/api/super-admin/payments/refund', {
+      await apiService.post('/super-admin/payments/refund', {
         transactionId: selectedTransaction.id,
         reason: refundReason
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setShowRefundModal(false);
       setSelectedTransaction(null);
       setRefundReason('');
       fetchTransactions();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to process refund');
+      setError(error.message || 'Failed to process refund');
     }
   };
 

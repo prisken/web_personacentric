@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useUser } from '../../../contexts/UserContext';
+import React, { useState, useEffect, useCallback } from 'react';
+import apiService from '../../../services/api';
 
 const AdminManagement = () => {
-  const { t } = useTranslation();
-  const { token } = useUser();
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -18,29 +14,30 @@ const AdminManagement = () => {
     permissions: {}
   });
 
-  useEffect(() => {
-    fetchAdmins();
-  }, []);
-
-  const fetchAdmins = async () => {
+  const fetchAdmins = useCallback(async () => {
     try {
-      const response = await axios.get('/api/super-admin/admins', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setAdmins(response.data.admins);
+      setLoading(true);
+      setError(null);
+      const response = await apiService.get('/super-admin/admins');
+      const adminsData = response?.admins || [];
+      setAdmins(Array.isArray(adminsData) ? adminsData : []);
       setLoading(false);
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to fetch admins');
+      console.error('Error fetching admins:', error);
+      setError(error.message || 'Failed to fetch admins');
+      setAdmins([]);
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchAdmins();
+  }, [fetchAdmins]);
 
   const handleCreateAdmin = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/super-admin/admins', newAdmin, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiService.post('/super-admin/admins', newAdmin);
       setShowCreateModal(false);
       setNewAdmin({
         email: '',
@@ -51,20 +48,18 @@ const AdminManagement = () => {
       });
       fetchAdmins();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to create admin');
+      setError(error.message || 'Failed to create admin');
     }
   };
 
   const handleRemoveAdmin = async (adminId) => {
-    if (!window.confirm('Are you sure you want to remove this admin?')) return;
+    if (!window.confirm('確定要移除此管理員嗎？')) return;
 
     try {
-      await axios.delete(`/api/super-admin/admins/${adminId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiService.delete(`/super-admin/admins/${adminId}`);
       fetchAdmins();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to remove admin');
+      setError(error.message || 'Failed to remove admin');
     }
   };
 
@@ -174,7 +169,7 @@ const AdminManagement = () => {
                   Create Admin
                 </button>
                 <button type="button" onClick={() => setShowCreateModal(false)}>
-                  {t('common.cancel')}
+                  取消
                 </button>
               </div>
             </form>

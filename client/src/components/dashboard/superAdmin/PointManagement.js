@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import axios from 'axios';
-import { useUser } from '../../../contexts/UserContext';
+import apiService from '../../../services/api';
 
 const PointManagement = () => {
-  const { token } = useUser();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,21 +14,19 @@ const PointManagement = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('/api/super-admin/points/transactions', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await apiService.get('/super-admin/points/transactions');
       
       // Ensure transactions is always an array
-      const transactionsData = response.data?.transactions || [];
+      const transactionsData = response?.transactions || [];
       setTransactions(Array.isArray(transactionsData) ? transactionsData : []);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching transactions:', error);
-      setError(error.response?.data?.error || 'Failed to fetch transactions');
+      setError(error.message || 'Failed to fetch transactions');
       setTransactions([]); // Set empty array on error
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     fetchTransactions();
@@ -41,12 +36,10 @@ const PointManagement = () => {
     if (!selectedUser || !points || !reason) return;
 
     try {
-      await axios.post('/api/super-admin/points/award', {
+      await apiService.post('/super-admin/points/award', {
         userId: selectedUser.id,
         points: parseInt(points),
         reason
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setShowAwardModal(false);
       setSelectedUser(null);
@@ -54,7 +47,7 @@ const PointManagement = () => {
       setReason('');
       fetchTransactions();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to award points');
+      setError(error.message || 'Failed to award points');
     }
   };
 
@@ -62,12 +55,10 @@ const PointManagement = () => {
     if (!selectedUser || !points || !reason) return;
 
     try {
-      await axios.post('/api/super-admin/points/deduct', {
+      await apiService.post('/super-admin/points/deduct', {
         userId: selectedUser.id,
         points: parseInt(points),
         reason
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       setShowAwardModal(false);
       setSelectedUser(null);
@@ -75,7 +66,7 @@ const PointManagement = () => {
       setReason('');
       fetchTransactions();
     } catch (error) {
-      setError(error.response?.data?.error || 'Failed to deduct points');
+      setError(error.message || 'Failed to deduct points');
     }
   };
 
