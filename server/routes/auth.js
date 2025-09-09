@@ -516,12 +516,12 @@ router.get('/test-db', async (req, res) => {
     let users;
     if (sequelize.getDialect() === 'postgres') {
       [users] = await sequelize.query(`
-        SELECT id, email, role, is_system_admin, password_hash
+        SELECT id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions
         FROM users;
       `);
     } else {
       [users] = await sequelize.query(`
-        SELECT id, email, role, is_system_admin, password_hash
+        SELECT id, email, role, is_system_admin, password_hash, is_verified, subscription_status, permissions
         FROM users;
       `);
     }
@@ -534,6 +534,12 @@ router.get('/test-db', async (req, res) => {
       JWT_SECRET: process.env.JWT_SECRET ? 'set' : 'not set'
     };
     
+    // Test super admin login
+    const bcrypt = require('bcryptjs');
+    const superAdmin = users.find(u => u.role === 'super_admin');
+    const testPassword = 'superadmin123';
+    const isValidPassword = superAdmin ? await bcrypt.compare(testPassword, superAdmin.password_hash) : false;
+    
     res.json({
       success: true,
       message: 'Database connection successful',
@@ -542,6 +548,14 @@ router.get('/test-db', async (req, res) => {
       dbInfo: dbInfo,
       schema: schema,
       envInfo: envInfo,
+      superAdminTest: {
+        found: !!superAdmin,
+        passwordValid: isValidPassword,
+        isVerified: superAdmin?.is_verified,
+        isSystemAdmin: superAdmin?.is_system_admin,
+        subscriptionStatus: superAdmin?.subscription_status,
+        permissions: superAdmin?.permissions
+      },
       timestamp: new Date().toISOString()
     });
   } catch (error) {
