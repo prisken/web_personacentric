@@ -443,12 +443,31 @@ router.post('/create-test-users', async (req, res) => {
 router.post('/debug-login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    const bcrypt = require('bcryptjs');
+    
+    // Find user
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: 'User not found',
+        receivedEmail: email,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
     
     res.json({
       success: true,
       message: 'Debug endpoint working',
       receivedEmail: email,
       receivedPassword: password ? '***' : 'not provided',
+      userFound: true,
+      passwordValid: isValidPassword,
+      userRole: user.role,
+      passwordHash: user.password_hash,
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development'
     });
