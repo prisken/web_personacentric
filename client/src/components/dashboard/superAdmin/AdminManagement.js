@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 
 const AdminManagement = () => {
   const { t } = useTranslation();
-  const { token } = useAuth();
+  const { token } = useUser();
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -56,7 +56,7 @@ const AdminManagement = () => {
   };
 
   const handleRemoveAdmin = async (adminId) => {
-    if (!window.confirm(t('superAdmin.admins.removeConfirm'))) return;
+    if (!window.confirm('Are you sure you want to remove this admin?')) return;
 
     try {
       await axios.delete(`/api/super-admin/admins/${adminId}`, {
@@ -73,24 +73,24 @@ const AdminManagement = () => {
 
   return (
     <div className="admin-management">
-      <h2>{t('superAdmin.admins.title')}</h2>
+      <h2>Admin Management</h2>
       
       <button
         onClick={() => setShowCreateModal(true)}
         className="create-button"
       >
-        {t('superAdmin.admins.create')}
+        Create Admin
       </button>
 
       <div className="admin-list">
         <table>
           <thead>
             <tr>
-              <th>{t('superAdmin.admins.email')}</th>
-              <th>{t('superAdmin.admins.name')}</th>
-              <th>{t('superAdmin.admins.role')}</th>
-              <th>{t('superAdmin.admins.created')}</th>
-              <th>{t('superAdmin.admins.actions')}</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Created</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -106,7 +106,7 @@ const AdminManagement = () => {
                       onClick={() => handleRemoveAdmin(admin.id)}
                       className="remove-button"
                     >
-                      {t('superAdmin.admins.remove')}
+                      Remove
                     </button>
                   )}
                 </td>
@@ -119,10 +119,10 @@ const AdminManagement = () => {
       {showCreateModal && (
         <div className="modal">
           <div className="modal-content">
-            <h3>{t('superAdmin.admins.createAdmin')}</h3>
+            <h3>Create Admin</h3>
             <form onSubmit={handleCreateAdmin}>
               <div className="form-group">
-                <label>{t('superAdmin.admins.email')}</label>
+                <label>Email</label>
                 <input
                   type="email"
                   value={newAdmin.email}
@@ -134,7 +134,7 @@ const AdminManagement = () => {
                 />
               </div>
               <div className="form-group">
-                <label>{t('superAdmin.admins.password')}</label>
+                <label>Password</label>
                 <input
                   type="password"
                   value={newAdmin.password}
@@ -146,7 +146,7 @@ const AdminManagement = () => {
                 />
               </div>
               <div className="form-group">
-                <label>{t('superAdmin.admins.firstName')}</label>
+                <label>First Name</label>
                 <input
                   type="text"
                   value={newAdmin.first_name}
@@ -158,7 +158,7 @@ const AdminManagement = () => {
                 />
               </div>
               <div className="form-group">
-                <label>{t('superAdmin.admins.lastName')}</label>
+                <label>Last Name</label>
                 <input
                   type="text"
                   value={newAdmin.last_name}
@@ -171,7 +171,7 @@ const AdminManagement = () => {
               </div>
               <div className="button-group">
                 <button type="submit">
-                  {t('superAdmin.admins.create')}
+                  Create Admin
                 </button>
                 <button type="button" onClick={() => setShowCreateModal(false)}>
                   {t('common.cancel')}

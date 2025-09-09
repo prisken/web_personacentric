@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAuth } from '../../contexts/AuthContext';
+import { useUser } from '../../contexts/UserContext';
 import UserManagement from './superAdmin/UserManagement';
 import PointManagement from './superAdmin/PointManagement';
 import PaymentManagement from './superAdmin/PaymentManagement';
@@ -8,7 +8,7 @@ import AdminManagement from './superAdmin/AdminManagement';
 
 const SuperAdminDashboard = () => {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user } = useUser();
   const [activeTab, setActiveTab] = useState('users');
 
   // Verify super admin access
@@ -21,7 +21,7 @@ const SuperAdminDashboard = () => {
   return (
     <div className="super-admin-dashboard">
       <div className="dashboard-header">
-        <h1>{t('superAdmin.dashboard.title')}</h1>
+        <h1>Super Admin Dashboard</h1>
         <div className="role-badge super-admin">Super Admin</div>
       </div>
       
@@ -30,25 +30,25 @@ const SuperAdminDashboard = () => {
           className={`tab-button ${activeTab === 'users' ? 'active' : ''}`}
           onClick={() => setActiveTab('users')}
         >
-          {t('superAdmin.tabs.users')}
+          User Management
         </button>
         <button 
           className={`tab-button ${activeTab === 'points' ? 'active' : ''}`}
           onClick={() => setActiveTab('points')}
         >
-          {t('superAdmin.tabs.points')}
+          Points Management
         </button>
         <button 
           className={`tab-button ${activeTab === 'payments' ? 'active' : ''}`}
           onClick={() => setActiveTab('payments')}
         >
-          {t('superAdmin.tabs.payments')}
+          Payment Management
         </button>
         <button 
           className={`tab-button ${activeTab === 'admins' ? 'active' : ''}`}
           onClick={() => setActiveTab('admins')}
         >
-          {t('superAdmin.tabs.admins')}
+          Admin Management
         </button>
       </div>
       

@@ -30,6 +30,7 @@ const GiftsPage = lazy(() => import('./pages/GiftsPage'));
 const QuizPage = lazy(() => import('./pages/QuizPage'));
 const QuizTakerPage = lazy(() => import('./pages/QuizTakerPage'));
 const QuizResultsPage = lazy(() => import('./pages/QuizResultsPage'));
+const SuperAdminDashboard = lazy(() => import('./components/dashboard/SuperAdminDashboard'));
 
 // Loading component for Suspense
 const PageLoader = () => (
@@ -78,6 +79,9 @@ function App() {
                     <Route path="/quiz/:id" element={<QuizPage />} />
                     <Route path="/quiz/:id/take" element={<QuizTakerPage />} />
                     <Route path="/quiz/:id/results" element={<QuizResultsPage />} />
+                    
+                    {/* Super Admin Routes */}
+                    <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
                   </Routes>
                 </Suspense>
               </main>

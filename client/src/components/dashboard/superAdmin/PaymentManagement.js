@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 
 const PaymentManagement = () => {
   const { t } = useTranslation();
-  const { token } = useAuth();
+  const { token } = useUser();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -54,17 +54,17 @@ const PaymentManagement = () => {
 
   return (
     <div className="payment-management">
-      <h2>{t('superAdmin.payments.title')}</h2>
+      <h2>Payment Management</h2>
       
       <div className="transaction-list">
         <table>
           <thead>
             <tr>
-              <th>{t('superAdmin.payments.user')}</th>
-              <th>{t('superAdmin.payments.amount')}</th>
-              <th>{t('superAdmin.payments.status')}</th>
-              <th>{t('superAdmin.payments.date')}</th>
-              <th>{t('superAdmin.payments.actions')}</th>
+              <th>User</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -83,7 +83,7 @@ const PaymentManagement = () => {
                       }}
                       className="refund-button"
                     >
-                      {t('superAdmin.payments.refund')}
+                      Refund
                     </button>
                   )}
                 </td>
@@ -96,23 +96,23 @@ const PaymentManagement = () => {
       {showRefundModal && selectedTransaction && (
         <div className="modal">
           <div className="modal-content">
-            <h3>{t('superAdmin.payments.processRefund')}</h3>
+            <h3>Process Refund</h3>
             <div className="transaction-details">
               <p>
-                <strong>{t('superAdmin.payments.user')}:</strong>
+                <strong>User:</strong>
                 {` ${selectedTransaction.user.first_name} ${selectedTransaction.user.last_name}`}
               </p>
               <p>
-                <strong>{t('superAdmin.payments.amount')}:</strong>
+                <strong>Amount:</strong>
                 {` ${selectedTransaction.amount}`}
               </p>
               <p>
-                <strong>{t('superAdmin.payments.date')}:</strong>
+                <strong>Date:</strong>
                 {` ${new Date(selectedTransaction.created_at).toLocaleDateString()}`}
               </p>
             </div>
             <div className="form-group">
-              <label>{t('superAdmin.payments.refundReason')}</label>
+              <label>Refund Reason</label>
               <textarea
                 value={refundReason}
                 onChange={(e) => setRefundReason(e.target.value)}
@@ -124,10 +124,10 @@ const PaymentManagement = () => {
                 onClick={handleRefund}
                 disabled={!refundReason}
               >
-                {t('superAdmin.payments.confirmRefund')}
+                Confirm Refund
               </button>
               <button onClick={() => setShowRefundModal(false)}>
-                {t('common.cancel')}
+                Cancel
               </button>
             </div>
           </div>

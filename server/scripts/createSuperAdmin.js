@@ -1,59 +1,59 @@
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const { User } = require('../models');
-require('dotenv').config();
 
 async function createSuperAdmin() {
   try {
     console.log('🔄 Creating super admin user...');
     
-    // Check if super admin already exists
-    const existingSuperAdmin = await User.findOne({
-      where: { role: 'super_admin' }
+    const existingSuperAdmin = await User.findOne({ 
+      where: { email: 'superadmin@personacentric.com' } 
     });
     
     if (existingSuperAdmin) {
-      console.log('✅ Super admin already exists:', existingSuperAdmin.email);
-      return;
+      console.log('✅ Super admin already exists');
+      return existingSuperAdmin;
     }
     
-    // Create super admin user
-    const hashedPassword = await bcrypt.hash(process.env.SUPER_ADMIN_PASSWORD || 'superadmin123', 10);
+    const hashedPassword = await bcrypt.hash('superadmin123', 10);
     
     const superAdmin = await User.create({
-      email: process.env.SUPER_ADMIN_EMAIL || 'superadmin@personacentric.com',
+      email: 'superadmin@personacentric.com',
       password_hash: hashedPassword,
       first_name: 'Super',
       last_name: 'Admin',
       role: 'super_admin',
       is_verified: true,
       is_system_admin: true,
-      subscription_status: 'active',
       permissions: {
-        users: ['read', 'write', 'delete'],
-        admins: ['read', 'write', 'delete'],
-        points: ['read', 'write'],
-        payments: ['read', 'write', 'refund']
+        user_management: true,
+        point_management: true,
+        payment_management: true,
+        admin_management: true,
+        system_config: true
       }
     });
     
-    console.log('✅ Super admin created successfully:', {
-      id: superAdmin.id,
-      email: superAdmin.email,
-      role: superAdmin.role
-    });
+    console.log('✅ Super admin created successfully:', superAdmin.email);
+    console.log('📧 Email: superadmin@personacentric.com');
+    console.log('🔑 Password: superadmin123');
+    console.log('⚠️  Please change the password after first login!');
     
+    return superAdmin;
   } catch (error) {
-    console.error('❌ Failed to create super admin:', error.message);
-    process.exit(1);
+    console.error('❌ Error creating super admin:', error);
+    throw error;
   }
 }
 
 // Run if called directly
 if (require.main === module) {
   createSuperAdmin()
-    .then(() => process.exit(0))
-    .catch(error => {
-      console.error('❌ Script failed:', error);
+    .then(() => {
+      console.log('🎉 Super admin creation completed');
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error('💥 Super admin creation failed:', error);
       process.exit(1);
     });
 }

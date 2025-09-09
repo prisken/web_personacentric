@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const { authenticateToken, requireSuperAdminOnly } = require('../middleware/auth');
 const { User, PointTransaction, PaymentTransaction } = require('../models');

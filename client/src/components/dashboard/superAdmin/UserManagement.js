@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useUser } from '../../../contexts/UserContext';
 
 const UserManagement = () => {
   const { t } = useTranslation();
-  const { token } = useAuth();
+  const { token } = useUser();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,7 +43,7 @@ const UserManagement = () => {
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm(t('superAdmin.users.deleteConfirm'))) return;
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
       await axios.delete(`/api/super-admin/users/${userId}`, {
@@ -60,16 +60,16 @@ const UserManagement = () => {
 
   return (
     <div className="user-management">
-      <h2>{t('superAdmin.users.title')}</h2>
+      <h2>User Management</h2>
       
       <div className="user-list">
         <table>
           <thead>
             <tr>
-              <th>{t('superAdmin.users.email')}</th>
-              <th>{t('superAdmin.users.name')}</th>
-              <th>{t('superAdmin.users.role')}</th>
-              <th>{t('superAdmin.users.actions')}</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -97,14 +97,14 @@ const UserManagement = () => {
                     }}
                     className="edit-button"
                   >
-                    {t('superAdmin.users.edit')}
+                    Edit
                   </button>
                   <button
                     onClick={() => handleDeleteUser(user.id)}
                     className="delete-button"
                     disabled={user.role === 'super_admin'}
                   >
-                    {t('superAdmin.users.delete')}
+                    Delete
                   </button>
                 </td>
               </tr>
@@ -116,10 +116,10 @@ const UserManagement = () => {
       {showEditModal && selectedUser && (
         <div className="modal">
           <div className="modal-content">
-            <h3>{t('superAdmin.users.editUser')}</h3>
+            <h3>Edit User</h3>
             {/* Add edit form here */}
             <button onClick={() => setShowEditModal(false)}>
-              {t('common.close')}
+              Close
             </button>
           </div>
         </div>
