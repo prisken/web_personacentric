@@ -10,13 +10,30 @@ const SuperAdminDashboard = () => {
   const { t } = useTranslation();
   const { user } = useUser();
   const [activeTab, setActiveTab] = useState('users');
+  const [isVerifying, setIsVerifying] = useState(true);
 
   // Verify super admin access
   useEffect(() => {
-    if (user?.role !== 'super_admin') {
+    if (!user) {
+      window.location.href = '/login';
+    } else if (user.role !== 'super_admin') {
       window.location.href = '/';
+    } else {
+      setIsVerifying(false);
     }
   }, [user]);
+
+  // Show loading while verifying access
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Verifying access...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="super-admin-dashboard">
