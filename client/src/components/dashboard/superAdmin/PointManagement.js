@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { useUser } from '../../../contexts/UserContext';
@@ -13,11 +13,7 @@ const PointManagement = () => {
   const [points, setPoints] = useState('');
   const [reason, setReason] = useState('');
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
-
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async () => {
     try {
       const response = await axios.get('/api/super-admin/points/transactions', {
         headers: { Authorization: `Bearer ${token}` }
@@ -28,7 +24,11 @@ const PointManagement = () => {
       setError(error.response?.data?.error || 'Failed to fetch transactions');
       setLoading(false);
     }
-  };
+  }, [token]);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   const handleAwardPoints = async () => {
     if (!selectedUser || !points || !reason) return;
