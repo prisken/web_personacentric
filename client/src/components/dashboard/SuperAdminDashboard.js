@@ -270,7 +270,7 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
 
         {/* Event Management Tab */}
         {activeTab === 'events' && (
-          <EventManagement />
+          <EventManagement data={data} onRefresh={onRefresh} />
         )}
 
         {/* Quiz Management Tab */}

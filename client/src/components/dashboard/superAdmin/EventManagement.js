@@ -4,7 +4,7 @@ import apiService from '../../../services/api';
 import EventCard from '../EventCard';
 import StatisticsCard from '../StatisticsCard';
 
-const EventManagement = () => {
+const EventManagement = ({ data, onRefresh }) => {
   const navigate = useNavigate();
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -25,32 +25,14 @@ const EventManagement = () => {
     image: null
   });
   const [agents, setAgents] = useState([]);
-  const [statistics, setStatistics] = useState({
-    total_events: 0,
-    upcoming_events: 0,
-    total_registrations: 0,
-    total_clients_registered: 0
-  });
 
   useEffect(() => {
-    fetchEvents();
-    fetchAgents();
-    fetchStatistics();
-  }, []);
-
-  const fetchEvents = async () => {
-    try {
-      setLoading(true);
-      const response = await apiService.get('/events?status=all&limit=100');
-      if (response.success) {
-        setEvents(response.events || []);
-      }
-    } catch (error) {
-      console.error('Fetch events error:', error);
-    } finally {
-      setLoading(false);
+    // Use events from dashboard data instead of separate API call
+    if (data && data.all_events) {
+      setEvents(data.all_events);
     }
-  };
+    fetchAgents();
+  }, [data]);
 
   const fetchAgents = async () => {
     try {
@@ -60,17 +42,6 @@ const EventManagement = () => {
       }
     } catch (error) {
       console.error('Fetch agents error:', error);
-    }
-  };
-
-  const fetchStatistics = async () => {
-    try {
-      const response = await apiService.get('/super-admin/dashboard');
-      if (response.success) {
-        setStatistics(response.statistics || {});
-      }
-    } catch (error) {
-      console.error('Fetch statistics error:', error);
     }
   };
 
@@ -94,8 +65,10 @@ const EventManagement = () => {
       if (response.success) {
         setShowCreateModal(false);
         resetForm();
-        await fetchEvents();
-        await fetchStatistics();
+        // Refresh dashboard data to get updated events
+        if (onRefresh) {
+          onRefresh();
+        }
       }
     } catch (error) {
       console.error('Create event error:', error);
@@ -124,8 +97,10 @@ const EventManagement = () => {
       if (response.success) {
         setShowEditModal(false);
         setSelectedEvent(null);
-        await fetchEvents();
-        await fetchStatistics();
+        // Refresh dashboard data to get updated events
+        if (onRefresh) {
+          onRefresh();
+        }
       }
     } catch (error) {
       console.error('Update event error:', error);
@@ -139,8 +114,10 @@ const EventManagement = () => {
       try {
         setLoading(true);
         await apiService.delete(`/events/${eventId}`);
-        await fetchEvents();
-        await fetchStatistics();
+        // Refresh dashboard data to get updated events
+        if (onRefresh) {
+          onRefresh();
+        }
       } catch (error) {
         console.error('Delete event error:', error);
       } finally {
@@ -235,25 +212,25 @@ const EventManagement = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatisticsCard
           title="總活動"
-          value={statistics.total_events || 0}
+          value={data?.statistics?.total_events || 0}
           icon="📅"
           color="blue"
         />
         <StatisticsCard
           title="即將舉行"
-          value={statistics.upcoming_events || 0}
+          value={data?.statistics?.upcoming_events || 0}
           icon="⏰"
           color="green"
         />
         <StatisticsCard
           title="總註冊"
-          value={statistics.total_registrations || 0}
+          value={data?.statistics?.total_registrations || 0}
           icon="👥"
           color="yellow"
         />
         <StatisticsCard
           title="客戶註冊"
-          value={statistics.total_clients_registered || 0}
+          value={data?.statistics?.total_clients_registered || 0}
           icon="👤"
           color="purple"
         />
