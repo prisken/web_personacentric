@@ -7,6 +7,7 @@ import SystemManagement from './superAdmin/SystemManagement';
 import BlogManagement from './BlogManagement';
 import QuizManagement from './QuizManagement';
 import EventManagement from './superAdmin/EventManagement';
+import GiftManagement from './GiftManagement';
 import StatisticsCard from './StatisticsCard';
 
 const SuperAdminDashboard = ({ data, onRefresh }) => {
@@ -33,6 +34,7 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
     { id: 'blogs', label: '部落格管理', icon: '📝' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'quizzes', label: '測驗管理', icon: '📋' },
+    { id: 'gifts', label: '禮品管理', icon: '🎁' },
     { id: 'system', label: '系統配置', icon: '⚙️' }
   ];
 
@@ -276,6 +278,10 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
           <QuizManagement />
         )}
 
+        {/* Gift Management Tab */}
+        {activeTab === 'gifts' && (
+          <GiftManagement />
+        )}
 
         {/* System Management Tab */}
         {activeTab === 'system' && (
