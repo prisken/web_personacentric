@@ -3,21 +3,77 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const { authenticateToken, requireSuperAdminOnly } = require('../middleware/auth');
 const { User, PointTransaction, PaymentTransaction } = require('../models');
+const { Op } = require('sequelize');
+const sequelize = require('../config/database');
 
 // User Management Routes
 router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
-    const users = await User.findAll({
+    const { category, search, page = 1, limit = 50 } = req.query;
+    
+    // Build where clause for filtering
+    let whereClause = {};
+    
+    // Category filtering
+    if (category && category !== 'all') {
+      whereClause.role = category;
+    }
+    
+    // Search filtering
+    if (search) {
+      whereClause[Op.or] = [
+        { email: { [Op.iLike]: `%${search}%` } },
+        { first_name: { [Op.iLike]: `%${search}%` } },
+        { last_name: { [Op.iLike]: `%${search}%` } },
+        { phone: { [Op.iLike]: `%${search}%` } }
+      ];
+    }
+    
+    const offset = (page - 1) * limit;
+    
+    const users = await User.findAndCountAll({
+      where: whereClause,
       attributes: [
-        'id', 'email', 'first_name', 'last_name', 'role', 
+        'id', 'email', 'first_name', 'last_name', 'phone', 'role', 
         'points', 'subscription_status', 'is_verified',
-        'permissions', 'is_system_admin', 'created_at'
-      ]
+        'permissions', 'is_system_admin', 'created_at', 'updated_at'
+      ],
+      order: [['created_at', 'DESC']],
+      limit: parseInt(limit),
+      offset: offset
+    });
+    
+    // Get category counts
+    const categoryCounts = await User.findAll({
+      attributes: [
+        'role',
+        [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+      ],
+      group: ['role']
+    });
+    
+    const counts = {
+      all: users.count,
+      admin: 0,
+      agent: 0,
+      client: 0,
+      super_admin: 0
+    };
+    
+    categoryCounts.forEach(cat => {
+      counts[cat.role] = parseInt(cat.dataValues.count);
     });
     
     res.json({
       success: true,
-      users: users
+      users: users.rows,
+      pagination: {
+        total: users.count,
+        page: parseInt(page),
+        limit: parseInt(limit),
+        totalPages: Math.ceil(users.count / limit)
+      },
+      categoryCounts: counts
     });
   } catch (error) {
     console.error('Get users error:', error);
@@ -99,9 +155,11 @@ router.put('/users/:userId/role', authenticateToken, requireSuperAdminOnly, asyn
   }
 });
 
-router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+// Update user details route
+router.put('/users/:userId', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
     const { userId } = req.params;
+    const { first_name, last_name, email, phone, subscription_status, points } = req.body;
     
     const user = await User.findByPk(userId);
     if (!user) {
@@ -111,11 +169,121 @@ router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async 
       });
     }
     
-    await user.destroy();
+    // Check if email is being changed and if it's already taken
+    if (email && email !== user.email) {
+      const existingUser = await User.findOne({ where: { email } });
+      if (existingUser) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email already exists'
+        });
+      }
+    }
+    
+    const updateData = {
+      updated_at: new Date()
+    };
+    
+    if (first_name !== undefined) updateData.first_name = first_name;
+    if (last_name !== undefined) updateData.last_name = last_name;
+    if (email !== undefined) updateData.email = email;
+    if (phone !== undefined) updateData.phone = phone;
+    if (subscription_status !== undefined) updateData.subscription_status = subscription_status;
+    if (points !== undefined) updateData.points = points;
+    
+    await user.update(updateData);
     
     res.json({
       success: true,
-      message: 'User deleted successfully'
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        phone: user.phone,
+        role: user.role,
+        subscription_status: user.subscription_status,
+        points: user.points
+      }
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update user'
+    });
+  }
+});
+
+router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { confirmation, reason } = req.body;
+    
+    // Safety check: require confirmation
+    if (!confirmation || confirmation !== 'DELETE_USER_CONFIRMED') {
+      return res.status(400).json({
+        success: false,
+        error: 'Confirmation required. Please confirm deletion with proper confirmation code.'
+      });
+    }
+    
+    // Safety check: require reason
+    if (!reason || reason.trim().length < 10) {
+      return res.status(400).json({
+        success: false,
+        error: 'Deletion reason is required (minimum 10 characters)'
+      });
+    }
+    
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+    }
+    
+    // Safety check: prevent deletion of super admins
+    if (user.role === 'super_admin') {
+      return res.status(403).json({
+        success: false,
+        error: 'Cannot delete super admin users'
+      });
+    }
+    
+    // Safety check: prevent self-deletion
+    if (user.id === req.user.id) {
+      return res.status(403).json({
+        success: false,
+        error: 'Cannot delete your own account'
+      });
+    }
+    
+    // Log the deletion for audit trail
+    console.log(`User deletion: ${user.email} (${user.role}) deleted by ${req.user.email} at ${new Date().toISOString()}. Reason: ${reason}`);
+    
+    // Instead of hard delete, mark as deleted (soft delete approach)
+    await user.update({
+      email: `deleted_${Date.now()}_${user.email}`,
+      first_name: 'Deleted',
+      last_name: 'User',
+      phone: null,
+      is_verified: false,
+      subscription_status: 'inactive',
+      permissions: { deleted: true, deleted_at: new Date().toISOString(), deleted_by: req.user.id, deletion_reason: reason }
+    });
+    
+    res.json({
+      success: true,
+      message: 'User account deactivated successfully',
+      deletedUser: {
+        id: user.id,
+        originalEmail: user.email,
+        deletedAt: new Date().toISOString(),
+        deletedBy: req.user.email,
+        reason: reason
+      }
     });
   } catch (error) {
     console.error('Delete user error:', error);
