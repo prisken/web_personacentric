@@ -3,7 +3,6 @@ import UserManagement from './superAdmin/UserManagement';
 import PointManagement from './superAdmin/PointManagement';
 import PaymentManagement from './superAdmin/PaymentManagement';
 import AccessCodeManagement from './superAdmin/AccessCodeManagement';
-import AnalyticsManagement from './superAdmin/AnalyticsManagement';
 import SystemManagement from './superAdmin/SystemManagement';
 import BlogManagement from './BlogManagement';
 import QuizManagement from './QuizManagement';
@@ -34,7 +33,6 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
     { id: 'blogs', label: '部落格管理', icon: '📝' },
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'quizzes', label: '測驗管理', icon: '📋' },
-    { id: 'analytics', label: '分析報告', icon: '📈' },
     { id: 'system', label: '系統配置', icon: '⚙️' }
   ];
 
@@ -278,10 +276,6 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
           <QuizManagement />
         )}
 
-        {/* Analytics Management Tab */}
-        {activeTab === 'analytics' && (
-          <AnalyticsManagement />
-        )}
 
         {/* System Management Tab */}
         {activeTab === 'system' && (

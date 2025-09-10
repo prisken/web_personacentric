@@ -163,16 +163,6 @@ const Header = () => {
                 {!item.comingSoon && <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>}
               </Link>
             ))}
-            {user?.role === 'super_admin' && (
-              <Link
-                to="/super-admin"
-                className={`font-medium text-sm lg:text-base ${textClasses} ${hoverClasses} relative group px-2 py-1 rounded-lg transition-all duration-200 hover:bg-white/10`}
-              >
-                <span className="nav-icon">👑</span>
-                Super Admin
-                <span className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-current transition-all duration-200 group-hover:w-full"></span>
-              </Link>
-            )}
           </nav>
 
           {/* Right Side: Language Switcher & Auth Buttons */}
@@ -279,15 +269,6 @@ const Header = () => {
                   {item.comingSoon && <span className="text-xs ml-1">(即將推出)</span>}
                 </Link>
               ))}
-              {user?.role === 'super_admin' && (
-                <Link
-                  to="/super-admin"
-                  className={`block px-3 py-2 rounded-md transition-all duration-200 text-sm font-medium ${textClasses} ${hoverClasses} hover:bg-white/10`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <span className="nav-icon">👑</span> Super Admin
-                </Link>
-              )}
 
               <div className="pt-3 border-t border-gray-300/30">
                 {/* Language Toggle */}
