@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import UserManagement from './superAdmin/UserManagement';
 import PointManagement from './superAdmin/PointManagement';
 import PaymentManagement from './superAdmin/PaymentManagement';
-import AdminManagement from './superAdmin/AdminManagement';
 import AccessCodeManagement from './superAdmin/AccessCodeManagement';
 import AnalyticsManagement from './superAdmin/AnalyticsManagement';
 import SystemManagement from './superAdmin/SystemManagement';
@@ -29,7 +28,6 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
   const tabs = [
     { id: 'overview', label: '總覽', icon: '📊' },
     { id: 'users', label: '用戶管理', icon: '👥' },
-    { id: 'admins', label: '管理員管理', icon: '👑' },
     { id: 'points', label: '積分系統', icon: '⭐' },
     { id: 'payments', label: '付款管理', icon: '💳' },
     { id: 'access-codes', label: '存取碼', icon: '🔑' },
@@ -248,11 +246,6 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
         {/* User Management Tab */}
         {activeTab === 'users' && (
           <UserManagement />
-        )}
-
-        {/* Admin Management Tab */}
-        {activeTab === 'admins' && (
-          <AdminManagement />
         )}
 
         {/* Points Management Tab */}
