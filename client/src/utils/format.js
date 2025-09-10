@@ -107,6 +107,11 @@ export const formatCurrency = (amount, currency = 'USD', locale = 'en-US') => {
   }
 };
 
+// HKD Currency formatting (specific to the app)
+export const formatHKD = (amount) => {
+  return formatCurrency(amount, 'HKD', 'zh-TW');
+};
+
 // Number formatting
 export const formatNumber = (number, options = {}) => {
   const defaultOptions = {
