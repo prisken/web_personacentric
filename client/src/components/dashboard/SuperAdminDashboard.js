@@ -6,6 +6,9 @@ import AdminManagement from './superAdmin/AdminManagement';
 import AccessCodeManagement from './superAdmin/AccessCodeManagement';
 import AnalyticsManagement from './superAdmin/AnalyticsManagement';
 import SystemManagement from './superAdmin/SystemManagement';
+import BlogManagement from './BlogManagement';
+import QuizManagement from './QuizManagement';
+import EventManagement from './superAdmin/EventManagement';
 import StatisticsCard from './StatisticsCard';
 
 const SuperAdminDashboard = ({ data, onRefresh }) => {
@@ -30,6 +33,9 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
     { id: 'points', label: '積分系統', icon: '⭐' },
     { id: 'payments', label: '付款管理', icon: '💳' },
     { id: 'access-codes', label: '存取碼', icon: '🔑' },
+    { id: 'blogs', label: '部落格管理', icon: '📝' },
+    { id: 'events', label: '活動管理', icon: '📅' },
+    { id: 'quizzes', label: '測驗管理', icon: '📋' },
     { id: 'analytics', label: '分析報告', icon: '📈' },
     { id: 'system', label: '系統配置', icon: '⚙️' }
   ];
@@ -262,6 +268,21 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
         {/* Access Code Management Tab */}
         {activeTab === 'access-codes' && (
           <AccessCodeManagement />
+        )}
+
+        {/* Blog Management Tab */}
+        {activeTab === 'blogs' && (
+          <BlogManagement />
+        )}
+
+        {/* Event Management Tab */}
+        {activeTab === 'events' && (
+          <EventManagement />
+        )}
+
+        {/* Quiz Management Tab */}
+        {activeTab === 'quizzes' && (
+          <QuizManagement />
         )}
 
         {/* Analytics Management Tab */}

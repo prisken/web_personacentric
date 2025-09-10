@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { Quiz, QuizAttempt, User } = require('../models');
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdminOrSuperAdmin } = require('../middleware/auth');
 const { Op } = require('sequelize');
 
-// Get all quizzes (admin)
-router.get('/admin', authenticateToken, async (req, res) => {
+// Get all quizzes (admin or super admin)
+router.get('/admin', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const quizzes = await Quiz.findAll({
       include: [
@@ -91,15 +91,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Create new quiz (admin only)
-router.post('/', authenticateToken, async (req, res) => {
+// Create new quiz (admin or super admin only)
+router.post('/', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
 
     const {
       title,
@@ -153,15 +147,9 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Update quiz (admin only)
-router.put('/:id', authenticateToken, async (req, res) => {
+// Update quiz (admin or super admin only)
+router.put('/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
 
     const quiz = await Quiz.findByPk(req.params.id);
     if (!quiz) {
@@ -224,15 +212,9 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Delete quiz (admin only)
-router.delete('/:id', authenticateToken, async (req, res) => {
+// Delete quiz (admin or super admin only)
+router.delete('/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
 
     const quiz = await Quiz.findByPk(req.params.id);
     if (!quiz) {
@@ -413,15 +395,9 @@ router.get('/user/attempts', authenticateToken, async (req, res) => {
   }
 });
 
-// Get quiz statistics (admin)
-router.get('/:id/stats', authenticateToken, async (req, res) => {
+// Get quiz statistics (admin or super admin)
+router.get('/:id/stats', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({
-        success: false,
-        message: 'Access denied'
-      });
-    }
 
     const attempts = await QuizAttempt.findAll({
       where: {

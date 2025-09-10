@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdminOrSuperAdmin } = require('../middleware/auth');
 
 // In-memory storage for blog data (persists during server session)
 let blogData = [
@@ -171,8 +171,8 @@ router.get('/:identifier', async (req, res) => {
   }
 });
 
-// Create new blog (Admin only)
-router.post('/', authenticateToken, async (req, res) => {
+// Create new blog (Admin or Super Admin only)
+router.post('/', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { 
       title, 
@@ -186,11 +186,6 @@ router.post('/', authenticateToken, async (req, res) => {
       status = 'draft',
       featured = false
     } = req.body;
-
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
-    }
 
     // Generate slug from title
     const slug = title.toLowerCase()
@@ -238,8 +233,8 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Update blog (Admin only)
-router.put('/:id', authenticateToken, async (req, res) => {
+// Update blog (Admin or Super Admin only)
+router.put('/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { 
@@ -254,11 +249,6 @@ router.put('/:id', authenticateToken, async (req, res) => {
       status,
       featured
     } = req.body;
-
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
-    }
 
     // Find the blog in in-memory storage
     const blogIndex = blogData.findIndex(b => b.id === id);
@@ -318,15 +308,10 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// Delete blog (Admin only)
-router.delete('/:id', authenticateToken, async (req, res) => {
+// Delete blog (Admin or Super Admin only)
+router.delete('/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
-    }
 
     // Find and remove the blog from in-memory storage
     const blogIndex = blogData.findIndex(b => b.id === id);
@@ -395,13 +380,9 @@ router.get('/categories/all', async (req, res) => {
   }
 });
 
-// Seed blog data (Admin only)
-router.post('/seed', authenticateToken, async (req, res) => {
+// Seed blog data (Admin or Super Admin only)
+router.post('/seed', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
-    // Check if user is admin
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Admin access required' });
-    }
 
     res.json({
       success: true,

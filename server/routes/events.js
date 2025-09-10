@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middleware/auth');
+const { authenticateToken, requireAdminOrSuperAdmin } = require('../middleware/auth');
 const { Event, EventRegistration, User, Agent } = require('../models');
 const { Op } = require('sequelize');
 const multer = require('multer');
@@ -21,16 +21,8 @@ const upload = multer({
   },
 });
 
-// Middleware to check if user is admin
-const requireAdmin = (req, res, next) => {
-  if (req.user.role !== 'admin') {
-    return res.status(403).json({
-      success: false,
-      error: 'Admin access required'
-    });
-  }
-  next();
-};
+// Middleware to check if user is admin or super admin
+const requireAdmin = requireAdminOrSuperAdmin;
 
 // Middleware to check if user is agent
 const requireAgent = (req, res, next) => {

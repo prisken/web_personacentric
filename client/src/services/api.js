@@ -396,6 +396,16 @@ class ApiService {
   async generateInvitationCode() {
     return this.post('/client-management/client/generate-invitation-code');
   }
+
+  // Agent endpoints
+  async getAgents() {
+    return this.get('/agents');
+  }
+
+  // Super Admin endpoints
+  async getSuperAdminDashboard() {
+    return this.get('/super-admin/dashboard');
+  }
 }
 
 // Create a singleton instance
