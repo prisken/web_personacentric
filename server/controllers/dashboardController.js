@@ -418,8 +418,8 @@ class DashboardController {
               total_events_attended: attendedEvents,
               total_events_registered: registeredEvents,
               upcoming_events: upcomingEventsCount,
-              total_points_earned: req.user.points || 0,
-              points_balance: req.user.points || 0,
+              total_points_earned: userData.points || 0,
+              points_balance: userData.points || 0,
               contests_participated: 1
             };
 
