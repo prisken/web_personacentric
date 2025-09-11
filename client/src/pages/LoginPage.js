@@ -80,10 +80,15 @@ const LoginPage = () => {
           {/* Quick Login Section */}
           <div className="mb-6">
             <h3 className="text-sm font-medium text-gray-700 mb-3 text-center">
-              🧪 測試帳號快速登入
+              🚀 快速登入 - 所有系統用戶
             </h3>
-            <div className="space-y-2">
-              {/* Super Admin Login */}
+            
+            {/* Super Admin */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
+                <span className="mr-1">👑</span>
+                超級管理員
+              </h4>
               <button
                 onClick={() => handleQuickLogin('superadmin@personacentric.com', 'superadmin123')}
                 disabled={loading}
@@ -95,8 +100,14 @@ const LoginPage = () => {
                   <span className="ml-2 text-xs opacity-90">(superadmin@personacentric.com)</span>
                 </span>
               </button>
-              
-              {/* Admin Login */}
+            </div>
+
+            {/* Admin */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
+                <span className="mr-1">👑</span>
+                管理員
+              </h4>
               <button
                 onClick={() => handleQuickLogin('admin@personacentric.com', 'admin123')}
                 disabled={loading}
@@ -104,36 +115,160 @@ const LoginPage = () => {
               >
                 <span className="flex items-center justify-center">
                   <span className="mr-2">👑</span>
-                  <span>管理員</span>
+                  <span>Admin User</span>
                   <span className="ml-2 text-xs opacity-90">(admin@personacentric.com)</span>
                 </span>
               </button>
-              
-              {/* Agent Login */}
-              <button
-                onClick={() => handleQuickLogin('agent1@personacentric.com', 'agent123')}
-                disabled={loading}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="flex items-center justify-center">
-                  <span className="mr-2">👨‍💼</span>
-                  <span>顧問</span>
-                  <span className="ml-2 text-xs opacity-90">(agent1@personacentric.com)</span>
-                </span>
-              </button>
-              
-              {/* Client Login */}
-              <button
-                onClick={() => handleQuickLogin('client1@personacentric.com', 'client123')}
-                disabled={loading}
-                className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <span className="flex items-center justify-center">
-                  <span className="mr-2">👤</span>
-                  <span>客戶</span>
-                  <span className="ml-2 text-xs opacity-90">(client1@personacentric.com)</span>
-                </span>
-              </button>
+            </div>
+
+            {/* Agents */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
+                <span className="mr-1">👨‍💼</span>
+                顧問 (9位)
+              </h4>
+              <div className="grid grid-cols-1 gap-2">
+                <button
+                  onClick={() => handleQuickLogin('agent1@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👨‍💼</span>
+                    <span>張顧問</span>
+                    <span className="ml-2 text-xs opacity-90">(agent1@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('agent2@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👨‍💼</span>
+                    <span>李顧問</span>
+                    <span className="ml-2 text-xs opacity-90">(agent2@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('sarah.johnson@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👩‍💼</span>
+                    <span>Sarah Johnson</span>
+                    <span className="ml-2 text-xs opacity-90">(sarah.johnson@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('michael.chen@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👨‍💼</span>
+                    <span>Michael Chen</span>
+                    <span className="ml-2 text-xs opacity-90">(michael.chen@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('emily.rodriguez@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👩‍💼</span>
+                    <span>Emily Rodriguez</span>
+                    <span className="ml-2 text-xs opacity-90">(emily.rodriguez@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('kenji.tanaka@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👨‍💼</span>
+                    <span>Kenji Tanaka</span>
+                    <span className="ml-2 text-xs opacity-90">(kenji.tanaka@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('lucy.wong@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👩‍💼</span>
+                    <span>Lucy Wong</span>
+                    <span className="ml-2 text-xs opacity-90">(lucy.wong@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('alexander.smith@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👨‍💼</span>
+                    <span>Alexander Smith</span>
+                    <span className="ml-2 text-xs opacity-90">(alexander.smith@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('mei.lin@personacentric.com', 'agent123')}
+                  disabled={loading}
+                  className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👩‍💼</span>
+                    <span>Mei Lin</span>
+                    <span className="ml-2 text-xs opacity-90">(mei.lin@personacentric.com)</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Clients */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
+                <span className="mr-1">👤</span>
+                客戶 (2位)
+              </h4>
+              <div className="grid grid-cols-1 gap-2">
+                <button
+                  onClick={() => handleQuickLogin('client1@personacentric.com', 'client123')}
+                  disabled={loading}
+                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👤</span>
+                    <span>王客戶</span>
+                    <span className="ml-2 text-xs opacity-90">(client1@personacentric.com)</span>
+                  </span>
+                </button>
+                
+                <button
+                  onClick={() => handleQuickLogin('client2@personacentric.com', 'client123')}
+                  disabled={loading}
+                  className="w-full bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <span className="flex items-center justify-center">
+                    <span className="mr-2">👤</span>
+                    <span>陳客戶</span>
+                    <span className="ml-2 text-xs opacity-90">(client2@personacentric.com)</span>
+                  </span>
+                </button>
+              </div>
             </div>
             
             {/* Role Information */}
@@ -151,15 +286,18 @@ const LoginPage = () => {
                   <span>內容管理權限（活動、部落格、測驗）</span>
                 </div>
                 <div className="flex items-center">
-                  <span className="mr-2">👨‍💼</span>
-                  <span className="font-medium">顧問：</span>
+                  <span className="mr-2">👨‍💼👩‍💼</span>
+                  <span className="font-medium">顧問 (9位)：</span>
                   <span>活動管理與客戶關係</span>
                 </div>
                 <div className="flex items-center">
                   <span className="mr-2">👤</span>
-                  <span className="font-medium">客戶：</span>
+                  <span className="font-medium">客戶 (2位)：</span>
                   <span>基本存取權限（查看內容、參與活動）</span>
                 </div>
+              </div>
+              <div className="mt-2 text-xs text-gray-400">
+                <strong>密碼：</strong> 超級管理員/管理員/顧問 = superadmin123/admin123/agent123，客戶 = client123
               </div>
             </div>
           </div>
