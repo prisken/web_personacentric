@@ -1172,4 +1172,24 @@ router.post('/fix-schema', async (req, res) => {
   }
 });
 
+// Temporary endpoint to create all missing users to match seed data
+router.post('/create-all-missing-users', async (req, res) => {
+  try {
+    const createAllMissingUsers = require('../createAllMissingUsers');
+    await createAllMissingUsers();
+    
+    res.json({
+      success: true,
+      message: 'All missing users created successfully to match seed data',
+      note: 'This ensures the login page users match the actual database users'
+    });
+  } catch (error) {
+    console.error('Create all missing users error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create missing users: ' + error.message
+    });
+  }
+});
+
 module.exports = router; 
