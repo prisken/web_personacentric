@@ -46,8 +46,9 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await apiService.login(credentials);
       if (response.success) {
-        setUser(response.user);
         localStorage.setItem('token', response.token);
+        // Fetch fresh user data from server after successful login
+        await fetchCurrentUser();
         return { success: true };
       } else {
         return { success: false, error: response.error };
@@ -62,8 +63,9 @@ export const UserProvider = ({ children }) => {
     try {
       const response = await apiService.register(userData);
       if (response.success) {
-        setUser(response.user);
         localStorage.setItem('token', response.token);
+        // Fetch fresh user data from server after successful registration
+        await fetchCurrentUser();
         return { success: true };
       } else {
         return { success: false, error: response.error };
