@@ -22,6 +22,7 @@ const UserManagement = () => {
     subscription_status: '',
     points: 0
   });
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   const fetchUsers = useCallback(async (page = 1, category = selectedCategory, search = searchTerm) => {
     try {
@@ -35,6 +36,9 @@ const UserManagement = () => {
         search: search
       });
       
+      // Add cache-busting parameter to ensure fresh data
+      params.append('_t', Date.now().toString());
+      
       const response = await apiService.get(`/super-admin/users?${params}`);
       
       if (response.success) {
@@ -42,6 +46,7 @@ const UserManagement = () => {
         setCategoryCounts(response.categoryCounts || {});
         setPagination(response.pagination || {});
         setCurrentPage(page);
+        setLastUpdated(new Date());
       } else {
         setError('Failed to fetch users');
         setUsers([]);
@@ -59,6 +64,15 @@ const UserManagement = () => {
   useEffect(() => {
     fetchUsers();
   }, [fetchUsers]);
+
+  // Auto-refresh every 30 seconds to keep data fresh
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchUsers(currentPage, selectedCategory, searchTerm);
+    }, 30000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, [fetchUsers, currentPage, selectedCategory, searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -179,8 +193,25 @@ const UserManagement = () => {
             <h2 className="text-2xl font-bold text-gray-900">用戶管理</h2>
             <p className="text-gray-600 mt-1">管理所有用戶帳戶和權限</p>
           </div>
-          <div className="text-sm text-gray-500">
-            總計 {pagination.total || 0} 位用戶
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => fetchUsers(currentPage, selectedCategory, searchTerm)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              title="刷新數據"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>刷新</span>
+            </button>
+            <div className="text-sm text-gray-500">
+              總計 {pagination.total || 0} 位用戶
+              {lastUpdated && (
+                <div className="text-xs text-gray-400 mt-1">
+                  最後更新: {lastUpdated.toLocaleTimeString('zh-TW')}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
