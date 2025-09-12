@@ -14,6 +14,40 @@ router.post('/register', authController.register);
 // Get current user
 router.get('/me', authenticateToken, authController.getCurrentUser);
 
+// Get all users for quick login (public endpoint for development)
+router.get('/quick-login-users', async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'email', 'first_name', 'last_name', 'role'],
+      order: [['role', 'ASC'], ['first_name', 'ASC']]
+    });
+    
+    // Group users by role
+    const usersByRole = {
+      super_admin: [],
+      admin: [],
+      agent: [],
+      client: []
+    };
+    
+    users.forEach(user => {
+      usersByRole[user.role].push(user);
+    });
+    
+    res.json({
+      success: true,
+      users: usersByRole,
+      total: users.length
+    });
+  } catch (error) {
+    console.error('Get quick login users error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch users'
+    });
+  }
+});
+
 // Temporary endpoint to create admin user (remove in production)
 router.post('/create-admin', async (req, res) => {
   try {

@@ -268,6 +268,14 @@ class DashboardController {
             });
 
             dashboardData.all_registrations = superAdminAllRegistrations;
+
+            // Get recent users for super admin
+            const recentUsers = await User.findAll({
+              attributes: ['id', 'email', 'first_name', 'last_name', 'role', 'created_at'],
+              order: [['created_at', 'DESC']],
+              limit: 10
+            });
+            dashboardData.recent_users = recentUsers;
             break;
 
           case 'agent':

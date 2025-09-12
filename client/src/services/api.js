@@ -178,6 +178,10 @@ class ApiService {
     return { success: true };
   }
 
+  async getQuickLoginUsers() {
+    return this.get('/auth/quick-login-users');
+  }
+
   // Dashboard endpoints
   async getDashboard() {
     return this.get('/dashboard');
