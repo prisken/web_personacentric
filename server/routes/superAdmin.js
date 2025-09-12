@@ -6,13 +6,20 @@ const { User, PointTransaction, PaymentTransaction } = require('../models');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
-// User Management Routes
+// User Management Routes - Simplified and Robust
 router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
-    const { category, search, page = 1, limit = 50 } = req.query;
+    const { category, search, page = 1, limit = 100 } = req.query;
     
-    // Build where clause for filtering
-    let whereClause = {};
+    console.log('🔍 Super Admin API called with params:', { category, search, page, limit });
+    
+    // Build where clause for filtering - EXCLUDE soft-deleted users
+    let whereClause = {
+      // Exclude soft-deleted users (those with deleted_ prefix in email)
+      email: {
+        [Op.notLike]: 'deleted_%'
+      }
+    };
     
     // Category filtering
     if (category && category !== 'all') {
@@ -20,17 +27,27 @@ router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) 
     }
     
     // Search filtering
-    if (search) {
-      whereClause[Op.or] = [
-        { email: { [Op.iLike]: `%${search}%` } },
-        { first_name: { [Op.iLike]: `%${search}%` } },
-        { last_name: { [Op.iLike]: `%${search}%` } },
-        { phone: { [Op.iLike]: `%${search}%` } }
+    if (search && search.trim()) {
+      whereClause[Op.and] = [
+        whereClause, // Keep existing conditions
+        {
+          [Op.or]: [
+            { email: { [Op.iLike]: `%${search}%` } },
+            { first_name: { [Op.iLike]: `%${search}%` } },
+            { last_name: { [Op.iLike]: `%${search}%` } },
+            { phone: { [Op.iLike]: `%${search}%` } }
+          ]
+        }
       ];
+      // Remove the email condition from the main whereClause since it's now in Op.and
+      delete whereClause.email;
     }
     
     const offset = (page - 1) * limit;
     
+    console.log('🔍 Where clause:', JSON.stringify(whereClause, null, 2));
+    
+    // Get users with explicit ordering and no hidden filters
     const users = await User.findAndCountAll({
       where: whereClause,
       attributes: [
@@ -40,16 +57,25 @@ router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) 
       ],
       order: [['created_at', 'DESC']],
       limit: parseInt(limit),
-      offset: offset
+      offset: offset,
+      raw: false // Ensure we get full model instances
     });
     
-    // Get category counts
+    console.log(`📊 Found ${users.count} total users, returning ${users.rows.length} users`);
+    
+    // Get category counts - EXCLUDE soft-deleted users
     const categoryCounts = await User.findAll({
+      where: {
+        email: {
+          [Op.notLike]: 'deleted_%'
+        }
+      },
       attributes: [
         'role',
         [sequelize.fn('COUNT', sequelize.col('id')), 'count']
       ],
-      group: ['role']
+      group: ['role'],
+      raw: true
     });
     
     const counts = {
@@ -61,8 +87,10 @@ router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) 
     };
     
     categoryCounts.forEach(cat => {
-      counts[cat.role] = parseInt(cat.dataValues.count);
+      counts[cat.role] = parseInt(cat.count);
     });
+    
+    console.log('📈 Category counts:', counts);
     
     res.json({
       success: true,
@@ -76,10 +104,11 @@ router.get('/users', authenticateToken, requireSuperAdminOnly, async (req, res) 
       categoryCounts: counts
     });
   } catch (error) {
-    console.error('Get users error:', error);
+    console.error('❌ Get users error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to get users'
+      error: 'Failed to get users',
+      details: error.message
     });
   }
 });

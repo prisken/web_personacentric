@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
 const { User, Agent } = require('../models');
+const { Op } = require('sequelize');
 
 // Login
 router.post('/login', authController.login);
@@ -14,13 +15,24 @@ router.post('/register', authController.register);
 // Get current user
 router.get('/me', authenticateToken, authController.getCurrentUser);
 
-// Get all users for quick login (public endpoint for development)
+// Get all users for quick login - Simplified and Robust
 router.get('/quick-login-users', async (req, res) => {
   try {
+    console.log('🔍 Quick login API called');
+    
+    // Get all active users (exclude soft-deleted)
     const users = await User.findAll({
+      where: {
+        email: {
+          [Op.notLike]: 'deleted_%'
+        }
+      },
       attributes: ['id', 'email', 'first_name', 'last_name', 'role'],
-      order: [['role', 'ASC'], ['first_name', 'ASC']]
+      order: [['role', 'ASC'], ['first_name', 'ASC']],
+      raw: false
     });
+    
+    console.log(`📊 Quick login found ${users.length} users`);
     
     // Group users by role
     const usersByRole = {
@@ -31,7 +43,16 @@ router.get('/quick-login-users', async (req, res) => {
     };
     
     users.forEach(user => {
-      usersByRole[user.role].push(user);
+      if (usersByRole[user.role]) {
+        usersByRole[user.role].push(user);
+      }
+    });
+    
+    console.log('📈 Quick login users by role:', {
+      super_admin: usersByRole.super_admin.length,
+      admin: usersByRole.admin.length,
+      agent: usersByRole.agent.length,
+      client: usersByRole.client.length
     });
     
     res.json({
@@ -40,10 +61,11 @@ router.get('/quick-login-users', async (req, res) => {
       total: users.length
     });
   } catch (error) {
-    console.error('Get quick login users error:', error);
+    console.error('❌ Get quick login users error:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to fetch users'
+      error: 'Failed to fetch users',
+      details: error.message
     });
   }
 });
