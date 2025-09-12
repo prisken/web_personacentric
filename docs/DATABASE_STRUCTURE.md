@@ -6,7 +6,7 @@ This document provides a comprehensive overview of the database structure for th
 
 ## Table Overview
 
-The database consists of **27 main tables** organized into the following functional areas:
+The database consists of **25 main tables** organized into the following functional areas:
 
 ### Core User Management
 - **users** - Main user accounts and profiles
@@ -26,9 +26,6 @@ The database consists of **27 main tables** organized into the following functio
 ### Quizzes & Learning
 - **quizzes** - Quiz definitions and questions
 - **quiz_attempts** - User quiz attempts and scores
-- **quiz_questions** - Individual quiz questions (legacy)
-- **quiz_responses** - User responses to questions (legacy)
-- **quiz_sessions** - Quiz session tracking (legacy)
 
 ### Contests & Competitions
 - **contests** - Contest definitions and rules

@@ -8,9 +8,7 @@ const BlogPost = require('./BlogPost');
 const BlogImage = require('./BlogImage');
 const BlogCategory = require('./BlogCategory');
 const BlogPostCategory = require('./BlogPostCategory');
-const QuizQuestion = require('./QuizQuestion');
-const QuizResponse = require('./QuizResponse');
-const QuizSession = require('./QuizSession');
+// Legacy quiz models removed
 
 // Import quiz models with error handling
 let Quiz, QuizAttempt;
@@ -54,8 +52,7 @@ User.hasMany(AccessCode, { foreignKey: 'user_id', as: 'accessCodes' });
 User.hasMany(AccessCode, { foreignKey: 'created_by', as: 'createdAccessCodes' });
 User.hasMany(Notification, { foreignKey: 'user_id', as: 'notifications' });
 User.hasMany(EventRegistration, { foreignKey: 'user_id', as: 'eventRegistrations' });
-User.hasMany(QuizResponse, { foreignKey: 'user_id', as: 'quizResponses' });
-User.hasMany(QuizSession, { foreignKey: 'user_id', as: 'quizSessions' });
+// Legacy quiz associations removed
 if (Quiz) {
   User.hasMany(Quiz, { foreignKey: 'created_by', as: 'createdQuizzes' });
   User.hasMany(QuizAttempt, { foreignKey: 'user_id', as: 'quizAttempts' });
@@ -98,12 +95,7 @@ Contest.hasMany(ContestSubmission, { foreignKey: 'contest_id', as: 'submissions'
 ContestSubmission.belongsTo(Contest, { foreignKey: 'contest_id', as: 'contest' });
 ContestSubmission.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
-// Quiz associations
-QuizQuestion.hasMany(QuizResponse, { foreignKey: 'question_id', as: 'responses' });
-QuizResponse.belongsTo(QuizQuestion, { foreignKey: 'question_id', as: 'question' });
-QuizResponse.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
-
-QuizSession.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+// Legacy quiz associations removed
 
 // New Quiz associations
 if (Quiz) {
@@ -172,9 +164,7 @@ module.exports = {
   BlogImage,
   BlogCategory,
   BlogPostCategory,
-  QuizQuestion,
-  QuizResponse,
-  QuizSession,
+  // Legacy quiz models removed
   Quiz,
   QuizAttempt,
   Contest,
