@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useUser } from '../contexts/UserContext';
-import apiService from '../services/api';
 
 const LoginPage = () => {
   const { t } = useLanguage();
@@ -23,22 +22,26 @@ const LoginPage = () => {
   });
   const [usersLoading, setUsersLoading] = useState(true);
 
-  // Fetch all users for quick login
+  // Set static users for quick login (no dynamic fetching)
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await apiService.getQuickLoginUsers();
-        if (response.success) {
-          setUsers(response.users);
-        }
-      } catch (error) {
-        console.error('Failed to fetch users for quick login:', error);
-      } finally {
-        setUsersLoading(false);
-      }
-    };
-
-    fetchUsers();
+    setUsers({
+      super_admin: [
+        { id: 1, email: 'superadmin@personacentric.com', first_name: 'Super', last_name: 'Admin', role: 'super_admin' }
+      ],
+      admin: [
+        { id: 2, email: 'admin@personacentric.com', first_name: 'Admin', last_name: 'User', role: 'admin' }
+      ],
+      agent: [
+        { id: 3, email: 'agent1@personacentric.com', first_name: '張', last_name: '顧問', role: 'agent' },
+        { id: 4, email: 'agent2@personacentric.com', first_name: '李', last_name: '顧問', role: 'agent' },
+        { id: 5, email: 'sarah.johnson@personacentric.com', first_name: 'Sarah', last_name: 'Johnson', role: 'agent' }
+      ],
+      client: [
+        { id: 6, email: 'client1@personacentric.com', first_name: '王', last_name: '客戶', role: 'client' },
+        { id: 7, email: 'client2@personacentric.com', first_name: '陳', last_name: '客戶', role: 'client' }
+      ]
+    });
+    setUsersLoading(false);
   }, []);
 
   // Get default password based on role
