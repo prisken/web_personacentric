@@ -318,3 +318,4 @@ export const usePerformance = (operationName) => {
     logger.performance(operationName, duration);
   }, [operationName]);
 };
+

@@ -119,3 +119,4 @@ const logger = new Logger();
 // Export both the instance and the class
 export default logger;
 export { Logger, LOG_LEVELS };
+

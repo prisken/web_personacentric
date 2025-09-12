@@ -210,3 +210,4 @@ export const getResponsiveClasses = (baseClasses, responsiveClasses = {}) => {
   
   return classes.join(' ');
 };
+

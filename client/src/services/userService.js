@@ -57,3 +57,4 @@ class UserService extends BaseApiService {
 }
 
 export default new UserService();
+

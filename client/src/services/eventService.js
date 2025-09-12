@@ -89,3 +89,4 @@ class EventService extends BaseApiService {
 }
 
 export default new EventService();
+

@@ -53,3 +53,4 @@ class AuthService extends BaseApiService {
 }
 
 export default new AuthService();
+
