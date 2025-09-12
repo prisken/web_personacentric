@@ -60,6 +60,12 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
               >
                 {loading ? '更新中...' : '刷新數據'}
               </button>
+              <div className="text-sm text-gray-500">
+                總用戶: {data.statistics?.total_users || 0} | 
+                客戶: {data.statistics?.total_clients || 0} | 
+                顧問: {data.statistics?.total_agents || 0} | 
+                管理員: {data.statistics?.total_admins || 0}
+              </div>
             </div>
           </div>
         </div>

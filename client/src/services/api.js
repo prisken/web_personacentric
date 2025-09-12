@@ -406,6 +406,25 @@ class ApiService {
   async getSuperAdminDashboard() {
     return this.get('/super-admin/dashboard');
   }
+
+  async getSuperAdminUsers(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return this.get(`/super-admin/users${queryString ? `?${queryString}` : ''}`);
+  }
+
+  async updateSuperAdminUser(userId, userData) {
+    return this.put(`/super-admin/users/${userId}`, userData);
+  }
+
+  async updateSuperAdminUserRole(userId, role) {
+    return this.put(`/super-admin/users/${userId}/role`, { role });
+  }
+
+  async deleteSuperAdminUser(userId, confirmation, reason) {
+    return this.delete(`/super-admin/users/${userId}`, {
+      body: JSON.stringify({ confirmation, reason })
+    });
+  }
 }
 
 // Create a singleton instance

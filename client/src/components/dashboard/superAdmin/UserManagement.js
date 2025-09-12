@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import apiService from '../../../services/api';
 
 const UserManagement = () => {
@@ -24,14 +24,14 @@ const UserManagement = () => {
   });
   const [lastUpdated, setLastUpdated] = useState(null);
 
-  const fetchUsers = useCallback(async (page = 1, category = selectedCategory, search = searchTerm) => {
+  const fetchUsers = async (page = 1, category = 'all', search = '') => {
     try {
       setLoading(true);
       setError(null);
       
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '20',
+        limit: '50', // Increased limit to show more users
         category: category,
         search: search
       });
@@ -39,7 +39,14 @@ const UserManagement = () => {
       // Add cache-busting parameter to ensure fresh data
       params.append('_t', Date.now().toString());
       
-      const response = await apiService.get(`/super-admin/users?${params}`);
+      console.log('Fetching users with params:', params.toString());
+      const response = await apiService.getSuperAdminUsers({
+        page: page.toString(),
+        limit: '50',
+        category: category,
+        search: search
+      });
+      console.log('API Response:', response);
       
       if (response.success) {
         setUsers(response.users || []);
@@ -47,6 +54,7 @@ const UserManagement = () => {
         setPagination(response.pagination || {});
         setCurrentPage(page);
         setLastUpdated(new Date());
+        console.log('Users loaded:', response.users?.length, 'Total:', response.pagination?.total);
       } else {
         setError('Failed to fetch users');
         setUsers([]);
@@ -59,20 +67,20 @@ const UserManagement = () => {
       setUsers([]);
       setLoading(false);
     }
-  }, [selectedCategory, searchTerm]);
+  };
 
   useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+    fetchUsers(1, 'all', '');
+  }, []);
 
-  // Auto-refresh every 30 seconds to keep data fresh
+  // Auto-refresh every 15 seconds to keep data fresh and show new registrations
   useEffect(() => {
     const interval = setInterval(() => {
       fetchUsers(currentPage, selectedCategory, searchTerm);
-    }, 30000); // 30 seconds
+    }, 15000); // 15 seconds for more frequent updates
 
     return () => clearInterval(interval);
-  }, [fetchUsers, currentPage, selectedCategory, searchTerm]);
+  }, [currentPage, selectedCategory, searchTerm]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -86,9 +94,7 @@ const UserManagement = () => {
 
   const handleRoleChange = async (userId, newRole) => {
     try {
-      await apiService.put(`/super-admin/users/${userId}/role`, {
-        role: newRole
-      });
+      await apiService.updateSuperAdminUserRole(userId, newRole);
       fetchUsers(currentPage, selectedCategory, searchTerm);
     } catch (error) {
       setError(error.message || 'Failed to update user role');
@@ -111,7 +117,7 @@ const UserManagement = () => {
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     try {
-      await apiService.put(`/super-admin/users/${selectedUser.id}`, editingUser);
+      await apiService.updateSuperAdminUser(selectedUser.id, editingUser);
       setShowEditModal(false);
       fetchUsers(currentPage, selectedCategory, searchTerm);
     } catch (error) {
@@ -133,10 +139,7 @@ const UserManagement = () => {
     }
 
     try {
-      await apiService.delete(`/super-admin/users/${selectedUser.id}`, {
-        confirmation: 'DELETE_USER_CONFIRMED',
-        reason: deleteReason
-      });
+      await apiService.deleteSuperAdminUser(selectedUser.id, 'DELETE_USER_CONFIRMED', deleteReason);
       setShowDeleteModal(false);
       setDeleteReason('');
       fetchUsers(currentPage, selectedCategory, searchTerm);
@@ -209,6 +212,7 @@ const UserManagement = () => {
               {lastUpdated && (
                 <div className="text-xs text-gray-400 mt-1">
                   最後更新: {lastUpdated.toLocaleTimeString('zh-TW')}
+                  {loading && <span className="ml-2 text-blue-500">更新中...</span>}
                 </div>
               )}
             </div>
