@@ -57,6 +57,22 @@ const LoginPage = () => {
     }
   };
 
+  // Get role display name
+  const getRoleDisplayName = (role) => {
+    switch (role) {
+      case 'super_admin':
+        return '超級管理員';
+      case 'admin':
+        return '管理員';
+      case 'agent':
+        return '顧問';
+      case 'client':
+        return '客戶';
+      default:
+        return role;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -138,7 +154,7 @@ const LoginPage = () => {
                   <div className="mb-4">
                     <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
                       <span className="mr-1">👑</span>
-                      超級管理員 ({users.super_admin.length}位)
+                      {getRoleDisplayName('super_admin')} ({users.super_admin.length}位)
                     </h4>
                     {users.super_admin.map((user) => (
                       <button
@@ -162,7 +178,7 @@ const LoginPage = () => {
                   <div className="mb-4">
                     <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
                       <span className="mr-1">👑</span>
-                      管理員 ({users.admin.length}位)
+                      {getRoleDisplayName('admin')} ({users.admin.length}位)
                     </h4>
                     {users.admin.map((user) => (
                       <button
@@ -186,7 +202,7 @@ const LoginPage = () => {
                   <div className="mb-4">
                     <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
                       <span className="mr-1">👨‍💼</span>
-                      顧問 ({users.agent.length}位)
+                      {getRoleDisplayName('agent')} ({users.agent.length}位)
                     </h4>
                     <div className="grid grid-cols-1 gap-2">
                       {users.agent.map((user) => (
@@ -212,7 +228,7 @@ const LoginPage = () => {
                   <div className="mb-4">
                     <h4 className="text-xs font-semibold text-gray-600 mb-2 flex items-center">
                       <span className="mr-1">👤</span>
-                      客戶 ({users.client.length}位)
+                      {getRoleDisplayName('client')} ({users.client.length}位)
                     </h4>
                     <div className="grid grid-cols-1 gap-2">
                       {users.client.map((user) => (
@@ -260,6 +276,9 @@ const LoginPage = () => {
                   </div>
                   <div className="mt-2 text-xs text-gray-400">
                     <strong>密碼：</strong> 超級管理員/管理員/顧問 = superadmin123/admin123/agent123，客戶 = client123
+                  </div>
+                  <div className="mt-2 text-xs text-blue-600">
+                    <strong>總計：</strong> {users.super_admin.length + users.admin.length + users.agent.length + users.client.length} 位用戶
                   </div>
                 </div>
               </>
