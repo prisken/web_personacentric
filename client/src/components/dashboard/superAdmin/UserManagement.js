@@ -29,40 +29,48 @@ const UserManagement = () => {
       setLoading(true);
       setError(null);
       
-      const params = new URLSearchParams({
+      const params = {
         page: page.toString(),
-        limit: '50', // Increased limit to show more users
+        limit: '100', // Increased limit to ensure we get all users
         category: category,
-        search: search
-      });
+        search: search,
+        _t: Date.now().toString() // Cache-busting
+      };
       
-      // Add cache-busting parameter to ensure fresh data
-      params.append('_t', Date.now().toString());
-      
-      console.log('Fetching users with params:', params.toString());
-      const response = await apiService.getSuperAdminUsers({
-        page: page.toString(),
-        limit: '50',
-        category: category,
-        search: search
-      });
-      console.log('API Response:', response);
+      console.log('🔍 Fetching users with params:', params);
+      const response = await apiService.getSuperAdminUsers(params);
+      console.log('📊 API Response:', response);
       
       if (response.success) {
-        setUsers(response.users || []);
-        setCategoryCounts(response.categoryCounts || {});
-        setPagination(response.pagination || {});
+        const users = response.users || [];
+        const categoryCounts = response.categoryCounts || {};
+        const pagination = response.pagination || {};
+        
+        setUsers(users);
+        setCategoryCounts(categoryCounts);
+        setPagination(pagination);
         setCurrentPage(page);
         setLastUpdated(new Date());
-        console.log('Users loaded:', response.users?.length, 'Total:', response.pagination?.total);
+        
+        console.log('✅ Users loaded successfully:');
+        console.log(`  - Users returned: ${users.length}`);
+        console.log(`  - Total in database: ${pagination.total}`);
+        console.log(`  - Category counts:`, categoryCounts);
+        
+        // Log any discrepancies
+        if (users.length !== pagination.total) {
+          console.warn(`⚠️  Warning: API returned ${users.length} users but total is ${pagination.total}`);
+        }
       } else {
-        setError('Failed to fetch users');
+        const errorMsg = response.error || 'Failed to fetch users';
+        setError(errorMsg);
         setUsers([]);
+        console.error('❌ API returned error:', errorMsg);
       }
       
       setLoading(false);
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error('❌ Error fetching users:', error);
       setError(error.message || 'Failed to fetch users');
       setUsers([]);
       setLoading(false);
