@@ -102,6 +102,24 @@ const User = sequelize.define('User', {
     type: DataTypes.BOOLEAN,
     allowNull: false,
     defaultValue: false
+  },
+  google_id: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    unique: true
+  },
+  facebook_id: {
+    type: DataTypes.STRING(255),
+    allowNull: true,
+    unique: true
+  },
+  provider: {
+    type: DataTypes.STRING(50),
+    defaultValue: 'local',
+    allowNull: false,
+    validate: {
+      isIn: [['local', 'google', 'facebook']]
+    }
   }
 }, {
   tableName: 'users',
@@ -135,6 +153,15 @@ const User = sequelize.define('User', {
     },
     {
       fields: ['is_system_admin']
+    },
+    {
+      fields: ['google_id']
+    },
+    {
+      fields: ['facebook_id']
+    },
+    {
+      fields: ['provider']
     }
   ]
 });

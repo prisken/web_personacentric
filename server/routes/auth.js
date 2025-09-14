@@ -3,6 +3,8 @@ const router = express.Router();
 const authController = require('../controllers/authController');
 const { authenticateToken } = require('../middleware/auth');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('../config/passport');
 const { User, Agent } = require('../models');
 const { Op } = require('sequelize');
 
@@ -14,6 +16,74 @@ router.post('/register', authController.register);
 
 // Get current user
 router.get('/me', authenticateToken, authController.getCurrentUser);
+
+// Forgot password
+router.post('/forgot-password', authController.forgotPassword);
+
+// Reset password
+router.post('/reset-password', authController.resetPassword);
+
+// Google OAuth Routes (only if credentials are available)
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  router.get('/google', passport.authenticate('google', {
+    scope: ['profile', 'email']
+  }));
+
+  router.get('/google/callback', 
+    passport.authenticate('google', { session: false }),
+    async (req, res) => {
+    try {
+      console.log('Google OAuth callback - User:', req.user);
+      
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: req.user.id, role: req.user.role },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
+      // Redirect to frontend with token
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/auth/callback?token=${token}&provider=google`);
+    } catch (error) {
+      console.error('Google OAuth callback error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/login?error=auth_failed`);
+    }
+  }
+  );
+}
+
+// Facebook OAuth Routes (only if credentials are available)
+if (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET) {
+  router.get('/facebook', passport.authenticate('facebook', {
+    scope: ['email']
+  }));
+
+  router.get('/facebook/callback',
+    passport.authenticate('facebook', { session: false }),
+    async (req, res) => {
+    try {
+      console.log('Facebook OAuth callback - User:', req.user);
+      
+      // Generate JWT token
+      const token = jwt.sign(
+        { userId: req.user.id, role: req.user.role },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+      
+      // Redirect to frontend with token
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/auth/callback?token=${token}&provider=facebook`);
+    } catch (error) {
+      console.error('Facebook OAuth callback error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/login?error=auth_failed`);
+    }
+  }
+  );
+}
 
 // Get all users for quick login - Simplified and Robust
 router.get('/quick-login-users', async (req, res) => {

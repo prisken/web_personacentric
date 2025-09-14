@@ -19,6 +19,9 @@ const BlogDetailPage = lazy(() => import('./pages/BlogDetailPage'));
 const AgentMatchingPage = lazy(() => import('./pages/AgentMatchingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'));
+const AuthCallback = lazy(() => import('./pages/AuthCallback'));
 const PricingPage = lazy(() => import('./pages/PricingPage'));
 const HelpCenterPage = lazy(() => import('./pages/HelpCenterPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -67,6 +70,9 @@ function App() {
                     <Route path="/all-agents" element={<AllAgentsPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/register" element={<RegisterPage />} />
+                    <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                    <Route path="/reset-password" element={<ResetPasswordPage />} />
+                    <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="/pricing" element={<PricingPage />} />
                     <Route path="/help" element={<HelpCenterPage />} />
                     

@@ -1,6 +1,8 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { Op } = require('sequelize');
 
 class AuthController {
   // Login user
@@ -158,6 +160,125 @@ class AuthController {
 
     } catch (error) {
       console.error('Get current user error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error'
+      });
+    }
+  }
+
+  // Forgot password - send reset email
+  async forgotPassword(req, res) {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          error: 'Email is required'
+        });
+      }
+
+      const user = await User.findOne({ where: { email } });
+      
+      if (user) {
+        // User exists - generate reset token and send email
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetExpires = new Date(Date.now() + 3600000); // 1 hour
+
+        await user.update({
+          reset_password_token: resetToken,
+          reset_password_expires: resetExpires
+        });
+
+        // Send email
+        try {
+          const emailService = require('../services/emailService');
+          await emailService.sendPasswordResetEmail(user.email, resetToken);
+          console.log(`Password reset email sent to ${user.email}`);
+        } catch (emailError) {
+          console.error('Failed to send reset email:', emailError);
+          return res.status(500).json({
+            success: false,
+            error: 'Failed to send reset email. Please try again later.'
+          });
+        }
+
+        res.json({ 
+          success: true, 
+          message: 'Password reset instructions have been sent to your email address.',
+          emailExists: true
+        });
+      } else {
+        // User doesn't exist - tell them and suggest registration
+        res.json({ 
+          success: false, 
+          error: 'No account found with this email address.',
+          emailExists: false,
+          suggestion: 'Would you like to create a new account?'
+        });
+      }
+
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Internal server error'
+      });
+    }
+  }
+
+  // Reset password with token
+  async resetPassword(req, res) {
+    try {
+      const { token, newPassword } = req.body;
+
+      if (!token || !newPassword) {
+        return res.status(400).json({
+          success: false,
+          error: 'Token and new password are required'
+        });
+      }
+
+      // Validate password length
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          success: false,
+          error: 'Password must be at least 6 characters long'
+        });
+      }
+
+      const user = await User.findOne({
+        where: {
+          reset_password_token: token,
+          reset_password_expires: { [Op.gt]: new Date() }
+        }
+      });
+
+      if (!user) {
+        return res.status(400).json({
+          success: false,
+          error: 'Invalid or expired reset token'
+        });
+      }
+
+      // Hash new password
+      const passwordHash = await bcrypt.hash(newPassword, 10);
+      
+      // Update password and clear reset token
+      await user.update({
+        password_hash: passwordHash,
+        reset_password_token: null,
+        reset_password_expires: null
+      });
+
+      res.json({ 
+        success: true, 
+        message: 'Password has been reset successfully'
+      });
+
+    } catch (error) {
+      console.error('Reset password error:', error);
       res.status(500).json({
         success: false,
         error: 'Internal server error'

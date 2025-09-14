@@ -350,16 +350,12 @@ const LoginPage = () => {
               </div>
 
               <div className="text-sm">
-                <button 
-                  type="button"
+                <Link 
+                  to="/forgot-password"
                   className="font-medium text-blue-600 hover:text-blue-500 focus:outline-none focus:underline"
-                  onClick={() => {
-                    // TODO: Implement forgot password functionality
-                    console.log('Forgot password clicked');
-                  }}
                 >
                   {t('login.forgotPassword')}
-                </button>
+                </Link>
               </div>
             </div>
 
@@ -396,8 +392,8 @@ const LoginPage = () => {
                   type="button"
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   onClick={() => {
-                    // TODO: Implement Google OAuth
-                    console.log('Google login clicked');
+                    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+                    window.location.href = `${apiUrl}/api/auth/google`;
                   }}
                 >
                   <i className="fab fa-google text-red-500"></i>
@@ -410,8 +406,8 @@ const LoginPage = () => {
                   type="button"
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   onClick={() => {
-                    // TODO: Implement Facebook OAuth
-                    console.log('Facebook login clicked');
+                    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+                    window.location.href = `${apiUrl}/api/auth/facebook`;
                   }}
                 >
                   <i className="fab fa-facebook text-blue-600"></i>

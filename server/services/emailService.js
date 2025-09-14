@@ -1,0 +1,180 @@
+const nodemailer = require('nodemailer');
+
+class EmailService {
+  constructor() {
+    this.transporter = null;
+    this.initializeTransporter();
+  }
+
+  initializeTransporter() {
+    // Try to create transporter with environment variables
+    // If not available, create a test transporter for development
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      this.transporter = nodemailer.createTransporter({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+      });
+      console.log('✅ Email service initialized with Gmail');
+    } else {
+      // Create a test account for development
+      this.transporter = nodemailer.createTransporter({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        auth: {
+          user: 'ethereal.user@ethereal.email',
+          pass: 'ethereal.pass'
+        }
+      });
+      console.log('⚠️  Email service using Ethereal test account (development mode)');
+      console.log('   Set EMAIL_USER and EMAIL_PASS environment variables for production');
+    }
+  }
+
+  async sendPasswordResetEmail(email, resetToken) {
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || 'noreply@personacentric.com',
+      to: email,
+      subject: 'Password Reset Request - Persona Centric',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">Persona Centric</h1>
+            <p style="color: white; margin: 5px 0 0 0;">Financial Advisory Platform</p>
+          </div>
+          
+          <div style="padding: 30px 20px;">
+            <h2 style="color: #333; margin-bottom: 20px;">Password Reset Request</h2>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              Hello,
+            </p>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              We received a request to reset your password for your Persona Centric account. 
+              If you made this request, click the button below to reset your password:
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" 
+                 style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                Reset Password
+              </a>
+            </div>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              Or copy and paste this link into your browser:
+            </p>
+            
+            <p style="background: #f5f5f5; padding: 10px; border-radius: 5px; word-break: break-all; font-family: monospace; color: #333;">
+              ${resetUrl}
+            </p>
+            
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin: 20px 0;">
+              <p style="color: #856404; margin: 0; font-size: 14px;">
+                <strong>⚠️ Important:</strong> This link will expire in 1 hour for security reasons.
+              </p>
+            </div>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              If you didn't request a password reset, please ignore this email. 
+              Your password will remain unchanged.
+            </p>
+            
+            <p style="color: #666; line-height: 1.6;">
+              Best regards,<br>
+              The Persona Centric Team
+            </p>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #dee2e6;">
+            <p style="color: #6c757d; font-size: 12px; margin: 0;">
+              © 2024 Persona Centric. All rights reserved.
+            </p>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      const result = await this.transporter.sendMail(mailOptions);
+      console.log('📧 Password reset email sent:', result.messageId);
+      
+      // If using Ethereal, log the preview URL
+      if (process.env.NODE_ENV !== 'production' && result.previewUrl) {
+        console.log('📧 Preview URL:', result.previewUrl);
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('❌ Failed to send password reset email:', error);
+      throw error;
+    }
+  }
+
+  async sendWelcomeEmail(email, firstName) {
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || 'noreply@personacentric.com',
+      to: email,
+      subject: 'Welcome to Persona Centric!',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">Welcome to Persona Centric!</h1>
+            <p style="color: white; margin: 5px 0 0 0;">Your Financial Journey Starts Here</p>
+          </div>
+          
+          <div style="padding: 30px 20px;">
+            <h2 style="color: #333; margin-bottom: 20px;">Hello ${firstName}!</h2>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              Thank you for joining Persona Centric! We're excited to help you on your financial journey.
+            </p>
+            
+            <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              With Persona Centric, you can:
+            </p>
+            
+            <ul style="color: #666; line-height: 1.6; margin-bottom: 20px;">
+              <li>Get personalized financial advice from certified agents</li>
+              <li>Participate in educational events and workshops</li>
+              <li>Take quizzes to assess your financial knowledge</li>
+              <li>Earn points and rewards for your engagement</li>
+            </ul>
+            
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard" 
+                 style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+                Get Started
+              </a>
+            </div>
+            
+            <p style="color: #666; line-height: 1.6;">
+              If you have any questions, don't hesitate to reach out to our support team.
+            </p>
+            
+            <p style="color: #666; line-height: 1.6;">
+              Best regards,<br>
+              The Persona Centric Team
+            </p>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      const result = await this.transporter.sendMail(mailOptions);
+      console.log('📧 Welcome email sent:', result.messageId);
+      return result;
+    } catch (error) {
+      console.error('❌ Failed to send welcome email:', error);
+      throw error;
+    }
+  }
+}
+
+module.exports = new EmailService();
