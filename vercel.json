@@ -1,8 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "npm install && cd client && npm install && npm run build",
-  "outputDirectory": "client/build",
-  "installCommand": "npm install",
   "builds": [
     {
       "src": "client/package.json",
@@ -18,4 +15,4 @@
       "dest": "/client/build/$1"
     }
   ]
-}
+} 

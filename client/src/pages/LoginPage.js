@@ -387,24 +387,21 @@ const LoginPage = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-3">
-              {/* Google OAuth temporarily disabled - configure GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to enable */}
-              {process.env.REACT_APP_GOOGLE_CLIENT_ID && (
-                <div>
-                  <button
-                    type="button"
-                    className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    onClick={() => {
-                      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-                      // Remove trailing slash and /api if present to avoid double /api
-                      const baseUrl = apiUrl.replace(/\/api\/?$/, '');
-                      window.location.href = `${baseUrl}/api/auth/google`;
-                    }}
-                  >
-                    <i className="fab fa-google text-red-500"></i>
-                    <span className="ml-2">{t('login.google')}</span>
-                  </button>
-                </div>
-              )}
+              <div>
+                <button
+                  type="button"
+                  className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  onClick={() => {
+                    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+                    // Remove trailing slash and /api if present to avoid double /api
+                    const baseUrl = apiUrl.replace(/\/api\/?$/, '');
+                    window.location.href = `${baseUrl}/api/auth/google`;
+                  }}
+                >
+                  <i className="fab fa-google text-red-500"></i>
+                  <span className="ml-2">{t('login.google')}</span>
+                </button>
+              </div>
 
               <div>
                 <button
