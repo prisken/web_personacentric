@@ -1,8 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "npm install && cd client && npm install && npm run build",
+  "buildCommand": "./build.sh",
   "outputDirectory": "client/build",
-  "installCommand": "npm install",
   "builds": [
     {
       "src": "client/package.json",
@@ -17,8 +16,5 @@
       "src": "/(.*)",
       "dest": "/client/build/$1"
     }
-  ],
-  "env": {
-    "CI": "false"
-  }
-} 
+  ]
+}
