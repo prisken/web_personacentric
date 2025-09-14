@@ -253,7 +253,9 @@ const RegisterPage = () => {
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                   onClick={() => {
                     const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-                    window.location.href = `${apiUrl}/api/auth/google`;
+                    // Remove trailing slash and /api if present to avoid double /api
+                    const baseUrl = apiUrl.replace(/\/api\/?$/, '');
+                    window.location.href = `${baseUrl}/api/auth/google`;
                   }}
                 >
                   <i className="fab fa-google text-red-500"></i>
@@ -267,7 +269,9 @@ const RegisterPage = () => {
                   className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
                   onClick={() => {
                     const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-                    window.location.href = `${apiUrl}/api/auth/facebook`;
+                    // Remove trailing slash and /api if present to avoid double /api
+                    const baseUrl = apiUrl.replace(/\/api\/?$/, '');
+                    window.location.href = `${baseUrl}/api/auth/facebook`;
                   }}
                 >
                   <i className="fab fa-facebook text-blue-600"></i>
