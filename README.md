@@ -163,3 +163,4 @@ This project is licensed under the MIT License.
 
 For support and questions, please contact the development team or create an issue in the repository. # Trigger Vercel deployment after revert to commit 13d2916
 # Trigger fresh deployment
+# Force new deployment with fixed configuration
