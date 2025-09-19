@@ -34,6 +34,10 @@ const QuizPage = lazy(() => import('./pages/QuizPage'));
 const QuizTakerPage = lazy(() => import('./pages/QuizTakerPage'));
 const QuizResultsPage = lazy(() => import('./pages/QuizResultsPage'));
 const SuperAdminDashboard = lazy(() => import('./components/dashboard/SuperAdminDashboard'));
+const FoodForTalkPage = lazy(() => import('./pages/FoodForTalkPage'));
+const FoodForTalkRegisterPage = lazy(() => import('./pages/FoodForTalkRegisterPage'));
+const FoodForTalkParticipantsPage = lazy(() => import('./pages/FoodForTalkParticipantsPage'));
+const FoodForTalkSecretChatPage = lazy(() => import('./pages/FoodForTalkSecretChatPage'));
 
 // Loading component for Suspense
 const PageLoader = () => (
@@ -88,6 +92,12 @@ function App() {
                     
                     {/* Super Admin Routes */}
                     <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
+                    
+                    {/* Food for Talk Event Routes */}
+                    <Route path="/food-for-talk" element={<FoodForTalkPage />} />
+                    <Route path="/food-for-talk/register" element={<FoodForTalkRegisterPage />} />
+                    <Route path="/food-for-talk/participants" element={<FoodForTalkParticipantsPage />} />
+                    <Route path="/food-for-talk/secret-chat" element={<FoodForTalkSecretChatPage />} />
                   </Routes>
                 </Suspense>
               </main>

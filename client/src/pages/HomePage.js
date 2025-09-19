@@ -103,7 +103,7 @@ const HomePage = () => {
             
             {/* Enhanced CTA Button */}
             <Link
-              to="/register"
+              to="/food-for-talk"
               className="group relative w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 rounded-xl text-sm sm:text-base font-bold transition-all duration-500 transform hover:scale-110 flex items-center justify-center overflow-hidden animate-fade-in-up-delay-2"
               style={{
                 background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 100%)',
@@ -114,7 +114,7 @@ const HomePage = () => {
               }}
             >
               <span className="relative inline-flex items-center text-white z-10">
-                {t('home.hero.registerNow')}
+                Join Food for Talk Event
                 <svg 
                   className="ml-2 w-5 h-5 transform group-hover:translate-x-2 transition-transform duration-300" 
                   fill="none" 

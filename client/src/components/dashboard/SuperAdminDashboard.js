@@ -8,6 +8,7 @@ import BlogManagement from './BlogManagement';
 import QuizManagement from './QuizManagement';
 import EventManagement from './superAdmin/EventManagement';
 import GiftManagement from './GiftManagement';
+import FoodForTalkManagement from './superAdmin/FoodForTalkManagement';
 import StatisticsCard from './StatisticsCard';
 
 const SuperAdminDashboard = ({ data, onRefresh }) => {
@@ -35,6 +36,7 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
     { id: 'events', label: '活動管理', icon: '📅' },
     { id: 'quizzes', label: '測驗管理', icon: '📋' },
     { id: 'gifts', label: '禮品管理', icon: '🎁' },
+    { id: 'food-for-talk', label: 'Food for Talk', icon: '🍽️' },
     { id: 'system', label: '系統配置', icon: '⚙️' }
   ];
 
@@ -287,6 +289,11 @@ const SuperAdminDashboard = ({ data, onRefresh }) => {
         {/* Gift Management Tab */}
         {activeTab === 'gifts' && (
           <GiftManagement />
+        )}
+
+        {/* Food for Talk Management Tab */}
+        {activeTab === 'food-for-talk' && (
+          <FoodForTalkManagement />
         )}
 
         {/* System Management Tab */}
