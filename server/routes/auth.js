@@ -1178,6 +1178,64 @@ router.get('/simple-test', (req, res) => {
   });
 });
 
+// Minimal login test
+router.post('/minimal-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { sequelize } = require('../models');
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    
+    console.log('🔍 Minimal login test for:', email);
+    
+    // Simple query
+    const [users] = await sequelize.query(`
+      SELECT id, email, password_hash, first_name, last_name, role
+      FROM users 
+      WHERE email = :email
+    `, {
+      replacements: { email },
+      type: sequelize.QueryTypes.SELECT
+    });
+    
+    if (users.length === 0) {
+      return res.json({ success: false, error: 'User not found' });
+    }
+    
+    const user = users[0];
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    
+    if (!isValidPassword) {
+      return res.json({ success: false, error: 'Invalid password' });
+    }
+    
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role
+      }
+    });
+    
+  } catch (error) {
+    console.error('Minimal login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Minimal login failed: ' + error.message
+    });
+  }
+});
+
 // Raw SQL login test endpoint
 router.post('/raw-login-test', async (req, res) => {
   try {
