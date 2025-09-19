@@ -34,6 +34,8 @@ const generatePasskey = () => {
 // Register for the event
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
   try {
+    console.log('Food for Talk registration attempt:', req.body);
+    
     const {
       firstName,
       lastName,
@@ -47,6 +49,13 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       emergencyPhone,
       interests
     } = req.body;
+
+    // Validate required fields
+    if (!firstName || !lastName || !email || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
+      return res.status(400).json({ 
+        message: 'Missing required fields. Please fill in all required information.' 
+      });
+    }
 
     // Check if user already exists
     const existingUser = await FoodForTalkUser.findOne({ where: { email } });
@@ -62,14 +71,17 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     let profilePhotoUrl = null;
     if (req.file) {
       try {
+        console.log('Uploading profile photo to Cloudinary...');
         const result = await uploadToCloudinary(req.file.buffer, {
           folder: 'food-for-talk/profiles',
-          public_id: `${email}_${Date.now()}`
+          public_id: `${email.replace('@', '_at_')}_${Date.now()}`
         });
         profilePhotoUrl = result.secure_url;
+        console.log('Profile photo uploaded successfully:', profilePhotoUrl);
       } catch (uploadError) {
         console.error('Profile photo upload error:', uploadError);
         // Continue without photo if upload fails
+        profilePhotoUrl = null;
       }
     }
 
