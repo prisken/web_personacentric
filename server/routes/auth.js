@@ -717,6 +717,7 @@ router.post('/debug-login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
     
     // Find user
     const user = await User.findOne({ where: { email } });
@@ -732,15 +733,39 @@ router.post('/debug-login', async (req, res) => {
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     
+    if (!isValidPassword) {
+      return res.json({
+        success: false,
+        message: 'Invalid password',
+        receivedEmail: email,
+        timestamp: new Date().toISOString()
+      });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+    
     res.json({
       success: true,
-      message: 'Debug endpoint working',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        points: user.points,
+        subscription_status: user.subscription_status
+      },
+      message: 'Debug endpoint working - Login successful',
       receivedEmail: email,
-      receivedPassword: password ? '***' : 'not provided',
       userFound: true,
       passwordValid: isValidPassword,
       userRole: user.role,
-      passwordHash: user.password_hash,
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV || 'development'
     });
