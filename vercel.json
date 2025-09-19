@@ -11,6 +11,10 @@
   ],
   "routes": [
     {
+      "src": "/api/(.*)",
+      "dest": "https://webpersonacentric-personacentric.up.railway.app/api/$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/client/build/$1"
     }
