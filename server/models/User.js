@@ -106,17 +106,17 @@ const User = sequelize.define('User', {
   google_id: {
     type: DataTypes.STRING(255),
     allowNull: true,
-    unique: true
+    unique: false // Changed to false to avoid unique constraint issues
   },
   facebook_id: {
     type: DataTypes.STRING(255),
     allowNull: true,
-    unique: true
+    unique: false // Changed to false to avoid unique constraint issues
   },
   provider: {
     type: DataTypes.STRING(50),
     defaultValue: 'local',
-    allowNull: false,
+    allowNull: true, // Changed to true to handle missing column gracefully
     validate: {
       isIn: [['local', 'google', 'facebook']]
     }

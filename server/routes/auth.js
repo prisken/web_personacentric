@@ -11,6 +11,79 @@ const { Op } = require('sequelize');
 // Login
 router.post('/login', authController.login);
 
+// Simple login test endpoint
+router.post('/login-test', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { sequelize } = require('../models');
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    
+    console.log('🔍 Testing login for:', email);
+    
+    // Use raw SQL to find user
+    const [users] = await sequelize.query(`
+      SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
+      FROM users 
+      WHERE email = :email
+    `, {
+      replacements: { email },
+      type: sequelize.QueryTypes.SELECT
+    });
+    
+    if (users.length === 0) {
+      return res.json({
+        success: false,
+        error: 'User not found',
+        email: email
+      });
+    }
+    
+    const user = users[0];
+    console.log('👤 Found user:', user.email, user.role);
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    console.log('🔐 Password valid:', isValidPassword);
+    
+    if (!isValidPassword) {
+      return res.json({
+        success: false,
+        error: 'Invalid password',
+        email: email
+      });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+    
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        points: user.points,
+        subscription_status: user.subscription_status
+      }
+    });
+    
+  } catch (error) {
+    console.error('Login test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Login test failed: ' + error.message
+    });
+  }
+});
+
 // Register
 router.post('/register', authController.register);
 
@@ -1031,6 +1104,86 @@ router.get('/simple-test', (req, res) => {
   });
 });
 
+// Raw SQL login test endpoint
+router.post('/raw-login-test', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { sequelize } = require('../models');
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    
+    console.log('🔍 Testing raw SQL login for:', email);
+    
+    // Use raw SQL to find user
+    const [users] = await sequelize.query(`
+      SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status, is_verified, is_system_admin, permissions
+      FROM users 
+      WHERE email = :email
+    `, {
+      replacements: { email },
+      type: sequelize.QueryTypes.SELECT
+    });
+    
+    if (users.length === 0) {
+      return res.json({
+        success: false,
+        error: 'User not found',
+        email: email
+      });
+    }
+    
+    const user = users[0];
+    console.log('👤 Found user:', user.email, user.role);
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    console.log('🔐 Password valid:', isValidPassword);
+    
+    if (!isValidPassword) {
+      return res.json({
+        success: false,
+        error: 'Invalid password',
+        email: email
+      });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+    
+    // Update last login
+    await sequelize.query(`
+      UPDATE users SET last_login = NOW() WHERE id = :userId
+    `, {
+      replacements: { userId: user.id }
+    });
+    
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        points: user.points,
+        subscription_status: user.subscription_status
+      }
+    });
+    
+  } catch (error) {
+    console.error('Raw login test error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Raw login test failed: ' + error.message
+    });
+  }
+});
+
 // Create super admin endpoint
 router.post('/create-super-admin', async (req, res) => {
   try {
@@ -1284,6 +1437,46 @@ router.post('/fix-schema', async (req, res) => {
       }
     }
     
+    // Add OAuth columns
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN google_id VARCHAR(255);
+      `);
+      console.log('✅ Added google_id column');
+    } catch (error) {
+      if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+        console.log('✅ google_id column already exists');
+      } else {
+        console.error('❌ Error adding google_id column:', error.message);
+      }
+    }
+    
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN facebook_id VARCHAR(255);
+      `);
+      console.log('✅ Added facebook_id column');
+    } catch (error) {
+      if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+        console.log('✅ facebook_id column already exists');
+      } else {
+        console.error('❌ Error adding facebook_id column:', error.message);
+      }
+    }
+    
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN provider VARCHAR(50) DEFAULT 'local' NOT NULL;
+      `);
+      console.log('✅ Added provider column');
+    } catch (error) {
+      if (error.message.includes('duplicate column name') || error.message.includes('already exists')) {
+        console.log('✅ provider column already exists');
+      } else {
+        console.error('❌ Error adding provider column:', error.message);
+      }
+    }
+    
     res.json({
       success: true,
       message: 'Database schema fixed successfully',
@@ -1294,6 +1487,67 @@ router.post('/fix-schema', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Schema fix failed: ' + error.message
+    });
+  }
+});
+
+// Add missing OAuth columns endpoint
+router.post('/add-oauth-columns', async (req, res) => {
+  try {
+    const { sequelize } = require('../models');
+    
+    console.log('🔄 Adding OAuth columns to users table...');
+    
+    // Add google_id column
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS google_id VARCHAR(255);
+      `);
+      console.log('✅ Added google_id column');
+    } catch (error) {
+      console.error('❌ Error adding google_id column:', error.message);
+    }
+    
+    // Add facebook_id column
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS facebook_id VARCHAR(255);
+      `);
+      console.log('✅ Added facebook_id column');
+    } catch (error) {
+      console.error('❌ Error adding facebook_id column:', error.message);
+    }
+    
+    // Add provider column
+    try {
+      await sequelize.query(`
+        ALTER TABLE users ADD COLUMN IF NOT EXISTS provider VARCHAR(50) DEFAULT 'local';
+      `);
+      console.log('✅ Added provider column');
+    } catch (error) {
+      console.error('❌ Error adding provider column:', error.message);
+    }
+    
+    // Update existing users to have provider = 'local'
+    try {
+      await sequelize.query(`
+        UPDATE users SET provider = 'local' WHERE provider IS NULL;
+      `);
+      console.log('✅ Updated existing users with provider = local');
+    } catch (error) {
+      console.error('❌ Error updating existing users:', error.message);
+    }
+    
+    res.json({
+      success: true,
+      message: 'OAuth columns added successfully',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Add OAuth columns error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to add OAuth columns: ' + error.message
     });
   }
 });

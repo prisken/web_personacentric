@@ -18,18 +18,37 @@ class AuthController {
         });
       }
 
-      // Find user by email
-      const user = await User.findOne({ where: { email } });
-      if (!user) {
+      // Use raw SQL to avoid missing column errors
+      const { sequelize } = require('../config/database');
+      
+      console.log('🔍 Attempting login for:', email);
+      
+      const [users] = await sequelize.query(`
+        SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
+        FROM users 
+        WHERE email = :email
+      `, {
+        replacements: { email },
+        type: sequelize.QueryTypes.SELECT
+      });
+      
+      if (users.length === 0) {
+        console.log('❌ User not found:', email);
         return res.status(401).json({
           success: false,
           error: 'Invalid credentials'
         });
       }
 
+      const user = users[0];
+      console.log('👤 Found user:', user.email, user.role);
+
       // Check password
       const isValidPassword = await bcrypt.compare(password, user.password_hash);
+      console.log('🔐 Password valid:', isValidPassword);
+      
       if (!isValidPassword) {
+        console.log('❌ Invalid password for:', email);
         return res.status(401).json({
           success: false,
           error: 'Invalid credentials'
@@ -43,9 +62,20 @@ class AuthController {
         { expiresIn: '24h' }
       );
 
-      // Update last login
-      await user.update({ last_login: new Date() });
+      // Update last login using raw SQL
+      try {
+        await sequelize.query(`
+          UPDATE users SET last_login = NOW() WHERE id = :userId
+        `, {
+          replacements: { userId: user.id }
+        });
+        console.log('✅ Updated last login for user:', user.email);
+      } catch (updateError) {
+        console.error('⚠️ Failed to update last login:', updateError.message);
+        // Don't fail the login if last_login update fails
+      }
 
+      console.log('✅ Login successful for:', user.email);
       res.json({
         success: true,
         token,
@@ -61,7 +91,7 @@ class AuthController {
       });
 
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('❌ Login error:', error);
       res.status(500).json({
         success: false,
         error: 'Internal server error'
