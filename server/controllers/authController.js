@@ -18,10 +18,10 @@ class AuthController {
         });
       }
 
+      console.log('🔍 Login attempt for:', email);
+
       // Use raw SQL to avoid missing column errors
       const { sequelize } = require('../config/database');
-      
-      console.log('🔍 Attempting login for:', email);
       
       const [users] = await sequelize.query(`
         SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
@@ -62,19 +62,6 @@ class AuthController {
         { expiresIn: '24h' }
       );
 
-      // Update last login using raw SQL
-      try {
-        await sequelize.query(`
-          UPDATE users SET last_login = NOW() WHERE id = :userId
-        `, {
-          replacements: { userId: user.id }
-        });
-        console.log('✅ Updated last login for user:', user.email);
-      } catch (updateError) {
-        console.error('⚠️ Failed to update last login:', updateError.message);
-        // Don't fail the login if last_login update fails
-      }
-
       console.log('✅ Login successful for:', user.email);
       res.json({
         success: true,
@@ -94,7 +81,7 @@ class AuthController {
       console.error('❌ Login error:', error);
       res.status(500).json({
         success: false,
-        error: 'Internal server error'
+        error: 'Internal server error: ' + error.message
       });
     }
   }
