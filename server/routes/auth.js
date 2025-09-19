@@ -11,6 +11,80 @@ const { Op } = require('sequelize');
 // Login
 router.post('/login', authController.login);
 
+// Emergency login fix endpoint
+router.post('/emergency-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const { sequelize } = require('../models');
+    const bcrypt = require('bcryptjs');
+    const jwt = require('jsonwebtoken');
+    
+    console.log('🚨 Emergency login attempt for:', email);
+    
+    // Use raw SQL to find user
+    const [users] = await sequelize.query(`
+      SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
+      FROM users 
+      WHERE email = :email
+    `, {
+      replacements: { email },
+      type: sequelize.QueryTypes.SELECT
+    });
+    
+    if (users.length === 0) {
+      return res.json({
+        success: false,
+        error: 'User not found',
+        email: email
+      });
+    }
+    
+    const user = users[0];
+    console.log('👤 Found user:', user.email, user.role);
+    
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    console.log('🔐 Password valid:', isValidPassword);
+    
+    if (!isValidPassword) {
+      return res.json({
+        success: false,
+        error: 'Invalid password',
+        email: email
+      });
+    }
+    
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+    
+    console.log('✅ Emergency login successful for:', user.email);
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        points: user.points,
+        subscription_status: user.subscription_status
+      }
+    });
+    
+  } catch (error) {
+    console.error('🚨 Emergency login error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Emergency login failed: ' + error.message
+    });
+  }
+});
+
 // Simple login test endpoint
 router.post('/login-test', async (req, res) => {
   try {
