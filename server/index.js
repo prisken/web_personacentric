@@ -117,4 +117,4 @@ async function startServer() {
 
 startServer();
 
-module.exports = app;// Force deployment update - Login fix attempt 2
+module.exports = app;// Force deployment update - Login fix attempt 3 - Schema fixed
