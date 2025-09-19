@@ -31,7 +31,8 @@ const FoodForTalkSecretChatPage = () => {
   useEffect(() => {
     if (isInChat) {
       // Initialize WebSocket connection for real-time chat
-      wsRef.current = new WebSocket('ws://localhost:3001/food-for-talk-chat');
+      const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:3001';
+      wsRef.current = new WebSocket(`${wsUrl}/food-for-talk-chat`);
       
       wsRef.current.onmessage = (event) => {
         const data = JSON.parse(event.data);

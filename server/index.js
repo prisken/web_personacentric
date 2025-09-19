@@ -3,6 +3,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
+const http = require('http');
 require('dotenv').config();
 
 // Import configurations
@@ -18,6 +19,7 @@ const routes = require('./routes');
 
 // Import utilities
 const ServerStartup = require('./utils/serverStartup');
+const FoodForTalkWebSocketServer = require('./websocket');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -106,7 +108,13 @@ app.use(errorHandler);
 async function startServer() {
   try {
     const serverStartup = new ServerStartup(app);
-    await serverStartup.start(PORT);
+    const server = await serverStartup.start(PORT);
+    
+    // Initialize WebSocket server for Food for Talk chat
+    if (process.env.ENABLE_FOOD_FOR_TALK === 'true') {
+      new FoodForTalkWebSocketServer(server);
+      console.log('🍽️ Food for Talk WebSocket server initialized');
+    }
   } catch (error) {
     console.error('❌ Unable to start server:', error);
     process.exit(1);

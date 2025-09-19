@@ -54,7 +54,8 @@
     "sequelize": "^6.35.0",
     "sqlite3": "^5.1.6",
     "uuid": "^8.3.2",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

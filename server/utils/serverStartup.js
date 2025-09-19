@@ -248,6 +248,8 @@ class ServerStartup {
       // Check database state and seed if needed
       await this.checkAndSeedDatabase();
 
+      return this.server;
+
     } catch (error) {
       console.error('❌ Unable to start server:', error);
       if (this.server) this.server.close();
