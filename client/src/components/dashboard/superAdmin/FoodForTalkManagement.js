@@ -17,7 +17,7 @@ const FoodForTalkManagement = () => {
 
   const fetchParticipants = async () => {
     try {
-      const response = await fetch('/api/food-for-talk/admin/participants');
+      const response = await fetch('/api/food-for-talk-admin-participants');
       if (response.ok) {
         const data = await response.json();
         setParticipants(data.participants);
@@ -34,7 +34,7 @@ const FoodForTalkManagement = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/food-for-talk/stats');
+      const response = await fetch('/api/food-for-talk-stats');
       if (response.ok) {
         const data = await response.json();
         setStats(data);

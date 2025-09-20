@@ -70,7 +70,7 @@ const FoodForTalkRegisterPage = () => {
         }
       });
 
-      const response = await fetch('/api/food-for-talk/register', {
+      const response = await fetch('/api/food-for-talk-register', {
         method: 'POST',
         body: submitData
       });
