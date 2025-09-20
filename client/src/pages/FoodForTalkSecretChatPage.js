@@ -27,6 +27,10 @@ const FoodForTalkSecretChatPage = () => {
     const token = localStorage.getItem('foodForTalkSecretToken');
     console.log('Secret token found:', !!token);
     if (token) {
+      // User is already authenticated, set states and load participants
+      setIsAuthenticated(true);
+      setIsInChat(true);
+      console.log('Setting isInChat to true for existing token');
       // Try to load chat participants with existing token
       loadChatParticipants();
     }
