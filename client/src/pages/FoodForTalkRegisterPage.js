@@ -80,13 +80,22 @@ const FoodForTalkRegisterPage = () => {
         submitData.append('profilePhoto', formData.profilePhoto);
       }
 
+      // Debug: Log what's actually in FormData
+      console.log('FormData contents:');
+      for (let [key, value] of submitData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      console.log('Full formData state:', formData);
       console.log('Submitting Food for Talk registration with data:', {
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
+        phone: formData.phone,
         age: formData.age,
         occupation: formData.occupation,
         bio: formData.bio,
+        dietaryRestrictions: formData.dietaryRestrictions,
         emergencyContact: formData.emergencyContact,
         emergencyPhone: formData.emergencyPhone,
         interests: formData.interests,
