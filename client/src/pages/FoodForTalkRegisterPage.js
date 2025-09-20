@@ -84,11 +84,11 @@ const FoodForTalkRegisterPage = () => {
 
       const response = await apiService.registerForFoodForTalk(submitData);
       
-      if (response.success) {
+      if (response.message && response.message.includes('successful')) {
         toast.success('Registration successful! You will receive a confirmation email shortly.');
         navigate('/food-for-talk');
       } else {
-        toast.error(response.error || 'Registration failed. Please try again.');
+        toast.error(response.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Registration error:', error);
