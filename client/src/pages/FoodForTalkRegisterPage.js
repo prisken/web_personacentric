@@ -61,14 +61,36 @@ const FoodForTalkRegisterPage = () => {
     try {
       // Create FormData for file upload
       const submitData = new FormData();
-      Object.keys(formData).forEach(key => {
-        if (key === 'interests') {
-          submitData.append(key, JSON.stringify(formData[key]));
-        } else if (key === 'profilePhoto' && formData[key]) {
-          submitData.append(key, formData[key]);
-        } else {
-          submitData.append(key, formData[key]);
-        }
+      
+      // Add all form fields
+      submitData.append('firstName', formData.firstName);
+      submitData.append('lastName', formData.lastName);
+      submitData.append('email', formData.email);
+      submitData.append('phone', formData.phone);
+      submitData.append('age', formData.age);
+      submitData.append('occupation', formData.occupation);
+      submitData.append('bio', formData.bio);
+      submitData.append('dietaryRestrictions', formData.dietaryRestrictions);
+      submitData.append('emergencyContact', formData.emergencyContact);
+      submitData.append('emergencyPhone', formData.emergencyPhone);
+      submitData.append('interests', JSON.stringify(formData.interests));
+      
+      // Add profile photo if provided
+      if (formData.profilePhoto) {
+        submitData.append('profilePhoto', formData.profilePhoto);
+      }
+
+      console.log('Submitting Food for Talk registration with data:', {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        age: formData.age,
+        occupation: formData.occupation,
+        bio: formData.bio,
+        emergencyContact: formData.emergencyContact,
+        emergencyPhone: formData.emergencyPhone,
+        interests: formData.interests,
+        hasProfilePhoto: !!formData.profilePhoto
       });
 
       const response = await apiService.registerForFoodForTalk(submitData);
