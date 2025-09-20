@@ -15,10 +15,13 @@ class FoodForTalkWebSocketServer {
   setupWebSocketHandlers() {
     this.wss.on('connection', (ws, req) => {
       console.log('New WebSocket connection for Food for Talk chat');
+      console.log('WebSocket connection from:', req.headers.origin || req.connection.remoteAddress);
       
       ws.on('message', (message) => {
         try {
+          console.log('WebSocket: Received message:', message.toString());
           const data = JSON.parse(message);
+          console.log('WebSocket: Parsed message data:', data);
           this.handleMessage(ws, data);
         } catch (error) {
           console.error('Error parsing WebSocket message:', error);
@@ -26,6 +29,7 @@ class FoodForTalkWebSocketServer {
       });
 
       ws.on('close', () => {
+        console.log('WebSocket: Connection closed');
         this.handleDisconnect(ws);
       });
 
@@ -66,13 +70,21 @@ class FoodForTalkWebSocketServer {
   }
 
   handleSendMessage(ws, data) {
+    console.log('WebSocket: handleSendMessage called with data:', data);
     const client = this.clients.get(ws);
-    if (!client) return;
+    console.log('WebSocket: client found:', !!client);
+    if (!client) {
+      console.log('WebSocket: No client found, returning');
+      return;
+    }
 
     const message = {
       ...data.message,
       timestamp: new Date().toISOString()
     };
+
+    console.log('WebSocket: Broadcasting message:', message);
+    console.log('WebSocket: Number of connected clients:', this.clients.size);
 
     // Broadcast to all connected clients
     this.broadcast({
@@ -144,11 +156,18 @@ class FoodForTalkWebSocketServer {
 
   broadcast(data, excludeWs = null) {
     const message = JSON.stringify(data);
+    console.log('WebSocket: Broadcasting to clients:', message);
+    let sentCount = 0;
     this.clients.forEach((client, ws) => {
       if (ws !== excludeWs && ws.readyState === WebSocket.OPEN) {
+        console.log('WebSocket: Sending to client:', client.userId);
         ws.send(message);
+        sentCount++;
+      } else {
+        console.log('WebSocket: Skipping client (excluded or not open):', client.userId, 'readyState:', ws.readyState);
       }
     });
+    console.log('WebSocket: Message sent to', sentCount, 'clients');
   }
 
   getConnectedUsers() {

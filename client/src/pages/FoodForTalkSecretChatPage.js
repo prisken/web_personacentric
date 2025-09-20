@@ -69,13 +69,37 @@ const FoodForTalkSecretChatPage = () => {
   useEffect(() => {
     if (isInChat) {
       // Initialize WebSocket connection for real-time chat
-      const wsUrl = process.env.REACT_APP_WS_URL || 'ws://localhost:3001';
+      const wsUrl = process.env.NODE_ENV === 'production' 
+        ? 'wss://webpersonacentric-personacentric.up.railway.app'
+        : 'ws://localhost:5001';
+      console.log('Connecting to WebSocket:', `${wsUrl}/food-for-talk-chat`);
       wsRef.current = new WebSocket(`${wsUrl}/food-for-talk-chat`);
       
+      wsRef.current.onopen = () => {
+        console.log('WebSocket connection opened successfully');
+        // Send join message when connection is established
+        if (currentUser) {
+          wsRef.current.send(JSON.stringify({
+            type: 'join',
+            userId: currentUser.id,
+            userInfo: {
+              id: currentUser.id,
+              firstName: currentUser.blurredName,
+              lastName: '',
+              email: currentUser.email
+            }
+          }));
+          console.log('Sent join message to WebSocket');
+        }
+      };
+
       wsRef.current.onmessage = (event) => {
+        console.log('WebSocket message received:', event.data);
         const data = JSON.parse(event.data);
+        console.log('Parsed WebSocket data:', data);
         
         if (data.type === 'message') {
+          console.log('Adding message to chat:', data.message);
           setMessages(prev => [...prev, data.message]);
         } else if (data.type === 'private_message') {
           setPrivateMessages(prev => ({
@@ -103,6 +127,10 @@ const FoodForTalkSecretChatPage = () => {
 
       wsRef.current.onclose = () => {
         console.log('WebSocket connection closed');
+      };
+
+      wsRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
       };
 
       return () => {
@@ -189,10 +217,19 @@ const FoodForTalkSecretChatPage = () => {
       type: 'public'
     };
 
-    wsRef.current.send(JSON.stringify({
-      type: 'send_message',
-      message
-    }));
+    console.log('Sending message via WebSocket:', message);
+    console.log('WebSocket ready state:', wsRef.current.readyState);
+    
+    if (wsRef.current.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({
+        type: 'send_message',
+        message
+      }));
+      console.log('Message sent successfully');
+    } else {
+      console.error('WebSocket is not open. Ready state:', wsRef.current.readyState);
+      toast.error('Connection lost. Please refresh the page.');
+    }
 
     setNewMessage('');
   };
