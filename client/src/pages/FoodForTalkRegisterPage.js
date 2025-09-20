@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import apiService from '../services/api';
 
 const FoodForTalkRegisterPage = () => {
-  const { } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
