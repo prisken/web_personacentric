@@ -28,14 +28,18 @@ const FoodForTalkLoginPage = () => {
     setIsSubmitting(true);
 
     try {
+      console.log('Attempting login with:', formData.email);
       const response = await apiService.loginToFoodForTalk(formData);
+      console.log('Login response:', response);
       
       if (response.token) {
         // Store token for future requests
         localStorage.setItem('foodForTalkToken', response.token);
+        console.log('Token stored, navigating to:', intendedDestination);
         toast.success('Login successful!');
         navigate(intendedDestination);
       } else {
+        console.log('No token in response:', response);
         toast.error(response.message || 'Login failed. Please try again.');
       }
     } catch (error) {

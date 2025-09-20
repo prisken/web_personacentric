@@ -25,14 +25,18 @@ const FoodForTalkSecretLoginPage = () => {
     setIsSubmitting(true);
 
     try {
+      console.log('Attempting secret login with:', formData.email);
       const response = await apiService.secretLoginToFoodForTalk(formData);
+      console.log('Secret login response:', response);
       
       if (response.token) {
         // Store token for secret chat access
         localStorage.setItem('foodForTalkSecretToken', response.token);
+        console.log('Secret token stored, navigating to secret chat');
         toast.success('Secret login successful! Welcome to the chat room.');
         navigate('/food-for-talk/secret-chat');
       } else {
+        console.log('No token in secret login response:', response);
         toast.error(response.message || 'Secret login failed. Please try again.');
       }
     } catch (error) {

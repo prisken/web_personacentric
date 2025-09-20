@@ -21,6 +21,17 @@ const FoodForTalkSecretChatPage = () => {
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
 
+  // Check if user is already authenticated
+  useEffect(() => {
+    console.log('FoodForTalkSecretChatPage mounted');
+    const token = localStorage.getItem('foodForTalkSecretToken');
+    console.log('Secret token found:', !!token);
+    if (token) {
+      // Try to load chat participants with existing token
+      loadChatParticipants();
+    }
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };

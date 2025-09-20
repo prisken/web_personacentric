@@ -14,7 +14,9 @@ const FoodForTalkParticipantsPage = () => {
 
   // Check if user is already authenticated
   useEffect(() => {
+    console.log('FoodForTalkParticipantsPage mounted');
     const token = localStorage.getItem('foodForTalkToken');
+    console.log('Token found:', !!token);
     if (token) {
       // Try to load participants with existing token
       loadParticipants();
