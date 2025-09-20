@@ -17,6 +17,8 @@ const FoodForTalkSecretChatPage = () => {
   const [newMessage, setNewMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
   const [privateMessages, setPrivateMessages] = useState({});
+  const [activePrivateConversations, setActivePrivateConversations] = useState([]);
+  const [activeTab, setActiveTab] = useState('public'); // 'public' or conversation ID
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
@@ -110,6 +112,29 @@ const FoodForTalkSecretChatPage = () => {
             ...prev,
             [data.conversationId]: [...(prev[data.conversationId] || []), data.message]
           }));
+
+          // Update active conversations for incoming private messages
+          setActivePrivateConversations(prev => {
+            const existingConv = prev.find(conv => conv.id === data.conversationId);
+            if (existingConv) {
+              // Update last message
+              return prev.map(conv => 
+                conv.id === data.conversationId 
+                  ? { ...conv, lastMessage: data.message.content, timestamp: data.message.timestamp }
+                  : conv
+              );
+            } else {
+              // Add new conversation
+              const participant = participants.find(p => p.id === data.message.senderId);
+              return [...prev, {
+                id: data.conversationId,
+                userId: data.message.senderId,
+                participantName: participant?.blurredName || 'Unknown',
+                lastMessage: data.message.content,
+                timestamp: data.message.timestamp
+              }];
+            }
+          });
         } else if (data.type === 'user_joined') {
           setParticipants(prev => [...prev, data.user]);
           setMessages(prev => [...prev, {
@@ -263,6 +288,61 @@ const FoodForTalkSecretChatPage = () => {
       ...prev,
       [conversationId]: [...(prev[conversationId] || []), message]
     }));
+
+    // Add to active conversations if not already there
+    setActivePrivateConversations(prev => {
+      if (!prev.find(conv => conv.id === conversationId)) {
+        const participant = participants.find(p => p.id === recipientId);
+        return [...prev, {
+          id: conversationId,
+          userId: recipientId,
+          participantName: participant?.blurredName || 'Unknown',
+          lastMessage: content.trim(),
+          timestamp: new Date().toISOString()
+        }];
+      } else {
+        // Update last message
+        return prev.map(conv => 
+          conv.id === conversationId 
+            ? { ...conv, lastMessage: content.trim(), timestamp: new Date().toISOString() }
+            : conv
+        );
+      }
+    });
+
+    // Switch to this conversation tab
+    setActiveTab(conversationId);
+  };
+
+  const startPrivateConversation = (userId) => {
+    const conversationId = [currentUser.id, userId].sort().join('-');
+    const participant = participants.find(p => p.id === userId);
+    
+    // Add to active conversations if not already there
+    setActivePrivateConversations(prev => {
+      if (!prev.find(conv => conv.id === conversationId)) {
+        return [...prev, {
+          id: conversationId,
+          userId,
+          participantName: participant?.blurredName || 'Unknown',
+          lastMessage: '',
+          timestamp: new Date().toISOString()
+        }];
+      }
+      return prev;
+    });
+
+    // Switch to this conversation tab
+    setActiveTab(conversationId);
+  };
+
+  const closePrivateConversation = (conversationId) => {
+    setActivePrivateConversations(prev => prev.filter(conv => conv.id !== conversationId));
+    
+    // If we're closing the active tab, switch to public chat
+    if (activeTab === conversationId) {
+      setActiveTab('public');
+    }
   };
 
   const viewUserProfile = async (userId) => {
@@ -350,15 +430,10 @@ const FoodForTalkSecretChatPage = () => {
                         View Profile
                       </button>
                       <button
-                        onClick={() => {
-                          const content = prompt('Enter your message:');
-                          if (content) {
-                            sendPrivateMessage(participant.id, content);
-                          }
-                        }}
+                        onClick={() => startPrivateConversation(participant.id)}
                         className="w-full bg-blue-500 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
                       >
-                        Private Message
+                        Start Private Chat
                       </button>
                     </div>
                   )}
@@ -369,8 +444,52 @@ const FoodForTalkSecretChatPage = () => {
 
           {/* Chat Area */}
           <div className="flex-1 flex flex-col">
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Tab Navigation */}
+            <div className="bg-black/20 backdrop-blur-sm border-b border-white/10">
+              <div className="flex overflow-x-auto">
+                {/* Public Chat Tab */}
+                <button
+                  onClick={() => setActiveTab('public')}
+                  className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                    activeTab === 'public'
+                      ? 'border-yellow-400 text-yellow-400 bg-yellow-400/10'
+                      : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
+                  }`}
+                >
+                  🌐 Public Chat
+                </button>
+                
+                {/* Private Conversation Tabs */}
+                {activePrivateConversations.map((conversation) => (
+                  <button
+                    key={conversation.id}
+                    onClick={() => setActiveTab(conversation.id)}
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex items-center space-x-2 ${
+                      activeTab === conversation.id
+                        ? 'border-blue-400 text-blue-400 bg-blue-400/10'
+                        : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
+                    }`}
+                  >
+                    <span>💬 {conversation.participantName}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        closePrivateConversation(conversation.id);
+                      }}
+                      className="ml-1 text-white/50 hover:text-white/80 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tab Content */}
+            <div className="flex-1 flex flex-col">
+              {activeTab === 'public' ? (
+                /* Public Chat Messages */
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {console.log('Rendering messages:', messages)}
               {messages.length === 0 ? (
                 <div className="text-center text-white/70 mt-8">
@@ -405,26 +524,75 @@ const FoodForTalkSecretChatPage = () => {
                   </div>
                 ))
               )}
-              <div ref={messagesEndRef} />
-            </div>
+                  <div ref={messagesEndRef} />
+                </div>
+              ) : (
+                /* Private Chat Messages */
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  {privateMessages[activeTab]?.length === 0 ? (
+                    <div className="text-center text-white/70 mt-8">
+                      <p>No messages yet. Start the conversation!</p>
+                    </div>
+                  ) : (
+                    privateMessages[activeTab]?.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex ${message.senderId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                            message.senderId === currentUser?.id
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-white/20 text-white'
+                          }`}
+                        >
+                          {message.senderId !== currentUser?.id && (
+                            <div className="text-xs opacity-70 mb-1">
+                              {message.senderBlurredName}
+                            </div>
+                          )}
+                          <div>{message.content}</div>
+                          <div className="text-xs opacity-70 mt-1">
+                            {new Date(message.timestamp).toLocaleTimeString()}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
 
-            {/* Message Input */}
-            <div className="border-t border-white/20 p-4">
-              <form onSubmit={sendMessage} className="flex space-x-4">
-                <input
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type your message..."
-                  className="flex-1 px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                />
-                <button
-                  type="submit"
-                  className="bg-yellow-400 text-black px-6 py-2 rounded-lg font-medium hover:bg-yellow-500 transition-colors"
-                >
-                  Send
-                </button>
-              </form>
+              {/* Message Input */}
+              <div className="border-t border-white/20 p-4">
+                <form onSubmit={activeTab === 'public' ? sendMessage : (e) => {
+                  e.preventDefault();
+                  if (newMessage.trim() && activeTab !== 'public') {
+                    const conversation = activePrivateConversations.find(conv => conv.id === activeTab);
+                    if (conversation) {
+                      sendPrivateMessage(conversation.userId, newMessage);
+                      setNewMessage('');
+                    }
+                  }
+                }} className="flex space-x-4">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder={activeTab === 'public' ? "Type your message..." : "Type your private message..."}
+                    className="flex-1 px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  />
+                  <button
+                    type="submit"
+                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                      activeTab === 'public'
+                        ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+                        : 'bg-blue-500 text-white hover:bg-blue-600'
+                    }`}
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
