@@ -34,15 +34,20 @@ const FoodForTalkSecretChatPage = () => {
       
       // Set a basic currentUser from token (we'll decode the JWT to get user info)
       try {
+        console.log('Decoding JWT token...');
         const payload = JSON.parse(atob(token.split('.')[1]));
-        setCurrentUser({
+        console.log('JWT payload:', payload);
+        const userData = {
           id: payload.userId,
           email: payload.email,
           blurredName: payload.email.charAt(0) + '***'
-        });
+        };
+        console.log('Setting currentUser to:', userData);
+        setCurrentUser(userData);
         console.log('Set currentUser from token:', payload.userId);
       } catch (error) {
         console.error('Error decoding token:', error);
+        console.error('Token that failed to decode:', token);
       }
       
       // Try to load chat participants with existing token
@@ -164,6 +169,13 @@ const FoodForTalkSecretChatPage = () => {
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !wsRef.current) return;
+
+    console.log('sendMessage called, currentUser:', currentUser);
+    if (!currentUser) {
+      console.error('currentUser is null, cannot send message');
+      toast.error('User not authenticated. Please refresh the page.');
+      return;
+    }
 
     const message = {
       id: Date.now(),
