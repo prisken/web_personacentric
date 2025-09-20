@@ -262,6 +262,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Generate JWT token
+    console.log('Creating JWT token with secret:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
     const token = jwt.sign(
       { 
         userId: user.id, 
@@ -271,6 +272,7 @@ router.post('/login', async (req, res) => {
       process.env.JWT_SECRET || 'fallback-secret',
       { expiresIn: '24h' }
     );
+    console.log('JWT token created successfully');
 
     res.json({
       message: 'Login successful',
@@ -351,18 +353,31 @@ router.post('/secret-login', async (req, res) => {
 // Get participants list (requires authentication)
 router.get('/participants', async (req, res) => {
   try {
+    console.log('Participants endpoint called');
+    console.log('Authorization header:', req.headers.authorization);
+    
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('No valid Authorization header found');
       return res.status(401).json({ message: 'Authentication required' });
     }
 
     const token = authHeader.substring(7);
+    console.log('Token extracted:', token.substring(0, 50) + '...');
+    console.log('JWT_SECRET being used:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
     
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
-    if (decoded.type !== 'food-for-talk-participant') {
-      return res.status(401).json({ message: 'Invalid token type' });
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      console.log('Token decoded successfully:', decoded);
+      if (decoded.type !== 'food-for-talk-participant') {
+        console.log('Invalid token type:', decoded.type);
+        return res.status(401).json({ message: 'Invalid token type' });
+      }
+    } catch (jwtError) {
+      console.log('JWT verification failed:', jwtError.message);
+      return res.status(401).json({ message: 'Invalid token' });
     }
 
     // Get all participants (excluding sensitive info like passwords and passkeys)
