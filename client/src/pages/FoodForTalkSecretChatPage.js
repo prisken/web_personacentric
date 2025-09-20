@@ -92,11 +92,14 @@ const FoodForTalkSecretChatPage = () => {
     setLoading(true);
 
     try {
+      console.log('Attempting secret login with:', loginData);
       const response = await apiService.secretLoginToFoodForTalk(loginData);
+      console.log('Secret login response:', response);
       
       if (response.token) {
         // Store the secret token for future requests
         localStorage.setItem('foodForTalkSecretToken', response.token);
+        console.log('Secret token stored, setting isInChat to true');
         
         setCurrentUser(response.user);
         setIsAuthenticated(true);
@@ -106,11 +109,12 @@ const FoodForTalkSecretChatPage = () => {
         // Load participants for the chat room
         await loadChatParticipants();
       } else {
+        console.log('No token in secret login response:', response);
         toast.error(response.message || 'Login failed');
       }
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('Login failed. Please try again.');
+      console.error('Secret login error:', error);
+      toast.error('Secret login failed. Please check your credentials and passkey.');
     } finally {
       setLoading(false);
     }
