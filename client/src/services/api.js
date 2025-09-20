@@ -454,7 +454,13 @@ class ApiService {
   }
 
   async getFoodForTalkParticipants() {
-    return this.get('/food-for-talk/participants');
+    // Use the Food for Talk specific token
+    const token = localStorage.getItem('foodForTalkToken');
+    return this.get('/food-for-talk/participants', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 
   async getFoodForTalkStats() {

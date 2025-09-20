@@ -446,6 +446,59 @@ router.post('/secret-login', async (req, res) => {
   }
 });
 
+// Get participants list (requires authentication)
+router.get('/participants', async (req, res) => {
+  try {
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+    if (decoded.type !== 'food-for-talk-participant') {
+      return res.status(401).json({ message: 'Invalid token type' });
+    }
+
+    // Get all participants (excluding sensitive info like passwords and passkeys)
+    const participants = await FoodForTalkUser.findAll({
+      where: { is_active: true, is_verified: true },
+      attributes: [
+        'id', 'first_name', 'last_name', 'age', 'occupation', 
+        'bio', 'interests', 'dietary_restrictions', 'profile_photo_url'
+      ],
+      order: [['created_at', 'ASC']]
+    });
+
+    // Format participants data
+    const formattedParticipants = participants.map(participant => ({
+      id: participant.id,
+      firstName: participant.first_name,
+      lastName: participant.last_name,
+      age: participant.age,
+      occupation: participant.occupation,
+      bio: participant.bio,
+      interests: participant.interests || [],
+      dietaryRestrictions: participant.dietary_restrictions,
+      profilePhotoUrl: participant.profile_photo_url
+    }));
+
+    res.json({
+      message: 'Participants retrieved successfully',
+      participants: formattedParticipants
+    });
+  } catch (error) {
+    console.error('Get participants error:', error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    res.status(500).json({ message: 'Failed to retrieve participants' });
+  }
+});
+
 // Get event statistics
 router.get('/stats', async (req, res) => {
   try {

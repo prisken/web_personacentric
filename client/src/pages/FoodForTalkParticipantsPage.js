@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import apiService from '../services/api';
 
 const FoodForTalkParticipantsPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -11,32 +12,57 @@ const FoodForTalkParticipantsPage = () => {
     password: ''
   });
 
+  // Check if user is already authenticated
+  useEffect(() => {
+    const token = localStorage.getItem('foodForTalkToken');
+    if (token) {
+      // Try to load participants with existing token
+      loadParticipants();
+    }
+  }, []);
+
+  const loadParticipants = async () => {
+    setLoading(true);
+    try {
+      const response = await apiService.getFoodForTalkParticipants();
+      if (response.participants) {
+        setIsAuthenticated(true);
+        setParticipants(response.participants);
+      } else {
+        // Token might be expired, clear it
+        localStorage.removeItem('foodForTalkToken');
+      }
+    } catch (error) {
+      console.error('Failed to load participants:', error);
+      // Token might be expired, clear it
+      localStorage.removeItem('foodForTalkToken');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await fetch('/api/food-for-talk/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(loginData)
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setIsAuthenticated(true);
-        setParticipants(data.participants);
+      // First, login to get the token
+      const loginResponse = await apiService.loginToFoodForTalk(loginData);
+      
+      if (loginResponse.token) {
+        // Store the token for future requests
+        localStorage.setItem('foodForTalkToken', loginResponse.token);
+        
+        // Now load participants using the token
+        await loadParticipants();
         toast.success('Login successful!');
       } else {
-        const error = await response.json();
-        toast.error(error.message || 'Login failed');
+        toast.error(loginResponse.message || 'Login failed');
+        setLoading(false);
       }
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Login failed. Please try again.');
-    } finally {
       setLoading(false);
     }
   };
