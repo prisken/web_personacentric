@@ -69,7 +69,7 @@ const FoodForTalkSecretChatPage = () => {
   }, [messages, privateMessages]);
 
   useEffect(() => {
-    if (isInChat) {
+    if (isInChat && currentUser && !wsRef.current) {
       // Initialize WebSocket connection for real-time chat
       const wsUrl = process.env.NODE_ENV === 'production' 
         ? 'wss://webpersonacentric-personacentric.up.railway.app'
@@ -103,15 +103,31 @@ const FoodForTalkSecretChatPage = () => {
         if (data.type === 'message') {
           console.log('Adding message to chat:', data.message);
           setMessages(prev => {
+            // Check if message already exists to prevent duplicates
+            const messageExists = prev.some(msg => msg.id === data.message.id);
+            if (messageExists) {
+              console.log('Message already exists, skipping duplicate');
+              return prev;
+            }
             const newMessages = [...prev, data.message];
             console.log('Updated messages array:', newMessages);
             return newMessages;
           });
         } else if (data.type === 'private_message') {
-          setPrivateMessages(prev => ({
-            ...prev,
-            [data.conversationId]: [...(prev[data.conversationId] || []), data.message]
-          }));
+          setPrivateMessages(prev => {
+            const conversationId = data.conversationId;
+            const existingMessages = prev[conversationId] || [];
+            // Check if message already exists to prevent duplicates
+            const messageExists = existingMessages.some(msg => msg.id === data.message.id);
+            if (messageExists) {
+              console.log('Private message already exists, skipping duplicate');
+              return prev;
+            }
+            return {
+              ...prev,
+              [conversationId]: [...existingMessages, data.message]
+            };
+          });
 
           // Update active conversations for incoming private messages
           setActivePrivateConversations(prev => {
@@ -136,39 +152,74 @@ const FoodForTalkSecretChatPage = () => {
             }
           });
         } else if (data.type === 'user_joined') {
-          setParticipants(prev => [...prev, data.user]);
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            type: 'system',
-            content: `${data.user.blurredName} joined the chat`,
-            timestamp: new Date().toISOString()
-          }]);
+          setParticipants(prev => {
+            // Check if user already exists to prevent duplicates
+            const userExists = prev.some(p => p.id === data.user.id);
+            if (userExists) {
+              return prev;
+            }
+            return [...prev, data.user];
+          });
+          setMessages(prev => {
+            const systemMessage = {
+              id: Date.now(),
+              type: 'system',
+              content: `${data.user.blurredName} joined the chat`,
+              timestamp: new Date().toISOString()
+            };
+            // Check if system message already exists
+            const messageExists = prev.some(msg => 
+              msg.type === 'system' && 
+              msg.content === systemMessage.content &&
+              Math.abs(new Date(msg.timestamp) - new Date(systemMessage.timestamp)) < 1000
+            );
+            if (messageExists) {
+              return prev;
+            }
+            return [...prev, systemMessage];
+          });
         } else if (data.type === 'user_left') {
           setParticipants(prev => prev.filter(p => p.id !== data.userId));
-          setMessages(prev => [...prev, {
-            id: Date.now(),
-            type: 'system',
-            content: 'A participant left the chat',
-            timestamp: new Date().toISOString()
-          }]);
+          setMessages(prev => {
+            const systemMessage = {
+              id: Date.now(),
+              type: 'system',
+              content: 'A participant left the chat',
+              timestamp: new Date().toISOString()
+            };
+            // Check if system message already exists
+            const messageExists = prev.some(msg => 
+              msg.type === 'system' && 
+              msg.content === systemMessage.content &&
+              Math.abs(new Date(msg.timestamp) - new Date(systemMessage.timestamp)) < 1000
+            );
+            if (messageExists) {
+              return prev;
+            }
+            return [...prev, systemMessage];
+          });
         }
       };
 
       wsRef.current.onclose = () => {
         console.log('WebSocket connection closed');
+        wsRef.current = null; // Reset reference when connection closes
       };
 
       wsRef.current.onerror = (error) => {
         console.error('WebSocket error:', error);
       };
-
-      return () => {
-        if (wsRef.current) {
-          wsRef.current.close();
-        }
-      };
     }
-  }, [isInChat]);
+
+    return () => {
+      // Only close WebSocket when component unmounts, not on every re-render
+      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+        console.log('Closing WebSocket connection on cleanup');
+        wsRef.current.close();
+        wsRef.current = null;
+      }
+    };
+  }, [isInChat, currentUser?.id]); // Only depend on isInChat and currentUser.id
 
   const handleLogin = async (e) => {
     e.preventDefault();
