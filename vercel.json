@@ -9,11 +9,13 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://webpersonacentric-personacentric.up.railway.app/api/$1"
-    },
+      "source": "/api/(.*)",
+      "destination": "https://webpersonacentric-personacentric.up.railway.app/api/$1"
+    }
+  ],
+  "routes": [
     {
       "src": "/(.*)",
       "dest": "/client/build/$1"
