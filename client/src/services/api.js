@@ -83,7 +83,15 @@ class ApiService {
 
   // GET request
   async get(endpoint, options = {}) {
-    return this.request(endpoint, { method: 'GET', ...options });
+    console.log('=== GET METHOD DEBUG ===');
+    console.log('endpoint:', endpoint);
+    console.log('options passed to get():', options);
+    console.log('options.headers:', options.headers);
+    const requestOptions = { method: 'GET', ...options };
+    console.log('requestOptions after spread:', requestOptions);
+    console.log('requestOptions.headers:', requestOptions.headers);
+    console.log('=== END GET METHOD DEBUG ===');
+    return this.request(endpoint, requestOptions);
   }
 
   // POST request
