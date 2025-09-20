@@ -6,7 +6,7 @@ import apiService from '../services/api';
 
 const FoodForTalkSecretChatPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [, setIsAuthenticated] = useState(false);
   const [isInChat, setIsInChat] = useState(false);
   const [loginData, setLoginData] = useState({
     email: '',
@@ -72,18 +72,23 @@ const FoodForTalkSecretChatPage = () => {
       wsRef.current = new WebSocket(`${wsUrl}/food-for-talk-chat`);
       
       wsRef.current.onopen = () => {
+        console.log('WebSocket connection opened, currentUser:', currentUser);
         // Send join message when connection is established
-        if (currentUser) {
-          wsRef.current.send(JSON.stringify({
+        if (currentUser && currentUser.id) {
+          const joinMessage = {
             type: 'join',
             userId: currentUser.id,
             userInfo: {
               id: currentUser.id,
-              firstName: currentUser.blurredName,
+              firstName: currentUser.blurredName || 'User',
               lastName: '',
               email: currentUser.email
             }
-          }));
+          };
+          console.log('Sending join message:', joinMessage);
+          wsRef.current.send(JSON.stringify(joinMessage));
+        } else {
+          console.log('No currentUser available for join message');
         }
       };
 
@@ -202,7 +207,7 @@ const FoodForTalkSecretChatPage = () => {
         wsRef.current = null;
       }
     };
-  }, [isInChat, currentUser?.id]); // Only depend on isInChat and currentUser.id
+  }, [isInChat, currentUser?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -272,11 +277,16 @@ const FoodForTalkSecretChatPage = () => {
       type: 'public'
     };
     
+    console.log('Sending message:', message);
+    console.log('WebSocket ready state:', wsRef.current.readyState);
+    
     if (wsRef.current.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({
+      const sendData = {
         type: 'send_message',
         message
-      }));
+      };
+      console.log('Sending WebSocket data:', sendData);
+      wsRef.current.send(JSON.stringify(sendData));
     } else {
       console.error('WebSocket is not open. Ready state:', wsRef.current.readyState);
       toast.error('Connection lost. Please refresh the page.');
@@ -378,7 +388,7 @@ const FoodForTalkSecretChatPage = () => {
       });
 
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         toast.success('Profile viewed! Your passkey has been revoked.');
         setIsInChat(false);
         setIsAuthenticated(false);

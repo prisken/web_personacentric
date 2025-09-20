@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from '../components/food-for-talk/CountdownTimer';
@@ -16,9 +16,12 @@ const FoodForTalkPage = () => {
   });
 
   // Set event date (example: 30 days from now)
-  const eventDate = new Date();
-  eventDate.setDate(eventDate.getDate() + 30);
-  eventDate.setHours(19, 0, 0, 0); // 7 PM
+  const eventDate = useMemo(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 30);
+    date.setHours(19, 0, 0, 0); // 7 PM
+    return date;
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
