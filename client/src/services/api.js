@@ -463,6 +463,16 @@ class ApiService {
     });
   }
 
+  async getFoodForTalkChatParticipants() {
+    // Use the Food for Talk secret token
+    const token = localStorage.getItem('foodForTalkSecretToken');
+    return this.get('/food-for-talk/chat-participants', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   async getFoodForTalkStats() {
     return this.get('/food-for-talk/stats');
   }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import apiService from '../services/api';
 
 const FoodForTalkSecretChatPage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -80,30 +81,39 @@ const FoodForTalkSecretChatPage = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/food-for-talk/secret-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(loginData)
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentUser(data.user);
-        setParticipants(data.participants);
+      const response = await apiService.secretLoginToFoodForTalk(loginData);
+      
+      if (response.token) {
+        // Store the secret token for future requests
+        localStorage.setItem('foodForTalkSecretToken', response.token);
+        
+        setCurrentUser(response.user);
         setIsAuthenticated(true);
         setIsInChat(true);
         toast.success('Welcome to the secret chat room!');
+        
+        // Load participants for the chat room
+        await loadChatParticipants();
       } else {
-        const error = await response.json();
-        toast.error(error.message || 'Login failed');
+        toast.error(response.message || 'Login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
       toast.error('Login failed. Please try again.');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadChatParticipants = async () => {
+    try {
+      // Get participants for chat room (with blurred names)
+      const response = await apiService.getFoodForTalkChatParticipants();
+      if (response.participants) {
+        setParticipants(response.participants);
+      }
+    } catch (error) {
+      console.error('Failed to load chat participants:', error);
     }
   };
 
