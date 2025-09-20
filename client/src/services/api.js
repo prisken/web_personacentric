@@ -25,6 +25,14 @@ class ApiService {
     const url = `${this.baseURL}${endpoint}`;
     const token = this.getAuthToken();
 
+    console.log('=== REQUEST METHOD DEBUG ===');
+    console.log('endpoint:', endpoint);
+    console.log('options:', options);
+    console.log('options.headers:', options.headers);
+    console.log('main app token:', token);
+    console.log('options.headers?.Authorization:', options.headers?.Authorization);
+    console.log('Condition (token && !options.headers?.Authorization):', token && !options.headers?.Authorization);
+
     const config = {
       headers: {
         'Content-Type': 'application/json',
@@ -34,6 +42,9 @@ class ApiService {
       },
       ...options,
     };
+
+    console.log('Final config.headers:', config.headers);
+    console.log('=== END REQUEST METHOD DEBUG ===');
 
     console.log(`Making ${options.method || 'GET'} request to:`, url);
     console.log('Request config:', {
