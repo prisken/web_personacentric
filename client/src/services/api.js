@@ -28,7 +28,8 @@ class ApiService {
     const config = {
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
+        // Only set Authorization if not already provided in options.headers
+        ...(token && !options.headers?.Authorization && { Authorization: `Bearer ${token}` }),
         ...options.headers,
       },
       ...options,
