@@ -107,10 +107,13 @@ const FoodForTalkSecretChatPage = () => {
 
   const loadChatParticipants = async () => {
     try {
+      console.log('Loading chat participants...');
       // Get participants for chat room (with blurred names)
       const response = await apiService.getFoodForTalkChatParticipants();
+      console.log('Chat participants response:', response);
       if (response.participants) {
         setParticipants(response.participants);
+        console.log('Chat participants loaded successfully:', response.participants.length);
       }
     } catch (error) {
       console.error('Failed to load chat participants:', error);

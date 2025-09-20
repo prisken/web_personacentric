@@ -24,11 +24,15 @@ const FoodForTalkParticipantsPage = () => {
   const loadParticipants = async () => {
     setLoading(true);
     try {
+      console.log('Loading participants...');
       const response = await apiService.getFoodForTalkParticipants();
+      console.log('Participants response:', response);
       if (response.participants) {
         setIsAuthenticated(true);
         setParticipants(response.participants);
+        console.log('Participants loaded successfully:', response.participants.length);
       } else {
+        console.log('No participants in response, clearing token');
         // Token might be expired, clear it
         localStorage.removeItem('foodForTalkToken');
       }
