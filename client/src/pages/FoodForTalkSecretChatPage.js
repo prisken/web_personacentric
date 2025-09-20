@@ -379,30 +379,30 @@ const FoodForTalkSecretChatPage = () => {
                 </div>
               ) : (
                 messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={`flex ${message.userId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
-                >
                   <div
-                    className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                      message.type === 'system'
-                        ? 'bg-yellow-400/20 text-yellow-300 text-center mx-auto'
-                        : message.userId === currentUser?.id
-                        ? 'bg-blue-500 text-white'
-                        : 'bg-white/20 text-white'
-                    }`}
+                    key={message.id}
+                    className={`flex ${message.userId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
                   >
-                    {message.type !== 'system' && (
-                      <div className="text-xs opacity-70 mb-1">
-                        {message.blurredName}
+                    <div
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+                        message.type === 'system'
+                          ? 'bg-yellow-400/20 text-yellow-300 text-center mx-auto'
+                          : message.userId === currentUser?.id
+                          ? 'bg-blue-500 text-white'
+                          : 'bg-white/20 text-white'
+                      }`}
+                    >
+                      {message.type !== 'system' && (
+                        <div className="text-xs opacity-70 mb-1">
+                          {message.blurredName}
+                        </div>
+                      )}
+                      <div>{message.content}</div>
+                      <div className="text-xs opacity-70 mt-1">
+                        {new Date(message.timestamp).toLocaleTimeString()}
                       </div>
-                    )}
-                    <div>{message.content}</div>
-                    <div className="text-xs opacity-70 mt-1">
-                      {new Date(message.timestamp).toLocaleTimeString()}
                     </div>
                   </div>
-                </div>
                 ))
               )}
               <div ref={messagesEndRef} />

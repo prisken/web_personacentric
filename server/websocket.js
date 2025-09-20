@@ -3,13 +3,16 @@ const http = require('http');
 
 class FoodForTalkWebSocketServer {
   constructor(server) {
+    console.log('🔧 Creating WebSocket server with path: /food-for-talk-chat');
     this.wss = new WebSocket.Server({ 
       server,
       path: '/food-for-talk-chat'
     });
     
+    console.log('✅ WebSocket server created successfully');
     this.clients = new Map();
     this.setupWebSocketHandlers();
+    console.log('🎯 WebSocket handlers setup complete');
   }
 
   setupWebSocketHandlers() {

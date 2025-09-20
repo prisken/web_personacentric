@@ -111,9 +111,13 @@ async function startServer() {
     const server = await serverStartup.start(PORT);
     
     // Initialize WebSocket server for Food for Talk chat
+    console.log('🔍 ENABLE_FOOD_FOR_TALK:', process.env.ENABLE_FOOD_FOR_TALK);
     if (process.env.ENABLE_FOOD_FOR_TALK === 'true') {
+      console.log('🚀 Initializing Food for Talk WebSocket server...');
       new FoodForTalkWebSocketServer(server);
       console.log('🍽️ Food for Talk WebSocket server initialized');
+    } else {
+      console.log('❌ Food for Talk WebSocket server NOT initialized - ENABLE_FOOD_FOR_TALK is not true');
     }
   } catch (error) {
     console.error('❌ Unable to start server:', error);
