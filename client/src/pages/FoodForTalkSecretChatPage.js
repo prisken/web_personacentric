@@ -100,7 +100,11 @@ const FoodForTalkSecretChatPage = () => {
         
         if (data.type === 'message') {
           console.log('Adding message to chat:', data.message);
-          setMessages(prev => [...prev, data.message]);
+          setMessages(prev => {
+            const newMessages = [...prev, data.message];
+            console.log('Updated messages array:', newMessages);
+            return newMessages;
+          });
         } else if (data.type === 'private_message') {
           setPrivateMessages(prev => ({
             ...prev,
@@ -367,7 +371,14 @@ const FoodForTalkSecretChatPage = () => {
           <div className="flex-1 flex flex-col">
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((message) => (
+              {console.log('Rendering messages:', messages)}
+              {messages.length === 0 ? (
+                <div className="text-center text-white/70 mt-8">
+                  <p>No messages yet. Start the conversation!</p>
+                  <p className="text-sm mt-2">Messages count: {messages.length}</p>
+                </div>
+              ) : (
+                messages.map((message) => (
                 <div
                   key={message.id}
                   className={`flex ${message.userId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
@@ -392,7 +403,8 @@ const FoodForTalkSecretChatPage = () => {
                     </div>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
               <div ref={messagesEndRef} />
             </div>
 
