@@ -146,6 +146,41 @@ class ApiService {
     }
   }
 
+  // PATCH request
+  async patch(endpoint, data, options = {}) {
+    const url = `${this.baseURL}${endpoint}`;
+    const token = this.getAuthToken();
+
+    const config = {
+      method: 'PATCH',
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    if (data instanceof FormData) {
+      delete config.headers['Content-Type'];
+      config.body = data;
+    } else {
+      config.headers['Content-Type'] = 'application/json';
+      config.body = JSON.stringify(data);
+    }
+
+    try {
+      const response = await fetch(url, config);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('API request failed:', error);
+      throw error;
+    }
+  }
+
   // DELETE request
   async delete(endpoint) {
     return this.request(endpoint, { method: 'DELETE' });
@@ -481,8 +516,8 @@ class ApiService {
     return this.get('/food-for-talk/admin/participants');
   }
 
-  async toggleFoodForTalkParticipantStatus(participantId) {
-    return this.put(`/food-for-talk/admin/participants/${participantId}/toggle-status`);
+  async toggleFoodForTalkParticipantStatus(participantId, isActive) {
+    return this.patch(`/food-for-talk/admin/participants/${participantId}/toggle-status`, { isActive });
   }
 
   async deleteFoodForTalkParticipant(participantId) {
@@ -490,7 +525,7 @@ class ApiService {
   }
 
   async regenerateFoodForTalkPasskey(participantId) {
-    return this.post(`/food-for-talk/admin/participants/${participantId}/regenerate-passkey`);
+    return this.patch(`/food-for-talk/admin/participants/${participantId}/regenerate-passkey`);
   }
 }
 

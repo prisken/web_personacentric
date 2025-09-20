@@ -39,8 +39,9 @@ const FoodForTalkManagement = () => {
 
   const handleToggleStatus = async (participantId, currentStatus) => {
     try {
-      await apiService.toggleFoodForTalkParticipantStatus(participantId);
-      toast.success('Participant status updated');
+      const newStatus = !currentStatus; // Toggle the status
+      await apiService.toggleFoodForTalkParticipantStatus(participantId, newStatus);
+      toast.success(`Participant ${newStatus ? 'activated' : 'deactivated'} successfully`);
       fetchParticipants();
       fetchStats();
     } catch (error) {
