@@ -31,6 +31,20 @@ const FoodForTalkSecretChatPage = () => {
       setIsAuthenticated(true);
       setIsInChat(true);
       console.log('Setting isInChat to true for existing token');
+      
+      // Set a basic currentUser from token (we'll decode the JWT to get user info)
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setCurrentUser({
+          id: payload.userId,
+          email: payload.email,
+          blurredName: payload.email.charAt(0) + '***'
+        });
+        console.log('Set currentUser from token:', payload.userId);
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+      
       // Try to load chat participants with existing token
       loadChatParticipants();
     }
