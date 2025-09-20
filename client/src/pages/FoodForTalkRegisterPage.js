@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
 
 const FoodForTalkRegisterPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',

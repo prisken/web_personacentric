@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from '../components/food-for-talk/CountdownTimer';
 import EventDetails from '../components/food-for-talk/EventDetails';
 import RegisterButton from '../components/food-for-talk/RegisterButton';
 import ActionButtons from '../components/food-for-talk/ActionButtons';
 
 const FoodForTalkPage = () => {
+  const { t, toggleLanguage, language } = useLanguage();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -49,7 +51,16 @@ const FoodForTalkPage = () => {
                 PersonaCentric
               </Link>
             </div>
-            <RegisterButton />
+            <div className="flex items-center space-x-4">
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="text-white/70 hover:text-white transition-colors px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20"
+              >
+                {language === 'zh-TW' ? 'EN' : '中文'}
+              </button>
+              <RegisterButton />
+            </div>
           </div>
         </div>
       </header>
@@ -67,10 +78,10 @@ const FoodForTalkPage = () => {
           {/* Event Title */}
           <div className="mb-8">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">
-              Food for Talk
+              {t('foodForTalk.title')}
             </h1>
             <p className="text-xl sm:text-2xl lg:text-3xl text-yellow-400 font-semibold">
-              Speed Dating Event
+              {t('foodForTalk.subtitle')}
             </p>
           </div>
 

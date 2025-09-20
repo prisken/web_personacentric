@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
 
 const FoodForTalkSecretChatPage = () => {
+  const { t, toggleLanguage, language } = useLanguage();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isInChat, setIsInChat] = useState(false);
   const [loginData, setLoginData] = useState({
@@ -19,40 +21,33 @@ const FoodForTalkSecretChatPage = () => {
   const [privateMessages, setPrivateMessages] = useState({});
   const [activePrivateConversations, setActivePrivateConversations] = useState([]);
   const [activeTab, setActiveTab] = useState('public'); // 'public' or conversation ID
+  const [showMobileParticipants, setShowMobileParticipants] = useState(false);
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
 
   // Check if user is already authenticated
   useEffect(() => {
-    console.log('FoodForTalkSecretChatPage mounted');
     const token = localStorage.getItem('foodForTalkSecretToken');
-    console.log('Secret token found:', !!token);
     if (token) {
       // User is already authenticated, set states and load participants
       setIsAuthenticated(true);
       setIsInChat(true);
-      console.log('Setting isInChat to true for existing token');
       
       // Set a basic currentUser from token (we'll decode the JWT to get user info)
       try {
-        console.log('Decoding JWT token...');
         // Simple base64 decoding for JWT payload
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const payload = JSON.parse(atob(base64));
-        console.log('JWT payload:', payload);
         const userData = {
           id: payload.userId,
           email: payload.email,
           blurredName: payload.email.charAt(0) + '***'
         };
-        console.log('Setting currentUser to:', userData);
         setCurrentUser(userData);
-        console.log('Set currentUser from token:', payload.userId);
       } catch (error) {
         console.error('Error decoding token:', error);
-        console.error('Token that failed to decode:', token);
       }
       
       // Try to load chat participants with existing token
@@ -74,11 +69,9 @@ const FoodForTalkSecretChatPage = () => {
       const wsUrl = process.env.NODE_ENV === 'production' 
         ? 'wss://webpersonacentric-personacentric.up.railway.app'
         : 'ws://localhost:5001';
-      console.log('Connecting to WebSocket:', `${wsUrl}/food-for-talk-chat`);
       wsRef.current = new WebSocket(`${wsUrl}/food-for-talk-chat`);
       
       wsRef.current.onopen = () => {
-        console.log('WebSocket connection opened successfully');
         // Send join message when connection is established
         if (currentUser) {
           wsRef.current.send(JSON.stringify({
@@ -91,27 +84,20 @@ const FoodForTalkSecretChatPage = () => {
               email: currentUser.email
             }
           }));
-          console.log('Sent join message to WebSocket');
         }
       };
 
       wsRef.current.onmessage = (event) => {
-        console.log('WebSocket message received:', event.data);
         const data = JSON.parse(event.data);
-        console.log('Parsed WebSocket data:', data);
         
         if (data.type === 'message') {
-          console.log('Adding message to chat:', data.message);
           setMessages(prev => {
             // Check if message already exists to prevent duplicates
             const messageExists = prev.some(msg => msg.id === data.message.id);
             if (messageExists) {
-              console.log('Message already exists, skipping duplicate');
               return prev;
             }
-            const newMessages = [...prev, data.message];
-            console.log('Updated messages array:', newMessages);
-            return newMessages;
+            return [...prev, data.message];
           });
         } else if (data.type === 'private_message') {
           setPrivateMessages(prev => {
@@ -120,7 +106,6 @@ const FoodForTalkSecretChatPage = () => {
             // Check if message already exists to prevent duplicates
             const messageExists = existingMessages.some(msg => msg.id === data.message.id);
             if (messageExists) {
-              console.log('Private message already exists, skipping duplicate');
               return prev;
             }
             return {
@@ -202,7 +187,6 @@ const FoodForTalkSecretChatPage = () => {
       };
 
       wsRef.current.onclose = () => {
-        console.log('WebSocket connection closed');
         wsRef.current = null; // Reset reference when connection closes
       };
 
@@ -214,7 +198,6 @@ const FoodForTalkSecretChatPage = () => {
     return () => {
       // Only close WebSocket when component unmounts, not on every re-render
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        console.log('Closing WebSocket connection on cleanup');
         wsRef.current.close();
         wsRef.current = null;
       }
@@ -226,14 +209,11 @@ const FoodForTalkSecretChatPage = () => {
     setLoading(true);
 
     try {
-      console.log('Attempting secret login with:', loginData);
       const response = await apiService.secretLoginToFoodForTalk(loginData);
-      console.log('Secret login response:', response);
       
       if (response.token) {
         // Store the secret token for future requests
         localStorage.setItem('foodForTalkSecretToken', response.token);
-        console.log('Secret token stored, setting isInChat to true');
         
         setCurrentUser(response.user);
         setIsAuthenticated(true);
@@ -243,7 +223,6 @@ const FoodForTalkSecretChatPage = () => {
         // Load participants for the chat room
         await loadChatParticipants();
       } else {
-        console.log('No token in secret login response:', response);
         toast.error(response.message || 'Login failed');
       }
     } catch (error) {
@@ -256,13 +235,10 @@ const FoodForTalkSecretChatPage = () => {
 
   const loadChatParticipants = async () => {
     try {
-      console.log('Loading chat participants...');
       // Get participants for chat room (with blurred names)
       const response = await apiService.getFoodForTalkChatParticipants();
-      console.log('Chat participants response:', response);
       if (response.participants) {
         setParticipants(response.participants);
-        console.log('Chat participants loaded successfully:', response.participants.length);
       }
     } catch (error) {
       console.error('Failed to load chat participants:', error);
@@ -281,7 +257,6 @@ const FoodForTalkSecretChatPage = () => {
     e.preventDefault();
     if (!newMessage.trim() || !wsRef.current) return;
 
-    console.log('sendMessage called, currentUser:', currentUser);
     if (!currentUser) {
       console.error('currentUser is null, cannot send message');
       toast.error('User not authenticated. Please refresh the page.');
@@ -296,16 +271,12 @@ const FoodForTalkSecretChatPage = () => {
       timestamp: new Date().toISOString(),
       type: 'public'
     };
-
-    console.log('Sending message via WebSocket:', message);
-    console.log('WebSocket ready state:', wsRef.current.readyState);
     
     if (wsRef.current.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         type: 'send_message',
         message
       }));
-      console.log('Message sent successfully');
     } else {
       console.error('WebSocket is not open. Ready state:', wsRef.current.readyState);
       toast.error('Connection lost. Please refresh the page.');
@@ -430,9 +401,9 @@ const FoodForTalkSecretChatPage = () => {
 
   if (isInChat) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex flex-col">
         {/* Header */}
-        <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4">
+        <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4 flex-shrink-0">
           <div className="max-w-7xl mx-auto flex justify-between items-center">
             <div className="flex items-center">
               <Link 
@@ -443,17 +414,35 @@ const FoodForTalkSecretChatPage = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </Link>
-              <h1 className="text-xl font-bold text-white">Secret Chat Room</h1>
+              <h1 className="text-xl font-bold text-white">{t('foodForTalk.chat.title')}</h1>
             </div>
-            <div className="text-white/70">
-              Welcome, {currentUser?.blurredName}
+            <div className="flex items-center space-x-4">
+              <div className="text-white/70 hidden sm:block">
+                Welcome, {currentUser?.blurredName}
+              </div>
+              {/* Language Toggle */}
+              <button
+                onClick={toggleLanguage}
+                className="text-white/70 hover:text-white transition-colors px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm"
+              >
+                {language === 'zh-TW' ? 'EN' : '中文'}
+              </button>
+              {/* Mobile Participants Button */}
+              <button
+                onClick={() => setShowMobileParticipants(true)}
+                className="lg:hidden bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </button>
             </div>
           </div>
         </header>
 
-        <div className="flex h-[calc(100vh-80px)]">
-          {/* Participants Sidebar */}
-          <div className="w-80 bg-white/10 backdrop-blur-sm border-r border-white/20 p-4 overflow-y-auto">
+        <div className="flex flex-1 min-h-0">
+          {/* Participants Sidebar - Hidden on mobile, shown on larger screens */}
+          <div className="hidden lg:block w-80 bg-white/10 backdrop-blur-sm border-r border-white/20 p-4 overflow-y-auto flex-shrink-0">
             <h2 className="text-lg font-bold text-white mb-4">Participants</h2>
             <div className="space-y-3">
               {participants.map((participant) => (
@@ -494,20 +483,20 @@ const FoodForTalkSecretChatPage = () => {
           </div>
 
           {/* Chat Area */}
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col min-w-0">
             {/* Tab Navigation */}
-            <div className="bg-black/20 backdrop-blur-sm border-b border-white/10">
-              <div className="flex overflow-x-auto">
+            <div className="bg-black/20 backdrop-blur-sm border-b border-white/10 flex-shrink-0">
+              <div className="flex overflow-x-auto scrollbar-hide">
                 {/* Public Chat Tab */}
                 <button
                   onClick={() => setActiveTab('public')}
-                  className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                  className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${
                     activeTab === 'public'
                       ? 'border-yellow-400 text-yellow-400 bg-yellow-400/10'
                       : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
                   }`}
                 >
-                  🌐 Public Chat
+                  🌐 {t('foodForTalk.chat.publicChat')}
                 </button>
                 
                 {/* Private Conversation Tabs */}
@@ -515,7 +504,7 @@ const FoodForTalkSecretChatPage = () => {
                   <button
                     key={conversation.id}
                     onClick={() => setActiveTab(conversation.id)}
-                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex items-center space-x-2 ${
+                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex items-center space-x-2 flex-shrink-0 ${
                       activeTab === conversation.id
                         ? 'border-blue-400 text-blue-400 bg-blue-400/10'
                         : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
@@ -537,14 +526,13 @@ const FoodForTalkSecretChatPage = () => {
             </div>
 
             {/* Tab Content */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-h-0">
               {activeTab === 'public' ? (
-                /* Public Chat Messages */
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {console.log('Rendering messages:', messages)}
-              {messages.length === 0 ? (
+                        /* Public Chat Messages */
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
+                      {messages.length === 0 ? (
                 <div className="text-center text-white/70 mt-8">
-                  <p>No messages yet. Start the conversation!</p>
+                  <p>{t('foodForTalk.chat.noMessages')}</p>
                   <p className="text-sm mt-2">Messages count: {messages.length}</p>
                 </div>
               ) : (
@@ -579,10 +567,10 @@ const FoodForTalkSecretChatPage = () => {
                 </div>
               ) : (
                 /* Private Chat Messages */
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
                   {privateMessages[activeTab]?.length === 0 ? (
                     <div className="text-center text-white/70 mt-8">
-                      <p>No messages yet. Start the conversation!</p>
+                      <p>{t('foodForTalk.chat.noPrivateMessages')}</p>
                     </div>
                   ) : (
                     privateMessages[activeTab]?.map((message) => (
@@ -613,8 +601,8 @@ const FoodForTalkSecretChatPage = () => {
                 </div>
               )}
 
-              {/* Message Input */}
-              <div className="border-t border-white/20 p-4">
+            {/* Message Input */}
+            <div className="border-t border-white/20 p-4 flex-shrink-0">
                 <form onSubmit={activeTab === 'public' ? sendMessage : (e) => {
                   e.preventDefault();
                   if (newMessage.trim() && activeTab !== 'public') {
@@ -629,7 +617,7 @@ const FoodForTalkSecretChatPage = () => {
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder={activeTab === 'public' ? "Type your message..." : "Type your private message..."}
+                    placeholder={activeTab === 'public' ? t('foodForTalk.chat.typeMessage') : t('foodForTalk.chat.typePrivateMessage')}
                     className="flex-1 px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                   />
                   <button
@@ -640,13 +628,76 @@ const FoodForTalkSecretChatPage = () => {
                         : 'bg-blue-500 text-white hover:bg-blue-600'
                     }`}
                   >
-                    Send
+                    {t('foodForTalk.chat.send')}
                   </button>
                 </form>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Mobile Participants Drawer */}
+        {showMobileParticipants && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            {/* Backdrop */}
+            <div 
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setShowMobileParticipants(false)}
+            />
+            
+            {/* Drawer */}
+            <div className="absolute right-0 top-0 h-full w-80 bg-white/10 backdrop-blur-sm border-l border-white/20 p-4 overflow-y-auto">
+              <div className="flex justify-between items-center mb-4">
+                <h2 className="text-lg font-bold text-white">{t('foodForTalk.chat.participants')} ({participants.length})</h2>
+                <button
+                  onClick={() => setShowMobileParticipants(false)}
+                  className="text-white/70 hover:text-white transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                {participants.map((participant) => (
+                  <div key={participant.id} className="bg-white/10 rounded-lg p-3">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
+                        {participant.blurredName?.charAt(0) || '?'}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{participant.blurredName}</div>
+                        <div className="text-white/70 text-sm">{t('foodForTalk.chat.online')}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-3 space-y-2">
+                      <button
+                        onClick={() => {
+                          viewUserProfile(participant.id);
+                          setShowMobileParticipants(false);
+                        }}
+                        className="w-full bg-yellow-400 text-black py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-500 transition-colors"
+                      >
+                        {t('foodForTalk.chat.viewProfile')}
+                      </button>
+                      <button
+                        onClick={() => {
+                          startPrivateConversation(participant.id);
+                          setShowMobileParticipants(false);
+                        }}
+                        className="w-full bg-blue-500 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
+                      >
+                        {t('foodForTalk.chat.startPrivateChat')}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -666,10 +717,10 @@ const FoodForTalkSecretChatPage = () => {
             Back to Event
           </Link>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-            Secret Chat Room
+            {t('foodForTalk.secretLogin.title')}
           </h1>
           <p className="text-lg text-white/80">
-            Enter your credentials and secret passkey
+            {t('foodForTalk.secretLogin.subtitle')}
           </p>
         </div>
 
@@ -677,7 +728,7 @@ const FoodForTalkSecretChatPage = () => {
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-white font-medium mb-2">Email</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
               <input
                 type="email"
                 name="email"
@@ -690,7 +741,7 @@ const FoodForTalkSecretChatPage = () => {
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Password</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
               <input
                 type="password"
                 name="password"
@@ -703,7 +754,7 @@ const FoodForTalkSecretChatPage = () => {
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Secret Passkey</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.secretPasskey')}</label>
               <input
                 type="password"
                 name="passkey"
@@ -720,7 +771,7 @@ const FoodForTalkSecretChatPage = () => {
               disabled={loading}
               className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Entering...' : 'Enter Secret Chat Room'}
+              {loading ? t('foodForTalk.common.loading') : t('foodForTalk.secretLogin.submit')}
             </button>
           </form>
 

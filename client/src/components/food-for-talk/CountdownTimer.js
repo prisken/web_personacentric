@@ -1,12 +1,14 @@
 import React from 'react';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const CountdownTimer = ({ timeLeft }) => {
+  const { t } = useLanguage();
   const { days, hours, minutes, seconds } = timeLeft;
 
   return (
     <div className="mb-8">
       <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6">
-        Event Starts In
+        {t('foodForTalk.countdown.untilEvent')}
       </h2>
       <div className="flex justify-center space-x-4 sm:space-x-6 lg:space-x-8">
         <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-white/20 min-w-[80px] sm:min-w-[100px]">
@@ -14,7 +16,7 @@ const CountdownTimer = ({ timeLeft }) => {
             {days.toString().padStart(2, '0')}
           </div>
           <div className="text-sm sm:text-base text-white/80 uppercase tracking-wide">
-            Days
+            {t('foodForTalk.countdown.days')}
           </div>
         </div>
         
@@ -23,7 +25,7 @@ const CountdownTimer = ({ timeLeft }) => {
             {hours.toString().padStart(2, '0')}
           </div>
           <div className="text-sm sm:text-base text-white/80 uppercase tracking-wide">
-            Hours
+            {t('foodForTalk.countdown.hours')}
           </div>
         </div>
         
@@ -32,7 +34,7 @@ const CountdownTimer = ({ timeLeft }) => {
             {minutes.toString().padStart(2, '0')}
           </div>
           <div className="text-sm sm:text-base text-white/80 uppercase tracking-wide">
-            Minutes
+            {t('foodForTalk.countdown.minutes')}
           </div>
         </div>
         
@@ -41,7 +43,7 @@ const CountdownTimer = ({ timeLeft }) => {
             {seconds.toString().padStart(2, '0')}
           </div>
           <div className="text-sm sm:text-base text-white/80 uppercase tracking-wide">
-            Seconds
+            {t('foodForTalk.countdown.seconds')}
           </div>
         </div>
       </div>
