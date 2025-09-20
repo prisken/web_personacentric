@@ -439,6 +439,39 @@ class ApiService {
       body: JSON.stringify({ confirmation, reason })
     });
   }
+
+  // Food for Talk endpoints
+  async registerForFoodForTalk(userData) {
+    return this.post('/food-for-talk/register', userData);
+  }
+
+  async loginToFoodForTalk(credentials) {
+    return this.post('/food-for-talk/login', credentials);
+  }
+
+  async getFoodForTalkParticipants() {
+    return this.get('/food-for-talk/participants');
+  }
+
+  async getFoodForTalkStats() {
+    return this.get('/food-for-talk/stats');
+  }
+
+  async getFoodForTalkAdminParticipants() {
+    return this.get('/food-for-talk/admin/participants');
+  }
+
+  async toggleFoodForTalkParticipantStatus(participantId) {
+    return this.put(`/food-for-talk/admin/participants/${participantId}/toggle-status`);
+  }
+
+  async deleteFoodForTalkParticipant(participantId) {
+    return this.delete(`/food-for-talk/admin/participants/${participantId}`);
+  }
+
+  async regenerateFoodForTalkPasskey(participantId) {
+    return this.post(`/food-for-talk/admin/participants/${participantId}/regenerate-passkey`);
+  }
 }
 
 // Create a singleton instance

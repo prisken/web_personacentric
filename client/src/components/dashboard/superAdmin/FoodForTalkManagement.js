@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import apiService from '../../../services/api';
 
 const FoodForTalkManagement = () => {
   const [participants, setParticipants] = useState([]);
@@ -17,13 +18,8 @@ const FoodForTalkManagement = () => {
 
   const fetchParticipants = async () => {
     try {
-      const response = await fetch('/api/food-for-talk-admin-participants');
-      if (response.ok) {
-        const data = await response.json();
-        setParticipants(data.participants);
-      } else {
-        toast.error('Failed to fetch participants');
-      }
+      const response = await apiService.getFoodForTalkAdminParticipants();
+      setParticipants(response.participants);
     } catch (error) {
       console.error('Error fetching participants:', error);
       toast.error('Failed to fetch participants');
@@ -34,11 +30,8 @@ const FoodForTalkManagement = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/food-for-talk-stats');
-      if (response.ok) {
-        const data = await response.json();
-        setStats(data);
-      }
+      const response = await apiService.getFoodForTalkStats();
+      setStats(response);
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
@@ -46,21 +39,10 @@ const FoodForTalkManagement = () => {
 
   const handleToggleStatus = async (participantId, currentStatus) => {
     try {
-      const response = await fetch(`/api/food-for-talk/admin/participants/${participantId}/toggle-status`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ isActive: !currentStatus })
-      });
-
-      if (response.ok) {
-        toast.success('Participant status updated');
-        fetchParticipants();
-        fetchStats();
-      } else {
-        toast.error('Failed to update participant status');
-      }
+      await apiService.toggleFoodForTalkParticipantStatus(participantId);
+      toast.success('Participant status updated');
+      fetchParticipants();
+      fetchStats();
     } catch (error) {
       console.error('Error updating participant status:', error);
       toast.error('Failed to update participant status');
@@ -73,17 +55,10 @@ const FoodForTalkManagement = () => {
     }
 
     try {
-      const response = await fetch(`/api/food-for-talk/admin/participants/${participantId}`, {
-        method: 'DELETE'
-      });
-
-      if (response.ok) {
-        toast.success('Participant deleted successfully');
-        fetchParticipants();
-        fetchStats();
-      } else {
-        toast.error('Failed to delete participant');
-      }
+      await apiService.deleteFoodForTalkParticipant(participantId);
+      toast.success('Participant deleted successfully');
+      fetchParticipants();
+      fetchStats();
     } catch (error) {
       console.error('Error deleting participant:', error);
       toast.error('Failed to delete participant');
@@ -92,17 +67,9 @@ const FoodForTalkManagement = () => {
 
   const handleRegeneratePasskey = async (participantId) => {
     try {
-      const response = await fetch(`/api/food-for-talk/admin/participants/${participantId}/regenerate-passkey`, {
-        method: 'PATCH'
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        toast.success('New passkey generated');
-        fetchParticipants();
-      } else {
-        toast.error('Failed to regenerate passkey');
-      }
+      const response = await apiService.regenerateFoodForTalkPasskey(participantId);
+      toast.success('New passkey generated');
+      fetchParticipants();
     } catch (error) {
       console.error('Error regenerating passkey:', error);
       toast.error('Failed to regenerate passkey');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import apiService from '../services/api';
 
 const FoodForTalkRegisterPage = () => {
   const navigate = useNavigate();
@@ -70,17 +71,13 @@ const FoodForTalkRegisterPage = () => {
         }
       });
 
-      const response = await fetch('/api/food-for-talk-register', {
-        method: 'POST',
-        body: submitData
-      });
-
-      if (response.ok) {
+      const response = await apiService.registerForFoodForTalk(submitData);
+      
+      if (response.success) {
         toast.success('Registration successful! You will receive a confirmation email shortly.');
         navigate('/food-for-talk');
       } else {
-        const error = await response.json();
-        toast.error(error.message || 'Registration failed. Please try again.');
+        toast.error(response.error || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Registration error:', error);
