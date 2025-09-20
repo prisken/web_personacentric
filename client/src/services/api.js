@@ -40,6 +40,8 @@ class ApiService {
       ...config,
       headers: { ...config.headers }
     });
+    console.log('Full headers object:', config.headers);
+    console.log('Authorization header specifically:', config.headers.Authorization);
 
     try {
       const response = await fetch(url, config);
