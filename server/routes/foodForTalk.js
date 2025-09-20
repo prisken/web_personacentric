@@ -34,9 +34,7 @@ const generatePasskey = () => {
 // Register for the event
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
   try {
-    console.log('Food for Talk registration attempt - req.body:', req.body);
-    console.log('Food for Talk registration attempt - req.file:', req.file);
-    console.log('Food for Talk registration attempt - Content-Type:', req.headers['content-type']);
+    console.log('Food for Talk registration attempt:', req.body);
     
     const {
       firstName,
@@ -53,18 +51,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    console.log('Validating fields:');
-    console.log('firstName:', firstName, typeof firstName);
-    console.log('lastName:', lastName, typeof lastName);
-    console.log('email:', email, typeof email);
-    console.log('age:', age, typeof age);
-    console.log('occupation:', occupation, typeof occupation);
-    console.log('bio:', bio, typeof bio);
-    console.log('emergencyContact:', emergencyContact, typeof emergencyContact);
-    console.log('emergencyPhone:', emergencyPhone, typeof emergencyPhone);
-    
     if (!firstName || !lastName || !email || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
-      console.log('Validation failed - missing required fields');
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information.' 
       });
@@ -73,7 +60,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Check if user already exists
     const existingUser = await FoodForTalkUser.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({ message: 'User already registered for this event' });
+      console.log('User already exists with email:', email);
+      return res.status(400).json({ 
+        message: 'This email is already registered for the Food for Talk event. Please use a different email address.' 
+      });
     }
 
     // Hash password (generate a random one for event users)
