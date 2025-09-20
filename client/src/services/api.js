@@ -82,8 +82,8 @@ class ApiService {
   }
 
   // GET request
-  async get(endpoint) {
-    return this.request(endpoint, { method: 'GET' });
+  async get(endpoint, options = {}) {
+    return this.request(endpoint, { method: 'GET', ...options });
   }
 
   // POST request
