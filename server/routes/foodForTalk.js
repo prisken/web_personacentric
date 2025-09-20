@@ -34,7 +34,9 @@ const generatePasskey = () => {
 // Register for the event
 router.post('/register', upload.single('profilePhoto'), async (req, res) => {
   try {
-    console.log('Food for Talk registration attempt:', req.body);
+    console.log('Food for Talk registration attempt - req.body:', req.body);
+    console.log('Food for Talk registration attempt - req.file:', req.file);
+    console.log('Food for Talk registration attempt - req.headers:', req.headers);
     
     const {
       firstName,
@@ -51,7 +53,18 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     } = req.body;
 
     // Validate required fields
+    console.log('Validating required fields:');
+    console.log('firstName:', firstName);
+    console.log('lastName:', lastName);
+    console.log('email:', email);
+    console.log('age:', age);
+    console.log('occupation:', occupation);
+    console.log('bio:', bio);
+    console.log('emergencyContact:', emergencyContact);
+    console.log('emergencyPhone:', emergencyPhone);
+    
     if (!firstName || !lastName || !email || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
+      console.log('Validation failed - missing required fields');
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information.' 
       });
