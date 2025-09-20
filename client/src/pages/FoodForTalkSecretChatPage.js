@@ -35,7 +35,10 @@ const FoodForTalkSecretChatPage = () => {
       // Set a basic currentUser from token (we'll decode the JWT to get user info)
       try {
         console.log('Decoding JWT token...');
-        const payload = JSON.parse(atob(token.split('.')[1]));
+        // Simple base64 decoding for JWT payload
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const payload = JSON.parse(atob(base64));
         console.log('JWT payload:', payload);
         const userData = {
           id: payload.userId,
