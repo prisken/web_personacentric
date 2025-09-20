@@ -9,6 +9,7 @@ const FoodForTalkRegisterPage = () => {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
     phone: '',
     age: '',
     occupation: '',
@@ -66,6 +67,7 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('firstName', formData.firstName);
       submitData.append('lastName', formData.lastName);
       submitData.append('email', formData.email);
+      submitData.append('password', formData.password);
       submitData.append('phone', formData.phone);
       submitData.append('age', formData.age);
       submitData.append('occupation', formData.occupation);
@@ -165,6 +167,22 @@ const FoodForTalkRegisterPage = () => {
                 />
               </div>
               <div>
+                <label className="block text-white font-medium mb-2">Password *</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  required
+                  minLength="6"
+                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  placeholder="Create a password (min 6 characters)"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
                 <label className="block text-white font-medium mb-2">Phone *</label>
                 <input
                   type="tel"
@@ -175,6 +193,9 @@ const FoodForTalkRegisterPage = () => {
                   className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                   placeholder="Enter your phone number"
                 />
+              </div>
+              <div>
+                {/* Empty div for grid layout */}
               </div>
             </div>
 

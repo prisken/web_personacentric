@@ -449,6 +449,10 @@ class ApiService {
     return this.post('/food-for-talk/login', credentials);
   }
 
+  async secretLoginToFoodForTalk(credentials) {
+    return this.post('/food-for-talk/secret-login', credentials);
+  }
+
   async getFoodForTalkParticipants() {
     return this.get('/food-for-talk/participants');
   }

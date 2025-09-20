@@ -6,7 +6,8 @@ const ActionButtons = () => {
     <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
       {/* See Participants Button */}
       <Link
-        to="/food-for-talk/participants"
+        to="/food-for-talk/login"
+        state={{ from: '/food-for-talk/participants' }}
         className="group relative w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.8) 100%)',
@@ -36,7 +37,7 @@ const ActionButtons = () => {
 
       {/* Enter Secret Chat Room Button */}
       <Link
-        to="/food-for-talk/secret-chat"
+        to="/food-for-talk/secret-login"
         className="group relative w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.8) 0%, rgba(147, 51, 234, 0.8) 100%)',

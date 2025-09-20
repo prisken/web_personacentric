@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const FoodForTalkUser = require('../models/FoodForTalkUser');
 const FoodForTalkChatMessage = require('../models/FoodForTalkChatMessage');
@@ -40,6 +41,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       firstName,
       lastName,
       email,
+      password,
       phone,
       age,
       occupation,
@@ -51,7 +53,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
+    if (!firstName || !lastName || !email || !password || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information.' 
       });
@@ -66,9 +68,8 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       });
     }
 
-    // Hash password (generate a random one for event users)
-    const randomPassword = Math.random().toString(36).substring(2, 15);
-    const passwordHash = await bcrypt.hash(randomPassword, 12);
+    // Hash the provided password
+    const passwordHash = await bcrypt.hash(password, 12);
 
     // Upload profile photo if provided
     let profilePhotoUrl = null;
@@ -122,7 +123,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // await sendEventRegistrationEmail(user.email, user.first_name);
 
     res.status(201).json({
-      message: 'Registration successful! Check your email for login credentials.',
+      message: 'Registration successful! You can now login with your email and password.',
       userId: user.id
     });
   } catch (error) {
@@ -329,6 +330,119 @@ router.post('/chat-messages', async (req, res) => {
   } catch (error) {
     console.error('Save chat message error:', error);
     res.status(500).json({ message: 'Failed to save message' });
+  }
+});
+
+// Login for participants (for "See Participants" functionality)
+router.post('/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    // Find user
+    const user = await FoodForTalkUser.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check if user is verified
+    if (!user.is_verified) {
+      return res.status(401).json({ message: 'Account not verified. Please contact support.' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        email: user.email,
+        type: 'food-for-talk-participant'
+      },
+      process.env.JWT_SECRET || 'fallback-secret',
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Login successful',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        hasPasskey: !!user.secret_passkey
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'Login failed. Please try again.' });
+  }
+});
+
+// Secret login for chat room (requires passkey)
+router.post('/secret-login', async (req, res) => {
+  try {
+    const { email, password, passkey } = req.body;
+
+    if (!email || !password || !passkey) {
+      return res.status(400).json({ message: 'Email, password, and passkey are required' });
+    }
+
+    // Find user
+    const user = await FoodForTalkUser.findOne({ where: { email } });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    if (!isValidPassword) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Check passkey
+    if (!user.secret_passkey || user.secret_passkey !== passkey) {
+      return res.status(401).json({ message: 'Invalid passkey' });
+    }
+
+    // Check if user is verified
+    if (!user.is_verified) {
+      return res.status(401).json({ message: 'Account not verified. Please contact support.' });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { 
+        userId: user.id, 
+        email: user.email,
+        type: 'food-for-talk-secret'
+      },
+      process.env.JWT_SECRET || 'fallback-secret',
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      message: 'Secret login successful',
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        passkey: user.secret_passkey
+      }
+    });
+  } catch (error) {
+    console.error('Secret login error:', error);
+    res.status(500).json({ message: 'Secret login failed. Please try again.' });
   }
 });
 
