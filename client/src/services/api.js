@@ -491,6 +491,8 @@ class ApiService {
   async getFoodForTalkParticipants() {
     // Use the Food for Talk specific token
     const token = localStorage.getItem('foodForTalkToken');
+    console.log('Token being sent:', token);
+    console.log('Authorization header:', `Bearer ${token}`);
     return this.get('/food-for-talk/participants', {
       headers: {
         'Authorization': `Bearer ${token}`
@@ -501,6 +503,8 @@ class ApiService {
   async getFoodForTalkChatParticipants() {
     // Use the Food for Talk secret token
     const token = localStorage.getItem('foodForTalkSecretToken');
+    console.log('Secret token being sent:', token);
+    console.log('Secret Authorization header:', `Bearer ${token}`);
     return this.get('/food-for-talk/chat-participants', {
       headers: {
         'Authorization': `Bearer ${token}`
