@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
+import ModernChatInterface from '../components/food-for-talk/ModernChatInterface';
 
 const FoodForTalkSecretChatPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
@@ -17,13 +18,10 @@ const FoodForTalkSecretChatPage = () => {
   const [participants, setParticipants] = useState([]);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [selectedUser, setSelectedUser] = useState(null);
   const [privateMessages, setPrivateMessages] = useState({});
   const [activePrivateConversations, setActivePrivateConversations] = useState([]);
   const [activeTab, setActiveTab] = useState('public'); // 'public' or conversation ID
-  const [showMobileParticipants, setShowMobileParticipants] = useState(false);
   const [loading, setLoading] = useState(false);
-  const messagesEndRef = useRef(null);
   const wsRef = useRef(null);
 
   // Check if user is already authenticated
@@ -55,13 +53,6 @@ const FoodForTalkSecretChatPage = () => {
     }
   }, []);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, privateMessages]);
 
   useEffect(() => {
     if (isInChat && currentUser && !wsRef.current) {
@@ -411,304 +402,21 @@ const FoodForTalkSecretChatPage = () => {
 
   if (isInChat) {
     return (
-      <div className="h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex flex-col">
-        {/* Header */}
-        <header className="bg-black/20 backdrop-blur-sm border-b border-white/10 p-4 flex-shrink-0">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <div className="flex items-center">
-              <Link 
-                to="/food-for-talk" 
-                className="text-white/70 hover:text-white transition-colors mr-4"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </Link>
-              <h1 className="text-xl font-bold text-white">{t('foodForTalk.chat.title')}</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="text-white/70 hidden sm:block">
-                Welcome, {currentUser?.blurredName}
-              </div>
-              {/* Language Toggle */}
-              <button
-                onClick={toggleLanguage}
-                className="text-white/70 hover:text-white transition-colors px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-sm"
-              >
-                {language === 'zh-TW' ? 'EN' : '中文'}
-              </button>
-              {/* Mobile Participants Button */}
-              <button
-                onClick={() => setShowMobileParticipants(true)}
-                className="lg:hidden bg-white/10 hover:bg-white/20 text-white p-2 rounded-lg transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </header>
-
-        <div className="flex flex-1 min-h-0">
-          {/* Participants Sidebar - Hidden on mobile, shown on larger screens */}
-          <div className="hidden lg:block w-80 bg-white/10 backdrop-blur-sm border-r border-white/20 p-4 overflow-y-auto flex-shrink-0">
-            <h2 className="text-lg font-bold text-white mb-4">Participants</h2>
-            <div className="space-y-3">
-              {participants.map((participant) => (
-                <div
-                  key={participant.id}
-                  className="bg-white/10 rounded-lg p-3 cursor-pointer hover:bg-white/20 transition-colors"
-                  onClick={() => setSelectedUser(selectedUser?.id === participant.id ? null : participant)}
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
-                      {participant.blurredName?.charAt(0) || '?'}
-                    </div>
-                    <div>
-                      <div className="text-white font-medium">{participant.blurredName}</div>
-                      <div className="text-white/70 text-sm">Online</div>
-                    </div>
-                  </div>
-                  
-                  {selectedUser?.id === participant.id && (
-                    <div className="mt-3 space-y-2">
-                      <button
-                        onClick={() => viewUserProfile(participant.id)}
-                        className="w-full bg-yellow-400 text-black py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-500 transition-colors"
-                      >
-                        View Profile
-                      </button>
-                      <button
-                        onClick={() => startPrivateConversation(participant.id)}
-                        className="w-full bg-blue-500 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-                      >
-                        Start Private Chat
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Chat Area */}
-          <div className="flex-1 flex flex-col min-w-0">
-            {/* Tab Navigation */}
-            <div className="bg-black/20 backdrop-blur-sm border-b border-white/10 flex-shrink-0">
-              <div className="flex overflow-x-auto scrollbar-hide">
-                {/* Public Chat Tab */}
-                <button
-                  onClick={() => setActiveTab('public')}
-                  className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex-shrink-0 ${
-                    activeTab === 'public'
-                      ? 'border-yellow-400 text-yellow-400 bg-yellow-400/10'
-                      : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
-                  }`}
-                >
-                  🌐 {t('foodForTalk.chat.publicChat')}
-                </button>
-                
-                {/* Private Conversation Tabs */}
-                {activePrivateConversations.map((conversation) => (
-                  <button
-                    key={conversation.id}
-                    onClick={() => setActiveTab(conversation.id)}
-                    className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors flex items-center space-x-2 flex-shrink-0 ${
-                      activeTab === conversation.id
-                        ? 'border-blue-400 text-blue-400 bg-blue-400/10'
-                        : 'border-transparent text-white/70 hover:text-white hover:border-white/30'
-                    }`}
-                  >
-                    <span>💬 {conversation.participantName}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        closePrivateConversation(conversation.id);
-                      }}
-                      className="ml-1 text-white/50 hover:text-white/80 transition-colors"
-                    >
-                      ×
-                    </button>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Tab Content */}
-            <div className="flex-1 flex flex-col min-h-0">
-              {activeTab === 'public' ? (
-                        /* Public Chat Messages */
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
-                      {messages.length === 0 ? (
-                <div className="text-center text-white/70 mt-8">
-                  <p>{t('foodForTalk.chat.noMessages')}</p>
-                  <p className="text-sm mt-2">Messages count: {messages.length}</p>
-                </div>
-              ) : (
-                messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.userId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.type === 'system'
-                          ? 'bg-yellow-400/20 text-yellow-300 text-center mx-auto'
-                          : message.userId === currentUser?.id
-                          ? 'bg-blue-500 text-white'
-                          : 'bg-white/20 text-white'
-                      }`}
-                    >
-                      {message.type !== 'system' && (
-                        <div className="text-xs opacity-70 mb-1">
-                          {message.blurredName}
-                        </div>
-                      )}
-                      <div>{message.content}</div>
-                      <div className="text-xs opacity-70 mt-1">
-                        {new Date(message.timestamp).toLocaleTimeString()}
-                      </div>
-                    </div>
-                  </div>
-                ))
-              )}
-                  <div ref={messagesEndRef} />
-                </div>
-              ) : (
-                /* Private Chat Messages */
-                <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
-                  {privateMessages[activeTab]?.length === 0 ? (
-                    <div className="text-center text-white/70 mt-8">
-                      <p>{t('foodForTalk.chat.noPrivateMessages')}</p>
-                    </div>
-                  ) : (
-                    privateMessages[activeTab]?.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.senderId === currentUser?.id ? 'justify-end' : 'justify-start'}`}
-                      >
-                        <div
-                          className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                            message.senderId === currentUser?.id
-                              ? 'bg-blue-500 text-white'
-                              : 'bg-white/20 text-white'
-                          }`}
-                        >
-                          {message.senderId !== currentUser?.id && (
-                            <div className="text-xs opacity-70 mb-1">
-                              {message.senderBlurredName}
-                            </div>
-                          )}
-                          <div>{message.content}</div>
-                          <div className="text-xs opacity-70 mt-1">
-                            {new Date(message.timestamp).toLocaleTimeString()}
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
-
-            {/* Message Input */}
-            <div className="border-t border-white/20 p-4 flex-shrink-0">
-                <form onSubmit={activeTab === 'public' ? sendMessage : (e) => {
-                  e.preventDefault();
-                  if (newMessage.trim() && activeTab !== 'public') {
-                    const conversation = activePrivateConversations.find(conv => conv.id === activeTab);
-                    if (conversation) {
-                      sendPrivateMessage(conversation.userId, newMessage);
-                      setNewMessage('');
-                    }
-                  }
-                }} className="flex space-x-4">
-                  <input
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder={activeTab === 'public' ? t('foodForTalk.chat.typeMessage') : t('foodForTalk.chat.typePrivateMessage')}
-                    className="flex-1 px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  />
-                  <button
-                    type="submit"
-                    className={`px-6 py-2 rounded-lg font-medium transition-colors ${
-                      activeTab === 'public'
-                        ? 'bg-yellow-400 text-black hover:bg-yellow-500'
-                        : 'bg-blue-500 text-white hover:bg-blue-600'
-                    }`}
-                  >
-                    {t('foodForTalk.chat.send')}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Participants Drawer */}
-        {showMobileParticipants && (
-          <div className="fixed inset-0 z-50 lg:hidden">
-            {/* Backdrop */}
-            <div 
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setShowMobileParticipants(false)}
-            />
-            
-            {/* Drawer */}
-            <div className="absolute right-0 top-0 h-full w-80 bg-white/10 backdrop-blur-sm border-l border-white/20 p-4 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-bold text-white">{t('foodForTalk.chat.participants')} ({participants.length})</h2>
-                <button
-                  onClick={() => setShowMobileParticipants(false)}
-                  className="text-white/70 hover:text-white transition-colors"
-                >
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="space-y-3">
-                {participants.map((participant) => (
-                  <div key={participant.id} className="bg-white/10 rounded-lg p-3">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
-                        {participant.blurredName?.charAt(0) || '?'}
-                      </div>
-                      <div>
-                        <div className="text-white font-medium">{participant.blurredName}</div>
-                        <div className="text-white/70 text-sm">{t('foodForTalk.chat.online')}</div>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-3 space-y-2">
-                      <button
-                        onClick={() => {
-                          viewUserProfile(participant.id);
-                          setShowMobileParticipants(false);
-                        }}
-                        className="w-full bg-yellow-400 text-black py-2 px-3 rounded-lg text-sm font-medium hover:bg-yellow-500 transition-colors"
-                      >
-                        {t('foodForTalk.chat.viewProfile')}
-                      </button>
-                      <button
-                        onClick={() => {
-                          startPrivateConversation(participant.id);
-                          setShowMobileParticipants(false);
-                        }}
-                        className="w-full bg-blue-500 text-white py-2 px-3 rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-                      >
-                        {t('foodForTalk.chat.startPrivateChat')}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+      <ModernChatInterface
+        messages={messages}
+        participants={participants}
+        currentUser={currentUser}
+        onSendMessage={sendMessage}
+        onSendPrivateMessage={sendPrivateMessage}
+        onStartPrivateChat={startPrivateConversation}
+        onViewProfile={viewUserProfile}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        privateMessages={privateMessages}
+        activePrivateConversations={activePrivateConversations}
+        onClosePrivateConversation={closePrivateConversation}
+        t={t}
+      />
     );
   }
 
