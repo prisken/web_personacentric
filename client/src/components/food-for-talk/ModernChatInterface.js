@@ -20,7 +20,6 @@ const ModernChatInterface = ({
   t
 }) => {
   const [showParticipants, setShowParticipants] = useState(false);
-  const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   // Auto-scroll to bottom when new messages arrive

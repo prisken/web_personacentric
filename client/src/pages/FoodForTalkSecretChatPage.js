@@ -6,7 +6,7 @@ import apiService from '../services/api';
 import ModernChatInterface from '../components/food-for-talk/ModernChatInterface';
 
 const FoodForTalkSecretChatPage = () => {
-  const { t, toggleLanguage, language } = useLanguage();
+  const { t } = useLanguage();
   const [, setIsAuthenticated] = useState(false);
   const [isInChat, setIsInChat] = useState(false);
   const [loginData, setLoginData] = useState({
