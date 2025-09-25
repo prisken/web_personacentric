@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const { authenticateToken, requireSuperAdminOnly } = require('../middleware/auth');
 const { User, PointTransaction, PaymentTransaction } = require('../models');
+const FoodForTalkEventSettings = require('../models/FoodForTalkEventSettings');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 
@@ -584,6 +585,124 @@ router.delete('/admins/:adminId', authenticateToken, requireSuperAdminOnly, asyn
     res.status(500).json({
       success: false,
       error: 'Failed to remove admin'
+    });
+  }
+});
+
+// Food for Talk Event Settings Routes
+router.get('/food-for-talk/event-settings', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+  try {
+    const settings = await FoodForTalkEventSettings.findOne({
+      order: [['created_at', 'DESC']]
+    });
+
+    if (!settings) {
+      // Create default settings if none exist
+      const defaultSettings = await FoodForTalkEventSettings.create({
+        event_start_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        countdown_header_text: '距離活動開始還有',
+        is_event_active: true,
+        show_countdown: true,
+        event_status: 'upcoming'
+      });
+      
+      return res.json({
+        success: true,
+        settings: defaultSettings
+      });
+    }
+
+    res.json({
+      success: true,
+      settings: settings
+    });
+  } catch (error) {
+    console.error('Get event settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get event settings'
+    });
+  }
+});
+
+router.put('/food-for-talk/event-settings', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+  try {
+    const { 
+      event_start_date, 
+      countdown_header_text, 
+      is_event_active, 
+      show_countdown, 
+      event_status 
+    } = req.body;
+
+    // Get or create settings
+    let settings = await FoodForTalkEventSettings.findOne({
+      order: [['created_at', 'DESC']]
+    });
+
+    if (!settings) {
+      settings = await FoodForTalkEventSettings.create({});
+    }
+
+    // Update settings
+    const updateData = {};
+    if (event_start_date !== undefined) updateData.event_start_date = event_start_date;
+    if (countdown_header_text !== undefined) updateData.countdown_header_text = countdown_header_text;
+    if (is_event_active !== undefined) updateData.is_event_active = is_event_active;
+    if (show_countdown !== undefined) updateData.show_countdown = show_countdown;
+    if (event_status !== undefined) updateData.event_status = event_status;
+
+    await settings.update(updateData);
+
+    res.json({
+      success: true,
+      message: 'Event settings updated successfully',
+      settings: settings
+    });
+  } catch (error) {
+    console.error('Update event settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update event settings'
+    });
+  }
+});
+
+// Public endpoint to get event settings (for the frontend)
+router.get('/food-for-talk/public/event-settings', async (req, res) => {
+  try {
+    const settings = await FoodForTalkEventSettings.findOne({
+      order: [['created_at', 'DESC']]
+    });
+
+    if (!settings) {
+      return res.json({
+        success: true,
+        settings: {
+          event_start_date: null,
+          countdown_header_text: '距離活動開始還有',
+          is_event_active: false,
+          show_countdown: false,
+          event_status: 'upcoming'
+        }
+      });
+    }
+
+    res.json({
+      success: true,
+      settings: {
+        event_start_date: settings.event_start_date,
+        countdown_header_text: settings.countdown_header_text,
+        is_event_active: settings.is_event_active,
+        show_countdown: settings.show_countdown,
+        event_status: settings.event_status
+      }
+    });
+  } catch (error) {
+    console.error('Get public event settings error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get event settings'
     });
   }
 });

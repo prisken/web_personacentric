@@ -5,6 +5,7 @@ import CountdownTimer from '../components/food-for-talk/CountdownTimer';
 import EventDetails from '../components/food-for-talk/EventDetails';
 import RegisterButton from '../components/food-for-talk/RegisterButton';
 import ActionButtons from '../components/food-for-talk/ActionButtons';
+import { api } from '../services/api';
 
 const FoodForTalkPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
@@ -14,14 +15,52 @@ const FoodForTalkPage = () => {
     minutes: 0,
     seconds: 0
   });
+  const [eventSettings, setEventSettings] = useState({
+    event_start_date: null,
+    countdown_header_text: '距離活動開始還有',
+    is_event_active: false,
+    show_countdown: false,
+    event_status: 'upcoming'
+  });
+  const [loading, setLoading] = useState(true);
 
-  // Set event date (example: 30 days from now)
+  // Fetch event settings from database
+  useEffect(() => {
+    const fetchEventSettings = async () => {
+      try {
+        const response = await api.get('/api/super-admin/food-for-talk/public/event-settings');
+        if (response.data.success) {
+          setEventSettings(response.data.settings);
+        }
+      } catch (error) {
+        console.error('Failed to fetch event settings:', error);
+        // Use default settings if API fails
+        setEventSettings({
+          event_start_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          countdown_header_text: '距離活動開始還有',
+          is_event_active: true,
+          show_countdown: true,
+          event_status: 'upcoming'
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventSettings();
+  }, []);
+
+  // Set event date from database or default
   const eventDate = useMemo(() => {
+    if (eventSettings.event_start_date) {
+      return new Date(eventSettings.event_start_date);
+    }
+    // Fallback to 30 days from now if no date set
     const date = new Date();
     date.setDate(date.getDate() + 30);
     date.setHours(19, 0, 0, 0); // 7 PM
     return date;
-  }, []);
+  }, [eventSettings.event_start_date]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -42,6 +81,14 @@ const FoodForTalkPage = () => {
 
     return () => clearInterval(timer);
   }, [eventDate]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
@@ -88,10 +135,42 @@ const FoodForTalkPage = () => {
             </p>
           </div>
 
-          {/* Countdown Timer */}
-          <div className="mb-12">
-            <CountdownTimer timeLeft={timeLeft} />
-          </div>
+          {/* Countdown Timer or Event Status Message */}
+          {eventSettings.show_countdown && eventSettings.is_event_active && (
+            <div className="mb-12">
+              <CountdownTimer 
+                timeLeft={timeLeft} 
+                headerText={eventSettings.countdown_header_text}
+              />
+            </div>
+          )}
+          
+          {/* Event Status Messages */}
+          {!eventSettings.is_event_active && (
+            <div className="mb-12">
+              <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-xl p-6 text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2">
+                  Event Currently Inactive
+                </h2>
+                <p className="text-white/80">
+                  This event is currently not active. Please check back later.
+                </p>
+              </div>
+            </div>
+          )}
+          
+          {eventSettings.event_status === 'completed' && (
+            <div className="mb-12">
+              <div className="bg-green-400/20 border border-green-400/30 rounded-xl p-6 text-center">
+                <h2 className="text-2xl sm:text-3xl font-bold text-green-400 mb-2">
+                  Event Completed
+                </h2>
+                <p className="text-white/80">
+                  Thank you for participating in our Food for Talk event!
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="mb-16">

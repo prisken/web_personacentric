@@ -10,10 +10,22 @@ const FoodForTalkManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  
+  // Event settings state
+  const [eventSettings, setEventSettings] = useState({
+    event_start_date: null,
+    countdown_header_text: '距離活動開始還有',
+    is_event_active: false,
+    show_countdown: false,
+    event_status: 'upcoming'
+  });
+  const [showEventSettings, setShowEventSettings] = useState(false);
+  const [settingsLoading, setSettingsLoading] = useState(false);
 
   useEffect(() => {
     fetchParticipants();
     fetchStats();
+    fetchEventSettings();
   }, []);
 
   const fetchParticipants = async () => {
@@ -34,6 +46,35 @@ const FoodForTalkManagement = () => {
       setStats(response);
     } catch (error) {
       console.error('Error fetching stats:', error);
+    }
+  };
+
+  const fetchEventSettings = async () => {
+    try {
+      const response = await apiService.get('/api/super-admin/food-for-talk/event-settings');
+      if (response.data.success) {
+        setEventSettings(response.data.settings);
+      }
+    } catch (error) {
+      console.error('Error fetching event settings:', error);
+      toast.error('Failed to fetch event settings');
+    }
+  };
+
+  const updateEventSettings = async (updatedSettings) => {
+    setSettingsLoading(true);
+    try {
+      const response = await apiService.put('/api/super-admin/food-for-talk/event-settings', updatedSettings);
+      if (response.data.success) {
+        setEventSettings(response.data.settings);
+        toast.success('Event settings updated successfully');
+        setShowEventSettings(false);
+      }
+    } catch (error) {
+      console.error('Error updating event settings:', error);
+      toast.error('Failed to update event settings');
+    } finally {
+      setSettingsLoading(false);
     }
   };
 
@@ -165,6 +206,125 @@ const FoodForTalkManagement = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Event Settings Section */}
+      <div className="bg-white rounded-lg shadow p-6">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-medium text-gray-900">Event Settings</h3>
+          <button
+            onClick={() => setShowEventSettings(!showEventSettings)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {showEventSettings ? 'Hide Settings' : 'Manage Event Settings'}
+          </button>
+        </div>
+        
+        {showEventSettings && (
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Event Start Date & Time
+                </label>
+                <input
+                  type="datetime-local"
+                  value={eventSettings.event_start_date ? new Date(eventSettings.event_start_date).toISOString().slice(0, 16) : ''}
+                  onChange={(e) => setEventSettings({
+                    ...eventSettings,
+                    event_start_date: e.target.value ? new Date(e.target.value).toISOString() : null
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Countdown Header Text
+                </label>
+                <input
+                  type="text"
+                  value={eventSettings.countdown_header_text}
+                  onChange={(e) => setEventSettings({
+                    ...eventSettings,
+                    countdown_header_text: e.target.value
+                  })}
+                  placeholder="距離活動開始還有"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Event Status
+                </label>
+                <select
+                  value={eventSettings.event_status}
+                  onChange={(e) => setEventSettings({
+                    ...eventSettings,
+                    event_status: e.target.value
+                  })}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="upcoming">Upcoming</option>
+                  <option value="active">Active</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="is_event_active"
+                  checked={eventSettings.is_event_active}
+                  onChange={(e) => setEventSettings({
+                    ...eventSettings,
+                    is_event_active: e.target.checked
+                  })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="is_event_active" className="ml-2 block text-sm text-gray-700">
+                  Event is Active
+                </label>
+              </div>
+              
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="show_countdown"
+                  checked={eventSettings.show_countdown}
+                  onChange={(e) => setEventSettings({
+                    ...eventSettings,
+                    show_countdown: e.target.checked
+                  })}
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="show_countdown" className="ml-2 block text-sm text-gray-700">
+                  Show Countdown
+                </label>
+              </div>
+            </div>
+            
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowEventSettings(false)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => updateEventSettings(eventSettings)}
+                disabled={settingsLoading}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              >
+                {settingsLoading ? 'Saving...' : 'Save Settings'}
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Filters */}
