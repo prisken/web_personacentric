@@ -229,11 +229,42 @@ const FoodForTalkManagement = () => {
                 </label>
                 <input
                   type="datetime-local"
-                  value={eventSettings.event_start_date ? new Date(eventSettings.event_start_date).toISOString().slice(0, 16) : ''}
-                  onChange={(e) => setEventSettings({
-                    ...eventSettings,
-                    event_start_date: e.target.value ? new Date(e.target.value).toISOString() : null
-                  })}
+                  value={eventSettings.event_start_date ? 
+                    (() => {
+                      const date = new Date(eventSettings.event_start_date);
+                      const year = date.getFullYear();
+                      const month = String(date.getMonth() + 1).padStart(2, '0');
+                      const day = String(date.getDate()).padStart(2, '0');
+                      const hours = String(date.getHours()).padStart(2, '0');
+                      const minutes = String(date.getMinutes()).padStart(2, '0');
+                      return `${year}-${month}-${day}T${hours}:${minutes}`;
+                    })() : ''}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      // Parse the datetime-local value and convert to ISO string
+                      const [datePart, timePart] = e.target.value.split('T');
+                      const [year, month, day] = datePart.split('-');
+                      const [hours, minutes] = timePart.split(':');
+                      
+                      const localDate = new Date(
+                        parseInt(year), 
+                        parseInt(month) - 1, 
+                        parseInt(day), 
+                        parseInt(hours), 
+                        parseInt(minutes)
+                      );
+                      
+                      setEventSettings({
+                        ...eventSettings,
+                        event_start_date: localDate.toISOString()
+                      });
+                    } else {
+                      setEventSettings({
+                        ...eventSettings,
+                        event_start_date: null
+                      });
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
