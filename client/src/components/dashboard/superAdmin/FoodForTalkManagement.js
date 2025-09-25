@@ -52,8 +52,8 @@ const FoodForTalkManagement = () => {
   const fetchEventSettings = async () => {
     try {
       const response = await apiService.get('/api/super-admin/food-for-talk/event-settings');
-      if (response.data.success) {
-        setEventSettings(response.data.settings);
+      if (response.success) {
+        setEventSettings(response.settings);
       }
     } catch (error) {
       console.error('Error fetching event settings:', error);
@@ -65,8 +65,8 @@ const FoodForTalkManagement = () => {
     setSettingsLoading(true);
     try {
       const response = await apiService.put('/api/super-admin/food-for-talk/event-settings', updatedSettings);
-      if (response.data.success) {
-        setEventSettings(response.data.settings);
+      if (response.success) {
+        setEventSettings(response.settings);
         toast.success('Event settings updated successfully');
         setShowEventSettings(false);
       }

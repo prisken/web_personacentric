@@ -5,7 +5,7 @@ import CountdownTimer from '../components/food-for-talk/CountdownTimer';
 import EventDetails from '../components/food-for-talk/EventDetails';
 import RegisterButton from '../components/food-for-talk/RegisterButton';
 import ActionButtons from '../components/food-for-talk/ActionButtons';
-import { api } from '../services/api';
+import apiService from '../services/api';
 
 const FoodForTalkPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
@@ -28,9 +28,9 @@ const FoodForTalkPage = () => {
   useEffect(() => {
     const fetchEventSettings = async () => {
       try {
-        const response = await api.get('/api/super-admin/food-for-talk/public/event-settings');
-        if (response.data.success) {
-          setEventSettings(response.data.settings);
+        const response = await apiService.get('/api/super-admin/food-for-talk/public/event-settings');
+        if (response.success) {
+          setEventSettings(response.settings);
         }
       } catch (error) {
         console.error('Failed to fetch event settings:', error);
