@@ -28,7 +28,7 @@ const FoodForTalkPage = () => {
   useEffect(() => {
     const fetchEventSettings = async () => {
       try {
-        const response = await apiService.get('/api/super-admin/food-for-talk/public/event-settings');
+        const response = await apiService.get('/super-admin/food-for-talk/public/event-settings');
         if (response.success) {
           setEventSettings(response.settings);
         }
