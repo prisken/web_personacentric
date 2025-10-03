@@ -446,27 +446,7 @@ const FoodForTalkRegisterPage = () => {
               />
             </div>
 
-            {/* Interests */}
-            <div>
-              <label className="block text-white font-medium mb-3">Interests (Select up to 5)</label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                {interests.map(interest => (
-                  <button
-                    key={interest}
-                    type="button"
-                    onClick={() => handleInterestToggle(interest)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                      formData.interests.includes(interest)
-                        ? 'bg-yellow-400 text-black'
-                        : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
-                    }`}
-                    disabled={!formData.interests.includes(interest) && formData.interests.length >= 5}
-                  >
-                    {interest}
-                  </button>
-                ))}
-              </div>
-            </div>
+            
 
             {/* Dietary Restrictions */}
             <div>
