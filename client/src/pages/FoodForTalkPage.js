@@ -105,8 +105,8 @@ const FoodForTalkPage = () => {
           />
         </div>
         
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black/40 z-10"></div>
+        {/* Light overlay */}
+        <div className="absolute inset-0 bg-black/10 z-10"></div>
         
         <div className="relative z-20 text-white text-xl">Loading...</div>
       </div>
@@ -135,8 +135,8 @@ const FoodForTalkPage = () => {
         />
       </div>
       
-      {/* Dark overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/40 z-10"></div>
+      {/* Light overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/10 z-10"></div>
       
       {/* Header */}
       <header className="relative z-20 bg-black/20 backdrop-blur-sm border-b border-white/10">
