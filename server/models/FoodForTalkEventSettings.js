@@ -52,3 +52,5 @@ const FoodForTalkEventSettings = sequelize.define('FoodForTalkEventSettings', {
 });
 
 module.exports = FoodForTalkEventSettings;
+
+

@@ -84,16 +84,44 @@ const FoodForTalkPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+        {/* Video Background */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        >
+          <source src="/videos/web bg3.mp4" type="video/mp4" />
+        </video>
+        
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/40 z-10"></div>
+        
+        <div className="relative z-20 text-white text-xl">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover z-0"
+      >
+        <source src="/videos/web bg3.mp4" type="video/mp4" />
+      </video>
+      
+      {/* Dark overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/40 z-10"></div>
+      
       {/* Header */}
-      <header className="relative z-10 bg-black/20 backdrop-blur-sm border-b border-white/10">
+      <header className="relative z-20 bg-black/20 backdrop-blur-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
@@ -118,13 +146,22 @@ const FoodForTalkPage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background Elements */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-10">
           <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-yellow-400/10 rounded-full animate-pulse"></div>
           <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-pink-400/10 rounded-full animate-bounce"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/5 rounded-full animate-ping"></div>
         </div>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Logo */}
+          <div className="mb-8">
+            <img 
+              src="/images/High Tea or Me.png" 
+              alt="High Tea or Me Logo" 
+              className="mx-auto h-24 sm:h-32 md:h-40 lg:h-48 xl:h-56 object-contain"
+            />
+          </div>
+          
           {/* Event Title */}
           <div className="mb-8">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">
@@ -180,14 +217,14 @@ const FoodForTalkPage = () => {
       </section>
 
       {/* Event Details Section */}
-      <section className="relative py-16 bg-white/5 backdrop-blur-sm">
+      <section className="relative z-20 py-16 bg-white/5 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <EventDetails />
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-black/30 backdrop-blur-sm border-t border-white/10 py-8">
+      <footer className="relative z-20 bg-black/30 backdrop-blur-sm border-t border-white/10 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-white/70">
             © 2024 PersonaCentric. All rights reserved.

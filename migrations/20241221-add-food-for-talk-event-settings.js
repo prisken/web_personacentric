@@ -69,3 +69,5 @@ module.exports = {
     await queryInterface.dropTable('food_for_talk_event_settings');
   }
 };
+
+
