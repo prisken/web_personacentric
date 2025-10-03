@@ -91,7 +91,7 @@ const FoodForTalkPage = () => {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-contain z-0"
         >
           <source src="/videos/web bg3.mp4" type="video/mp4" />
         </video>
@@ -112,7 +112,7 @@ const FoodForTalkPage = () => {
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        className="absolute inset-0 w-full h-full object-contain z-0"
       >
         <source src="/videos/web bg3.mp4" type="video/mp4" />
       </video>
@@ -153,23 +153,13 @@ const FoodForTalkPage = () => {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Logo */}
+          {/* Logo - Replacing Food for Talk text */}
           <div className="mb-8">
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
-              className="mx-auto h-24 sm:h-32 md:h-40 lg:h-48 xl:h-56 object-contain"
+              className="mx-auto h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
             />
-          </div>
-          
-          {/* Event Title */}
-          <div className="mb-8">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white mb-4">
-              {t('foodForTalk.title')}
-            </h1>
-            <p className="text-xl sm:text-2xl lg:text-3xl text-yellow-400 font-semibold">
-              {t('foodForTalk.subtitle')}
-            </p>
           </div>
 
           {/* Countdown Timer or Event Status Message */}
