@@ -121,49 +121,27 @@ const FoodForTalkPage = () => {
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-contain z-0"
+        className="absolute inset-0 w-full h-full object-contain object-top z-0"
       >
         <source src="/videos/web bg3.mp4" type="video/mp4" />
       </video>
       
-      {/* Logo Background */}
-      <div className="absolute inset-0 flex items-center justify-center z-[15]">
-        <img 
-          src="/images/High Tea or Me.png" 
-          alt="High Tea or Me Logo" 
-          className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
-        />
-      </div>
-      
       {/* Light overlay for better text readability */}
       <div className="absolute inset-0 bg-black/10 z-10"></div>
       
-      {/* Header */}
-      <header className="relative z-20 bg-black/20 backdrop-blur-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <Link to="/" className="text-white text-xl font-bold hover:text-yellow-400 transition-colors">
-                PersonaCentric
-              </Link>
-            </div>
-            <div className="flex items-center space-x-4">
-              {/* Language Toggle */}
-              <button
-                onClick={toggleLanguage}
-                className="text-white/70 hover:text-white transition-colors px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20"
-              >
-                {language === 'zh-TW' ? 'EN' : '中文'}
-              </button>
-              <RegisterButton />
-            </div>
-          </div>
-        </div>
-      </header>
+      {/* Remove in-page header; rely on global header in App */}
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Logo as first element */}
+          <div className="mb-10">
+            <img 
+              src="/images/High Tea or Me.png" 
+              alt="High Tea or Me Logo" 
+              className="mx-auto h-40 sm:h-56 md:h-72 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
+            />
+          </div>
 
           {/* Countdown Timer or Event Status Message */}
           {eventSettings.show_countdown && eventSettings.is_event_active && (
