@@ -35,8 +35,8 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
-      min: 25,
-      max: 40
+      min: 23,
+      max: 38
     }
   },
   occupation: {
@@ -115,5 +115,9 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     }
   ]
 });
+
+// Expanded registration fields
+FoodForTalkUser.prototype.extraFields = true;
+
 
 module.exports = FoodForTalkUser;

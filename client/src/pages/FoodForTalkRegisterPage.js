@@ -6,27 +6,64 @@ import apiService from '../services/api';
 const FoodForTalkRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    phone: '',
+    // Basic Info
+    nickname: '',
     age: '',
-    occupation: '',
+    gender: '',
+    // Contact
+    email: '',
+    phone: '',
+    password: '',
+    // Fun Self-intro
+    expectPersonType: '',
+    dreamFirstDate: '',
+    dreamFirstDateOther: '',
+    interests: [],
+    interestsOther: '',
+    attractiveTraits: [],
+    attractiveTraitsOther: '',
+    japaneseFoodPreference: '',
+    // Bio
     bio: '',
+    // Compatibility fields (not shown to user)
+    firstName: 'Anonymous',
+    lastName: 'Participant',
+    occupation: '',
     dietaryRestrictions: '',
     emergencyContact: '',
     emergencyPhone: '',
-    interests: [],
-    profilePhoto: null
+    profilePhoto: null,
+    consentAccepted: false
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const interests = [
-    'Travel', 'Music', 'Sports', 'Art', 'Technology', 'Cooking', 
-    'Reading', 'Fitness', 'Photography', 'Movies', 'Dancing', 'Gaming'
+  const ageOptions = Array.from({ length: 38 - 23 + 1 }, (_, i) => 23 + i);
+  const funTypes = [
+    '愛玩愛笑派（Fun & Laughs）',
+    '文青知性派（Chill & Artsy）',
+    '運動健將派（Sporty）',
+    '美食探索家（Foodie）',
+    '旅遊冒險派（Globe-trotter）',
+    '神秘未知派（Surprise me!）'
   ];
+  const dreamDates = [
+    '一齊去日式餐廳開餐',
+    '一起行山',
+    '去睇演唱會/音樂會',
+    '夜遊維港',
+    '咖啡店慢談',
+    '其他'
+  ];
+  const interestChoices = [
+    '煮食','運動','追劇/電影','旅行','畫畫/手作','唱歌/音樂','電玩/桌遊','寫作/閱讀','其他'
+  ];
+  const traitChoices = [
+    '好有幽默感（Funny & witty）','很會聊天（Great conversationalist）','做嘢認真專注（Hardworking & focused）','好有創意（Creative thinker）','好有同理心（Empathetic & caring）','組織力強（Organized & reliable）','運動細胞發達（Athletic）','廚藝高手（Great cook）','藝術天分（Artistic talent）','其他'
+  ];
+  const japaneseFoods = ['壽司 Sushi','刺身 Sashimi','天婦羅 Tempura','拉麵 Ramen','日式甜品 Japanese Dessert','清酒/飲品 Sake/Drinks'];
+  const quickMagic = ['用嚟表白','當護身符','偷偷收埋','送俾最有緣嗰位'];
+  const quickOutcome = ['新朋友','脫單機會','笑到肚痛的回憶','靚相打卡','一段特別的故事'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -42,6 +79,15 @@ const FoodForTalkRegisterPage = () => {
       interests: prev.interests.includes(interest)
         ? prev.interests.filter(i => i !== interest)
         : [...prev.interests, interest]
+    }));
+  };
+
+  const handleTraitToggle = (trait) => {
+    setFormData(prev => ({
+      ...prev,
+      attractiveTraits: prev.attractiveTraits.includes(trait)
+        ? prev.attractiveTraits.filter(t => t !== trait)
+        : [...prev.attractiveTraits, trait]
     }));
   };
 
@@ -76,6 +122,19 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('emergencyContact', formData.emergencyContact);
       submitData.append('emergencyPhone', formData.emergencyPhone);
       submitData.append('interests', JSON.stringify(formData.interests));
+      // New fields
+      submitData.append('nickname', formData.nickname);
+      submitData.append('gender', formData.gender);
+      submitData.append('expectPersonType', formData.expectPersonType);
+      submitData.append('dreamFirstDate', formData.dreamFirstDate);
+      submitData.append('dreamFirstDateOther', formData.dreamFirstDateOther);
+      submitData.append('interestsOther', formData.interestsOther);
+      submitData.append('attractiveTraits', JSON.stringify(formData.attractiveTraits));
+      submitData.append('attractiveTraitsOther', formData.attractiveTraitsOther);
+      submitData.append('japaneseFoodPreference', formData.japaneseFoodPreference);
+      submitData.append('quickfireMagicItemChoice', formData.quickfireMagicItemChoice);
+      submitData.append('quickfireDesiredOutcome', formData.quickfireDesiredOutcome);
+      submitData.append('consentAccepted', String(formData.consentAccepted));
       
       // Add profile photo if provided
       if (formData.profilePhoto) {
@@ -124,7 +183,141 @@ const FoodForTalkRegisterPage = () => {
 
         {/* Registration Form */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-10">
+            {/* 1. 基本資料 Basic Info */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-4">1. 基本資料 Basic Info</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">暱稱 Nickname (公開給其他參加者)</label>
+                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Your nickname" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">年齡 Age</label>
+                  <select name="age" value={formData.age} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
+                    <option value="">Select age</option>
+                    {ageOptions.map(a => (<option key={a} value={a}>{a}</option>))}
+                  </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white font-medium mb-2">性別 Gender</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['男 Male','女 Female','其他 Others'].map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev => ({...prev, gender: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.gender===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. 有趣自我 Fun Self-intro */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-4">2. 有趣自我 Fun Self-intro</h2>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">你最期待在活動中遇到的人是哪種？(Choose one!)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {funTypes.map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, expectPersonType: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.expectPersonType===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">你最想帶對方去邊度玩？(Pick your dream first date!)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {dreamDates.map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, dreamFirstDate: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.dreamFirstDate===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                  {formData.dreamFirstDate==='其他' && (
+                    <input type="text" name="dreamFirstDateOther" value={formData.dreamFirstDateOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">你最愛的興趣/專長係咩？(可選多項) (Pick up to 3!)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {interestChoices.map(opt => (
+                      <button key={opt} type="button" onClick={() => handleInterestToggle(opt)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.interests.includes(opt) ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`} disabled={!formData.interests.includes(opt) && formData.interests.length>=3}>{opt}</button>
+                    ))}
+                  </div>
+                  {formData.interests.includes('其他') && (
+                    <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border透明" placeholder="Other (please specify)" />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">你最吸引人或最擅長的是咩？(選擇最多2項，可自填)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {traitChoices.map(opt => (
+                      <button key={opt} type="button" onClick={() => handleTraitToggle(opt)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.attractiveTraits.includes(opt) ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`} disabled={!formData.attractiveTraits.includes(opt) && formData.attractiveTraits.length>=2}>{opt}</button>
+                    ))}
+                  </div>
+                  {formData.attractiveTraits.includes('其他') && (
+                    <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border透明" placeholder="Other (please specify)" />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">你食日式料理一定要點咩？</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {japaneseFoods.map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, japaneseFoodPreference: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.japaneseFoodPreference===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. 神秘快問快答 Quickfire Fun! */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-4">3. 神秘快問快答 Quickfire Fun!</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">如果你有一隻魔法金戒指／金髮夾，你會...</label>
+                  <div className="flex flex-wrap gap-3">
+                    {quickMagic.map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, quickfireMagicItemChoice: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.quickfireMagicItemChoice===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">你最想喺速配活動攞到咩？</label>
+                  <div className="flex flex-wrap gap-3">
+                    {quickOutcome.map(opt => (
+                      <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, quickfireDesiredOutcome: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.quickfireDesiredOutcome===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 4. 聯絡方式 Contact Info */}
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-4">4. 聯絡方式 Contact Info</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">Email</label>
+                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Email" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">Whatsapp/Phone</label>
+                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Phone (for notifications only)" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white font-medium mb-2">Password</label>
+                  <input type="password" name="password" value={formData.password} onChange={handleInputChange} required minLength="6" className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Create a password (min 6 characters)" />
+                </div>
+              </div>
+            </div>
+
+            {/* Consent */}
+            <div>
+              <label className="inline-flex items-start gap-3 text-white">
+                <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
+                <span>
+                  我同意讓我的暱稱、年齡、性別、興趣等資料公開俾其他入選參加者瀏覽。
+                  <span className="block text-white/70 text-sm">I agree to share my nickname, age, gender, and selected interests with other shortlisted participants.</span>
+                </span>
+              </label>
+            </div>
             {/* Personal Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -323,7 +516,7 @@ const FoodForTalkRegisterPage = () => {
                 disabled={isSubmitting}
                 className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {isSubmitting ? 'Registering...' : 'Register for Event'}
+                {isSubmitting ? 'Registering...' : '立即報名 Join the Fun!'}
               </button>
             </div>
           </form>

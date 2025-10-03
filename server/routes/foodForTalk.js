@@ -49,11 +49,24 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       dietaryRestrictions,
       emergencyContact,
       emergencyPhone,
-      interests
+      interests,
+      // New fields
+      nickname,
+      gender,
+      expectPersonType,
+      dreamFirstDate,
+      dreamFirstDateOther,
+      interestsOther,
+      attractiveTraits,
+      attractiveTraitsOther,
+      japaneseFoodPreference,
+      quickfireMagicItemChoice,
+      quickfireDesiredOutcome,
+      consentAccepted
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !password || !age || !occupation || !bio || !emergencyContact || !emergencyPhone) {
+    if (!firstName || !lastName || !email || !password || !age || !bio || !emergencyContact || !emergencyPhone) {
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information.' 
       });
@@ -97,6 +110,13 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       parsedInterests = [];
     }
 
+    let parsedAttractiveTraits = [];
+    try {
+      parsedAttractiveTraits = JSON.parse(attractiveTraits || '[]');
+    } catch (e) {
+      parsedAttractiveTraits = [];
+    }
+
     // Generate secret passkey
     const secretPasskey = generatePasskey();
 
@@ -108,7 +128,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       last_name: lastName,
       phone,
       age: parseInt(age),
-      occupation,
+      occupation: occupation || null,
       bio,
       interests: parsedInterests,
       dietary_restrictions: dietaryRestrictions,
@@ -116,7 +136,20 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       emergency_contact_phone: emergencyPhone,
       profile_photo_url: profilePhotoUrl,
       secret_passkey: secretPasskey,
-      is_verified: true // Auto-verify for event registration
+      is_verified: true, // Auto-verify for event registration
+      // New fields
+      nickname: nickname || null,
+      gender: gender || null,
+      expect_person_type: expectPersonType || null,
+      dream_first_date: dreamFirstDate || null,
+      dream_first_date_other: dreamFirstDateOther || null,
+      interests_other: interestsOther || null,
+      attractive_traits: parsedAttractiveTraits,
+      attractive_traits_other: attractiveTraitsOther || null,
+      japanese_food_preference: japaneseFoodPreference || null,
+      quickfire_magic_item_choice: quickfireMagicItemChoice || null,
+      quickfire_desired_outcome: quickfireDesiredOutcome || null,
+      consent_accepted: consentAccepted === 'true' || consentAccepted === true
     });
 
     // Send confirmation email (you can implement this)
