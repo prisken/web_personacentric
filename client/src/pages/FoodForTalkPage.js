@@ -139,7 +139,7 @@ const FoodForTalkPage = () => {
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
-              className="mx-auto h-40 sm:h-56 md:h-72 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
+              className="mx-auto h-52 sm:h-72 md:h-96 lg:h-[28rem] xl:h-[32rem] 2xl:h-[36rem] object-contain"
             />
           </div>
 
