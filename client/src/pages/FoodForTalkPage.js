@@ -84,7 +84,7 @@ const FoodForTalkPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen relative overflow-hidden flex items-center justify-center">
+      <div className="min-h-screen relative overflow-hidden -mt-16 lg:-mt-20 flex items-center justify-center">
         {/* Video Background */}
         <video
           autoPlay
@@ -97,11 +97,11 @@ const FoodForTalkPage = () => {
         </video>
         
         {/* Logo Background */}
-        <div className="absolute inset-0 flex items-center justify-center z-5">
+        <div className="absolute inset-0 flex items-center justify-center z-[15]">
           <img 
             src="/images/High Tea or Me.png" 
             alt="High Tea or Me Logo" 
-            className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain opacity-20"
+            className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
           />
         </div>
         
@@ -114,7 +114,7 @@ const FoodForTalkPage = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden -mt-16 lg:-mt-20">
       {/* Video Background */}
       <video
         autoPlay
@@ -127,11 +127,11 @@ const FoodForTalkPage = () => {
       </video>
       
       {/* Logo Background */}
-      <div className="absolute inset-0 flex items-center justify-center z-5">
+      <div className="absolute inset-0 flex items-center justify-center z-[15]">
         <img 
           src="/images/High Tea or Me.png" 
           alt="High Tea or Me Logo" 
-          className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain opacity-20"
+          className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
         />
       </div>
       
@@ -163,13 +163,6 @@ const FoodForTalkPage = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 z-10">
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-yellow-400/10 rounded-full animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-pink-400/10 rounded-full animate-bounce"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/5 rounded-full animate-ping"></div>
-        </div>
-
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
 
           {/* Countdown Timer or Event Status Message */}
@@ -181,6 +174,11 @@ const FoodForTalkPage = () => {
               />
             </div>
           )}
+          
+          {/* Action Buttons */}
+          <div className="mb-16">
+            <ActionButtons />
+          </div>
           
           {/* Event Status Messages */}
           {!eventSettings.is_event_active && (
@@ -208,11 +206,6 @@ const FoodForTalkPage = () => {
               </div>
             </div>
           )}
-
-          {/* Action Buttons */}
-          <div className="mb-16">
-            <ActionButtons />
-          </div>
         </div>
       </section>
 
