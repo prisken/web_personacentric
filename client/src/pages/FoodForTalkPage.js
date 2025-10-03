@@ -96,6 +96,15 @@ const FoodForTalkPage = () => {
           <source src="/videos/web bg3.mp4" type="video/mp4" />
         </video>
         
+        {/* Logo Background */}
+        <div className="absolute inset-0 flex items-center justify-center z-5">
+          <img 
+            src="/images/High Tea or Me.png" 
+            alt="High Tea or Me Logo" 
+            className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain opacity-20"
+          />
+        </div>
+        
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/40 z-10"></div>
         
@@ -116,6 +125,15 @@ const FoodForTalkPage = () => {
       >
         <source src="/videos/web bg3.mp4" type="video/mp4" />
       </video>
+      
+      {/* Logo Background */}
+      <div className="absolute inset-0 flex items-center justify-center z-5">
+        <img 
+          src="/images/High Tea or Me.png" 
+          alt="High Tea or Me Logo" 
+          className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain opacity-20"
+        />
+      </div>
       
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/40 z-10"></div>
@@ -153,14 +171,6 @@ const FoodForTalkPage = () => {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Logo - Replacing Food for Talk text */}
-          <div className="mb-8">
-            <img 
-              src="/images/High Tea or Me.png" 
-              alt="High Tea or Me Logo" 
-              className="mx-auto h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
-            />
-          </div>
 
           {/* Countdown Timer or Event Status Message */}
           {eventSettings.show_countdown && eventSettings.is_event_active && (
