@@ -113,8 +113,8 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Generate secret passkey
     const secretPasskey = generatePasskey();
 
-    // Create user
-    const user = await FoodForTalkUser.create({
+    // Prepare base data (safe across legacy schema)
+    const baseData = {
       email,
       password_hash: passwordHash,
       first_name: 'Anonymous',
@@ -129,21 +129,31 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       emergency_contact_phone: null,
       profile_photo_url: profilePhotoUrl,
       secret_passkey: secretPasskey,
-      is_verified: true, // Auto-verify for event registration
-      // New fields
-      nickname: nickname || null,
-      gender: gender || null,
-      expect_person_type: expectPersonType || null,
-      dream_first_date: dreamFirstDate || null,
-      dream_first_date_other: dreamFirstDateOther || null,
-      interests_other: interestsOther || null,
-      attractive_traits: parsedAttractiveTraits,
-      attractive_traits_other: attractiveTraitsOther || null,
-      japanese_food_preference: japaneseFoodPreference || null,
-      quickfire_magic_item_choice: quickfireMagicItemChoice || null,
-      quickfire_desired_outcome: quickfireDesiredOutcome || null,
-      consent_accepted: consentAccepted === 'true' || consentAccepted === true
-    });
+      is_verified: true
+    };
+
+    // Attempt to include expanded fields; if DB lacks columns, retry with baseData
+    let user;
+    try {
+      user = await FoodForTalkUser.create({
+        ...baseData,
+        nickname: nickname || null,
+        gender: gender || null,
+        expect_person_type: expectPersonType || null,
+        dream_first_date: dreamFirstDate || null,
+        dream_first_date_other: dreamFirstDateOther || null,
+        interests_other: interestsOther || null,
+        attractive_traits: parsedAttractiveTraits,
+        attractive_traits_other: attractiveTraitsOther || null,
+        japanese_food_preference: japaneseFoodPreference || null,
+        quickfire_magic_item_choice: quickfireMagicItemChoice || null,
+        quickfire_desired_outcome: quickfireDesiredOutcome || null,
+        consent_accepted: consentAccepted === 'true' || consentAccepted === true
+      });
+    } catch (createErr) {
+      console.warn('Create with expanded fields failed, retrying with baseData only:', createErr?.message);
+      user = await FoodForTalkUser.create(baseData);
+    }
 
     // Send confirmation email (you can implement this)
     // await sendEventRegistrationEmail(user.email, user.first_name);
@@ -430,12 +440,6 @@ router.get('/participants', async (req, res) => {
     // Get all participants (excluding sensitive info like passwords and passkeys)
     const participants = await FoodForTalkUser.findAll({
       where: { is_active: true, is_verified: true },
-      attributes: [
-        'id', 'first_name', 'last_name', 'age',
-        'bio', 'interests', 'profile_photo_url',
-        // expanded fields if present
-        'nickname','gender'
-      ],
       order: [['created_at', 'ASC']]
     });
 
