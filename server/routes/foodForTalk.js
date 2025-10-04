@@ -431,8 +431,10 @@ router.get('/participants', async (req, res) => {
     const participants = await FoodForTalkUser.findAll({
       where: { is_active: true, is_verified: true },
       attributes: [
-        'id', 'first_name', 'last_name', 'age', 'occupation', 
-        'bio', 'interests', 'dietary_restrictions', 'profile_photo_url'
+        'id', 'first_name', 'last_name', 'age',
+        'bio', 'interests', 'profile_photo_url',
+        // expanded fields if present
+        'nickname','gender'
       ],
       order: [['created_at', 'ASC']]
     });
@@ -442,11 +444,11 @@ router.get('/participants', async (req, res) => {
       id: participant.id,
       firstName: participant.first_name,
       lastName: participant.last_name,
+      nickname: participant.nickname,
+      gender: participant.gender,
       age: participant.age,
-      occupation: participant.occupation,
       bio: participant.bio,
       interests: participant.interests || [],
-      dietaryRestrictions: participant.dietary_restrictions,
       profilePhotoUrl: participant.profile_photo_url
     }));
 

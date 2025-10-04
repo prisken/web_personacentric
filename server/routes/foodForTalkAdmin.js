@@ -14,7 +14,11 @@ const generatePasskey = () => {
 // Get all participants (admin only)
 router.get('/participants', async (req, res) => {
   try {
+    // Select a conservative set of columns that exist in production
     const participants = await FoodForTalkUser.findAll({
+      attributes: [
+        'id','email','first_name','last_name','phone','age','occupation','bio','interests','dietary_restrictions','profile_photo_url','secret_passkey','is_verified','is_active','created_at'
+      ],
       order: [['created_at', 'DESC']]
     });
 
@@ -29,7 +33,11 @@ router.get('/participants', async (req, res) => {
 router.get('/participants/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const participant = await FoodForTalkUser.findByPk(id);
+    const participant = await FoodForTalkUser.findByPk(id, {
+      attributes: [
+        'id','email','first_name','last_name','phone','age','occupation','bio','interests','dietary_restrictions','profile_photo_url','secret_passkey','is_verified','is_active','created_at'
+      ]
+    });
 
     if (!participant) {
       return res.status(404).json({ message: 'Participant not found' });
@@ -37,7 +45,7 @@ router.get('/participants/:id', async (req, res) => {
 
     res.json({ participant });
   } catch (error) {
-    console.error('Get participant error:', error);
+    console.error('Get participant error:', error?.message, error?.stack);
     res.status(500).json({ message: 'Failed to get participant' });
   }
 });
