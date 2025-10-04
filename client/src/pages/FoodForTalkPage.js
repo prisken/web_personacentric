@@ -134,16 +134,16 @@ const FoodForTalkPage = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="pt-8 sm:pt-12 mb-0 sm:mb-2 -mb-12 sm:-mb-16 md:-mb-20 lg:-mb-24">
+          <div className="pt-4 sm:pt-6 mb-0 sm:mb-2 -mb-8 sm:-mb-10 md:-mb-12 lg:-mb-14">
             <img 
               src="/images/High Tea or Me.png?v=3" 
               alt="High Tea or Me Logo" 
-              className="block mx-auto h-[40vh] sm:h-72 md:h-96 lg:h-[34rem] xl:h-[40rem] 2xl:h-[44rem] object-contain"
+              className="block mx-auto h-[28vh] sm:h-56 md:h-80 lg:h-[28rem] xl:h-[34rem] 2xl:h-[36rem] object-contain"
             />
           </div>
 
           {/* Primary CTA Buttons: Register (emphasized) above Info */}
-          <div className="-mt-20 sm:-mt-16 md:-mt-20 lg:-mt-24 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+          <div className="-mt-10 sm:-mt-8 md:-mt-10 lg:-mt-12 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
           </div>
