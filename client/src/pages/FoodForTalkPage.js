@@ -143,7 +143,7 @@ const FoodForTalkPage = () => {
           </div>
 
           {/* Primary CTA Buttons: Register (emphasized) above Info */}
-          <div className="-mt-2 sm:-mt-1 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+          <div className="-mt-10 sm:-mt-6 md:-mt-8 lg:-mt-10 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
           </div>
