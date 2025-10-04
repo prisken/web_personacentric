@@ -91,7 +91,7 @@ const FoodForTalkPage = () => {
           muted
           loop
           playsInline
-          className="absolute inset-0 w-full h-full object-contain z-0"
+          className="absolute inset-0 w-full h-full object-cover md:object-contain z-0"
         >
           <source src="/videos/web bg3.mp4" type="video/mp4" />
         </video>
@@ -121,7 +121,7 @@ const FoodForTalkPage = () => {
         muted
         loop
         playsInline
-        className="absolute inset-0 w-full h-full object-contain object-top z-0"
+        className="absolute inset-0 w-full h-full object-cover md:object-contain object-top z-0"
       >
         <source src="/videos/web bg3.mp4" type="video/mp4" />
       </video>
@@ -135,18 +135,21 @@ const FoodForTalkPage = () => {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="mb-10">
+          <div className="mb-6 sm:mb-8">
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
-              className="mx-auto h-52 sm:h-72 md:h-96 lg:h-[28rem] xl:h-[32rem] 2xl:h-[36rem] object-contain"
+              className="mx-auto h-40 sm:h-64 md:h-80 lg:h-[28rem] xl:h-[32rem] 2xl:h-[36rem] object-contain"
             />
           </div>
 
-          {/* Primary CTA Buttons: Register (emphasized) + Info */}
-          <div className="mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+          {/* Primary CTA Buttons: Register (emphasized) above Info */}
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
+          </div>
+
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             {/* Info Button - scroll to event info */}
             <button
               type="button"
@@ -154,7 +157,7 @@ const FoodForTalkPage = () => {
                 const el = document.getElementById('event-info');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
-              className="group relative w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
+              className="group relative w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
             >
               <span className="relative z-10 flex items-center">
                 活動詳情 Information
@@ -170,7 +173,7 @@ const FoodForTalkPage = () => {
 
           {/* Countdown Timer or Event Status Message */}
           {eventSettings.show_countdown && eventSettings.is_event_active && (
-            <div className="mb-10">
+            <div className="mb-8 sm:mb-10">
               <CountdownTimer 
                 timeLeft={timeLeft} 
                 headerText={eventSettings.countdown_header_text}
@@ -179,7 +182,7 @@ const FoodForTalkPage = () => {
           )}
 
           {/* Secondary Buttons: See Participants + Enter Secret Chat */}
-          <div className="mb-16">
+          <div className="mb-12 sm:mb-16">
             <ActionButtons />
           </div>
           
@@ -213,7 +216,7 @@ const FoodForTalkPage = () => {
       </section>
 
       {/* Event Details Section */}
-      <section className="relative z-20 py-16 bg-white/5 backdrop-blur-sm">
+      <section className="relative z-20 py-16 bg-black/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <EventDetails />
         </div>

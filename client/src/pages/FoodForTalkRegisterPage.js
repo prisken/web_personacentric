@@ -235,24 +235,42 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">你最愛的興趣/專長係咩？(可選多項) (Pick up to 3!)</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <select
+                    multiple
+                    name="interests"
+                    value={formData.interests}
+                    onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions).map(o => o.value);
+                      setFormData(prev => ({ ...prev, interests: selected.slice(0, 3) }));
+                    }}
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  >
                     {interestChoices.map(opt => (
-                      <button key={opt} type="button" onClick={() => handleInterestToggle(opt)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.interests.includes(opt) ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`} disabled={!formData.interests.includes(opt) && formData.interests.length>=3}>{opt}</button>
+                      <option key={opt} value={opt}>{opt}</option>
                     ))}
-                  </div>
+                  </select>
                   {formData.interests.includes('其他') && (
-                    <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border透明" placeholder="Other (please specify)" />
+                    <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
                   )}
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">你最吸引人或最擅長的是咩？(選擇最多2項，可自填)</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <select
+                    multiple
+                    name="attractiveTraits"
+                    value={formData.attractiveTraits}
+                    onChange={(e) => {
+                      const selected = Array.from(e.target.selectedOptions).map(o => o.value);
+                      setFormData(prev => ({ ...prev, attractiveTraits: selected.slice(0, 2) }));
+                    }}
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                  >
                     {traitChoices.map(opt => (
-                      <button key={opt} type="button" onClick={() => handleTraitToggle(opt)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.attractiveTraits.includes(opt) ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`} disabled={!formData.attractiveTraits.includes(opt) && formData.attractiveTraits.length>=2}>{opt}</button>
+                      <option key={opt} value={opt}>{opt}</option>
                     ))}
-                  </div>
+                  </select>
                   {formData.attractiveTraits.includes('其他') && (
-                    <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border透明" placeholder="Other (please specify)" />
+                    <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
                   )}
                 </div>
                 <div>
