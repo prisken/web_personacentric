@@ -27,9 +27,9 @@ const upload = multer({
   }
 });
 
-// Generate a random passkey
+// Generate a 6-digit numeric passkey
 const generatePasskey = () => {
-  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 // Register for the event
@@ -38,17 +38,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     console.log('Food for Talk registration attempt:', req.body);
     
     const {
-      firstName,
-      lastName,
       email,
       password,
-      phone,
+      whatsappPhone,
       age,
-      occupation,
-      bio,
-      dietaryRestrictions,
-      emergencyContact,
-      emergencyPhone,
       interests,
       // New fields
       nickname,
@@ -66,7 +59,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!firstName || !lastName || !email || !password || !age || !bio || !emergencyContact || !emergencyPhone) {
+    if (!email || !password || !age) {
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information.' 
       });
@@ -124,16 +117,16 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     const user = await FoodForTalkUser.create({
       email,
       password_hash: passwordHash,
-      first_name: firstName,
-      last_name: lastName,
-      phone,
+      first_name: 'Anonymous',
+      last_name: 'Participant',
+      phone: whatsappPhone,
       age: parseInt(age),
-      occupation: occupation || null,
-      bio,
+      occupation: null,
+      bio: null,
       interests: parsedInterests,
-      dietary_restrictions: dietaryRestrictions,
-      emergency_contact_name: emergencyContact,
-      emergency_contact_phone: emergencyPhone,
+      dietary_restrictions: null,
+      emergency_contact_name: null,
+      emergency_contact_phone: null,
       profile_photo_url: profilePhotoUrl,
       secret_passkey: secretPasskey,
       is_verified: true, // Auto-verify for event registration

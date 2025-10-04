@@ -35,8 +35,8 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
-      min: 23,
-      max: 38
+      min: 20,
+      max: 40
     }
   },
   occupation: {
