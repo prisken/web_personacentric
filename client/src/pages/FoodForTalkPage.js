@@ -213,7 +213,7 @@ const FoodForTalkPage = () => {
                 <div className="text-center">
                   <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Drinks</div>
                   <img
-                    src="/images/SD%20logos/1:2.png"
+                    src="/images/SD%20logos/1%3A2.png"
                     alt="One Half Dessert - Drink Sponsor"
                     className="mx-auto h-8 sm:h-10 md:h-12 object-contain"
                   />
