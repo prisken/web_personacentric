@@ -159,7 +159,7 @@ const FoodForTalkPage = () => {
               className="group relative w-auto mx-auto px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
             >
               <span className="relative z-10 flex items-center">
-                活動詳情 Information
+                Information
                 <svg 
                   className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" 
                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
