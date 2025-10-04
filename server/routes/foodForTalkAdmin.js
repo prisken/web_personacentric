@@ -16,9 +16,7 @@ router.get('/participants', async (req, res) => {
   try {
     // Select a conservative set of columns that exist in production
     const participants = await FoodForTalkUser.findAll({
-      attributes: [
-        'id','email','first_name','last_name','phone','age','occupation','bio','interests','dietary_restrictions','profile_photo_url','secret_passkey','is_verified','is_active','created_at'
-      ],
+      // avoid selecting non-existent columns on legacy prod; fetch all and filter on UI
       order: [['created_at', 'DESC']]
     });
 
@@ -33,11 +31,7 @@ router.get('/participants', async (req, res) => {
 router.get('/participants/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const participant = await FoodForTalkUser.findByPk(id, {
-      attributes: [
-        'id','email','first_name','last_name','phone','age','occupation','bio','interests','dietary_restrictions','profile_photo_url','secret_passkey','is_verified','is_active','created_at'
-      ]
-    });
+    const participant = await FoodForTalkUser.findByPk(id);
 
     if (!participant) {
       return res.status(404).json({ message: 'Participant not found' });
