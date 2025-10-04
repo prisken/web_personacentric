@@ -134,7 +134,7 @@ const FoodForTalkPage = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="pt-8 sm:pt-12 mb-6 sm:mb-8">
+          <div className="pt-8 sm:pt-12 mb-0 sm:mb-2">
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
@@ -143,12 +143,12 @@ const FoodForTalkPage = () => {
           </div>
 
           {/* Primary CTA Buttons: Register (emphasized) above Info */}
-          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+          <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
           </div>
 
-          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+          <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Info Button - scroll to event info */}
             <button
               type="button"
@@ -156,7 +156,7 @@ const FoodForTalkPage = () => {
                 const el = document.getElementById('event-info');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
-              className="group relative w-full sm:w-auto px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
+              className="group relative w-auto mx-auto px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
             >
               <span className="relative z-10 flex items-center">
                 活動詳情 Information
