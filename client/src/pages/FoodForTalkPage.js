@@ -193,7 +193,7 @@ const FoodForTalkPage = () => {
                 <div className="text-white/70 text-xs tracking-widest uppercase mb-3">Organizer</div>
                 <div className="flex justify-center">
                   <img
-                    src="/images/SD logos/honor.png"
+                    src="/images/SD%20logos/honor.png"
                     alt="Honor District - Organizer"
                     className="h-10 sm:h-12 md:h-14 object-contain"
                   />
@@ -205,7 +205,7 @@ const FoodForTalkPage = () => {
                 <div className="text-center">
                   <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Location</div>
                   <img
-                    src="/images/SD logos/ippaiki.png"
+                    src="/images/SD%20logos/ippaiki.png"
                     alt="IPPAIKI - Location Sponsor"
                     className="mx-auto h-8 sm:h-10 md:h-12 object-contain"
                   />
@@ -213,7 +213,7 @@ const FoodForTalkPage = () => {
                 <div className="text-center">
                   <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Drinks</div>
                   <img
-                    src="/images/SD logos/1/2.png"
+                    src="/images/SD%20logos/1:2.png"
                     alt="One Half Dessert - Drink Sponsor"
                     className="mx-auto h-8 sm:h-10 md:h-12 object-contain"
                   />
@@ -221,7 +221,7 @@ const FoodForTalkPage = () => {
                 <div className="text-center">
                   <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Media</div>
                   <img
-                    src="/images/SD logos/persona centric.png"
+                    src="/images/SD%20logos/persona%20centric.png"
                     alt="Persona Centric - Media Sponsor"
                     className="mx-auto h-8 sm:h-10 md:h-12 object-contain"
                   />
