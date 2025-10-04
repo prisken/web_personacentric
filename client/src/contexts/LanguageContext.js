@@ -761,6 +761,16 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.details.faq.q3': '參加有咩著數？',
       'foodForTalk.details.faq.a3': '新朋友、開心回憶、靚飲靚食、甚至可能遇到 Mr./Ms. Right！',
 
+      // Disclaimer
+      'foodForTalk.disclaimer.title': '🌸 High Tea or me 免責條款（Disclaimer）🌸',
+      'foodForTalk.disclaimer.intro': '歡迎參加 Honor District 神秘日式速配派對（High tea or Me?）。報名及參與本活動即代表你已閱讀、明白並同意以下免責聲明：',
+      'foodForTalk.disclaimer.item1': '參加者個人行為責任：參加者需對自己於活動期間的行為及言語負全部責任。如有任何不當或違法行為，主辦方有權即時終止其參與資格。',
+      'foodForTalk.disclaimer.item2': '個人資料保護：主辦方會盡力保障參加者的個人資料安全。活動前不會公開真名、聯絡資料或樣貌；如參加者自願分享資料，主辦方概不負責。',
+      'foodForTalk.disclaimer.item3': '配對結果及人際互動：主辦方僅提供平台，對配對結果及其後人際互動不作任何承諾或擔保。',
+      'foodForTalk.disclaimer.item4': '攝影及錄影權利：活動期間主辦方及合作媒體可進行攝影／錄影，用作宣傳或記錄用途，僅公開經參加者同意的片段或合照。',
+      'foodForTalk.disclaimer.item5': '不可抗力因素：如因不可抗力因素導致活動取消或變更，主辦方保留最終決定權。',
+      'foodForTalk.disclaimer.placementNote': '建議擺放位置：表格提交前設 Checkbox；網站專頁；以及確認 Email 內再提示。',
+
       // Food for Talk - Register Page (custom form sections)
       'foodForTalk.sections.basicInfo': '1. 基本資料',
       'foodForTalk.sections.funIntro': '2. 有趣自我',
@@ -1664,6 +1674,16 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.details.faq.a2': 'Watch out for Whatsapp or email notifications.',
       'foodForTalk.details.faq.q3': 'What benefits will I get?',
       'foodForTalk.details.faq.a3': 'New friends, great memories, nice food & drinks — maybe even meet the right one!',
+
+      // Disclaimer
+      'foodForTalk.disclaimer.title': '🌸 High Tea or me Disclaimer 🌸',
+      'foodForTalk.disclaimer.intro': 'Welcome to the Honor District Secret Japanese Speed Dating Party (High tea or Me?). By registering and participating, you acknowledge and agree to the following:',
+      'foodForTalk.disclaimer.item1': 'Participant responsibility: You are fully responsible for your words and behavior during the event. The organizer reserves the right to terminate participation for misconduct or illegal behavior.',
+      'foodForTalk.disclaimer.item2': 'Data protection: The organizer will make best efforts to protect personal data. Real names, contact details, and faces are not disclosed before the event. If you voluntarily share information, the organizer is not liable.',
+      'foodForTalk.disclaimer.item3': 'Matchmaking results and interactions: The organizer only provides the platform and does not guarantee any outcomes or subsequent interactions.',
+      'foodForTalk.disclaimer.item4': 'Photography and recording rights: Photos/videos may be taken for promotion or documentation; only content approved by participants will be published.',
+      'foodForTalk.disclaimer.item5': 'Force majeure: In case of cancellation or changes due to force majeure, the organizer reserves the final decision.',
+      'foodForTalk.disclaimer.placementNote': 'Suggested placement: checkbox before submission, dedicated webpage, and reminder within the confirmation email.',
 
       // Food for Talk - Register Page (custom form sections)
       'foodForTalk.sections.basicInfo': '1. Basic Info',

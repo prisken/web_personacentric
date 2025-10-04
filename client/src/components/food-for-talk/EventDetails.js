@@ -61,17 +61,17 @@ const EventDetails = () => {
 
       <div className="mt-10 max-w-4xl mx-auto text-left">
         <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-          <div className="text-lg font-bold text-white mb-2">🌸 High Tea or me 免責條款（Disclaimer）🌸</div>
+          <div className="text-lg font-bold text-white mb-2">{t('foodForTalk.disclaimer.title')}</div>
           <div className="text-white/75 space-y-3 text-xs leading-relaxed">
-            <p>歡迎參加 Honor District 神秘日式速配派對（High tea or Me?）。報名及參與本活動即代表你已閱讀、明白並同意以下免責聲明：</p>
+            <p>{t('foodForTalk.disclaimer.intro')}</p>
             <ol className="list-decimal pl-5 space-y-2">
-              <li><span className="font-semibold">參加者個人行為責任：</span> 參加者需對自己於活動期間的行為及言語負全部責任。如有任何不當或違法行為，主辦方有權即時終止其參與資格。</li>
-              <li><span className="font-semibold">個人資料保護：</span> 主辦方會盡力保障參加者的個人資料安全。活動前不會公開真名、聯絡資料或樣貌；如參加者自願分享資料，主辦方概不負責。</li>
-              <li><span className="font-semibold">配對結果及人際互動：</span> 主辦方僅提供平台，對配對結果及其後人際互動不作任何承諾或擔保。</li>
-              <li><span className="font-semibold">攝影及錄影權利：</span> 活動期間主辦方及合作媒體可進行攝影／錄影，用作宣傳或記錄用途，僅公開經參加者同意的片段或合照。</li>
-              <li><span className="font-semibold">不可抗力因素：</span> 如因不可抗力因素導致活動取消或變更，主辦方保留最終決定權。</li>
+              <li>{t('foodForTalk.disclaimer.item1')}</li>
+              <li>{t('foodForTalk.disclaimer.item2')}</li>
+              <li>{t('foodForTalk.disclaimer.item3')}</li>
+              <li>{t('foodForTalk.disclaimer.item4')}</li>
+              <li>{t('foodForTalk.disclaimer.item5')}</li>
             </ol>
-            <div className="text-white/60 text-[11px]">建議擺放位置：表格提交前設 Checkbox；網站專頁；以及確認 Email 內再提示。</div>
+            <div className="text-white/60 text-[11px]">{t('foodForTalk.disclaimer.placementNote')}</div>
           </div>
         </div>
       </div>
