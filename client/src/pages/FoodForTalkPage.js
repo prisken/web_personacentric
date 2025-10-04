@@ -138,12 +138,12 @@ const FoodForTalkPage = () => {
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
-              className="mx-auto h-[40vh] sm:h-72 md:h-96 lg:h-[34rem] xl:h-[40rem] 2xl:h-[44rem] object-contain"
+              className="block mx-auto h-[40vh] sm:h-72 md:h-96 lg:h-[34rem] xl:h-[40rem] 2xl:h-[44rem] object-contain"
             />
           </div>
 
           {/* Primary CTA Buttons: Register (emphasized) above Info */}
-          <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+          <div className="-mt-2 sm:-mt-1 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
           </div>
