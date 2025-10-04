@@ -123,7 +123,7 @@ const FoodForTalkPage = () => {
         <button
           type="button"
           onClick={toggleLanguage}
-          className="absolute top-4 right-4 z-30 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
+          className="fixed top-4 right-4 z-50 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
         >
           {language === 'zh-TW' ? 'EN' : '中文'}
         </button>
