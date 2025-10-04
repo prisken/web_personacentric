@@ -43,6 +43,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       whatsappPhone,
       age,
       interests,
+      bio,
       // New fields
       nickname,
       gender,
@@ -120,6 +121,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       first_name: 'Anonymous',
       last_name: 'Participant',
       phone: whatsappPhone,
+      whatsapp_phone: whatsappPhone,
       age: parseInt(age),
       // Legacy schemas may require these fields to be NOT NULL; use safe defaults
       occupation: '',

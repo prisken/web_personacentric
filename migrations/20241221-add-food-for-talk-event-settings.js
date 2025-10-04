@@ -47,14 +47,14 @@ module.exports = {
       }
     });
 
-    // Add indexes
-    await queryInterface.addIndex('food_for_talk_event_settings', ['event_status']);
-    await queryInterface.addIndex('food_for_talk_event_settings', ['is_event_active']);
-    await queryInterface.addIndex('food_for_talk_event_settings', ['show_countdown']);
+    // Add indexes (guard if they already exist)
+    try { await queryInterface.addIndex('food_for_talk_event_settings', ['event_status']); } catch (e) { /* ignore if exists */ }
+    try { await queryInterface.addIndex('food_for_talk_event_settings', ['is_event_active']); } catch (e) { /* ignore if exists */ }
+    try { await queryInterface.addIndex('food_for_talk_event_settings', ['show_countdown']); } catch (e) { /* ignore if exists */ }
 
     // Insert default settings
     await queryInterface.bulkInsert('food_for_talk_event_settings', [{
-      id: Sequelize.UUIDV4(),
+      id: require('uuid').v4(),
       event_start_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       countdown_header_text: '距離活動開始還有',
       is_event_active: true,
