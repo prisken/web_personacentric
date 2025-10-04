@@ -121,12 +121,13 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       last_name: 'Participant',
       phone: whatsappPhone,
       age: parseInt(age),
-      occupation: null,
-      bio: null,
+      // Legacy schemas may require these fields to be NOT NULL; use safe defaults
+      occupation: '',
+      bio: bio || '',
       interests: parsedInterests,
-      dietary_restrictions: null,
-      emergency_contact_name: null,
-      emergency_contact_phone: null,
+      dietary_restrictions: '',
+      emergency_contact_name: '',
+      emergency_contact_phone: '',
       profile_photo_url: profilePhotoUrl,
       secret_passkey: secretPasskey,
       is_verified: true

@@ -104,18 +104,18 @@ router.delete('/participants/:id', async (req, res) => {
     }
 
     // Delete related data
-    await FoodForTalkChatMessage.destroy({ where: { sender_id: id } });
-    await FoodForTalkChatMessage.destroy({ where: { recipient_id: id } });
-    await FoodForTalkProfileView.destroy({ where: { viewer_id: id } });
-    await FoodForTalkProfileView.destroy({ where: { viewed_user_id: id } });
+    try { await FoodForTalkChatMessage.destroy({ where: { sender_id: id } }); } catch (e) { console.warn('delete chat sender failed', e?.message); }
+    try { await FoodForTalkChatMessage.destroy({ where: { recipient_id: id } }); } catch (e) { console.warn('delete chat recipient failed', e?.message); }
+    try { await FoodForTalkProfileView.destroy({ where: { viewer_id: id } }); } catch (e) { console.warn('delete views viewer failed', e?.message); }
+    try { await FoodForTalkProfileView.destroy({ where: { viewed_user_id: id } }); } catch (e) { console.warn('delete views viewed failed', e?.message); }
 
     // Delete participant
     await participant.destroy();
 
     res.json({ message: 'Participant deleted successfully' });
   } catch (error) {
-    console.error('Delete participant error:', error);
-    res.status(500).json({ message: 'Failed to delete participant' });
+    console.error('Delete participant error:', error?.message, error?.stack);
+    res.status(500).json({ message: 'Failed to delete participant', error: error?.message });
   }
 });
 
