@@ -46,7 +46,7 @@ const FoodForTalkRegisterPage = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const ageOptions = Array.from({ length: 38 - 23 + 1 }, (_, i) => 23 + i);
+  const ageOptions = Array.from({ length: 40 - 20 + 1 }, (_, i) => 20 + i);
   const funTypes = [
     '愛玩愛笑派（Fun & Laughs）',
     '文青知性派（Chill & Artsy）',
@@ -156,7 +156,7 @@ const FoodForTalkRegisterPage = () => {
             </svg>
             {t('foodForTalk.common.back')}
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">{t('foodForTalk.register.title')}</h1>
+          <img src="/images/High Tea or Me.png?v=3" alt="High Tea or Me Logo" className="mx-auto mb-4 h-20 sm:h-28 md:h-36 lg:h-40 object-contain" />
           <p className="text-xl text-white/80">{t('foodForTalk.register.subtitle')}</p>
         </div>
 
@@ -311,6 +311,21 @@ const FoodForTalkRegisterPage = () => {
                 <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
                 <span>{t('foodForTalk.form.consent')}</span>
               </label>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+              <div className="text-lg font-bold text-white mb-2">{t('foodForTalk.disclaimer.title')}</div>
+              <div className="text-white/75 space-y-3 text-sm leading-relaxed">
+                <p>{t('foodForTalk.disclaimer.intro')}</p>
+                <ol className="list-decimal pl-5 space-y-2 text-white/80">
+                  <li>{t('foodForTalk.disclaimer.item1')}</li>
+                  <li>{t('foodForTalk.disclaimer.item2')}</li>
+                  <li>{t('foodForTalk.disclaimer.item3')}</li>
+                  <li>{t('foodForTalk.disclaimer.item4')}</li>
+                  <li>{t('foodForTalk.disclaimer.item5')}</li>
+                </ol>
+              </div>
             </div>
 
             {/* Submit Button */}
