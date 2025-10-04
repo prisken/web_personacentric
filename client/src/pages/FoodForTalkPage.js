@@ -99,7 +99,7 @@ const FoodForTalkPage = () => {
         {/* Logo Background */}
         <div className="absolute inset-0 flex items-center justify-center z-[15]">
           <img 
-            src="/images/High Tea or Me.png" 
+            src="/images/High Tea or Me.png?v=2" 
             alt="High Tea or Me Logo" 
             className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
           />
@@ -136,7 +136,7 @@ const FoodForTalkPage = () => {
           {/* Logo as first element */}
           <div className="pt-8 sm:pt-12 mb-0 sm:mb-2 -mb-6 sm:-mb-8 md:-mb-10 lg:-mb-12">
             <img 
-              src="/images/High Tea or Me.png" 
+              src="/images/High Tea or Me.png?v=2" 
               alt="High Tea or Me Logo" 
               className="block mx-auto h-[40vh] sm:h-72 md:h-96 lg:h-[34rem] xl:h-[40rem] 2xl:h-[44rem] object-contain"
             />
