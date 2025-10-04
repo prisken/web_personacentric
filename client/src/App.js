@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LanguageProvider } from './contexts/LanguageContext';
@@ -48,6 +48,19 @@ const PageLoader = () => (
   </div>
 );
 
+// Wrapper to optionally hide header/footer on certain routes
+function AppChrome({ children }) {
+  const location = useLocation();
+  const hideChrome = location.pathname.startsWith('/food-for-talk');
+  return (
+    <div className="min-h-screen flex flex-col bg-white">
+      {!hideChrome && <Header />}
+      {children}
+      {!hideChrome && <Footer />}
+    </div>
+  );
+}
+
 function App() {
   return (
     <ErrorBoundary>
@@ -60,9 +73,8 @@ function App() {
             }}
           >
             <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-white">
-              <Header />
-              <main className="flex-grow pt-16 lg:pt-20">
+            <AppChrome>
+              <main className="flex-grow">
                 <Suspense fallback={<PageLoader />}>
                   <Routes>
                     {/* Public Routes */}
@@ -105,7 +117,7 @@ function App() {
                   </Routes>
                 </Suspense>
               </main>
-              <Footer />
+            </AppChrome>
               <ToastContainer
                 position="top-right"
                 autoClose={3000}
