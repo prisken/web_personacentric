@@ -115,31 +115,30 @@ const FoodForTalkPage = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden -mt-16 lg:-mt-20">
-      {/* Video Background */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover md:object-contain object-top z-0"
-      >
-        <source src="/videos/web bg3.mp4" type="video/mp4" />
-      </video>
-      
-      {/* Light overlay for better text readability */}
-      <div className="absolute inset-0 bg-black/10 z-10"></div>
-      
       {/* Remove in-page header; rely on global header in App */}
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+        {/* Video Background (scoped to hero only) */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover md:object-contain object-top z-0"
+        >
+          <source src="/videos/web bg3.mp4" type="video/mp4" />
+        </video>
+        {/* Light overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/10 z-10"></div>
+
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="mb-6 sm:mb-8">
+          <div className="pt-8 sm:pt-12 mb-6 sm:mb-8">
             <img 
               src="/images/High Tea or Me.png" 
               alt="High Tea or Me Logo" 
-              className="mx-auto h-40 sm:h-64 md:h-80 lg:h-[28rem] xl:h-[32rem] 2xl:h-[36rem] object-contain"
+              className="mx-auto h-[20vh] sm:h-64 md:h-80 lg:h-[28rem] xl:h-[32rem] 2xl:h-[36rem] object-contain"
             />
           </div>
 
