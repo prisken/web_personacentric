@@ -276,6 +276,11 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
+    if (!user.password_hash) {
+      console.warn('User missing password_hash for email:', email);
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
     // Check password
     const isValidPassword = await bcrypt.compare(password, user.password_hash);
     if (!isValidPassword) {
@@ -289,15 +294,17 @@ router.post('/login', async (req, res) => {
 
     // Generate JWT token
     console.log('Creating JWT token with secret:', process.env.JWT_SECRET ? 'SET' : 'NOT SET');
-    const token = jwt.sign(
-      { 
-        userId: user.id, 
-        email: user.email,
-        type: 'food-for-talk-participant'
-      },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: '24h' }
-    );
+    let token;
+    try {
+      token = jwt.sign(
+        { userId: user.id, email: user.email, type: 'food-for-talk-participant' },
+        process.env.JWT_SECRET || 'fallback-secret',
+        { expiresIn: '24h' }
+      );
+    } catch (signErr) {
+      console.error('JWT sign error:', signErr);
+      return res.status(500).json({ message: 'Authentication failed. Please try again.' });
+    }
     console.log('JWT token created successfully');
 
     res.json({
@@ -312,7 +319,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('Login error:', error?.message, error?.stack);
     res.status(500).json({ message: 'Login failed. Please try again.' });
   }
 });
@@ -322,20 +329,34 @@ router.post('/secret-login', async (req, res) => {
   try {
     const { email, password, passkey } = req.body;
 
-    if (!email || !password || !passkey) {
-      return res.status(400).json({ message: 'Email, password, and passkey are required' });
+    // Option A: Already logged in as participant via JWT
+    let user = null;
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      try {
+        const token = authHeader.substring(7);
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+        if (decoded.type === 'food-for-talk-participant' && decoded.email) {
+          user = await FoodForTalkUser.findOne({ where: { email: decoded.email } });
+        }
+      } catch (e) {
+        // ignore and fallback to email/password flow
+      }
     }
 
-    // Find user
-    const user = await FoodForTalkUser.findOne({ where: { email } });
+    // Option B: Email/password supplied
     if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    // Check password
-    const isValidPassword = await bcrypt.compare(password, user.password_hash);
-    if (!isValidPassword) {
-      return res.status(401).json({ message: 'Invalid email or password' });
+      if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required when not already logged in' });
+      }
+      user = await FoodForTalkUser.findOne({ where: { email } });
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
+      const isValidPassword = await bcrypt.compare(password, user.password_hash);
+      if (!isValidPassword) {
+        return res.status(401).json({ message: 'Invalid email or password' });
+      }
     }
 
     // Check passkey
