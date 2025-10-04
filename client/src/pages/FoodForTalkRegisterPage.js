@@ -4,6 +4,20 @@ import { toast } from 'react-toastify';
 import apiService from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 
+// Local floating language toggle for pages without header
+const LanguageFloatingToggle = () => {
+  const { language, toggleLanguage } = useLanguage();
+  return (
+    <button
+      type="button"
+      onClick={toggleLanguage}
+      className="fixed top-4 right-4 z-50 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
+    >
+      {language === 'zh-TW' ? 'EN' : '中文'}
+    </button>
+  );
+};
+
 const FoodForTalkRegisterPage = () => {
   const navigate = useNavigate();
   const { t } = useLanguage();
@@ -162,7 +176,8 @@ const FoodForTalkRegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-12">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-12 relative">
+      <LanguageFloatingToggle />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
