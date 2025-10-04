@@ -134,7 +134,7 @@ const FoodForTalkPage = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="pt-4 sm:pt-6 mb-0 sm:mb-2 -mb-8 sm:-mb-10 md:-mb-12 lg:-mb-14">
+          <div className="pt-10 sm:pt-16 mb-0 sm:mb-2 -mb-8 sm:-mb-10 md:-mb-12 lg:-mb-14">
             <img 
               src="/images/High Tea or Me.png?v=3" 
               alt="High Tea or Me Logo" 
