@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiService from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const FoodForTalkRegisterPage = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     // Basic Info
     nickname: '',
@@ -171,14 +173,10 @@ const FoodForTalkRegisterPage = () => {
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Event
+            {t('foodForTalk.common.back')}
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
-            Register for Food for Talk
-          </h1>
-          <p className="text-xl text-white/80">
-            Join our exclusive speed dating event
-          </p>
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">{t('foodForTalk.register.title')}</h1>
+          <p className="text-xl text-white/80">{t('foodForTalk.register.subtitle')}</p>
         </div>
 
         {/* Registration Form */}
@@ -186,23 +184,23 @@ const FoodForTalkRegisterPage = () => {
           <form onSubmit={handleSubmit} className="space-y-10">
             {/* 1. 基本資料 Basic Info */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-4">1. 基本資料 Basic Info</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">{t('foodForTalk.sections.basicInfo')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">暱稱 Nickname (公開給其他參加者)</label>
-                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Your nickname" />
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.nickname')}</label>
+                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.nicknamePlaceholder')} />
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">年齡 Age</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.age')}</label>
                   <select name="age" value={formData.age} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
-                    <option value="">Select age</option>
+                    <option value="">{t('foodForTalk.form.selectAge')}</option>
                     {ageOptions.map(a => (<option key={a} value={a}>{a}</option>))}
                   </select>
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-white font-medium mb-2">性別 Gender</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.gender')}</label>
                   <div className="flex flex-wrap gap-3">
-                    {['男 Male','女 Female','其他 Others'].map(opt => (
+                    {[t('foodForTalk.form.gender.male'), t('foodForTalk.form.gender.female'), t('foodForTalk.form.gender.other')].map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev => ({...prev, gender: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.gender===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
                     ))}
                   </div>
@@ -212,10 +210,10 @@ const FoodForTalkRegisterPage = () => {
 
             {/* 2. 有趣自我 Fun Self-intro */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-4">2. 有趣自我 Fun Self-intro</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">{t('foodForTalk.sections.funIntro')}</h2>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">你最期待在活動中遇到的人是哪種？(Choose one!)</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.expectPersonType')}</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {funTypes.map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, expectPersonType: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.expectPersonType===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
@@ -223,18 +221,18 @@ const FoodForTalkRegisterPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">你最想帶對方去邊度玩？(Pick your dream first date!)</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.dreamFirstDate')}</label>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {dreamDates.map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, dreamFirstDate: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.dreamFirstDate===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
                     ))}
                   </div>
                   {formData.dreamFirstDate==='其他' && (
-                    <input type="text" name="dreamFirstDateOther" value={formData.dreamFirstDateOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
+                    <input type="text" name="dreamFirstDateOther" value={formData.dreamFirstDateOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.other')} />
                   )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">你最愛的興趣/專長係咩？(可選多項) (Pick up to 3!)</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.interests')}</label>
                   <select
                     multiple
                     name="interests"
@@ -250,11 +248,11 @@ const FoodForTalkRegisterPage = () => {
                     ))}
                   </select>
                   {formData.interests.includes('其他') && (
-                    <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
+                    <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.interestsOther')} />
                   )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">你最吸引人或最擅長的是咩？(選擇最多2項，可自填)</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.traits')}</label>
                   <select
                     multiple
                     name="attractiveTraits"
@@ -270,11 +268,11 @@ const FoodForTalkRegisterPage = () => {
                     ))}
                   </select>
                   {formData.attractiveTraits.includes('其他') && (
-                    <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Other (please specify)" />
+                    <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.traitsOther')} />
                   )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">你食日式料理一定要點咩？</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.japaneseFood')}</label>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {japaneseFoods.map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, japaneseFoodPreference: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.japaneseFoodPreference===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
@@ -284,12 +282,12 @@ const FoodForTalkRegisterPage = () => {
               </div>
             </div>
 
-            {/* 3. 神秘快問快答 Quickfire Fun! */}
+            {/* 3. 神秘快問快答 Quickfire Fun */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-4">3. 神秘快問快答 Quickfire Fun!</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">{t('foodForTalk.sections.quickfire')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">如果你有一隻魔法金戒指／金髮夾，你會...</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.magicItem')}</label>
                   <div className="flex flex-wrap gap-3">
                     {quickMagic.map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, quickfireMagicItemChoice: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.quickfireMagicItemChoice===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
@@ -297,7 +295,7 @@ const FoodForTalkRegisterPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">你最想喺速配活動攞到咩？</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.desiredOutcome')}</label>
                   <div className="flex flex-wrap gap-3">
                     {quickOutcome.map(opt => (
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, quickfireDesiredOutcome: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.quickfireDesiredOutcome===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
@@ -309,18 +307,18 @@ const FoodForTalkRegisterPage = () => {
 
             {/* 4. 聯絡方式 Contact Info */}
             <div>
-              <h2 className="text-2xl font-bold text-white mb-4">4. 聯絡方式 Contact Info</h2>
+              <h2 className="text-2xl font-bold text-white mb-4">{t('foodForTalk.sections.contactInfo')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">Email</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.email')}</label>
                   <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Email" />
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">Whatsapp/Phone</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.whatsappPhone')}</label>
                   <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Phone (for notifications only)" />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-white font-medium mb-2">Password</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')}</label>
                   <input type="password" name="password" value={formData.password} onChange={handleInputChange} required minLength="6" className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Create a password (min 6 characters)" />
                 </div>
               </div>
@@ -330,10 +328,7 @@ const FoodForTalkRegisterPage = () => {
             <div>
               <label className="inline-flex items-start gap-3 text-white">
                 <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
-                <span>
-                  我同意讓我的暱稱、年齡、性別、興趣等資料公開俾其他入選參加者瀏覽。
-                  <span className="block text-white/70 text-sm">I agree to share my nickname, age, gender, and selected interests with other shortlisted participants.</span>
-                </span>
+                <span>{t('foodForTalk.form.consent')}</span>
               </label>
             </div>
             {/* Personal Information */}
@@ -514,7 +509,7 @@ const FoodForTalkRegisterPage = () => {
                 disabled={isSubmitting}
                 className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-4 px-8 rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                {isSubmitting ? 'Registering...' : '立即報名 Join the Fun!'}
+                {isSubmitting ? t('common.loading') : t('foodForTalk.submit')}
               </button>
             </div>
           </form>
