@@ -131,7 +131,6 @@ function App() {
                 theme="light"
                 limit={3}
               />
-            </div>
           </Router>
         </UserProvider>
       </LanguageProvider>
