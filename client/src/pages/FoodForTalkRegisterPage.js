@@ -28,7 +28,7 @@ const FoodForTalkRegisterPage = () => {
     gender: '',
     // Contact
     email: '',
-    phone: '',
+    whatsappPhone: '',
     password: '',
     // Fun Self-intro
     expectPersonType: '',
@@ -39,15 +39,7 @@ const FoodForTalkRegisterPage = () => {
     attractiveTraits: [],
     attractiveTraitsOther: '',
     japaneseFoodPreference: '',
-    // Bio
-    bio: '',
-    // Compatibility fields (not shown to user)
-    firstName: 'Anonymous',
-    lastName: 'Participant',
-    occupation: '',
-    dietaryRestrictions: '',
-    emergencyContact: '',
-    emergencyPhone: '',
+    // Optional
     profilePhoto: null,
     consentAccepted: false
   });
@@ -89,24 +81,6 @@ const FoodForTalkRegisterPage = () => {
     }));
   };
 
-  const handleInterestToggle = (interest) => {
-    setFormData(prev => ({
-      ...prev,
-      interests: prev.interests.includes(interest)
-        ? prev.interests.filter(i => i !== interest)
-        : [...prev.interests, interest]
-    }));
-  };
-
-  const handleTraitToggle = (trait) => {
-    setFormData(prev => ({
-      ...prev,
-      attractiveTraits: prev.attractiveTraits.includes(trait)
-        ? prev.attractiveTraits.filter(t => t !== trait)
-        : [...prev.attractiveTraits, trait]
-    }));
-  };
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -124,43 +98,35 @@ const FoodForTalkRegisterPage = () => {
     try {
       // Create FormData for file upload
       const submitData = new FormData();
-      
-      // Add all form fields
-      submitData.append('firstName', formData.firstName);
-      submitData.append('lastName', formData.lastName);
+
+      // Required fields
       submitData.append('email', formData.email);
       submitData.append('password', formData.password);
-      submitData.append('phone', formData.phone);
+      submitData.append('whatsappPhone', formData.whatsappPhone);
       submitData.append('age', formData.age);
-      submitData.append('occupation', formData.occupation);
-      submitData.append('bio', formData.bio);
-      submitData.append('dietaryRestrictions', formData.dietaryRestrictions);
-      submitData.append('emergencyContact', formData.emergencyContact);
-      submitData.append('emergencyPhone', formData.emergencyPhone);
-      submitData.append('interests', JSON.stringify(formData.interests));
-      // New fields
+
+      // New structure fields
       submitData.append('nickname', formData.nickname);
       submitData.append('gender', formData.gender);
       submitData.append('expectPersonType', formData.expectPersonType);
       submitData.append('dreamFirstDate', formData.dreamFirstDate);
       submitData.append('dreamFirstDateOther', formData.dreamFirstDateOther);
+      submitData.append('interests', JSON.stringify(formData.interests));
       submitData.append('interestsOther', formData.interestsOther);
       submitData.append('attractiveTraits', JSON.stringify(formData.attractiveTraits));
       submitData.append('attractiveTraitsOther', formData.attractiveTraitsOther);
       submitData.append('japaneseFoodPreference', formData.japaneseFoodPreference);
-      submitData.append('quickfireMagicItemChoice', formData.quickfireMagicItemChoice);
-      submitData.append('quickfireDesiredOutcome', formData.quickfireDesiredOutcome);
+      submitData.append('quickfireMagicItemChoice', formData.quickfireMagicItemChoice || '');
+      submitData.append('quickfireDesiredOutcome', formData.quickfireDesiredOutcome || '');
       submitData.append('consentAccepted', String(formData.consentAccepted));
-      
-      // Add profile photo if provided
+
+      // Optional profile photo
       if (formData.profilePhoto) {
         submitData.append('profilePhoto', formData.profilePhoto);
       }
 
-      console.log('Submitting Food for Talk registration...');
-
       const response = await apiService.registerForFoodForTalk(submitData);
-      
+
       if (response.message && response.message.includes('successful')) {
         toast.success('Registration successful! You will receive a confirmation email shortly.');
         navigate('/food-for-talk');
@@ -330,7 +296,7 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.whatsappPhone')}</label>
-                  <input type="tel" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Phone (for notifications only)" />
+                  <input type="tel" name="whatsappPhone" value={formData.whatsappPhone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Phone (for notifications only)" />
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')}</label>
@@ -345,176 +311,6 @@ const FoodForTalkRegisterPage = () => {
                 <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
                 <span>{t('foodForTalk.form.consent')}</span>
               </label>
-            </div>
-            {/* Personal Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">First Name *</label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your first name"
-                />
-              </div>
-              <div>
-                <label className="block text-white font-medium mb-2">Last Name *</label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your last name"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">Email *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div>
-                <label className="block text-white font-medium mb-2">Password *</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                  minLength="6"
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Create a password (min 6 characters)"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">Phone *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your phone number"
-                />
-              </div>
-              <div>
-                {/* Empty div for grid layout */}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">Age *</label>
-                <input
-                  type="number"
-                  name="age"
-                  value={formData.age}
-                  onChange={handleInputChange}
-                  required
-                  min="25"
-                  max="40"
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your age"
-                />
-              </div>
-              <div>
-                <label className="block text-white font-medium mb-2">Occupation *</label>
-                <input
-                  type="text"
-                  name="occupation"
-                  value={formData.occupation}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Enter your occupation"
-                />
-              </div>
-            </div>
-
-            {/* Bio */}
-            <div>
-              <label className="block text-white font-medium mb-2">Bio *</label>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                required
-                rows={4}
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Tell us about yourself (hobbies, interests, what you're looking for...)"
-              />
-            </div>
-
-            {/* Profile Photo */}
-            <div>
-              <label className="block text-white font-medium mb-2">Profile Photo</label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-yellow-400 file:text-black hover:file:bg-yellow-500"
-              />
-            </div>
-
-            
-
-            {/* Dietary Restrictions */}
-            <div>
-              <label className="block text-white font-medium mb-2">Dietary Restrictions</label>
-              <input
-                type="text"
-                name="dietaryRestrictions"
-                value={formData.dietaryRestrictions}
-                onChange={handleInputChange}
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Any dietary restrictions or allergies?"
-              />
-            </div>
-
-            {/* Emergency Contact */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-white font-medium mb-2">Emergency Contact Name *</label>
-                <input
-                  type="text"
-                  name="emergencyContact"
-                  value={formData.emergencyContact}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Emergency contact name"
-                />
-              </div>
-              <div>
-                <label className="block text-white font-medium mb-2">Emergency Contact Phone *</label>
-                <input
-                  type="tel"
-                  name="emergencyPhone"
-                  value={formData.emergencyPhone}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  placeholder="Emergency contact phone"
-                />
-              </div>
             </div>
 
             {/* Submit Button */}
