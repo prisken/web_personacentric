@@ -11,9 +11,7 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.STRING(255),
     allowNull: false,
     unique: true,
-    validate: {
-      isEmail: true
-    }
+    validate: { isEmail: true }
   },
   password_hash: {
     type: DataTypes.STRING(255),
@@ -21,31 +19,35 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
   },
   first_name: {
     type: DataTypes.STRING(100),
-    allowNull: false
+    allowNull: true,
+    defaultValue: 'Anonymous'
   },
   last_name: {
     type: DataTypes.STRING(100),
-    allowNull: false
+    allowNull: true,
+    defaultValue: 'Participant'
   },
   phone: {
+    type: DataTypes.STRING(20),
+    allowNull: true
+  },
+  // For clarity: store WhatsApp separately if provided
+  whatsapp_phone: {
     type: DataTypes.STRING(20),
     allowNull: true
   },
   age: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    validate: {
-      min: 20,
-      max: 40
-    }
+    validate: { min: 20, max: 40 }
   },
   occupation: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: true
   },
   bio: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: true
   },
   interests: {
     type: DataTypes.JSONB,
@@ -58,11 +60,11 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
   },
   emergency_contact_name: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: true
   },
   emergency_contact_phone: {
     type: DataTypes.STRING(20),
-    allowNull: false
+    allowNull: true
   },
   profile_photo_url: {
     type: DataTypes.STRING(500),
@@ -91,6 +93,58 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
   registration_date: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
+  },
+
+  // Expanded registration fields
+  nickname: {
+    type: DataTypes.STRING(100),
+    allowNull: true
+  },
+  gender: {
+    type: DataTypes.STRING(50),
+    allowNull: true
+  },
+  expect_person_type: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  dream_first_date: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  dream_first_date_other: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  interests_other: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  attractive_traits: {
+    type: DataTypes.JSONB,
+    allowNull: true,
+    defaultValue: []
+  },
+  attractive_traits_other: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  japanese_food_preference: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  quickfire_magic_item_choice: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  quickfire_desired_outcome: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  consent_accepted: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: false
   }
 }, {
   tableName: 'food_for_talk_users',
@@ -98,26 +152,12 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
   createdAt: 'created_at',
   updatedAt: 'updated_at',
   indexes: [
-    {
-      fields: ['email']
-    },
-    {
-      fields: ['is_verified']
-    },
-    {
-      fields: ['is_active']
-    },
-    {
-      fields: ['registration_date']
-    },
-    {
-      fields: ['secret_passkey']
-    }
+    { fields: ['email'] },
+    { fields: ['is_verified'] },
+    { fields: ['is_active'] },
+    { fields: ['registration_date'] },
+    { fields: ['secret_passkey'] }
   ]
 });
-
-// Expanded registration fields
-FoodForTalkUser.prototype.extraFields = true;
-
 
 module.exports = FoodForTalkUser;
