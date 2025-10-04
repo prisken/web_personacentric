@@ -20,7 +20,7 @@ const LanguageFloatingToggle = () => {
 
 const FoodForTalkRegisterPage = () => {
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     // Basic Info
     nickname: '',
@@ -40,6 +40,7 @@ const FoodForTalkRegisterPage = () => {
     attractiveTraitsOther: '',
     japaneseFoodPreference: '',
     // Optional
+    bio: '',
     profilePhoto: null,
     consentAccepted: false
   });
@@ -47,31 +48,35 @@ const FoodForTalkRegisterPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const ageOptions = Array.from({ length: 40 - 20 + 1 }, (_, i) => 20 + i);
-  const funTypes = [
-    '愛玩愛笑派（Fun & Laughs）',
-    '文青知性派（Chill & Artsy）',
-    '運動健將派（Sporty）',
-    '美食探索家（Foodie）',
-    '旅遊冒險派（Globe-trotter）',
-    '神秘未知派（Surprise me!）'
-  ];
-  const dreamDates = [
-    '一齊去日式餐廳開餐',
-    '一起行山',
-    '去睇演唱會/音樂會',
-    '夜遊維港',
-    '咖啡店慢談',
-    '其他'
-  ];
-  const interestChoices = [
-    '煮食','運動','追劇/電影','旅行','畫畫/手作','唱歌/音樂','電玩/桌遊','寫作/閱讀','其他'
-  ];
-  const traitChoices = [
-    '好有幽默感（Funny & witty）','很會聊天（Great conversationalist）','做嘢認真專注（Hardworking & focused）','好有創意（Creative thinker）','好有同理心（Empathetic & caring）','組織力強（Organized & reliable）','運動細胞發達（Athletic）','廚藝高手（Great cook）','藝術天分（Artistic talent）','其他'
-  ];
-  const japaneseFoods = ['壽司 Sushi','刺身 Sashimi','天婦羅 Tempura','拉麵 Ramen','日式甜品 Japanese Dessert','清酒/飲品 Sake/Drinks'];
-  const quickMagic = ['用嚟表白','當護身符','偷偷收埋','送俾最有緣嗰位'];
-  const quickOutcome = ['新朋友','脫單機會','笑到肚痛的回憶','靚相打卡','一段特別的故事'];
+
+  // Localized option lists
+  const funTypes = language === 'zh-TW'
+    ? ['愛玩愛笑派', '文青知性派', '運動健將派', '美食探索家', '旅遊冒險派', '神秘未知派']
+    : ['Fun & Laughs', 'Chill & Artsy', 'Sporty', 'Foodie', 'Globe-trotter', 'Surprise me!'];
+
+  const dreamDates = language === 'zh-TW'
+    ? ['一齊去日式餐廳開餐', '一起行山', '去睇演唱會/音樂會', '夜遊維港', '咖啡店慢談', '其他']
+    : ['Japanese restaurant dinner', 'Hiking together', 'Concert / Live music', 'Harbour night walk', 'Cafe slow talk', 'Other'];
+
+  const interestChoices = language === 'zh-TW'
+    ? ['煮食', '運動', '追劇/電影', '旅行', '畫畫/手作', '唱歌/音樂', '電玩/桌遊', '寫作/閱讀', '其他']
+    : ['Cooking', 'Sports', 'Movies/Series', 'Travel', 'Art/Handcraft', 'Singing/Music', 'Gaming/Board games', 'Writing/Reading', 'Other'];
+
+  const traitChoices = language === 'zh-TW'
+    ? ['好有幽默感', '很會聊天', '做嘢認真專注', '好有創意', '好有同理心', '組織力強', '運動細胞發達', '廚藝高手', '藝術天分', '其他']
+    : ['Funny & witty', 'Great conversationalist', 'Hardworking & focused', 'Creative thinker', 'Empathetic & caring', 'Organized & reliable', 'Athletic', 'Great cook', 'Artistic talent', 'Other'];
+
+  const japaneseFoods = language === 'zh-TW'
+    ? ['壽司', '刺身', '天婦羅', '拉麵', '日式甜品', '清酒/飲品']
+    : ['Sushi', 'Sashimi', 'Tempura', 'Ramen', 'Japanese dessert', 'Sake/Drinks'];
+
+  const quickMagic = language === 'zh-TW'
+    ? ['用嚟表白', '當護身符', '偷偷收埋', '送俾最有緣嗰位']
+    : ['Confess love', 'Keep as amulet', 'Hide it secretly', 'Gift to the fated one'];
+
+  const quickOutcome = language === 'zh-TW'
+    ? ['新朋友', '脫單機會', '笑到肚痛的回憶', '靚相打卡', '一段特別的故事']
+    : ['New friends', 'Chance to find a match', 'Laugh-out-loud memories', 'Nice photos', 'A special story'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -119,6 +124,7 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('quickfireMagicItemChoice', formData.quickfireMagicItemChoice || '');
       submitData.append('quickfireDesiredOutcome', formData.quickfireDesiredOutcome || '');
       submitData.append('consentAccepted', String(formData.consentAccepted));
+      submitData.append('bio', formData.bio || '');
 
       // Optional profile photo
       if (formData.profilePhoto) {
@@ -208,7 +214,7 @@ const FoodForTalkRegisterPage = () => {
                       <button key={opt} type="button" onClick={() => setFormData(prev=>({...prev, dreamFirstDate: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.dreamFirstDate===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
                     ))}
                   </div>
-                  {formData.dreamFirstDate==='其他' && (
+                  {formData.dreamFirstDate === (language === 'zh-TW' ? '其他' : 'Other') && (
                     <input type="text" name="dreamFirstDateOther" value={formData.dreamFirstDateOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.other')} />
                   )}
                 </div>
@@ -228,7 +234,7 @@ const FoodForTalkRegisterPage = () => {
                       <option key={opt} value={opt}>{opt}</option>
                     ))}
                   </select>
-                  {formData.interests.includes('其他') && (
+                  {formData.interests.includes(language === 'zh-TW' ? '其他' : 'Other') && (
                     <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.interestsOther')} />
                   )}
                 </div>
@@ -248,7 +254,7 @@ const FoodForTalkRegisterPage = () => {
                       <option key={opt} value={opt}>{opt}</option>
                     ))}
                   </select>
-                  {formData.attractiveTraits.includes('其他') && (
+                  {formData.attractiveTraits.includes(language === 'zh-TW' ? '其他' : 'Other') && (
                     <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.traitsOther')} />
                   )}
                 </div>
@@ -311,6 +317,19 @@ const FoodForTalkRegisterPage = () => {
                 <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
                 <span>{t('foodForTalk.form.consent')}</span>
               </label>
+            </div>
+
+            {/* Bio (optional) */}
+            <div>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.form.bio')}</label>
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleInputChange}
+                rows={5}
+                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                placeholder={t('foodForTalk.form.bioPlaceholder')}
+              />
             </div>
 
             {/* Disclaimer */}
