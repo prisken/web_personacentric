@@ -99,7 +99,7 @@ const FoodForTalkPage = () => {
         {/* Logo Background */}
         <div className="absolute inset-0 flex items-center justify-center z-[15]">
           <img 
-            src="/images/High Tea or Me.png?v=2" 
+            src="/images/High Tea or Me.png?v=3" 
             alt="High Tea or Me Logo" 
             className="h-32 sm:h-48 md:h-64 lg:h-80 xl:h-96 2xl:h-[28rem] object-contain"
           />
@@ -134,16 +134,16 @@ const FoodForTalkPage = () => {
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Logo as first element */}
-          <div className="pt-8 sm:pt-12 mb-0 sm:mb-2 -mb-6 sm:-mb-8 md:-mb-10 lg:-mb-12">
+          <div className="pt-8 sm:pt-12 mb-0 sm:mb-2 -mb-12 sm:-mb-16 md:-mb-20 lg:-mb-24">
             <img 
-              src="/images/High Tea or Me.png?v=2" 
+              src="/images/High Tea or Me.png?v=3" 
               alt="High Tea or Me Logo" 
               className="block mx-auto h-[40vh] sm:h-72 md:h-96 lg:h-[34rem] xl:h-[40rem] 2xl:h-[44rem] object-contain"
             />
           </div>
 
           {/* Primary CTA Buttons: Register (emphasized) above Info */}
-          <div className="-mt-14 sm:-mt-10 md:-mt-12 lg:-mt-16 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
+          <div className="-mt-20 sm:-mt-16 md:-mt-20 lg:-mt-24 mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
           </div>
