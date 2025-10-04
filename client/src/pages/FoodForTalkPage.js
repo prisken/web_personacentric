@@ -4,6 +4,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from '../components/food-for-talk/CountdownTimer';
 import EventDetails from '../components/food-for-talk/EventDetails';
 import RegisterButton from '../components/food-for-talk/RegisterButton';
+import ActionButtons from '../components/food-for-talk/ActionButtons';
 import apiService from '../services/api';
 
 const FoodForTalkPage = () => {
@@ -142,18 +143,8 @@ const FoodForTalkPage = () => {
             />
           </div>
 
-          {/* Countdown Timer or Event Status Message */}
-          {eventSettings.show_countdown && eventSettings.is_event_active && (
-            <div className="mb-12">
-              <CountdownTimer 
-                timeLeft={timeLeft} 
-                headerText={eventSettings.countdown_header_text}
-              />
-            </div>
-          )}
-          
           {/* Primary CTA Buttons: Register (emphasized) + Info */}
-          <div className="mb-16 flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
+          <div className="mb-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
             {/* Emphasized Register Button */}
             <RegisterButton />
             {/* Info Button - scroll to event info */}
@@ -163,18 +154,33 @@ const FoodForTalkPage = () => {
                 const el = document.getElementById('event-info');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
-              className="group relative w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20"
+              className="group relative w-full sm:w-auto px-6 py-3 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
             >
               <span className="relative z-10 flex items-center">
                 活動詳情 Information
                 <svg 
-                  className="ml-3 w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" 
+                  className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" 
                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </span>
-              <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-white/10 to-white/10"></div>
+              <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-white/10 to-white/10"></div>
             </button>
+          </div>
+
+          {/* Countdown Timer or Event Status Message */}
+          {eventSettings.show_countdown && eventSettings.is_event_active && (
+            <div className="mb-10">
+              <CountdownTimer 
+                timeLeft={timeLeft} 
+                headerText={eventSettings.countdown_header_text}
+              />
+            </div>
+          )}
+
+          {/* Secondary Buttons: See Participants + Enter Secret Chat */}
+          <div className="mb-16">
+            <ActionButtons />
           </div>
           
           {/* Event Status Messages */}
