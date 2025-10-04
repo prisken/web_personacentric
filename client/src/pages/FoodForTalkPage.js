@@ -167,7 +167,7 @@ const FoodForTalkPage = () => {
               className="group relative w-auto mx-auto px-5 py-2.5 rounded-lg font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center border border-white/30 bg-white/10 hover:bg-white/20 text-sm"
             >
               <span className="relative z-10 flex items-center">
-                Information
+                {t('foodForTalk.information')}
                 <svg 
                   className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" 
                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -198,7 +198,7 @@ const FoodForTalkPage = () => {
             <div className="max-w-5xl mx-auto px-4">
               {/* Organizer */}
               <div className="text-center mb-6">
-                <div className="text-white/70 text-xs tracking-widest uppercase mb-3">Organizer</div>
+              <div className="text-white/70 text-xs tracking-widest uppercase mb-3">{t('foodForTalk.organizer')}</div>
                 <div className="flex justify-center">
                   <img
                     src="/images/sd-logos/honor.png"
@@ -211,7 +211,7 @@ const FoodForTalkPage = () => {
               {/* Sponsors grid */}
               <div className="grid grid-cols-3 gap-6 items-center">
                 <div className="text-center">
-                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Location</div>
+                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">{t('foodForTalk.locationLabel')}</div>
                   <img
                     src="/images/sd-logos/ippaiki.png"
                     alt="IPPAIKI - Location Sponsor"
@@ -219,7 +219,7 @@ const FoodForTalkPage = () => {
                   />
                 </div>
                 <div className="text-center">
-                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Drinks</div>
+                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">{t('foodForTalk.drinksLabel')}</div>
                   <img
                     src="/images/sd-logos/one-half.png"
                     alt="One Half Dessert - Drink Sponsor"
@@ -227,7 +227,7 @@ const FoodForTalkPage = () => {
                   />
                 </div>
                 <div className="text-center">
-                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">Media</div>
+                  <div className="text-white/70 text-[10px] uppercase tracking-wider mb-2">{t('foodForTalk.mediaLabel')}</div>
                   <img
                     src="/images/sd-logos/persona-centric.png"
                     alt="Persona Centric - Media Sponsor"
@@ -242,12 +242,8 @@ const FoodForTalkPage = () => {
           {!eventSettings.is_event_active && (
             <div className="mb-12">
               <div className="bg-yellow-400/20 border border-yellow-400/30 rounded-xl p-6 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2">
-                  Event Currently Inactive
-                </h2>
-                <p className="text-white/80">
-                  This event is currently not active. Please check back later.
-                </p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-yellow-400 mb-2">{t('foodForTalk.inactiveTitle')}</h2>
+                <p className="text白色/80">{t('foodForTalk.inactiveDesc')}</p>
               </div>
             </div>
           )}
@@ -255,12 +251,8 @@ const FoodForTalkPage = () => {
           {eventSettings.event_status === 'completed' && (
             <div className="mb-12">
               <div className="bg-green-400/20 border border-green-400/30 rounded-xl p-6 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold text-green-400 mb-2">
-                  Event Completed
-                </h2>
-                <p className="text-white/80">
-                  Thank you for participating in our Food for Talk event!
-                </p>
+                <h2 className="text-2xl sm:text-3xl font-bold text-green-400 mb-2">{t('foodForTalk.completedTitle')}</h2>
+                <p className="text-white/80">{t('foodForTalk.completedDesc')}</p>
               </div>
             </div>
           )}

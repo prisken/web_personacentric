@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiService from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const FoodForTalkSecretLoginPage = () => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -59,13 +61,13 @@ const FoodForTalkSecretLoginPage = () => {
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Event
+            {t('foodForTalk.common.back')}
           </Link>
           <h2 className="text-3xl font-bold text-white mb-2">
-            🔐 Secret Chat Room Access
+            {t('foodForTalk.secretLogin.title')}
           </h2>
           <p className="text-white/80">
-            Enter your credentials and secret passkey to join the exclusive chat room
+            {t('foodForTalk.secretLogin.subtitle')}
           </p>
         </div>
 
@@ -73,7 +75,7 @@ const FoodForTalkSecretLoginPage = () => {
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-white font-medium mb-2">Email</label>
+              <label className="block text白色 font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
               <input
                 type="email"
                 name="email"
@@ -81,12 +83,12 @@ const FoodForTalkSecretLoginPage = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder={t('foodForTalk.secretLogin.email')}
               />
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Password</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
               <input
                 type="password"
                 name="password"
@@ -94,12 +96,12 @@ const FoodForTalkSecretLoginPage = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your password"
+                placeholder={t('foodForTalk.secretLogin.password')}
               />
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Secret Passkey</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.secretPasskey')}</label>
               <input
                 type="text"
                 name="passkey"
@@ -107,11 +109,9 @@ const FoodForTalkSecretLoginPage = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your secret passkey"
+                placeholder={t('foodForTalk.secretLogin.secretPasskey')}
               />
-              <p className="text-white/60 text-sm mt-1">
-                Contact the event organizer if you don't have a passkey
-              </p>
+              <p className="text-white/60 text-sm mt-1">&nbsp;</p>
             </div>
 
             <button
@@ -119,7 +119,7 @@ const FoodForTalkSecretLoginPage = () => {
               disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-3 px-6 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isSubmitting ? 'Entering Secret Room...' : '🔐 Enter Secret Chat Room'}
+              {isSubmitting ? t('common.loading') : t('foodForTalk.secretLogin.submit')}
             </button>
           </form>
 

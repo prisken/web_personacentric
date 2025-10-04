@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 const RegisterButton = () => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const { t } = useLanguage();
   return (
     <Link
       to="/food-for-talk/register"
@@ -16,7 +18,7 @@ const RegisterButton = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <span className="relative z-10 flex items-center">
-        Register for Event
+        {t('foodForTalk.registerNow')}
         <svg 
           className={`ml-3 w-6 h-6 transition-transform duration-300 ${isHovered ? 'translate-x-1' : ''}`}
           fill="none" 

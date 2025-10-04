@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiService from '../services/api';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const FoodForTalkLoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -62,13 +64,13 @@ const FoodForTalkLoginPage = () => {
             <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Event
+            {t('foodForTalk.common.back')}
           </Link>
           <h2 className="text-3xl font-bold text-white mb-2">
-            Login to Food for Talk
+            {t('foodForTalk.login.title')}
           </h2>
           <p className="text-white/80">
-            Enter your credentials to access participant features
+            {t('foodForTalk.login.subtitle')}
           </p>
         </div>
 
@@ -76,7 +78,7 @@ const FoodForTalkLoginPage = () => {
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-white font-medium mb-2">Email</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.login.email')}</label>
               <input
                 type="email"
                 name="email"
@@ -84,12 +86,12 @@ const FoodForTalkLoginPage = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your email"
+                placeholder={t('foodForTalk.login.email')}
               />
             </div>
 
             <div>
-              <label className="block text-white font-medium mb-2">Password</label>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.login.password')}</label>
               <input
                 type="password"
                 name="password"
@@ -97,7 +99,7 @@ const FoodForTalkLoginPage = () => {
                 onChange={handleInputChange}
                 required
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your password"
+                placeholder={t('foodForTalk.login.password')}
               />
             </div>
 
@@ -106,18 +108,18 @@ const FoodForTalkLoginPage = () => {
               disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black font-bold py-3 px-6 rounded-xl hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isSubmitting ? 'Logging in...' : 'Login'}
+              {isSubmitting ? t('common.loading') : t('foodForTalk.login.submit')}
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-white/70">
-              Don't have an account?{' '}
+              {t('register.haveAccount') ? '' : ''}
               <Link 
                 to="/food-for-talk/register" 
                 className="text-yellow-400 hover:text-yellow-300 font-medium"
               >
-                Register here
+                {t('foodForTalk.register.title')}
               </Link>
             </p>
           </div>
