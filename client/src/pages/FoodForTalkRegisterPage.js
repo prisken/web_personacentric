@@ -135,9 +135,18 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('expectPersonType', formData.expectPersonType);
       submitData.append('dreamFirstDate', formData.dreamFirstDate);
       submitData.append('dreamFirstDateOther', formData.dreamFirstDateOther);
-      submitData.append('interests', JSON.stringify(formData.interests));
+      console.log('🔍 [FRONTEND DEBUG] formData.interests before stringify:', formData.interests);
+      console.log('🔍 [FRONTEND DEBUG] formData.interests type:', typeof formData.interests);
+      console.log('🔍 [FRONTEND DEBUG] formData.interests is array?', Array.isArray(formData.interests));
+      const interestsString = JSON.stringify(formData.interests);
+      console.log('🔍 [FRONTEND DEBUG] interests stringified:', interestsString);
+      submitData.append('interests', interestsString);
       submitData.append('interestsOther', formData.interestsOther);
-      submitData.append('attractiveTraits', JSON.stringify(formData.attractiveTraits));
+      
+      console.log('🔍 [FRONTEND DEBUG] formData.attractiveTraits before stringify:', formData.attractiveTraits);
+      const attractiveTraitsString = JSON.stringify(formData.attractiveTraits);
+      console.log('🔍 [FRONTEND DEBUG] attractiveTraits stringified:', attractiveTraitsString);
+      submitData.append('attractiveTraits', attractiveTraitsString);
       submitData.append('attractiveTraitsOther', formData.attractiveTraitsOther);
       submitData.append('japaneseFoodPreference', formData.japaneseFoodPreference);
       submitData.append('quickfireMagicItemChoice', formData.quickfireMagicItemChoice || '');

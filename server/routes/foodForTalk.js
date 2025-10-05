@@ -104,10 +104,15 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     }
 
     // Parse interests
+    console.log('🔍 [REGISTRATION DEBUG] Raw interests from form:', interests);
+    console.log('🔍 [REGISTRATION DEBUG] Type of interests:', typeof interests);
     let parsedInterests = [];
     try {
       parsedInterests = JSON.parse(interests || '[]');
+      console.log('🔍 [REGISTRATION DEBUG] Parsed interests:', parsedInterests);
+      console.log('🔍 [REGISTRATION DEBUG] Is parsedInterests an array?', Array.isArray(parsedInterests));
     } catch (e) {
+      console.error('🔍 [REGISTRATION DEBUG] Error parsing interests:', e);
       parsedInterests = [];
     }
 
@@ -141,6 +146,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       secret_passkey: secretPasskey,
       is_verified: true
     };
+    
+    console.log('🔍 [REGISTRATION DEBUG] baseData.interests:', baseData.interests);
+    console.log('🔍 [REGISTRATION DEBUG] baseData.interests type:', typeof baseData.interests);
+    console.log('🔍 [REGISTRATION DEBUG] baseData.interests is array?', Array.isArray(baseData.interests));
 
     // Check which columns exist in the production DB to avoid schema mismatches
     let user;
@@ -167,9 +176,17 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
       
       user = await FoodForTalkUser.create(createData);
+      console.log('🔍 [REGISTRATION DEBUG] User created successfully. User ID:', user.id);
+      console.log('🔍 [REGISTRATION DEBUG] User interests after creation:', user.interests);
+      console.log('🔍 [REGISTRATION DEBUG] User interests type:', typeof user.interests);
+      console.log('🔍 [REGISTRATION DEBUG] User interests is array?', Array.isArray(user.interests));
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
       user = await FoodForTalkUser.create(baseData);
+      console.log('🔍 [REGISTRATION DEBUG] User created with baseData. User ID:', user.id);
+      console.log('🔍 [REGISTRATION DEBUG] User interests after baseData creation:', user.interests);
+      console.log('🔍 [REGISTRATION DEBUG] User interests type:', typeof user.interests);
+      console.log('🔍 [REGISTRATION DEBUG] User interests is array?', Array.isArray(user.interests));
     }
 
     // Send confirmation email (you can implement this)
@@ -270,6 +287,10 @@ router.get('/profile', async (req, res) => {
         'created_at', 'updated_at'
       ]
     });
+    
+    console.log('🔍 [GET PROFILE DEBUG] Raw participant.interests from DB:', participant.interests);
+    console.log('🔍 [GET PROFILE DEBUG] Type of participant.interests:', typeof participant.interests);
+    console.log('🔍 [GET PROFILE DEBUG] Is participant.interests an array?', Array.isArray(participant.interests));
 
     if (!participant) {
       return res.status(404).json({ message: 'Participant not found' });
@@ -775,23 +796,34 @@ router.get('/participants', async (req, res) => {
     });
 
     // Format participants data
-    const formattedParticipants = participants.map(participant => ({
-      id: participant.id,
-      firstName: participant.first_name,
-      lastName: participant.last_name,
-      nickname: participant.nickname,
-      gender: participant.gender,
-      age: participant.age,
-      bio: participant.bio,
-      interests: (() => {
+    const formattedParticipants = participants.map(participant => {
+      console.log('🔍 [PARTICIPANTS DEBUG] Raw participant.interests from DB:', participant.interests);
+      console.log('🔍 [PARTICIPANTS DEBUG] Type of participant.interests:', typeof participant.interests);
+      console.log('🔍 [PARTICIPANTS DEBUG] Is participant.interests an array?', Array.isArray(participant.interests));
+      
+      const formattedInterests = (() => {
         try {
-          return participant.interests ? JSON.parse(participant.interests) : [];
+          const result = participant.interests ? JSON.parse(participant.interests) : [];
+          console.log('🔍 [PARTICIPANTS DEBUG] Parsed interests result:', result);
+          return result;
         } catch (e) {
+          console.error('🔍 [PARTICIPANTS DEBUG] Error parsing interests:', e);
           return [];
         }
-      })(),
-      profilePhotoUrl: participant.profile_photo_url
-    }));
+      })();
+      
+      return {
+        id: participant.id,
+        firstName: participant.first_name,
+        lastName: participant.last_name,
+        nickname: participant.nickname,
+        gender: participant.gender,
+        age: participant.age,
+        bio: participant.bio,
+        interests: formattedInterests,
+        profilePhotoUrl: participant.profile_photo_url
+      };
+    });
 
     res.json({
       message: 'Participants retrieved successfully',
