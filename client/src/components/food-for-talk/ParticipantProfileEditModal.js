@@ -19,7 +19,7 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
   const loadCurrentProfile = async () => {
     setLoading(true);
     try {
-      // Get current user info from token
+      // Check if user is logged in
       const token = localStorage.getItem('foodForTalkToken');
       if (!token) {
         toast.error('Please login first');
@@ -27,13 +27,8 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
         return;
       }
 
-      // Decode token to get user ID
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const payload = JSON.parse(atob(base64));
-      
-      // Get participant details
-      const response = await apiService.getFoodForTalkParticipantDetails(payload.userId);
+      // Get current user's profile data
+      const response = await apiService.getFoodForTalkProfile();
       if (response.participant) {
         setProfile(response.participant);
         setEditData(response.participant);

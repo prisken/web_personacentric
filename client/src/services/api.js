@@ -559,6 +559,15 @@ class ApiService {
     });
   }
 
+  async getFoodForTalkProfile() {
+    const token = localStorage.getItem('foodForTalkToken');
+    return this.get('/food-for-talk/profile', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   async updateFoodForTalkProfile(updateData) {
     const token = localStorage.getItem('foodForTalkToken');
     return this.put('/food-for-talk/profile', updateData, {

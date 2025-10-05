@@ -238,6 +238,95 @@ router.post('/view-profile/:userId', async (req, res) => {
   }
 });
 
+// Get current participant profile (self-viewing)
+router.get('/profile', async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const token = authHeader.substring(7);
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      if (decoded.type !== 'food-for-talk-participant') {
+        return res.status(401).json({ message: 'Invalid token type' });
+      }
+    } catch (jwtError) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const { userId } = decoded;
+    const participant = await FoodForTalkUser.findByPk(userId, {
+      attributes: [
+        'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
+        'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
+        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
+        'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+        'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
+        'japanese_food_preference', 'quickfire_magic_item_choice',
+        'quickfire_desired_outcome', 'consent_accepted', 'profile_photo_url',
+        'created_at', 'updated_at'
+      ]
+    });
+
+    if (!participant) {
+      return res.status(404).json({ message: 'Participant not found' });
+    }
+
+    const formattedParticipant = {
+      id: participant.id,
+      email: participant.email,
+      firstName: participant.first_name,
+      lastName: participant.last_name,
+      nickname: participant.nickname,
+      gender: participant.gender,
+      age: participant.age,
+      phone: participant.phone,
+      whatsappPhone: participant.whatsapp_phone,
+      occupation: participant.occupation,
+      bio: participant.bio,
+      interests: (() => {
+        try {
+          return participant.interests ? JSON.parse(participant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      interestsOther: participant.interests_other,
+      dietaryRestrictions: participant.dietary_restrictions,
+      emergencyContactName: participant.emergency_contact_name,
+      emergencyContactPhone: participant.emergency_contact_phone,
+      profilePhotoUrl: participant.profile_photo_url,
+      createdAt: participant.created_at,
+      expectPersonType: participant.expect_person_type,
+      dreamFirstDate: participant.dream_first_date,
+      dreamFirstDateOther: participant.dream_first_date_other,
+      attractiveTraits: (() => {
+        try {
+          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      attractiveTraitsOther: participant.attractive_traits_other,
+      japaneseFoodPreference: participant.japanese_food_preference,
+      quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: participant.quickfire_desired_outcome,
+      consentAccepted: participant.consent_accepted
+    };
+
+    res.json({
+      message: 'Profile retrieved successfully',
+      participant: formattedParticipant
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Failed to get profile' });
+  }
+});
+
 // Update participant profile (self-editing)
 router.put('/profile', async (req, res) => {
   try {
