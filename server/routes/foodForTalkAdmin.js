@@ -181,12 +181,12 @@ router.put('/participants/:id', async (req, res) => {
       }
     }
 
-    // Handle array fields
+    // Handle array fields - store as arrays, not JSON strings
     if (updateData.interests && Array.isArray(updateData.interests)) {
-      filteredUpdateData.interests = JSON.stringify(updateData.interests);
+      filteredUpdateData.interests = updateData.interests;
     }
     if (updateData.attractive_traits && Array.isArray(updateData.attractive_traits)) {
-      filteredUpdateData.attractive_traits = JSON.stringify(updateData.attractive_traits);
+      filteredUpdateData.attractive_traits = updateData.attractive_traits;
     }
 
     // Update participant
