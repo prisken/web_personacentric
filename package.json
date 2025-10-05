@@ -28,6 +28,7 @@
     "super-admin:reset-password": "node server/scripts/resetSuperAdminPassword.js",
     "super-admin:fix-login": "node server/scripts/fixSuperAdminLogin.js",
     "db:fix-production": "node server/scripts/fixProductionDatabase.js",
+    "db:fix-food-for-talk": "node server/runDatabaseFix.js",
     "migrate:mark-existing": "node server/scripts/markExistingMigrations.js",
     "test": "jest --detectOpenHandles",
     "test:super-admin": "jest server/tests/superAdmin.test.js --detectOpenHandles"
