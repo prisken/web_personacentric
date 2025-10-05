@@ -32,6 +32,11 @@ const FoodForTalkRegisterPage = () => {
     email: '',
     whatsappPhone: '',
     password: '',
+    // Additional Info
+    occupation: '',
+    dietaryRestrictions: '',
+    emergencyContactName: '',
+    emergencyContactPhone: '',
     // Fun Self-intro
     expectPersonType: '',
     dreamFirstDate: '',
@@ -41,6 +46,8 @@ const FoodForTalkRegisterPage = () => {
     attractiveTraits: [],
     attractiveTraitsOther: '',
     japaneseFoodPreference: '',
+    quickfireMagicItemChoice: '',
+    quickfireDesiredOutcome: '',
     // Optional
     bio: '',
     profilePhoto: null,
@@ -117,6 +124,14 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('lastName', formData.lastName);
       submitData.append('nickname', formData.nickname);
       submitData.append('gender', formData.gender);
+      
+      // Additional info fields
+      submitData.append('occupation', formData.occupation || '');
+      submitData.append('dietaryRestrictions', formData.dietaryRestrictions || '');
+      submitData.append('emergencyContactName', formData.emergencyContactName || '');
+      submitData.append('emergencyContactPhone', formData.emergencyContactPhone || '');
+      
+      // Fun self-intro fields
       submitData.append('expectPersonType', formData.expectPersonType);
       submitData.append('dreamFirstDate', formData.dreamFirstDate);
       submitData.append('dreamFirstDateOther', formData.dreamFirstDateOther);
@@ -203,6 +218,22 @@ const FoodForTalkRegisterPage = () => {
                       <button key={opt} type="button" onClick={() => setFormData(prev => ({...prev, gender: opt}))} className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${formData.gender===opt ? 'bg-yellow-400 text-black' : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'}`}>{opt}</button>
                     ))}
                   </div>
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">職業 Occupation</label>
+                  <input type="text" name="occupation" value={formData.occupation} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的職業" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">緊急聯絡人姓名 Emergency Contact Name</label>
+                  <input type="text" name="emergencyContactName" value={formData.emergencyContactName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入緊急聯絡人姓名" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">緊急聯絡人電話 Emergency Contact Phone</label>
+                  <input type="tel" name="emergencyContactPhone" value={formData.emergencyContactPhone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入緊急聯絡人電話" />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white font-medium mb-2">飲食限制 Dietary Restrictions</label>
+                  <textarea name="dietaryRestrictions" value={formData.dietaryRestrictions} onChange={handleInputChange} rows="3" className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請告訴我們任何飲食限制或過敏" />
                 </div>
               </div>
             </div>
