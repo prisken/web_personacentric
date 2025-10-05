@@ -109,7 +109,10 @@ const FoodForTalkParticipantsPage = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-12">
         {/* Language Toggle and Logout Button */}
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <div className="fixed top-4 right-4 z-50 flex gap-2 items-center">
+          <div className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-green-500/40 border border-green-500/20 backdrop-blur-sm">
+            👋 {userInfo?.nickname || 'User'}
+          </div>
           <button
             type="button"
             onClick={handleLogout}

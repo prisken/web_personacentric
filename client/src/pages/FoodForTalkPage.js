@@ -156,16 +156,21 @@ const FoodForTalkPage = () => {
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Local Language Toggle and Logout Button */}
-        <div className="fixed top-4 right-4 z-50 flex gap-2">
+        <div className="fixed top-4 right-4 z-50 flex gap-2 items-center">
           {isLoggedIn && (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-red-500/40 hover:bg-red-500/60 border border-red-500/20 backdrop-blur-sm"
-              title={`Logged in as ${userInfo?.nickname || userInfo?.email}`}
-            >
-              登出 Logout
-            </button>
+            <>
+              <div className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-green-500/40 border border-green-500/20 backdrop-blur-sm">
+                👋 {userInfo?.nickname || 'User'}
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-red-500/40 hover:bg-red-500/60 border border-red-500/20 backdrop-blur-sm"
+                title={`Logged in as ${userInfo?.nickname || userInfo?.email}`}
+              >
+                登出 Logout
+              </button>
+            </>
           )}
           <button
             type="button"
