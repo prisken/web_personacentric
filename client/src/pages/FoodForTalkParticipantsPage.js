@@ -154,7 +154,7 @@ const FoodForTalkParticipantsPage = () => {
               <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               {t('foodForTalk.common.back')}
             </Link>
-            <img src="/images/High Tea or Me.png?v=3" alt="High Tea or Me Logo" className="mx-auto mb-4 h-16 sm:h-20 md:h-24 object-contain" />
+            <img src="/images/High Tea or Me.png?v=3" alt="High Tea or Me Logo" className="mx-auto mb-4 h-18 sm:h-20 md:h-24 object-contain" />
             <h1 className="text-4xl sm:text-5xl font-bold text-white mb-2">{t('foodForTalk.participants.title')}</h1>
             <p className="text-xl text-white/80">{t('foodForTalk.participants.subtitle')}</p>
           </div>
