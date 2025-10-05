@@ -23,6 +23,8 @@ const FoodForTalkRegisterPage = () => {
   const { t, language } = useLanguage();
   const [formData, setFormData] = useState({
     // Basic Info
+    firstName: '',
+    lastName: '',
     nickname: '',
     age: '',
     gender: '',
@@ -110,7 +112,9 @@ const FoodForTalkRegisterPage = () => {
       submitData.append('whatsappPhone', formData.whatsappPhone);
       submitData.append('age', formData.age);
 
-      // New structure fields
+      // Basic info fields
+      submitData.append('firstName', formData.firstName);
+      submitData.append('lastName', formData.lastName);
       submitData.append('nickname', formData.nickname);
       submitData.append('gender', formData.gender);
       submitData.append('expectPersonType', formData.expectPersonType);
@@ -174,8 +178,16 @@ const FoodForTalkRegisterPage = () => {
               <h2 className="text-2xl font-bold text-white mb-4">{t('foodForTalk.sections.basicInfo')}</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.nickname')}</label>
-                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.nicknamePlaceholder')} />
+                  <label className="block text-white font-medium mb-2">姓名 First Name</label>
+                  <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的姓名" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">姓氏 Last Name</label>
+                  <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的姓氏" />
+                </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">暱稱（公開給其他參加者）Nickname</label>
+                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="其他參加者會看到這個暱稱" />
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.age')}</label>

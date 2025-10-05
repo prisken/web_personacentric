@@ -44,7 +44,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       age,
       interests,
       bio,
-      // New fields
+      // Basic info fields
+      firstName,
+      lastName,
       nickname,
       gender,
       expectPersonType,
@@ -60,9 +62,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     } = req.body;
 
     // Validate required fields
-    if (!email || !password || !age) {
+    if (!email || !password || !age || !firstName || !lastName) {
       return res.status(400).json({ 
-        message: 'Missing required fields. Please fill in all required information.' 
+        message: 'Missing required fields. Please fill in all required information including first name and last name.' 
       });
     }
 
@@ -118,8 +120,8 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     const baseData = {
       email,
       password_hash: passwordHash,
-      first_name: 'Anonymous',
-      last_name: 'Participant',
+      first_name: firstName || 'Anonymous',
+      last_name: lastName || 'Participant',
       phone: whatsappPhone,
       whatsapp_phone: whatsappPhone,
       age: parseInt(age),
