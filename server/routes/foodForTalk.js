@@ -227,6 +227,135 @@ router.post('/view-profile/:userId', async (req, res) => {
   }
 });
 
+// Update participant profile (self-editing)
+router.put('/profile', async (req, res) => {
+  try {
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify token
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      if (decoded.type !== 'food-for-talk-participant') {
+        return res.status(401).json({ message: 'Invalid token type' });
+      }
+    } catch (jwtError) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    const { id: userId } = decoded;
+    const updateData = req.body;
+
+    const participant = await FoodForTalkUser.findByPk(userId);
+    if (!participant) {
+      return res.status(404).json({ message: 'Participant not found' });
+    }
+
+    // Validate required fields
+    if (updateData.email && !updateData.email.includes('@')) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    if (updateData.age && (isNaN(updateData.age) || updateData.age < 18 || updateData.age > 100)) {
+      return res.status(400).json({ message: 'Age must be between 18 and 100' });
+    }
+
+    // Prepare update object with only allowed fields for self-editing
+    const allowedFields = [
+      'first_name', 'last_name', 'nickname', 'gender', 'age',
+      'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
+      'interests_other', 'dietary_restrictions', 'expect_person_type', 
+      'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
+      'attractive_traits_other', 'japanese_food_preference', 
+      'quickfire_magic_item_choice', 'quickfire_desired_outcome'
+    ];
+
+    const filteredUpdateData = {};
+    for (const field of allowedFields) {
+      if (updateData.hasOwnProperty(field)) {
+        filteredUpdateData[field] = updateData[field];
+      }
+    }
+
+    // Handle array fields
+    if (updateData.interests && Array.isArray(updateData.interests)) {
+      filteredUpdateData.interests = JSON.stringify(updateData.interests);
+    }
+    if (updateData.attractive_traits && Array.isArray(updateData.attractive_traits)) {
+      filteredUpdateData.attractive_traits = JSON.stringify(updateData.attractive_traits);
+    }
+
+    // Update participant
+    await participant.update(filteredUpdateData);
+
+    // Return updated participant data
+    const updatedParticipant = await FoodForTalkUser.findByPk(userId, {
+      attributes: [
+        'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
+        'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
+        'interests_other', 'dietary_restrictions', 'expect_person_type', 
+        'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
+        'attractive_traits_other', 'japanese_food_preference', 
+        'quickfire_magic_item_choice', 'quickfire_desired_outcome',
+        'profile_photo_url', 'created_at', 'updated_at'
+      ]
+    });
+
+    // Format the response to match frontend expectations
+    const formattedParticipant = {
+      id: updatedParticipant.id,
+      email: updatedParticipant.email,
+      firstName: updatedParticipant.first_name,
+      lastName: updatedParticipant.last_name,
+      nickname: updatedParticipant.nickname,
+      gender: updatedParticipant.gender,
+      age: updatedParticipant.age,
+      phone: updatedParticipant.phone,
+      whatsappPhone: updatedParticipant.whatsapp_phone,
+      occupation: updatedParticipant.occupation,
+      bio: updatedParticipant.bio,
+      interests: (() => {
+        try {
+          return updatedParticipant.interests ? JSON.parse(updatedParticipant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      interestsOther: updatedParticipant.interests_other,
+      dietaryRestrictions: updatedParticipant.dietary_restrictions,
+      profilePhotoUrl: updatedParticipant.profile_photo_url,
+      expectPersonType: updatedParticipant.expect_person_type,
+      dreamFirstDate: updatedParticipant.dream_first_date,
+      dreamFirstDateOther: updatedParticipant.dream_first_date_other,
+      attractiveTraits: (() => {
+        try {
+          return updatedParticipant.attractive_traits ? JSON.parse(updatedParticipant.attractive_traits) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      attractiveTraitsOther: updatedParticipant.attractive_traits_other,
+      japaneseFoodPreference: updatedParticipant.japanese_food_preference,
+      quickfireMagicItemChoice: updatedParticipant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: updatedParticipant.quickfire_desired_outcome
+    };
+
+    res.json({ 
+      message: 'Profile updated successfully',
+      participant: formattedParticipant
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ message: 'Failed to update profile' });
+  }
+});
+
 // Get chat messages
 router.get('/chat-messages', async (req, res) => {
   try {

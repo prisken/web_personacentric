@@ -559,6 +559,15 @@ class ApiService {
     });
   }
 
+  async updateFoodForTalkProfile(updateData) {
+    const token = localStorage.getItem('foodForTalkToken');
+    return this.put('/food-for-talk/profile', updateData, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   async toggleFoodForTalkParticipantStatus(participantId, isActive) {
     return this.patch(`/food-for-talk/admin/participants/${participantId}/toggle-status`, { isActive });
   }

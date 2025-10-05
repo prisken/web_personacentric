@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import apiService from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
 import ParticipantDetailsModal from '../components/food-for-talk/ParticipantDetailsModal';
+import ParticipantProfileEditModal from '../components/food-for-talk/ParticipantProfileEditModal';
 
 const FoodForTalkParticipantsPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
@@ -14,6 +15,7 @@ const FoodForTalkParticipantsPage = () => {
   const [expanded, setExpanded] = useState({});
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showProfileEditModal, setShowProfileEditModal] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
 
   // Check if user is already authenticated
@@ -100,6 +102,13 @@ const FoodForTalkParticipantsPage = () => {
     setShowDetailsModal(true);
   };
 
+  const handleProfileUpdated = (updatedProfile) => {
+    // Update the userInfo with the new profile data
+    setUserInfo(updatedProfile);
+    // Optionally refresh the participants list to show updated data
+    // fetchParticipants();
+  };
+
   const handleCloseModal = () => {
     setShowDetailsModal(false);
     setSelectedParticipantId(null);
@@ -108,11 +117,19 @@ const FoodForTalkParticipantsPage = () => {
   if (isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-12">
-        {/* Language Toggle and Logout Button */}
+        {/* Language Toggle and Action Buttons */}
         <div className="fixed top-4 right-4 z-50 flex gap-2 items-center">
           <div className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-green-500/40 border border-green-500/20 backdrop-blur-sm">
             👋 {userInfo?.nickname || 'User'}
           </div>
+          <button
+            type="button"
+            onClick={() => setShowProfileEditModal(true)}
+            className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-blue-500/40 hover:bg-blue-500/60 border border-blue-500/20 backdrop-blur-sm"
+            title="Edit your profile"
+          >
+            ✏️ Edit Profile
+          </button>
           <button
             type="button"
             onClick={handleLogout}
@@ -261,6 +278,13 @@ const FoodForTalkParticipantsPage = () => {
           participantId={selectedParticipantId}
           isOpen={showDetailsModal}
           onClose={handleCloseModal}
+        />
+
+        {/* Profile Edit Modal */}
+        <ParticipantProfileEditModal
+          isOpen={showProfileEditModal}
+          onClose={() => setShowProfileEditModal(false)}
+          onProfileUpdated={handleProfileUpdated}
         />
       </div>
     );
