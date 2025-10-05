@@ -541,7 +541,13 @@ router.get('/participants', async (req, res) => {
       gender: participant.gender,
       age: participant.age,
       bio: participant.bio,
-      interests: participant.interests || [],
+      interests: (() => {
+        try {
+          return participant.interests ? JSON.parse(participant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       profilePhotoUrl: participant.profile_photo_url
     }));
 

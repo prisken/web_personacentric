@@ -201,19 +201,32 @@ const FoodForTalkParticipantsPage = () => {
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between"><span className="text-white/70">Age:</span><span className="text-white">{participant.age || 'N/A'}</span></div>
 
-                    {participant.interests && participant.interests.length > 0 && (
-                      <div>
-                        <span className="text-white/70 block mb-1">Interests:</span>
-                        <div className="flex flex-wrap gap-1">
-                          {participant.interests.slice(0, 3).map((interest, idx) => (
-                            <span key={idx} className="px-2 py-1 bg-yellow-400/20 text-yellow-300 text-xs rounded-full">{interest}</span>
-                          ))}
-                          {participant.interests.length > 3 && (
-                            <span className="px-2 py-1 bg-white/20 text-white/70 text-xs rounded-full">+{participant.interests.length - 3}</span>
-                          )}
-                        </div>
-                      </div>
-                    )}
+                    {(() => {
+                      let interests = participant.interests;
+                      if (typeof interests === 'string') {
+                        try {
+                          interests = JSON.parse(interests);
+                        } catch (e) {
+                          interests = [];
+                        }
+                      }
+                      if (interests && Array.isArray(interests) && interests.length > 0) {
+                        return (
+                          <div>
+                            <span className="text-white/70 block mb-1">Interests:</span>
+                            <div className="flex flex-wrap gap-1">
+                              {interests.slice(0, 3).map((interest, idx) => (
+                                <span key={idx} className="px-2 py-1 bg-yellow-400/20 text-yellow-300 text-xs rounded-full">{interest}</span>
+                              ))}
+                              {interests.length > 3 && (
+                                <span className="px-2 py-1 bg-white/20 text-white/70 text-xs rounded-full">+{interests.length - 3}</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
 
                     {participant.bio && (
                       <div>
