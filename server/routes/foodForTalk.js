@@ -459,7 +459,7 @@ router.post('/login', async (req, res) => {
     let token;
     try {
       token = jwt.sign(
-        { userId: user.id, email: user.email, type: 'food-for-talk-participant' },
+        { userId: user.id, email: user.email, nickname: user.nickname, type: 'food-for-talk-participant' },
         process.env.JWT_SECRET || 'fallback-secret',
         { expiresIn: '24h' }
       );
@@ -536,6 +536,7 @@ router.post('/secret-login', async (req, res) => {
       { 
         userId: user.id, 
         email: user.email,
+        nickname: user.nickname,
         type: 'food-for-talk-secret'
       },
       process.env.JWT_SECRET || 'fallback-secret',

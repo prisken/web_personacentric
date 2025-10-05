@@ -159,12 +159,30 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
 
   if (!isOpen) return null;
 
-  const genderOptions = ['Male', 'Female', 'Non-binary', 'Prefer not to say'];
-  const expectPersonTypeOptions = ['Someone to have fun with', 'Long-term relationship', 'Marriage', 'Just friends', 'Not sure yet'];
-  const dreamFirstDateOptions = ['Coffee shop chat', 'Walk in the park', 'Museum visit', 'Cooking together', 'Movie night', 'Other'];
-  const japaneseFoodOptions = ['Love it', 'Like it', 'Neutral', 'Not a fan', 'Never tried'];
-  const magicItemOptions = ['Time machine', 'Invisibility cloak', 'Mind reading ability', 'Super strength', 'Flying ability'];
-  const desiredOutcomeOptions = ['Find true love', 'Have amazing adventures', 'Become famous', 'Help others', 'Learn everything'];
+  // Use bilingual options that match the registration form
+  const genderOptions = language === 'zh-TW' 
+    ? ['男 Male', '女 Female', '其他 Other'] 
+    : ['Male', 'Female', 'Other'];
+  
+  const expectPersonTypeOptions = language === 'zh-TW'
+    ? ['愛玩愛笑派', '文青知性派', '運動健將派', '美食探索家', '旅遊冒險派', '神秘未知派']
+    : ['Fun & Laughs', 'Chill & Artsy', 'Sporty', 'Foodie', 'Globe-trotter', 'Surprise me!'];
+    
+  const dreamFirstDateOptions = language === 'zh-TW'
+    ? ['一齊去日式餐廳開餐', '一起行山', '去睇演唱會/音樂會', '夜遊維港', '咖啡店慢談', '其他']
+    : ['Japanese restaurant dinner', 'Hiking together', 'Concert / Live music', 'Harbour night walk', 'Cafe slow talk', 'Other'];
+    
+  const japaneseFoodOptions = language === 'zh-TW'
+    ? ['壽司', '刺身', '天婦羅', '拉麵', '日式甜品', '清酒/飲品']
+    : ['Sushi', 'Sashimi', 'Tempura', 'Ramen', 'Japanese dessert', 'Sake/Drinks'];
+    
+  const magicItemOptions = language === 'zh-TW'
+    ? ['用嚟表白', '當護身符', '偷偷收埋', '送俾最有緣嗰位']
+    : ['Confess love', 'Keep as amulet', 'Hide it secretly', 'Gift to the fated one'];
+    
+  const desiredOutcomeOptions = language === 'zh-TW'
+    ? ['新朋友', '脫單機會', '笑到肚痛的回憶', '靚相打卡', '一段特別的故事']
+    : ['New friends', 'Chance to find a match', 'Laugh-out-loud memories', 'Nice photos', 'A special story'];
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -242,7 +260,9 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
                 </h3>
                 <div className="space-y-4">
                   {renderEditableField('Bio', 'bio', 'textarea')}
-                  {renderArrayField('Interests', 'interests', ['Music', 'Sports', 'Art', 'Cooking', 'Travel', 'Reading', 'Gaming', 'Photography', 'Dancing', 'Other'], 3)}
+                  {renderArrayField('Interests', 'interests', language === 'zh-TW' 
+                    ? ['煮食', '運動', '追劇/電影', '旅行', '畫畫/手作', '唱歌/音樂', '電玩/桌遊', '寫作/閱讀', '其他']
+                    : ['Cooking', 'Sports', 'Movies/Series', 'Travel', 'Art/Handcraft', 'Singing/Music', 'Gaming/Board games', 'Writing/Reading', 'Other'], 3)}
                   {renderEditableField('Other Interests', 'interestsOther', 'text')}
                   {renderEditableField('Dietary Restrictions', 'dietaryRestrictions', 'textarea')}
                 </div>
@@ -260,7 +280,9 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
                   {renderEditableField('Looking for', 'expectPersonType', 'select', expectPersonTypeOptions)}
                   {renderEditableField('Dream first date', 'dreamFirstDate', 'select', dreamFirstDateOptions)}
                   {renderEditableField('Dream first date (other)', 'dreamFirstDateOther', 'text')}
-                  {renderArrayField('Attractive traits', 'attractiveTraits', ['Sense of humor', 'Intelligence', 'Kindness', 'Confidence', 'Creativity', 'Adventure', 'Other'], 2)}
+                  {renderArrayField('Attractive traits', 'attractiveTraits', language === 'zh-TW'
+                    ? ['好有幽默感', '很會聊天', '做嘢認真專注', '好有創意', '好有同理心', '組織力強', '運動細胞發達', '廚藝高手', '藝術天分', '其他']
+                    : ['Funny & witty', 'Great conversationalist', 'Hardworking & focused', 'Creative thinker', 'Empathetic & caring', 'Organized & reliable', 'Athletic', 'Great cook', 'Artistic talent', 'Other'], 2)}
                   {renderEditableField('Other attractive traits', 'attractiveTraitsOther', 'text')}
                 </div>
               </div>
