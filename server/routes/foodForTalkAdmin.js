@@ -31,7 +31,7 @@ router.get('/participants', async (req, res) => {
   }
 });
 
-// Get participant by ID
+// Get participant by ID with all details (for super admin)
 router.get('/participants/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -44,7 +44,44 @@ router.get('/participants/:id', async (req, res) => {
       return res.status(404).json({ message: 'Participant not found' });
     }
 
-    res.json({ participant });
+    // Format participant data with all details for super admin
+    const formattedParticipant = {
+      id: participant.id,
+      email: participant.email,
+      firstName: participant.first_name,
+      lastName: participant.last_name,
+      nickname: participant.nickname,
+      gender: participant.gender,
+      age: participant.age,
+      phone: participant.phone,
+      whatsappPhone: participant.whatsapp_phone,
+      occupation: participant.occupation,
+      bio: participant.bio,
+      interests: participant.interests || [],
+      interestsOther: participant.interests_other,
+      dietaryRestrictions: participant.dietary_restrictions,
+      emergencyContactName: participant.emergency_contact_name,
+      emergencyContactPhone: participant.emergency_contact_phone,
+      profilePhotoUrl: participant.profile_photo_url,
+      isVerified: participant.is_verified,
+      isActive: participant.is_active,
+      registrationDate: participant.registration_date,
+      lastLogin: participant.last_login,
+      createdAt: participant.created_at,
+      updatedAt: participant.updated_at,
+      // Expanded registration fields
+      expectPersonType: participant.expect_person_type,
+      dreamFirstDate: participant.dream_first_date,
+      dreamFirstDateOther: participant.dream_first_date_other,
+      attractiveTraits: participant.attractive_traits || [],
+      attractiveTraitsOther: participant.attractive_traits_other,
+      japaneseFoodPreference: participant.japanese_food_preference,
+      quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: participant.quickfire_desired_outcome,
+      consentAccepted: participant.consent_accepted
+    };
+
+    res.json({ participant: formattedParticipant });
   } catch (error) {
     console.error('Get participant error:', error?.message, error?.stack);
     res.status(500).json({ message: 'Failed to get participant' });

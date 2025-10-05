@@ -542,6 +542,19 @@ class ApiService {
     return this.get('/food-for-talk/admin/participants');
   }
 
+  async getFoodForTalkAdminParticipantDetails(participantId) {
+    return this.get(`/food-for-talk/admin/participants/${participantId}`);
+  }
+
+  async getFoodForTalkParticipantDetails(participantId) {
+    const token = localStorage.getItem('foodForTalkToken');
+    return this.get(`/food-for-talk/participants/${participantId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
   async toggleFoodForTalkParticipantStatus(participantId, isActive) {
     return this.patch(`/food-for-talk/admin/participants/${participantId}/toggle-status`, { isActive });
   }

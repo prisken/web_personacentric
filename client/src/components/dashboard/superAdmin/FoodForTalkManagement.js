@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import apiService from '../../../services/api';
+import SuperAdminParticipantDetailsModal from '../../food-for-talk/SuperAdminParticipantDetailsModal';
 
 const FoodForTalkManagement = () => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({});
-  const [selectedParticipant, setSelectedParticipant] = useState(null);
+  const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
@@ -482,12 +483,12 @@ const FoodForTalkManagement = () => {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => {
-                          setSelectedParticipant(participant);
+                          setSelectedParticipantId(participant.id);
                           setShowModal(true);
                         }}
                         className="text-blue-600 hover:text-blue-900"
                       >
-                        View
+                        View Details
                       </button>
                       <button
                         onClick={() => handleToggleStatus(participant.id, participant.is_active)}
@@ -522,117 +523,15 @@ const FoodForTalkManagement = () => {
         </div>
       </div>
 
-      {/* Participant Detail Modal */}
-      {showModal && selectedParticipant && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Participant Details
-                </h3>
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">First Name</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.first_name}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Last Name</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.last_name}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Email</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.email}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Phone</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.phone}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Age</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.age}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Occupation</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.occupation}</p>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Bio</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedParticipant.bio}</p>
-                </div>
-                
-                {selectedParticipant.interests && selectedParticipant.interests.length > 0 && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Interests</label>
-                    <div className="mt-1 flex flex-wrap gap-2">
-                      {selectedParticipant.interests.map((interest, index) => (
-                        <span key={index} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {selectedParticipant.dietary_restrictions && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Dietary Restrictions</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.dietary_restrictions}</p>
-                  </div>
-                )}
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Emergency Contact</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.emergency_contact_name}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Emergency Phone</label>
-                    <p className="mt-1 text-sm text-gray-900">{selectedParticipant.emergency_contact_phone}</p>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Registration Date</label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {new Date(selectedParticipant.registration_date).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Last Login</label>
-                    <p className="mt-1 text-sm text-gray-900">
-                      {selectedParticipant.last_login 
-                        ? new Date(selectedParticipant.last_login).toLocaleDateString()
-                        : 'Never'
-                      }
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Super Admin Participant Details Modal */}
+      <SuperAdminParticipantDetailsModal
+        participantId={selectedParticipantId}
+        isOpen={showModal}
+        onClose={() => {
+          setShowModal(false);
+          setSelectedParticipantId(null);
+        }}
+      />
     </div>
   );
 };

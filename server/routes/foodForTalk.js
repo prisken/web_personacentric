@@ -417,6 +417,80 @@ router.post('/secret-login', async (req, res) => {
   }
 });
 
+// Get detailed participant information (for regular users - no contact info)
+router.get('/participants/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Get token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ message: 'Authentication required' });
+    }
+
+    const token = authHeader.substring(7);
+    
+    // Verify token
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
+      if (decoded.type !== 'food-for-talk-participant') {
+        return res.status(401).json({ message: 'Invalid token type' });
+      }
+    } catch (jwtError) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+
+    // Get participant details (excluding contact information)
+    const participant = await FoodForTalkUser.findByPk(id, {
+      attributes: [
+        'id', 'nickname', 'gender', 'age', 'bio', 'interests', 'interests_other',
+        'expect_person_type', 'dream_first_date', 'dream_first_date_other',
+        'attractive_traits', 'attractive_traits_other', 'japanese_food_preference',
+        'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
+        'profile_photo_url', 'created_at'
+      ]
+    });
+
+    if (!participant) {
+      return res.status(404).json({ message: 'Participant not found' });
+    }
+
+    // Format participant data for regular users (no contact info)
+    const formattedParticipant = {
+      id: participant.id,
+      nickname: participant.nickname,
+      gender: participant.gender,
+      age: participant.age,
+      bio: participant.bio,
+      interests: participant.interests || [],
+      interestsOther: participant.interests_other,
+      profilePhotoUrl: participant.profile_photo_url,
+      createdAt: participant.created_at,
+      // Expanded registration fields
+      expectPersonType: participant.expect_person_type,
+      dreamFirstDate: participant.dream_first_date,
+      dreamFirstDateOther: participant.dream_first_date_other,
+      attractiveTraits: participant.attractive_traits || [],
+      attractiveTraitsOther: participant.attractive_traits_other,
+      japaneseFoodPreference: participant.japanese_food_preference,
+      quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: participant.quickfire_desired_outcome,
+      consentAccepted: participant.consent_accepted
+    };
+
+    res.json({
+      message: 'Participant details retrieved successfully',
+      participant: formattedParticipant
+    });
+  } catch (error) {
+    console.error('Get participant details error:', error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    res.status(500).json({ message: 'Failed to retrieve participant details' });
+  }
+});
+
 // Get participants list (requires authentication)
 router.get('/participants', async (req, res) => {
   try {

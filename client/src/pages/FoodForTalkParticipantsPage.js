@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiService from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
+import ParticipantDetailsModal from '../components/food-for-talk/ParticipantDetailsModal';
 
 const FoodForTalkParticipantsPage = () => {
   const { t } = useLanguage();
@@ -11,6 +12,8 @@ const FoodForTalkParticipantsPage = () => {
   const [loading, setLoading] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [expanded, setExpanded] = useState({});
+  const [selectedParticipantId, setSelectedParticipantId] = useState(null);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
 
   // Check if user is already authenticated
   useEffect(() => {
@@ -59,6 +62,16 @@ const FoodForTalkParticipantsPage = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setLoginData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleViewDetails = (participantId) => {
+    setSelectedParticipantId(participantId);
+    setShowDetailsModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowDetailsModal(false);
+    setSelectedParticipantId(null);
   };
 
   if (isAuthenticated) {
@@ -120,7 +133,12 @@ const FoodForTalkParticipantsPage = () => {
                       </div>
                     )}
 
-                    <button onClick={() => setExpanded(prev => ({ ...prev, [participant.id]: !prev[participant.id] }))} className="mt-2 text-xs text-yellow-300 hover:text-yellow-200">{expanded[participant.id] ? 'Hide details' : 'Show more details'}</button>
+                    <button 
+                      onClick={() => handleViewDetails(participant.id)} 
+                      className="mt-2 w-full px-3 py-2 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 text-yellow-300 hover:text-yellow-200 border border-yellow-400/30 rounded-lg text-xs font-medium transition-all duration-300 hover:from-yellow-400/30 hover:to-orange-500/30"
+                    >
+                      View Full Details
+                    </button>
                   </div>
                 </div>
               </div>
@@ -135,6 +153,13 @@ const FoodForTalkParticipantsPage = () => {
             </div>
           </div>
         </div>
+
+        {/* Participant Details Modal */}
+        <ParticipantDetailsModal
+          participantId={selectedParticipantId}
+          isOpen={showDetailsModal}
+          onClose={handleCloseModal}
+        />
       </div>
     );
   }
