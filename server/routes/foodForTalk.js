@@ -218,7 +218,13 @@ router.post('/view-profile/:userId', async (req, res) => {
         age: user.age,
         occupation: user.occupation,
         bio: user.bio,
-        interests: user.interests
+        interests: (() => {
+          try {
+            return user.interests ? JSON.parse(user.interests) : [];
+          } catch (e) {
+            return [];
+          }
+        })()
       }
     });
   } catch (error) {
@@ -740,7 +746,13 @@ router.get('/chat-participants', async (req, res) => {
       age: participant.age,
       occupation: participant.occupation,
       bio: participant.bio,
-      interests: participant.interests || [],
+      interests: (() => {
+        try {
+          return participant.interests ? JSON.parse(participant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       dietaryRestrictions: participant.dietary_restrictions,
       profilePhotoUrl: participant.profile_photo_url
     }));
