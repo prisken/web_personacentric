@@ -476,9 +476,20 @@ const FoodForTalkManagement = () => {
                   <td className="px-6 py-4">
                     <div className="text-sm text-gray-900">{participant.occupation}</div>
                     <div className="text-sm text-gray-500">
-                      {participant.interests && participant.interests.length > 0 && (
-                        <span>{participant.interests.slice(0, 2).join(', ')}</span>
-                      )}
+                      {(() => {
+                        let interests = participant.interests;
+                        if (typeof interests === 'string') {
+                          try {
+                            interests = JSON.parse(interests);
+                          } catch (e) {
+                            interests = [];
+                          }
+                        }
+                        if (interests && Array.isArray(interests) && interests.length > 0) {
+                          return <span>{interests.slice(0, 2).join(', ')}</span>;
+                        }
+                        return null;
+                      })()}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

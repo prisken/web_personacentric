@@ -57,7 +57,13 @@ router.get('/participants/:id', async (req, res) => {
       whatsappPhone: participant.whatsapp_phone,
       occupation: participant.occupation,
       bio: participant.bio,
-      interests: participant.interests || [],
+      interests: (() => {
+        try {
+          return participant.interests ? JSON.parse(participant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       interestsOther: participant.interests_other,
       dietaryRestrictions: participant.dietary_restrictions,
       emergencyContactName: participant.emergency_contact_name,
@@ -73,7 +79,13 @@ router.get('/participants/:id', async (req, res) => {
       expectPersonType: participant.expect_person_type,
       dreamFirstDate: participant.dream_first_date,
       dreamFirstDateOther: participant.dream_first_date_other,
-      attractiveTraits: participant.attractive_traits || [],
+      attractiveTraits: (() => {
+        try {
+          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       attractiveTraitsOther: participant.attractive_traits_other,
       japaneseFoodPreference: participant.japanese_food_preference,
       quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
@@ -194,9 +206,55 @@ router.put('/participants/:id', async (req, res) => {
       ]
     });
 
+    // Format the response to match the frontend expectations
+    const formattedParticipant = {
+      id: updatedParticipant.id,
+      email: updatedParticipant.email,
+      firstName: updatedParticipant.first_name,
+      lastName: updatedParticipant.last_name,
+      nickname: updatedParticipant.nickname,
+      gender: updatedParticipant.gender,
+      age: updatedParticipant.age,
+      phone: updatedParticipant.phone,
+      whatsappPhone: updatedParticipant.whatsapp_phone,
+      occupation: updatedParticipant.occupation,
+      bio: updatedParticipant.bio,
+      interests: (() => {
+        try {
+          return updatedParticipant.interests ? JSON.parse(updatedParticipant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      interestsOther: updatedParticipant.interests_other,
+      dietaryRestrictions: updatedParticipant.dietary_restrictions,
+      emergencyContactName: updatedParticipant.emergency_contact_name,
+      emergencyContactPhone: updatedParticipant.emergency_contact_phone,
+      profilePhotoUrl: updatedParticipant.profile_photo_url,
+      isVerified: updatedParticipant.is_verified,
+      isActive: updatedParticipant.is_active,
+      registrationDate: updatedParticipant.created_at,
+      lastLogin: updatedParticipant.updated_at,
+      expectPersonType: updatedParticipant.expect_person_type,
+      dreamFirstDate: updatedParticipant.dream_first_date,
+      dreamFirstDateOther: updatedParticipant.dream_first_date_other,
+      attractiveTraits: (() => {
+        try {
+          return updatedParticipant.attractive_traits ? JSON.parse(updatedParticipant.attractive_traits) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
+      attractiveTraitsOther: updatedParticipant.attractive_traits_other,
+      japaneseFoodPreference: updatedParticipant.japanese_food_preference,
+      quickfireMagicItemChoice: updatedParticipant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: updatedParticipant.quickfire_desired_outcome,
+      consentAccepted: updatedParticipant.consent_accepted
+    };
+
     res.json({ 
       message: 'Participant updated successfully',
-      participant: updatedParticipant
+      participant: formattedParticipant
     });
   } catch (error) {
     console.error('Update participant error:', error);
