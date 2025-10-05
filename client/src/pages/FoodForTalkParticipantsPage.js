@@ -6,7 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import ParticipantDetailsModal from '../components/food-for-talk/ParticipantDetailsModal';
 
 const FoodForTalkParticipantsPage = () => {
-  const { t } = useLanguage();
+  const { t, toggleLanguage, language } = useLanguage();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,14 +14,34 @@ const FoodForTalkParticipantsPage = () => {
   const [expanded, setExpanded] = useState({});
   const [selectedParticipantId, setSelectedParticipantId] = useState(null);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
   // Check if user is already authenticated
   useEffect(() => {
     const token = localStorage.getItem('foodForTalkToken');
     if (token) {
+      // Set user info from token
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUserInfo({
+          email: payload.email,
+          nickname: payload.nickname || 'Participant'
+        });
+      } catch (error) {
+        console.error('Error parsing token:', error);
+        setUserInfo({ email: 'Unknown', nickname: 'Participant' });
+      }
       loadParticipants();
     }
   }, []);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('foodForTalkToken');
+    setIsAuthenticated(false);
+    setUserInfo(null);
+    setParticipants([]);
+  };
 
   const loadParticipants = async () => {
     setLoading(true);
@@ -47,6 +67,17 @@ const FoodForTalkParticipantsPage = () => {
       const loginResponse = await apiService.loginToFoodForTalk(loginData);
       if (loginResponse.token) {
         localStorage.setItem('foodForTalkToken', loginResponse.token);
+        // Set user info from token
+        try {
+          const payload = JSON.parse(atob(loginResponse.token.split('.')[1]));
+          setUserInfo({
+            email: payload.email,
+            nickname: payload.nickname || 'Participant'
+          });
+        } catch (error) {
+          console.error('Error parsing token:', error);
+          setUserInfo({ email: 'Unknown', nickname: 'Participant' });
+        }
         await loadParticipants();
         toast.success('Login successful!');
       } else {
@@ -77,6 +108,25 @@ const FoodForTalkParticipantsPage = () => {
   if (isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 py-12">
+        {/* Language Toggle and Logout Button */}
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-red-500/40 hover:bg-red-500/60 border border-red-500/20 backdrop-blur-sm"
+            title={`Logged in as ${userInfo?.nickname || userInfo?.email}`}
+          >
+            登出 Logout
+          </button>
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
+          >
+            {language === 'zh-TW' ? 'EN' : '中文'}
+          </button>
+        </div>
+        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="text-center mb-8">
@@ -202,6 +252,17 @@ const FoodForTalkParticipantsPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center py-12">
+      {/* Language Toggle */}
+      <div className="fixed top-4 right-4 z-50">
+        <button
+          type="button"
+          onClick={toggleLanguage}
+          className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
+        >
+          {language === 'zh-TW' ? 'EN' : '中文'}
+        </button>
+      </div>
+      
       <div className="max-w-md w-full mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
