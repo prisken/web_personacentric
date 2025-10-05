@@ -2,13 +2,29 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const ActionButtons = () => {
+const ActionButtons = ({ isLoggedIn }) => {
   const { t } = useLanguage();
+
+  // Check what type of login the user has
+  const getLoginType = () => {
+    const foodForTalkToken = localStorage.getItem('foodForTalkToken');
+    const foodForTalkSecretToken = localStorage.getItem('foodForTalkSecretToken');
+    
+    if (foodForTalkSecretToken) return 'secret';
+    if (foodForTalkToken) return 'participant';
+    return null;
+  };
+
+  const loginType = getLoginType();
   return (
     <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-4 justify-center items-center max-w-md mx-auto w-full">
       {/* See Participants Button */}
       <Link
-        to="/food-for-talk/login"
+        to={
+          isLoggedIn && (loginType === 'participant' || loginType === 'secret')
+            ? "/food-for-talk/participants"
+            : "/food-for-talk/login"
+        }
         state={{ from: '/food-for-talk/participants' }}
         className="group relative w-full px-4 py-2 rounded-lg font-bold text-white text-sm sm:text-base sm:px-6 sm:py-3 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
@@ -39,7 +55,11 @@ const ActionButtons = () => {
 
       {/* Enter Secret Chat Room Button */}
       <Link
-        to="/food-for-talk/secret-login"
+        to={
+          isLoggedIn && loginType === 'secret'
+            ? "/food-for-talk/secret-chat"
+            : "/food-for-talk/secret-login"
+        }
         className="group relative w-full px-4 py-2 rounded-lg font-bold text-white text-sm sm:text-base sm:px-6 sm:py-3 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.8) 0%, rgba(147, 51, 234, 0.8) 100%)',

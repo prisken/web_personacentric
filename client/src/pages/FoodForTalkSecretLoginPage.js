@@ -13,6 +13,33 @@ const FoodForTalkSecretLoginPage = () => {
     passkey: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAlreadyLoggedIn, setIsAlreadyLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const foodForTalkToken = localStorage.getItem('foodForTalkToken');
+    const foodForTalkSecretToken = localStorage.getItem('foodForTalkSecretToken');
+    
+    if (foodForTalkToken) {
+      // User is logged in as participant, show passkey-only form
+      setIsAlreadyLoggedIn(true);
+      try {
+        const payload = JSON.parse(atob(foodForTalkToken.split('.')[1]));
+        setUserInfo({
+          email: payload.email,
+          nickname: payload.nickname || 'Participant'
+        });
+        // Pre-fill email from token
+        setFormData(prev => ({ ...prev, email: payload.email }));
+      } catch (error) {
+        console.error('Error parsing token:', error);
+      }
+    } else if (foodForTalkSecretToken) {
+      // User already has secret token, redirect to chat
+      navigate('/food-for-talk/secret-chat');
+    }
+  }, [navigate]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,41 +91,48 @@ const FoodForTalkSecretLoginPage = () => {
             {t('foodForTalk.common.back')}
           </Link>
           <h2 className="text-3xl font-bold text-white mb-2">
-            {t('foodForTalk.secretLogin.title')}
+            {isAlreadyLoggedIn ? 'Enter Secret Chat Room' : t('foodForTalk.secretLogin.title')}
           </h2>
           <p className="text-white/80">
-            {t('foodForTalk.secretLogin.subtitle')}
+            {isAlreadyLoggedIn 
+              ? `Welcome back, ${userInfo?.nickname || userInfo?.email}! Enter your chat room passkey to continue.`
+              : t('foodForTalk.secretLogin.subtitle')
+            }
           </p>
         </div>
 
         {/* Secret Login Form */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
           <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label className="block text白色 font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder={t('foodForTalk.secretLogin.email')}
-              />
-            </div>
+            {!isAlreadyLoggedIn && (
+              <>
+                <div>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder={t('foodForTalk.secretLogin.email')}
+                  />
+                </div>
 
-            <div>
-              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder={t('foodForTalk.secretLogin.password')}
-              />
-            </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder={t('foodForTalk.secretLogin.password')}
+                  />
+                </div>
+              </>
+            )}
 
             <div>
               <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.secretPasskey')}</label>
@@ -111,7 +145,12 @@ const FoodForTalkSecretLoginPage = () => {
                 className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                 placeholder={t('foodForTalk.secretLogin.secretPasskey')}
               />
-              <p className="text-white/60 text-sm mt-1">&nbsp;</p>
+              <p className="text-white/60 text-sm mt-1">
+                {isAlreadyLoggedIn 
+                  ? "Enter your secret passkey to access the chat room"
+                  : "Enter the secret passkey provided for chat room access"
+                }
+              </p>
             </div>
 
             <button
@@ -119,22 +158,29 @@ const FoodForTalkSecretLoginPage = () => {
               disabled={isSubmitting}
               className="w-full bg-gradient-to-r from-red-500 to-pink-500 text-white font-bold py-3 px-6 rounded-xl hover:from-red-600 hover:to-pink-600 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              {isSubmitting ? t('common.loading') : t('foodForTalk.secretLogin.submit')}
+              {isSubmitting 
+                ? t('common.loading') 
+                : isAlreadyLoggedIn 
+                  ? 'Enter Chat Room' 
+                  : t('foodForTalk.secretLogin.submit')
+              }
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-white/70">
-              Need to see participants first?{' '}
-              <Link 
-                to="/food-for-talk/login" 
-                state={{ from: '/food-for-talk/participants' }}
-                className="text-yellow-400 hover:text-yellow-300 font-medium"
-              >
-                Login here
-              </Link>
-            </p>
-          </div>
+          {!isAlreadyLoggedIn && (
+            <div className="mt-6 text-center">
+              <p className="text-white/70">
+                Need to see participants first?{' '}
+                <Link 
+                  to="/food-for-talk/login" 
+                  state={{ from: '/food-for-talk/participants' }}
+                  className="text-yellow-400 hover:text-yellow-300 font-medium"
+                >
+                  Login here
+                </Link>
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

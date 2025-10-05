@@ -23,8 +23,43 @@ const FoodForTalkPage = () => {
     event_status: 'upcoming'
   });
   const [loading, setLoading] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
-  // Fetch event settings from database
+  // Check login status
+  const checkLoginStatus = () => {
+    const foodForTalkToken = localStorage.getItem('foodForTalkToken');
+    const foodForTalkSecretToken = localStorage.getItem('foodForTalkSecretToken');
+    
+    if (foodForTalkToken || foodForTalkSecretToken) {
+      setIsLoggedIn(true);
+      // Try to get user info from token (basic info)
+      try {
+        const token = foodForTalkToken || foodForTalkSecretToken;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        setUserInfo({
+          email: payload.email,
+          nickname: payload.nickname || 'Participant'
+        });
+      } catch (error) {
+        console.error('Error parsing token:', error);
+        setUserInfo({ email: 'Unknown', nickname: 'Participant' });
+      }
+    } else {
+      setIsLoggedIn(false);
+      setUserInfo(null);
+    }
+  };
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem('foodForTalkToken');
+    localStorage.removeItem('foodForTalkSecretToken');
+    setIsLoggedIn(false);
+    setUserInfo(null);
+  };
+
+  // Fetch event settings from database and check login status
   useEffect(() => {
     const fetchEventSettings = async () => {
       try {
@@ -48,6 +83,7 @@ const FoodForTalkPage = () => {
     };
 
     fetchEventSettings();
+    checkLoginStatus();
   }, []);
 
   // Set event date from database or default
@@ -119,14 +155,26 @@ const FoodForTalkPage = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Local Language Toggle */}
-        <button
-          type="button"
-          onClick={toggleLanguage}
-          className="fixed top-4 right-4 z-50 px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
-        >
-          {language === 'zh-TW' ? 'EN' : '中文'}
-        </button>
+        {/* Local Language Toggle and Logout Button */}
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+          {isLoggedIn && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-red-500/40 hover:bg-red-500/60 border border-red-500/20 backdrop-blur-sm"
+              title={`Logged in as ${userInfo?.nickname || userInfo?.email}`}
+            >
+              登出 Logout
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
+          >
+            {language === 'zh-TW' ? 'EN' : '中文'}
+          </button>
+        </div>
         {/* Video Background (scoped to hero only) */}
         <video
           autoPlay
@@ -190,7 +238,7 @@ const FoodForTalkPage = () => {
 
           {/* Secondary Buttons: See Participants + Enter Secret Chat */}
           <div className="mb-12 sm:mb-16">
-            <ActionButtons />
+            <ActionButtons isLoggedIn={isLoggedIn} />
           </div>
 
           {/* Sponsors / Partners */}
