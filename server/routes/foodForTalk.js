@@ -593,7 +593,13 @@ router.get('/participants/:id', async (req, res) => {
       gender: participant.gender,
       age: participant.age,
       bio: participant.bio,
-      interests: participant.interests || [],
+      interests: (() => {
+        try {
+          return participant.interests ? JSON.parse(participant.interests) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       interestsOther: participant.interests_other,
       profilePhotoUrl: participant.profile_photo_url,
       createdAt: participant.created_at,
@@ -601,7 +607,13 @@ router.get('/participants/:id', async (req, res) => {
       expectPersonType: participant.expect_person_type,
       dreamFirstDate: participant.dream_first_date,
       dreamFirstDateOther: participant.dream_first_date_other,
-      attractiveTraits: participant.attractive_traits || [],
+      attractiveTraits: (() => {
+        try {
+          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+        } catch (e) {
+          return [];
+        }
+      })(),
       attractiveTraitsOther: participant.attractive_traits_other,
       japaneseFoodPreference: participant.japanese_food_preference,
       quickfireMagicItemChoice: participant.quickfire_magic_item_choice,

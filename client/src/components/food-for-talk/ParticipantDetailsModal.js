@@ -96,18 +96,31 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   </div>
                 )}
 
-                {participant.interests && participant.interests.length > 0 && (
-                  <div className="mb-4">
-                    <span className="text-white/70 text-sm block mb-2">Interests:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {participant.interests.map((interest, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-yellow-400/20 text-yellow-300 text-sm rounded-full border border-yellow-400/30">
-                          {interest}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                {(() => {
+                  let interests = participant.interests;
+                  if (typeof interests === 'string') {
+                    try {
+                      interests = JSON.parse(interests);
+                    } catch (e) {
+                      interests = [];
+                    }
+                  }
+                  if (interests && Array.isArray(interests) && interests.length > 0) {
+                    return (
+                      <div className="mb-4">
+                        <span className="text-white/70 text-sm block mb-2">Interests:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {interests.map((interest, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-yellow-400/20 text-yellow-300 text-sm rounded-full border border-yellow-400/30">
+                              {interest}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
 
                 {participant.interestsOther && (
                   <div>
@@ -143,21 +156,34 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   </div>
                 )}
 
-                {participant.attractiveTraits && participant.attractiveTraits.length > 0 && (
-                  <div className="mb-4">
-                    <span className="text-white/70 text-sm block mb-2">Attractive traits:</span>
-                    <div className="flex flex-wrap gap-2">
-                      {participant.attractiveTraits.map((trait, idx) => (
-                        <span key={idx} className="px-3 py-1 bg-pink-400/20 text-pink-300 text-sm rounded-full border border-pink-400/30">
-                          {trait}
-                        </span>
-                      ))}
-                    </div>
-                    {participant.attractiveTraitsOther && (
-                      <p className="text-white/80 text-sm mt-2">Other: {participant.attractiveTraitsOther}</p>
-                    )}
-                  </div>
-                )}
+                {(() => {
+                  let attractiveTraits = participant.attractiveTraits;
+                  if (typeof attractiveTraits === 'string') {
+                    try {
+                      attractiveTraits = JSON.parse(attractiveTraits);
+                    } catch (e) {
+                      attractiveTraits = [];
+                    }
+                  }
+                  if (attractiveTraits && Array.isArray(attractiveTraits) && attractiveTraits.length > 0) {
+                    return (
+                      <div className="mb-4">
+                        <span className="text-white/70 text-sm block mb-2">Attractive traits:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {attractiveTraits.map((trait, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-pink-400/20 text-pink-300 text-sm rounded-full border border-pink-400/30">
+                              {trait}
+                            </span>
+                          ))}
+                        </div>
+                        {participant.attractiveTraitsOther && (
+                          <p className="text-white/80 text-sm mt-2">Other: {participant.attractiveTraitsOther}</p>
+                        )}
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
 
               {/* Food Preferences */}
