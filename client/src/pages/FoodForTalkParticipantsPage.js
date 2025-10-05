@@ -89,6 +89,42 @@ const FoodForTalkParticipantsPage = () => {
             <p className="text-xl text-white/80">{t('foodForTalk.participants.subtitle')}</p>
           </div>
 
+          {/* Event Date Announcement */}
+          <div className="text-center mb-12">
+            <div className="relative inline-block">
+              {/* Animated background glow */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-yellow-400/30 via-orange-500/30 to-red-500/30 blur-2xl rounded-full animate-pulse"></div>
+              
+              {/* Main announcement card */}
+              <div className="relative bg-gradient-to-r from-yellow-400/20 via-orange-500/20 to-red-500/20 backdrop-blur-sm border-2 border-yellow-400/40 rounded-3xl p-8 shadow-2xl">
+                {/* Decorative elements */}
+                <div className="absolute top-4 left-4 text-yellow-400 text-2xl">🎉</div>
+                <div className="absolute top-4 right-4 text-orange-400 text-2xl">✨</div>
+                <div className="absolute bottom-4 left-6 text-red-400 text-xl">💫</div>
+                <div className="absolute bottom-4 right-6 text-yellow-300 text-xl">🌟</div>
+                
+                {/* Main text */}
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 mb-4 leading-tight">
+                  See you on
+                </h2>
+                <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 tracking-wide">
+                  1/11/2025
+                </div>
+                <div className="flex items-center justify-center gap-3 mb-4">
+                  <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-yellow-400"></div>
+                  <span className="text-2xl sm:text-3xl font-bold text-yellow-300">@</span>
+                  <div className="w-8 h-0.5 bg-gradient-to-r from-yellow-400 to-transparent"></div>
+                </div>
+                <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
+                  IPPAIKI
+                </div>
+                <p className="text-lg sm:text-xl text-white/90 font-medium">
+                  Get ready for an amazing experience! 🍵
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Participants Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {participants.map((participant, index) => (
