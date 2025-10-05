@@ -24,8 +24,8 @@ const EventDetails = () => {
           </ol>
         </div>
         <div className="bg-white/10 rounded-2xl p-6 border border-white/20">
-          <div className="text-xl font-bold text-white mb-2">{t('foodForTalk.details.sponsorTitle')}</div>
-          <ul className="list-disc pl-5 space-y-2 text-white/90">
+          <div className="text-xl font-bold text-gray-800 mb-2">{t('foodForTalk.details.sponsorTitle')}</div>
+          <ul className="list-disc pl-5 space-y-2 text-gray-700">
             <li>{t('foodForTalk.details.sponsor1')}</li>
             <li>{t('foodForTalk.details.sponsor2')}</li>
             <li>{t('foodForTalk.details.sponsor3')}</li>
@@ -43,6 +43,10 @@ const EventDetails = () => {
             <li>
               <div className="font-semibold">{t('foodForTalk.details.faq.q3')}</div>
               <div>{t('foodForTalk.details.faq.a3')}</div>
+            </li>
+            <li>
+              <div className="font-semibold">{t('foodForTalk.details.faq.q4')}</div>
+              <div>{t('foodForTalk.details.faq.a4')}</div>
             </li>
           </ul>
         </div>
