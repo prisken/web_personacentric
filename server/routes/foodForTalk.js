@@ -440,9 +440,12 @@ router.get('/participants', async (req, res) => {
       return res.status(401).json({ message: 'Invalid token' });
     }
 
-    // Get all participants (excluding sensitive info like passwords and passkeys)
+    // Get participants using only columns that exist in the DB (prod-safe)
+    const columns = await require('../config/database').getQueryInterface().describeTable('food_for_talk_users');
+    const existingColumns = Object.keys(columns);
     const participants = await FoodForTalkUser.findAll({
       where: { is_active: true, is_verified: true },
+      attributes: existingColumns,
       order: [['created_at', 'ASC']]
     });
 

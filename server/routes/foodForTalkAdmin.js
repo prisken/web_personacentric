@@ -1,6 +1,7 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const FoodForTalkUser = require('../models/FoodForTalkUser');
+const sequelize = require('../config/database');
 const FoodForTalkChatMessage = require('../models/FoodForTalkChatMessage');
 const FoodForTalkProfileView = require('../models/FoodForTalkProfileView');
 
@@ -14,16 +15,19 @@ const generatePasskey = () => {
 // Get all participants (admin only)
 router.get('/participants', async (req, res) => {
   try {
-    // Select a conservative set of columns that exist in production
+    // Describe table to get existing columns in the actual DB (prod-safe)
+    const columns = await sequelize.getQueryInterface().describeTable('food_for_talk_users');
+    const existingColumns = Object.keys(columns);
+
     const participants = await FoodForTalkUser.findAll({
-      // avoid selecting non-existent columns on legacy prod; fetch all and filter on UI
+      attributes: existingColumns,
       order: [['created_at', 'DESC']]
     });
 
     res.json({ participants });
   } catch (error) {
     console.error('Get participants error:', error);
-    res.status(500).json({ message: 'Failed to get participants' });
+    res.status(500).json({ message: 'Failed to get participants', error: error?.message });
   }
 });
 
@@ -31,7 +35,10 @@ router.get('/participants', async (req, res) => {
 router.get('/participants/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const participant = await FoodForTalkUser.findByPk(id);
+    const columns = await sequelize.getQueryInterface().describeTable('food_for_talk_users');
+    const existingColumns = Object.keys(columns);
+
+    const participant = await FoodForTalkUser.findByPk(id, { attributes: existingColumns });
 
     if (!participant) {
       return res.status(404).json({ message: 'Participant not found' });
