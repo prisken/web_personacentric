@@ -54,7 +54,15 @@ const FoodForTalkManagement = () => {
     try {
       const response = await apiService.get('/super-admin/food-for-talk/event-settings');
       if (response.success) {
-        setEventSettings(response.settings);
+        // Ensure event_start_date is valid or set to null
+        const settings = { ...response.settings };
+        if (settings.event_start_date) {
+          const date = new Date(settings.event_start_date);
+          if (isNaN(date.getTime())) {
+            settings.event_start_date = null;
+          }
+        }
+        setEventSettings(settings);
       }
     } catch (error) {
       console.error('Error fetching event settings:', error);
@@ -63,6 +71,19 @@ const FoodForTalkManagement = () => {
   };
 
   const updateEventSettings = async (updatedSettings) => {
+    // Validate required fields
+    if (!updatedSettings.event_start_date) {
+      toast.error('Event start date is required');
+      return;
+    }
+
+    // Validate that the date is valid
+    const date = new Date(updatedSettings.event_start_date);
+    if (isNaN(date.getTime())) {
+      toast.error('Please enter a valid event start date');
+      return;
+    }
+
     setSettingsLoading(true);
     try {
       const response = await apiService.put('/super-admin/food-for-talk/event-settings', updatedSettings);
@@ -233,6 +254,10 @@ const FoodForTalkManagement = () => {
                   value={eventSettings.event_start_date ? 
                     (() => {
                       const date = new Date(eventSettings.event_start_date);
+                      // Check if date is valid
+                      if (isNaN(date.getTime())) {
+                        return '';
+                      }
                       const year = date.getFullYear();
                       const month = String(date.getMonth() + 1).padStart(2, '0');
                       const day = String(date.getDate()).padStart(2, '0');
