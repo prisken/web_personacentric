@@ -231,41 +231,81 @@ const FoodForTalkRegisterPage = () => {
                   )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.interests')}</label>
-                  <select
-                    multiple
-                    name="interests"
-                    value={formData.interests}
-                    onChange={(e) => {
-                      const selected = Array.from(e.target.selectedOptions).map(o => o.value);
-                      setFormData(prev => ({ ...prev, interests: selected.slice(0, 3) }));
-                    }}
-                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  >
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.interests')} (最多選3項)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-3">
                     {interestChoices.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
+                      <button 
+                        key={opt} 
+                        type="button" 
+                        onClick={() => {
+                          if (formData.interests.includes(opt)) {
+                            // Remove if already selected
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              interests: prev.interests.filter(item => item !== opt)
+                            }));
+                          } else if (formData.interests.length < 3) {
+                            // Add if not at limit
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              interests: [...prev.interests, opt]
+                            }));
+                          }
+                        }}
+                        className={`px-4 py-3 rounded-lg text-sm font-medium transition-all text-center ${
+                          formData.interests.includes(opt)
+                            ? 'bg-yellow-400 text-black border-2 border-yellow-400'
+                            : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
+                        } ${formData.interests.length >= 3 && !formData.interests.includes(opt) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        disabled={formData.interests.length >= 3 && !formData.interests.includes(opt)}
+                      >
+                        {opt}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+                  <div className="text-white/70 text-sm mb-2">
+                    已選擇: {formData.interests.length}/3
+                  </div>
                   {formData.interests.includes(language === 'zh-TW' ? '其他' : 'Other') && (
                     <input type="text" name="interestsOther" value={formData.interestsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.interestsOther')} />
                   )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.traits')}</label>
-                  <select
-                    multiple
-                    name="attractiveTraits"
-                    value={formData.attractiveTraits}
-                    onChange={(e) => {
-                      const selected = Array.from(e.target.selectedOptions).map(o => o.value);
-                      setFormData(prev => ({ ...prev, attractiveTraits: selected.slice(0, 2) }));
-                    }}
-                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                  >
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.traits')} (最多選2項)</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-3">
                     {traitChoices.map(opt => (
-                      <option key={opt} value={opt}>{opt}</option>
+                      <button 
+                        key={opt} 
+                        type="button" 
+                        onClick={() => {
+                          if (formData.attractiveTraits.includes(opt)) {
+                            // Remove if already selected
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              attractiveTraits: prev.attractiveTraits.filter(item => item !== opt)
+                            }));
+                          } else if (formData.attractiveTraits.length < 2) {
+                            // Add if not at limit
+                            setFormData(prev => ({ 
+                              ...prev, 
+                              attractiveTraits: [...prev.attractiveTraits, opt]
+                            }));
+                          }
+                        }}
+                        className={`px-3 py-3 rounded-lg text-sm font-medium transition-all text-center ${
+                          formData.attractiveTraits.includes(opt)
+                            ? 'bg-yellow-400 text-black border-2 border-yellow-400'
+                            : 'bg-white/20 text-white border border-white/30 hover:bg-white/30'
+                        } ${formData.attractiveTraits.length >= 2 && !formData.attractiveTraits.includes(opt) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                        disabled={formData.attractiveTraits.length >= 2 && !formData.attractiveTraits.includes(opt)}
+                      >
+                        {opt}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+                  <div className="text-white/70 text-sm mb-2">
+                    已選擇: {formData.attractiveTraits.length}/2
+                  </div>
                   {formData.attractiveTraits.includes(language === 'zh-TW' ? '其他' : 'Other') && (
                     <input type="text" name="attractiveTraitsOther" value={formData.attractiveTraitsOther} onChange={handleInputChange} className="mt-3 w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder={t('foodForTalk.form.traitsOther')} />
                   )}
