@@ -135,26 +135,33 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       is_verified: true
     };
 
-    // Attempt to include expanded fields; if DB lacks columns, retry with baseData
+    // Check which columns exist in the production DB to avoid schema mismatches
     let user;
     try {
-      user = await FoodForTalkUser.create({
-        ...baseData,
-        nickname: nickname || null,
-        gender: gender || null,
-        expect_person_type: expectPersonType || null,
-        dream_first_date: dreamFirstDate || null,
-        dream_first_date_other: dreamFirstDateOther || null,
-        interests_other: interestsOther || null,
-        attractive_traits: parsedAttractiveTraits,
-        attractive_traits_other: attractiveTraitsOther || null,
-        japanese_food_preference: japaneseFoodPreference || null,
-        quickfire_magic_item_choice: quickfireMagicItemChoice || null,
-        quickfire_desired_outcome: quickfireDesiredOutcome || null,
-        consent_accepted: consentAccepted === 'true' || consentAccepted === true
-      });
+      const columns = await require('../config/database').getQueryInterface().describeTable('food_for_talk_users');
+      const existingColumns = Object.keys(columns);
+      
+      // Build data object with only existing columns
+      const createData = { ...baseData };
+      
+      // Only add new columns if they exist in the database
+      if (existingColumns.includes('nickname')) createData.nickname = nickname || null;
+      if (existingColumns.includes('gender')) createData.gender = gender || null;
+      if (existingColumns.includes('expect_person_type')) createData.expect_person_type = expectPersonType || null;
+      if (existingColumns.includes('dream_first_date')) createData.dream_first_date = dreamFirstDate || null;
+      if (existingColumns.includes('dream_first_date_other')) createData.dream_first_date_other = dreamFirstDateOther || null;
+      if (existingColumns.includes('interests_other')) createData.interests_other = interestsOther || null;
+      if (existingColumns.includes('attractive_traits')) createData.attractive_traits = parsedAttractiveTraits;
+      if (existingColumns.includes('attractive_traits_other')) createData.attractive_traits_other = attractiveTraitsOther || null;
+      if (existingColumns.includes('japanese_food_preference')) createData.japanese_food_preference = japaneseFoodPreference || null;
+      if (existingColumns.includes('quickfire_magic_item_choice')) createData.quickfire_magic_item_choice = quickfireMagicItemChoice || null;
+      if (existingColumns.includes('quickfire_desired_outcome')) createData.quickfire_desired_outcome = quickfireDesiredOutcome || null;
+      if (existingColumns.includes('consent_accepted')) createData.consent_accepted = consentAccepted === 'true' || consentAccepted === true;
+      if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
+      
+      user = await FoodForTalkUser.create(createData);
     } catch (createErr) {
-      console.warn('Create with expanded fields failed, retrying with baseData only:', createErr?.message);
+      console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
       user = await FoodForTalkUser.create(baseData);
     }
 
