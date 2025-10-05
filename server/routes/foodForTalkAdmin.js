@@ -131,6 +131,79 @@ router.patch('/participants/:id/regenerate-passkey', async (req, res) => {
   }
 });
 
+// Update participant details
+router.put('/participants/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const participant = await FoodForTalkUser.findByPk(id);
+    if (!participant) {
+      return res.status(404).json({ message: 'Participant not found' });
+    }
+
+    // Validate required fields
+    if (updateData.email && !updateData.email.includes('@')) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+
+    if (updateData.age && (isNaN(updateData.age) || updateData.age < 18 || updateData.age > 100)) {
+      return res.status(400).json({ message: 'Age must be between 18 and 100' });
+    }
+
+    // Prepare update object with only allowed fields
+    const allowedFields = [
+      'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
+      'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
+      'interests_other', 'dietary_restrictions', 'emergency_contact_name',
+      'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+      'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
+      'japanese_food_preference', 'quickfire_magic_item_choice',
+      'quickfire_desired_outcome', 'consent_accepted', 'is_active', 'is_verified'
+    ];
+
+    const filteredUpdateData = {};
+    for (const field of allowedFields) {
+      if (updateData.hasOwnProperty(field)) {
+        filteredUpdateData[field] = updateData[field];
+      }
+    }
+
+    // Handle array fields
+    if (updateData.interests && Array.isArray(updateData.interests)) {
+      filteredUpdateData.interests = JSON.stringify(updateData.interests);
+    }
+    if (updateData.attractive_traits && Array.isArray(updateData.attractive_traits)) {
+      filteredUpdateData.attractive_traits = JSON.stringify(updateData.attractive_traits);
+    }
+
+    // Update participant
+    await participant.update(filteredUpdateData);
+
+    // Return updated participant data
+    const updatedParticipant = await FoodForTalkUser.findByPk(id, {
+      attributes: [
+        'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
+        'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
+        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
+        'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+        'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
+        'japanese_food_preference', 'quickfire_magic_item_choice',
+        'quickfire_desired_outcome', 'consent_accepted', 'is_active', 'is_verified',
+        'profile_photo_url', 'created_at', 'updated_at'
+      ]
+    });
+
+    res.json({ 
+      message: 'Participant updated successfully',
+      participant: updatedParticipant
+    });
+  } catch (error) {
+    console.error('Update participant error:', error);
+    res.status(500).json({ message: 'Failed to update participant' });
+  }
+});
+
 // Delete participant
 router.delete('/participants/:id', async (req, res) => {
   try {

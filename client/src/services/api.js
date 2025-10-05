@@ -546,6 +546,10 @@ class ApiService {
     return this.get(`/food-for-talk/admin/participants/${participantId}`);
   }
 
+  async updateFoodForTalkAdminParticipant(participantId, updateData) {
+    return this.put(`/food-for-talk/admin/participants/${participantId}`, updateData);
+  }
+
   async getFoodForTalkParticipantDetails(participantId) {
     const token = localStorage.getItem('foodForTalkToken');
     return this.get(`/food-for-talk/participants/${participantId}`, {
