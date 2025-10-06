@@ -175,44 +175,46 @@ const ChatV2Interface = ({ token }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col relative overflow-hidden">
-      <div className="fft-animated-gradient"></div>
-      <div className="fft-noise-overlay"></div>
-      <div className="fft-blob" style={{ top: '-8rem', left: '-6rem', background: 'rgba(147,51,234,0.35)' }}></div>
-      <div className="fft-blob" style={{ bottom: '-10rem', right: '-8rem', background: 'rgba(59,130,246,0.35)' }}></div>
-      <div className="bg-white/10 border-b border-white/20 px-4 py-3 text-white flex items-center justify-between">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      <div className="bg-white/10 border-b border-white/20 px-4 py-3 text-white flex items-center justify-between max-w-4xl w-full mx-auto">
         <div className="font-semibold">🌐 Public Chat</div>
         <div className="text-white/70 text-sm">{participants.length} online</div>
       </div>
 
-      <div className="bg-black/20 border-b border-white/10 flex overflow-x-auto">
+      <div className="bg-black/20 border-b border-white/10 flex overflow-x-auto max-w-4xl w-full mx-auto">
         <button className={`px-4 py-2 text-sm ${activeTab==='public'?'text-yellow-400 border-b-2 border-yellow-400':'text-white/70'}`} onClick={() => setActiveTab('public')}>Public</button>
         {openDMs.map(dm => (
           <button key={dm.id} className={`px-4 py-2 text-sm ${activeTab===dm.id?'text-blue-400 border-b-2 border-blue-400':'text-white/70'}`} onClick={() => setActiveTab(dm.id)}>💬 {dm.name}</button>
         ))}
       </div>
 
-      <div ref={scrollRef} className={`flex-1 overflow-y-auto p-2 pb-40`}>
-        {renderMessages()}
+      <div className="flex-1 w-full">
+        <div ref={scrollRef} className={`max-w-4xl mx-auto overflow-y-auto p-2 pb-40`} style={{ height: '100%' }}>
+          {renderMessages()}
+        </div>
       </div>
 
       <div className="fixed left-0 right-0 bottom-0 z-50">
         {activeTab === 'public' ? (
           <div className="bg-[#0b1028]/90 backdrop-blur border-t border-white/15">
-            <InputBar onSend={sendPublic} placeholder="Say something fun..." />
+            <div className="max-w-4xl mx-auto">
+              <InputBar onSend={sendPublic} placeholder="Say something fun..." />
+            </div>
           </div>
         ) : (
           <div className="bg-[#0b1028]/90 backdrop-blur border-t border-white/15">
-            <InputBar onSend={(text) => {
-              const dm = openDMs.find(d => d.id === activeTab);
-              if (dm) sendPrivate(dm.userId, text);
-            }} placeholder="Send a private message..." />
+            <div className="max-w-4xl mx-auto">
+              <InputBar onSend={(text) => {
+                const dm = openDMs.find(d => d.id === activeTab);
+                if (dm) sendPrivate(dm.userId, text);
+              }} placeholder="Send a private message..." />
+            </div>
           </div>
         )}
       </div>
 
       {/* Mobile participants drawer trigger */}
-      <div className="fixed right-4 bottom-24 z-30">
+      <div className="md:hidden fixed right-4 bottom-24 z-30">
         <details className="group">
           <summary className="cursor-pointer px-3 py-2 rounded bg-white/20 text-white">Participants</summary>
           <div className="absolute right-0 bottom-12 w-72 bg-white/10 backdrop-blur border border-white/20 rounded p-2 max-h-96 overflow-auto">
