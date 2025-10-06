@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import apiService from '../services/api';
 import { useLanguage } from '../contexts/LanguageContext';
+import { isValidEmail, isValidPhoneNumber, validateForm, VALIDATION_RULES } from '../utils/validation';
 
 // Local floating language toggle for pages without header
 const LanguageFloatingToggle = () => {
@@ -55,6 +56,7 @@ const FoodForTalkRegisterPage = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const ageOptions = Array.from({ length: 40 - 20 + 1 }, (_, i) => 20 + i);
 
@@ -87,12 +89,51 @@ const FoodForTalkRegisterPage = () => {
     ? ['新朋友', '脫單機會', '笑到肚痛的回憶', '靚相打卡', '一段特別的故事']
     : ['New friends', 'Chance to find a match', 'Laugh-out-loud memories', 'Nice photos', 'A special story'];
 
+  const validateField = (name, value) => {
+    let error = '';
+    
+    switch (name) {
+      case 'email':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入電子郵件' : 'Email is required';
+        } else if (!isValidEmail(value)) {
+          error = language === 'zh-TW' ? '請輸入有效的電子郵件格式' : 'Please enter a valid email address';
+        }
+        break;
+      case 'whatsappPhone':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入手機號碼' : 'Phone number is required';
+        } else if (!isValidPhoneNumber(value)) {
+          error = language === 'zh-TW' ? '請輸入有效的手機號碼格式 (例如: +85212345678 或 12345678)' : 'Please enter a valid phone number (e.g., +85212345678 or 12345678)';
+        }
+        break;
+      case 'emergencyContactPhone':
+        if (value.trim() && !isValidPhoneNumber(value)) {
+          error = language === 'zh-TW' ? '請輸入有效的緊急聯絡電話格式 (例如: +85212345678 或 12345678)' : 'Please enter a valid emergency contact phone number (e.g., +85212345678 or 12345678)';
+        }
+        break;
+      default:
+        break;
+    }
+    
+    setValidationErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+    
+    return error === '';
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
+    
+    // Validate the field in real-time
+    validateField(name, value);
   };
 
   const handleFileChange = (e) => {
@@ -107,6 +148,33 @@ const FoodForTalkRegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate all required fields
+    const requiredFields = ['email', 'whatsappPhone'];
+    let hasErrors = false;
+    
+    requiredFields.forEach(field => {
+      if (!validateField(field, formData[field])) {
+        hasErrors = true;
+      }
+    });
+    
+    // Validate emergency contact phone if provided
+    if (formData.emergencyContactPhone && !validateField('emergencyContactPhone', formData.emergencyContactPhone)) {
+      hasErrors = true;
+    }
+    
+    // Check other required fields
+    if (!formData.password || !formData.age || !formData.expectPersonType || !formData.consentAccepted) {
+      toast.error(language === 'zh-TW' ? '請填寫所有必填欄位' : 'Please fill in all required fields');
+      return;
+    }
+    
+    if (hasErrors) {
+      toast.error(language === 'zh-TW' ? '請修正表單中的錯誤' : 'Please fix the errors in the form');
+      return;
+    }
+    
     setIsSubmitting(true);
 
     try {
@@ -229,7 +297,19 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">緊急聯絡人電話 Emergency Contact Phone</label>
-                  <input type="tel" name="emergencyContactPhone" value={formData.emergencyContactPhone} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入緊急聯絡人電話" />
+                  <input 
+                    type="tel" 
+                    name="emergencyContactPhone" 
+                    value={formData.emergencyContactPhone} 
+                    onChange={handleInputChange} 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.emergencyContactPhone ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="請輸入緊急聯絡人電話 (例如: +85212345678 或 12345678)" 
+                  />
+                  {validationErrors.emergencyContactPhone && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.emergencyContactPhone}</p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">飲食限制 Dietary Restrictions</label>
@@ -381,11 +461,37 @@ const FoodForTalkRegisterPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.email')}</label>
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Email" />
+                  <input 
+                    type="email" 
+                    name="email" 
+                    value={formData.email} 
+                    onChange={handleInputChange} 
+                    required 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.email ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="Email" 
+                  />
+                  {validationErrors.email && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.whatsappPhone')}</label>
-                  <input type="tel" name="whatsappPhone" value={formData.whatsappPhone} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Phone (for notifications only)" />
+                  <input 
+                    type="tel" 
+                    name="whatsappPhone" 
+                    value={formData.whatsappPhone} 
+                    onChange={handleInputChange} 
+                    required 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.whatsappPhone ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="Phone (e.g., +85212345678 or 12345678)" 
+                  />
+                  {validationErrors.whatsappPhone && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.whatsappPhone}</p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')}</label>

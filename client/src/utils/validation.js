@@ -16,10 +16,30 @@ export const isValidPassword = (password) => {
   return passwordRegex.test(password);
 };
 
-// Phone number validation
+// Phone number validation - supports various international formats
 export const isValidPhoneNumber = (phone) => {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  if (!phone) return false;
+  
+  // Remove all spaces, dashes, parentheses
+  const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  
+  // Support formats like: +85212345678, 85212345678, 12345678, +1234567890
+  // Must start with + (international) or digits, and be 7-15 digits total
+  const phoneRegex = /^(\+?[1-9]\d{6,14})$/;
+  
+  return phoneRegex.test(cleaned);
+};
+
+// Hong Kong phone number validation (specific format)
+export const isValidHKPhoneNumber = (phone) => {
+  if (!phone) return false;
+  
+  const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+  
+  // Hong Kong formats: +85212345678, 85212345678, 12345678
+  const hkPhoneRegex = /^(\+?852)?[2-9]\d{7}$/;
+  
+  return hkPhoneRegex.test(cleaned);
 };
 
 // URL validation
