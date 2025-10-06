@@ -50,7 +50,7 @@ app.use('/api/', limiter);
 // CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? [process.env.CORS_ORIGIN || 'https://web-personacentric.vercel.app'] 
+    ? (process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['https://web-personacentric.vercel.app'])
     : ['http://localhost:3000'],
   credentials: true,
   optionsSuccessStatus: 200
