@@ -19,7 +19,6 @@ const routes = require('./routes');
 
 // Import utilities
 const ServerStartup = require('./utils/serverStartup');
-const FoodForTalkWebSocketServer = require('./websocket');
 const FoodForTalkWebSocketServerV2 = require('./websocketV2');
 
 const app = express();
@@ -111,13 +110,12 @@ async function startServer() {
     const serverStartup = new ServerStartup(app);
     const server = await serverStartup.start(PORT);
     
-    // Initialize WebSocket servers for Food for Talk chat
+    // Initialize WebSocket server (v2 only) for Food for Talk chat
     console.log('🔍 ENABLE_FOOD_FOR_TALK:', process.env.ENABLE_FOOD_FOR_TALK);
     if (process.env.ENABLE_FOOD_FOR_TALK === 'true') {
-      console.log('🚀 Initializing Food for Talk WebSocket servers...');
-      new FoodForTalkWebSocketServer(server);
+      console.log('🚀 Initializing Food for Talk WebSocket v2...');
       new FoodForTalkWebSocketServerV2(server);
-      console.log('🍽️ Food for Talk WebSocket servers initialized');
+      console.log('🍽️ Food for Talk WebSocket v2 initialized');
     } else {
       console.log('❌ Food for Talk WebSocket server NOT initialized - ENABLE_FOOD_FOR_TALK is not true');
     }
