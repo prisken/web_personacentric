@@ -59,6 +59,9 @@ const ChatV2Interface = ({ token }) => {
         case 'presence_left':
           setParticipants(prev => prev.filter(p => p.id !== data.userId));
           break;
+        case 'presence_list':
+          setParticipants((data.participants || []).map(p => ({ id: p.id, name: p.displayName })));
+          break;
         default:
           break;
       }
@@ -144,10 +147,10 @@ const ChatV2Interface = ({ token }) => {
       </div>
 
       {/* Mobile participants drawer trigger */}
-      <div className="fixed right-4 bottom-24">
+      <div className="fixed right-4 bottom-24 z-40">
         <details className="group">
           <summary className="cursor-pointer px-3 py-2 rounded bg-white/20 text-white">Participants</summary>
-          <div className="absolute right-0 mt-2 w-72 bg-white/10 backdrop-blur border border-white/20 rounded p-2 max-h-96 overflow-auto">
+          <div className="absolute right-0 bottom-12 w-72 bg-white/10 backdrop-blur border border-white/20 rounded p-2 max-h-96 overflow-auto">
             {participants.map(p => (
               <div key={p.id} className="flex items-center justify-between text-white px-2 py-2 hover:bg-white/10 rounded">
                 <div>{p.name}</div>

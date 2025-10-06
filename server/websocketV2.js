@@ -42,6 +42,12 @@ class FoodForTalkWebSocketServerV2 {
     // Send session info to client
     this.send(ws, { type: 'session', user: { id: authUser.userId, displayName } });
 
+    // Send current online participants list to the joining client
+    try {
+      const participants = this.getOnlineParticipants();
+      this.send(ws, { type: 'presence_list', participants });
+    } catch (_) {}
+
     // Presence announce
     this.broadcast({ type: 'presence_joined', user: { id: authUser.userId, displayName } }, ws);
 
@@ -193,6 +199,14 @@ class FoodForTalkWebSocketServerV2 {
 
   send(ws, data) {
     if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(data));
+  }
+
+  getOnlineParticipants() {
+    const list = [];
+    this.socketToClient.forEach((meta) => {
+      list.push({ id: meta.userId, displayName: meta.displayName });
+    });
+    return list;
   }
 }
 
