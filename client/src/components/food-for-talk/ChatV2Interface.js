@@ -116,28 +116,39 @@ const ChatV2Interface = ({ token }) => {
 
   const renderMessages = () => {
     if (activeTab === 'public') {
-      return messages.map(m => (
-        <div key={m.id} className="px-3 py-1">
-          {m.type === 'system' ? (
-            <div className="text-yellow-300 text-xs text-center">{m.content} <span className="text-white/40 ml-1">{formatTime(m.timestamp)}</span></div>
-          ) : (
-            <div className="text-white">
-              <span className="text-white/70 mr-2">{m.displayName}</span>
-              {m.content}
-              <span className="text-white/40 text-xs ml-2 align-middle">{formatTime(m.timestamp)}</span>
+      return messages.map(m => {
+        if (m.type === 'system') {
+          return (
+            <div key={m.id} className="px-3 py-1">
+              <div className="text-yellow-300 text-xs text-center">{m.content} <span className="text-white/40 ml-1">{formatTime(m.timestamp)}</span></div>
             </div>
-          )}
-        </div>
-      ));
+          );
+        }
+        const isOwn = m.userId && currentUserId && m.userId === currentUserId;
+        return (
+          <div key={m.id} className={`px-3 py-1 flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+            <div className={`max-w-[85%] rounded-2xl px-3 py-2 leading-relaxed ${isOwn ? 'bg-blue-600 text-white' : 'bg-white/15 text-white'} shadow-sm`}> 
+              <div className={`text-xs mb-1 ${isOwn ? 'text-blue-100' : 'text-white/70'}`}>{m.displayName}</div>
+              <div className="text-[15px]">{m.content}</div>
+              <div className={`text-[11px] mt-1 ${isOwn ? 'text-blue-100/80' : 'text-white/50'} text-right`}>{formatTime(m.timestamp)}</div>
+            </div>
+          </div>
+        );
+      });
     }
     const conv = privateConversations[activeTab] || [];
-    return conv.map(m => (
-      <div key={m.id} className="px-3 py-1 text-white">
-        <span className="text-white/70 mr-2">{m.senderDisplayName}</span>
-        {m.content}
-        <span className="text-white/40 text-xs ml-2 align-middle">{formatTime(m.timestamp)}</span>
-      </div>
-    ));
+    return conv.map(m => {
+      const isOwn = m.senderId && currentUserId && m.senderId === currentUserId;
+      return (
+        <div key={m.id} className={`px-3 py-1 flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+          <div className={`max-w-[85%] rounded-2xl px-3 py-2 leading-relaxed ${isOwn ? 'bg-blue-600 text-white' : 'bg-white/15 text-white'} shadow-sm`}>
+            <div className={`text-xs mb-1 ${isOwn ? 'text-blue-100' : 'text-white/70'}`}>{m.senderDisplayName}</div>
+            <div className="text-[15px]">{m.content}</div>
+            <div className={`text-[11px] mt-1 ${isOwn ? 'text-blue-100/80' : 'text-white/50'} text-right`}>{formatTime(m.timestamp)}</div>
+          </div>
+        </div>
+      );
+    });
   };
 
   const InputBar = ({ onSend, placeholder }) => {
@@ -197,7 +208,7 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className={`flex-1 overflow-y-auto p-2 ${showPollComposer ? 'pb-56' : 'pb-36'}`}>
+      <div className={`flex-1 overflow-y-auto p-2 ${showPollComposer ? 'pb-56' : 'pb-40'}`}>
         {renderMessages()}
       </div>
 
@@ -211,14 +222,18 @@ const ChatV2Interface = ({ token }) => {
         </div>
       )}
 
-      <div className="fixed left-0 right-0 bottom-0 z-40">
+      <div className="fixed left-0 right-0 bottom-0 z-50">
         {activeTab === 'public' ? (
-          <InputBar onSend={sendPublic} placeholder="Say something fun..." />
+          <div className="bg-[#0b1028]/90 backdrop-blur border-t border-white/15">
+            <InputBar onSend={sendPublic} placeholder="Say something fun..." />
+          </div>
         ) : (
-          <InputBar onSend={(text) => {
-            const dm = openDMs.find(d => d.id === activeTab);
-            if (dm) sendPrivate(dm.userId, text);
-          }} placeholder="Send a private message..." />
+          <div className="bg-[#0b1028]/90 backdrop-blur border-t border-white/15">
+            <InputBar onSend={(text) => {
+              const dm = openDMs.find(d => d.id === activeTab);
+              if (dm) sendPrivate(dm.userId, text);
+            }} placeholder="Send a private message..." />
+          </div>
         )}
       </div>
 
