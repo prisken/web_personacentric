@@ -903,7 +903,8 @@ router.get('/participants', async (req, res) => {
         age: participant.age,
         bio: participant.bio,
         interests: formattedInterests,
-        profilePhotoUrl: participant.profile_photo_url
+        profilePhotoUrl: participant.profile_photo_url,
+        attractiveTraitsOther: participant.attractive_traits_other
       };
     });
 

@@ -248,6 +248,13 @@ const FoodForTalkParticipantsPage = () => {
                       </div>
                     )}
 
+                    {participant.attractiveTraitsOther && (
+                      <div>
+                        <span className="text-white/70 block mb-1">Other traits:</span>
+                        <p className="text-white text-xs leading-relaxed">{participant.attractiveTraitsOther}</p>
+                      </div>
+                    )}
+
                     <button 
                       onClick={() => handleViewDetails(participant.id)} 
                       className="mt-2 w-full px-3 py-2 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 text-yellow-300 hover:text-yellow-200 border border-yellow-400/30 rounded-lg text-xs font-medium transition-all duration-300 hover:from-yellow-400/30 hover:to-orange-500/30"

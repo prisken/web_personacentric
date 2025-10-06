@@ -168,6 +168,13 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   </div>
                 )}
 
+                {participant.dreamFirstDateOther && (
+                  <div className="mb-4">
+                    <span className="text-white/70 text-sm block mb-2">Dream first date (other):</span>
+                    <p className="text-white font-medium">{participant.dreamFirstDateOther}</p>
+                  </div>
+                )}
+
                 {(() => {
                   let attractiveTraits = participant.attractiveTraits;
                   if (typeof attractiveTraits === 'string') {
@@ -193,6 +200,13 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   }
                   return null;
                 })()}
+
+                {participant.attractiveTraitsOther && (
+                  <div className="mb-4">
+                    <span className="text-white/70 text-sm block mb-2">Other attractive traits:</span>
+                    <p className="text-white font-medium">{participant.attractiveTraitsOther}</p>
+                  </div>
+                )}
               </div>
 
               {/* Food Preferences */}
