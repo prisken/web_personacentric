@@ -10,6 +10,13 @@ const ChatV2Interface = ({ token }) => {
   const wsRef = useRef(null);
   const typingTimeout = useRef(null);
   const [showPollComposer, setShowPollComposer] = useState(false);
+  const formatTime = (ts) => {
+    try {
+      return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch (_) {
+      return '';
+    }
+  };
 
   useEffect(() => {
     const wsBase = process.env.REACT_APP_WS_URL || (process.env.NODE_ENV === 'production' ? 'wss://webpersonacentric-personacentric.up.railway.app' : 'ws://localhost:5001');
@@ -112,9 +119,13 @@ const ChatV2Interface = ({ token }) => {
       return messages.map(m => (
         <div key={m.id} className="px-3 py-1">
           {m.type === 'system' ? (
-            <div className="text-yellow-300 text-xs text-center">{m.content}</div>
+            <div className="text-yellow-300 text-xs text-center">{m.content} <span className="text-white/40 ml-1">{formatTime(m.timestamp)}</span></div>
           ) : (
-            <div className="text-white"><span className="text-white/70 mr-2">{m.displayName}</span>{m.content}</div>
+            <div className="text-white">
+              <span className="text-white/70 mr-2">{m.displayName}</span>
+              {m.content}
+              <span className="text-white/40 text-xs ml-2 align-middle">{formatTime(m.timestamp)}</span>
+            </div>
           )}
         </div>
       ));
@@ -122,7 +133,9 @@ const ChatV2Interface = ({ token }) => {
     const conv = privateConversations[activeTab] || [];
     return conv.map(m => (
       <div key={m.id} className="px-3 py-1 text-white">
-        <span className="text-white/70 mr-2">{m.senderDisplayName}</span>{m.content}
+        <span className="text-white/70 mr-2">{m.senderDisplayName}</span>
+        {m.content}
+        <span className="text-white/40 text-xs ml-2 align-middle">{formatTime(m.timestamp)}</span>
       </div>
     ));
   };
