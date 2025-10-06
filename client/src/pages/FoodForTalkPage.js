@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from '../components/food-for-talk/CountdownTimer';
 import EventDetails from '../components/food-for-talk/EventDetails';
@@ -150,7 +151,39 @@ const FoodForTalkPage = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden -mt-16 lg:-mt-20">
+    <>
+      <Helmet>
+        <title>High Tea or Me - Speed Dating Event | Persona Centric</title>
+        <meta 
+          name="description" 
+          content="Join our exclusive speed dating event 'High Tea or Me' on January 11, 2025 at IPPAIKI. Connect with like-minded singles in a fun, relaxed atmosphere. Register now!" 
+        />
+        <meta name="keywords" content="speed dating, Hong Kong, singles event, dating, High Tea or Me, IPPAIKI, January 2025" />
+        
+        {/* Open Graph / Facebook */}
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="High Tea or Me - Speed Dating Event | Persona Centric" />
+        <meta property="og:description" content="Join our exclusive speed dating event 'High Tea or Me' on January 11, 2025 at IPPAIKI. Connect with like-minded singles in a fun, relaxed atmosphere." />
+        <meta property="og:url" content="https://personacentric.com/food-for-talk" />
+        <meta property="og:site_name" content="Persona Centric" />
+        <meta property="og:image" content="https://personacentric.com/images/High Tea or Me.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content="High Tea or Me Speed Dating Event" />
+        
+        {/* Twitter */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="High Tea or Me - Speed Dating Event" />
+        <meta name="twitter:description" content="Join our exclusive speed dating event on January 11, 2025 at IPPAIKI. Connect with like-minded singles in a fun, relaxed atmosphere." />
+        <meta name="twitter:image" content="https://personacentric.com/images/High Tea or Me.png" />
+        <meta name="twitter:image:alt" content="High Tea or Me Speed Dating Event" />
+        
+        {/* Additional SEO */}
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://personacentric.com/food-for-talk" />
+      </Helmet>
+      
+      <div className="min-h-screen relative overflow-hidden -mt-16 lg:-mt-20">
       {/* Remove in-page header; rely on global header in App */}
 
       {/* Hero Section */}
@@ -327,7 +360,8 @@ const FoodForTalkPage = () => {
           </p>
         </div>
       </footer>
-    </div>
+      </div>
+    </>
   );
 };
 
