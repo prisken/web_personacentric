@@ -104,15 +104,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     }
 
     // Parse interests
-    console.log('🔍 [REGISTRATION DEBUG] Raw interests from form:', interests);
-    console.log('🔍 [REGISTRATION DEBUG] Type of interests:', typeof interests);
     let parsedInterests = [];
     try {
       parsedInterests = JSON.parse(interests || '[]');
-      console.log('🔍 [REGISTRATION DEBUG] Parsed interests:', parsedInterests);
-      console.log('🔍 [REGISTRATION DEBUG] Is parsedInterests an array?', Array.isArray(parsedInterests));
     } catch (e) {
-      console.error('🔍 [REGISTRATION DEBUG] Error parsing interests:', e);
       parsedInterests = [];
     }
 
@@ -146,10 +141,6 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       secret_passkey: secretPasskey,
       is_verified: true
     };
-    
-    console.log('🔍 [REGISTRATION DEBUG] baseData.interests:', baseData.interests);
-    console.log('🔍 [REGISTRATION DEBUG] baseData.interests type:', typeof baseData.interests);
-    console.log('🔍 [REGISTRATION DEBUG] baseData.interests is array?', Array.isArray(baseData.interests));
 
     // Check which columns exist in the production DB to avoid schema mismatches
     let user;
@@ -176,17 +167,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
       
       user = await FoodForTalkUser.create(createData);
-      console.log('🔍 [REGISTRATION DEBUG] User created successfully. User ID:', user.id);
-      console.log('🔍 [REGISTRATION DEBUG] User interests after creation:', user.interests);
-      console.log('🔍 [REGISTRATION DEBUG] User interests type:', typeof user.interests);
-      console.log('🔍 [REGISTRATION DEBUG] User interests is array?', Array.isArray(user.interests));
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
       user = await FoodForTalkUser.create(baseData);
-      console.log('🔍 [REGISTRATION DEBUG] User created with baseData. User ID:', user.id);
-      console.log('🔍 [REGISTRATION DEBUG] User interests after baseData creation:', user.interests);
-      console.log('🔍 [REGISTRATION DEBUG] User interests type:', typeof user.interests);
-      console.log('🔍 [REGISTRATION DEBUG] User interests is array?', Array.isArray(user.interests));
     }
 
     // Send confirmation email (you can implement this)
@@ -287,10 +270,6 @@ router.get('/profile', async (req, res) => {
         'created_at', 'updated_at'
       ]
     });
-    
-    console.log('🔍 [GET PROFILE DEBUG] Raw participant.interests from DB:', participant.interests);
-    console.log('🔍 [GET PROFILE DEBUG] Type of participant.interests:', typeof participant.interests);
-    console.log('🔍 [GET PROFILE DEBUG] Is participant.interests an array?', Array.isArray(participant.interests));
 
     if (!participant) {
       return res.status(404).json({ message: 'Participant not found' });
@@ -375,9 +354,6 @@ router.get('/profile', async (req, res) => {
 // Update participant profile (self-editing)
 router.put('/profile', async (req, res) => {
   try {
-    console.log('🔍 [PUT PROFILE DEBUG] PUT /profile endpoint called');
-    console.log('🔍 [PUT PROFILE DEBUG] Request body:', req.body);
-    console.log('🔍 [PUT PROFILE DEBUG] Authorization header:', req.headers.authorization);
     
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
@@ -399,8 +375,6 @@ router.put('/profile', async (req, res) => {
     }
 
     const { userId } = decoded;
-    console.log('🔍 [PUT PROFILE DEBUG] User ID from token:', userId);
-    console.log('🔍 [PUT PROFILE DEBUG] Token decoded successfully');
     
     const updateData = req.body;
 
@@ -852,34 +826,22 @@ router.get('/participants', async (req, res) => {
 
     // Format participants data
     const formattedParticipants = participants.map(participant => {
-      console.log('🔍 [PARTICIPANTS DEBUG] Raw participant.interests from DB:', participant.interests);
-      console.log('🔍 [PARTICIPANTS DEBUG] Type of participant.interests:', typeof participant.interests);
-      console.log('🔍 [PARTICIPANTS DEBUG] Is participant.interests an array?', Array.isArray(participant.interests));
-      
       const formattedInterests = (() => {
         try {
           // Handle different formats from database
           if (Array.isArray(participant.interests)) {
-            console.log('🔍 [PARTICIPANTS DEBUG] Interests already an array:', participant.interests);
             return participant.interests;
           } else if (typeof participant.interests === 'string') {
             // Try JSON.parse first
             try {
-              const jsonResult = JSON.parse(participant.interests);
-              console.log('🔍 [PARTICIPANTS DEBUG] JSON parsed interests:', jsonResult);
-              return jsonResult;
+              return JSON.parse(participant.interests);
             } catch (jsonError) {
               // If JSON.parse fails, it might be comma-separated string
-              console.log('🔍 [PARTICIPANTS DEBUG] JSON parse failed, trying comma-separated:', participant.interests);
-              const commaResult = participant.interests.split(',').map(item => item.trim());
-              console.log('🔍 [PARTICIPANTS DEBUG] Comma-separated parsed interests:', commaResult);
-              return commaResult;
+              return participant.interests.split(',').map(item => item.trim());
             }
           }
-          console.log('🔍 [PARTICIPANTS DEBUG] No interests found, returning empty array');
           return [];
         } catch (e) {
-          console.error('🔍 [PARTICIPANTS DEBUG] Error parsing interests:', e);
           return [];
         }
       })();

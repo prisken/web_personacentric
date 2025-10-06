@@ -210,32 +210,19 @@ const FoodForTalkParticipantsPage = () => {
                 <div className="space-y-3">
                   <div className="text-center">
                     <h3 className="text-lg font-bold text-white">{participant.nickname || 'Anonymous'}</h3>
-                    {participant.gender && (
-                      <div className="text-white/70 text-sm mt-1">{participant.gender}</div>
-                    )}
                   </div>
 
                   <div className="space-y-2 text-sm">
-                    <div className="flex justify-between"><span className="text-white/70">Age:</span><span className="text-white">{participant.age || 'N/A'}</span></div>
 
                     {(() => {
-                      console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Raw participant.interests:', participant.interests);
-                      console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Type of participant.interests:', typeof participant.interests);
-                      console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Is participant.interests an array?', Array.isArray(participant.interests));
-                      
                       let interests = participant.interests;
                       if (typeof interests === 'string') {
                         try {
                           interests = JSON.parse(interests);
-                          console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Parsed interests from string:', interests);
                         } catch (e) {
-                          console.error('🔍 [FRONTEND PARTICIPANTS DEBUG] Error parsing interests:', e);
                           interests = [];
                         }
                       }
-                      console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Final interests:', interests);
-                      console.log('🔍 [FRONTEND PARTICIPANTS DEBUG] Final interests length:', interests?.length);
-                      
                       if (interests && Array.isArray(interests) && interests.length > 0) {
                         return (
                           <div>

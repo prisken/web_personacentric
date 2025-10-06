@@ -122,12 +122,6 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   return null;
                 })()}
 
-                {participant.interestsOther && (
-                  <div>
-                    <span className="text-white/70 text-sm block mb-2">Other Interests:</span>
-                    <p className="text-white">{participant.interestsOther}</p>
-                  </div>
-                )}
               </div>
 
               {/* Dating Preferences */}
@@ -150,9 +144,6 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   <div className="mb-4">
                     <span className="text-white/70 text-sm block mb-2">Dream first date:</span>
                     <p className="text-white font-medium">{participant.dreamFirstDate}</p>
-                    {participant.dreamFirstDateOther && (
-                      <p className="text-white/80 text-sm mt-1">({participant.dreamFirstDateOther})</p>
-                    )}
                   </div>
                 )}
 
@@ -176,9 +167,6 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                             </span>
                           ))}
                         </div>
-                        {participant.attractiveTraitsOther && (
-                          <p className="text-white/80 text-sm mt-2">Other: {participant.attractiveTraitsOther}</p>
-                        )}
                       </div>
                     );
                   }
@@ -197,29 +185,6 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                 <p className="text-white font-medium">{participant.japaneseFoodPreference || 'Not specified'}</p>
               </div>
 
-              {/* Quickfire Questions */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center">
-                  <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Quickfire Fun
-                </h3>
-                
-                {participant.quickfireMagicItemChoice && (
-                  <div className="mb-4">
-                    <span className="text-white/70 text-sm block mb-2">Magic item choice:</span>
-                    <p className="text-white font-medium">{participant.quickfireMagicItemChoice}</p>
-                  </div>
-                )}
-
-                {participant.quickfireDesiredOutcome && (
-                  <div>
-                    <span className="text-white/70 text-sm block mb-2">Desired outcome:</span>
-                    <p className="text-white font-medium">{participant.quickfireDesiredOutcome}</p>
-                  </div>
-                )}
-              </div>
 
               {/* Registration Details */}
               <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
@@ -233,14 +198,6 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   <div>
                     <span className="text-white/70 text-sm">Registration Date:</span>
                     <p className="text-white font-medium">{new Date(participant.createdAt).toLocaleDateString()}</p>
-                  </div>
-                  <div>
-                    <span className="text-white/70 text-sm">Consent Accepted:</span>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      participant.consentAccepted ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'
-                    }`}>
-                      {participant.consentAccepted ? 'Yes' : 'No'}
-                    </span>
                   </div>
                 </div>
               </div>

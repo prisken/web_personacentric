@@ -242,6 +242,8 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {renderEditableField('Phone', 'phone', 'tel')}
                   {renderEditableField('WhatsApp', 'whatsappPhone', 'tel')}
+                  {renderEditableField('Emergency Contact Name', 'emergencyContactName', 'text')}
+                  {renderEditableField('Emergency Contact Phone', 'emergencyContactPhone', 'tel')}
                 </div>
               </div>
 
@@ -304,6 +306,7 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
                 <div className="space-y-4">
                   {renderEditableField('Magic item choice', 'quickfireMagicItemChoice', 'select', magicItemOptions)}
                   {renderEditableField('Desired outcome', 'quickfireDesiredOutcome', 'select', desiredOutcomeOptions)}
+                  {renderEditableField('Consent Accepted', 'consentAccepted', 'checkbox')}
                 </div>
               </div>
             </div>
