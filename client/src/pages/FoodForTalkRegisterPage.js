@@ -93,6 +93,20 @@ const FoodForTalkRegisterPage = () => {
     let error = '';
     
     switch (name) {
+      case 'firstName':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入名字' : 'First name is required';
+        } else if (value.trim().length < 2) {
+          error = language === 'zh-TW' ? '名字至少需要2個字符' : 'First name must be at least 2 characters';
+        }
+        break;
+      case 'lastName':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入姓氏' : 'Last name is required';
+        } else if (value.trim().length < 2) {
+          error = language === 'zh-TW' ? '姓氏至少需要2個字符' : 'Last name must be at least 2 characters';
+        }
+        break;
       case 'email':
         if (!value.trim()) {
           error = language === 'zh-TW' ? '請輸入電子郵件' : 'Email is required';
@@ -149,8 +163,8 @@ const FoodForTalkRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate all required fields
-    const requiredFields = ['email', 'whatsappPhone'];
+    // Validate all required fields for event registration (name, email, phone only)
+    const requiredFields = ['firstName', 'lastName', 'email', 'whatsappPhone'];
     let hasErrors = false;
     
     requiredFields.forEach(field => {
@@ -162,12 +176,6 @@ const FoodForTalkRegisterPage = () => {
     // Validate emergency contact phone if provided
     if (formData.emergencyContactPhone && !validateField('emergencyContactPhone', formData.emergencyContactPhone)) {
       hasErrors = true;
-    }
-    
-    // Check other required fields
-    if (!formData.password || !formData.age || !formData.expectPersonType || !formData.consentAccepted) {
-      toast.error(language === 'zh-TW' ? '請填寫所有必填欄位' : 'Please fill in all required fields');
-      return;
     }
     
     if (hasErrors) {
@@ -262,11 +270,37 @@ const FoodForTalkRegisterPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-white font-medium mb-2">姓名 First Name</label>
-                  <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的姓名" />
+                  <input 
+                    type="text" 
+                    name="firstName" 
+                    value={formData.firstName} 
+                    onChange={handleInputChange} 
+                    required 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.firstName ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="請輸入您的姓名" 
+                  />
+                  {validationErrors.firstName && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.firstName}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">姓氏 Last Name</label>
-                  <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的姓氏" />
+                  <input 
+                    type="text" 
+                    name="lastName" 
+                    value={formData.lastName} 
+                    onChange={handleInputChange} 
+                    required 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.lastName ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="請輸入您的姓氏" 
+                  />
+                  {validationErrors.lastName && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.lastName}</p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">暱稱（公開給其他參加者）Nickname</label>
