@@ -419,16 +419,19 @@ router.put('/profile', async (req, res) => {
 
     // Update participant
     await participant.update(filteredUpdateData);
+    console.log('🔍 [PROFILE UPDATE] Participant updated successfully. ID:', userId);
+    console.log('🔍 [PROFILE UPDATE] Updated data:', filteredUpdateData);
 
     // Return updated participant data
     const updatedParticipant = await FoodForTalkUser.findByPk(userId, {
       attributes: [
         'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
         'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
-        'interests_other', 'dietary_restrictions', 'expect_person_type', 
+        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
+        'emergency_contact_phone', 'expect_person_type', 
         'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
         'attractive_traits_other', 'japanese_food_preference', 
-        'quickfire_magic_item_choice', 'quickfire_desired_outcome',
+        'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
         'profile_photo_url', 'created_at', 'updated_at'
       ]
     });
@@ -448,20 +451,32 @@ router.put('/profile', async (req, res) => {
       bio: updatedParticipant.bio,
       interests: (() => {
         try {
-          return updatedParticipant.interests ? JSON.parse(updatedParticipant.interests) : [];
+          if (Array.isArray(updatedParticipant.interests)) {
+            return updatedParticipant.interests;
+          } else if (typeof updatedParticipant.interests === 'string') {
+            return JSON.parse(updatedParticipant.interests);
+          }
+          return [];
         } catch (e) {
           return [];
         }
       })(),
       interestsOther: updatedParticipant.interests_other,
       dietaryRestrictions: updatedParticipant.dietary_restrictions,
+      emergencyContactName: updatedParticipant.emergency_contact_name,
+      emergencyContactPhone: updatedParticipant.emergency_contact_phone,
       profilePhotoUrl: updatedParticipant.profile_photo_url,
       expectPersonType: updatedParticipant.expect_person_type,
       dreamFirstDate: updatedParticipant.dream_first_date,
       dreamFirstDateOther: updatedParticipant.dream_first_date_other,
       attractiveTraits: (() => {
         try {
-          return updatedParticipant.attractive_traits ? JSON.parse(updatedParticipant.attractive_traits) : [];
+          if (Array.isArray(updatedParticipant.attractive_traits)) {
+            return updatedParticipant.attractive_traits;
+          } else if (typeof updatedParticipant.attractive_traits === 'string') {
+            return JSON.parse(updatedParticipant.attractive_traits);
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -469,9 +484,12 @@ router.put('/profile', async (req, res) => {
       attractiveTraitsOther: updatedParticipant.attractive_traits_other,
       japaneseFoodPreference: updatedParticipant.japanese_food_preference,
       quickfireMagicItemChoice: updatedParticipant.quickfire_magic_item_choice,
-      quickfireDesiredOutcome: updatedParticipant.quickfire_desired_outcome
+      quickfireDesiredOutcome: updatedParticipant.quickfire_desired_outcome,
+      consentAccepted: updatedParticipant.consent_accepted
     };
 
+    console.log('🔍 [PROFILE UPDATE] Returning formatted participant:', formattedParticipant.nickname, formattedParticipant.bio);
+    
     res.json({ 
       message: 'Profile updated successfully',
       participant: formattedParticipant

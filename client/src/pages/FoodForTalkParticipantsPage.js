@@ -105,8 +105,8 @@ const FoodForTalkParticipantsPage = () => {
   const handleProfileUpdated = (updatedProfile) => {
     // Update the userInfo with the new profile data
     setUserInfo(updatedProfile);
-    // Optionally refresh the participants list to show updated data
-    // fetchParticipants();
+    // Refresh the participants list to show updated data
+    loadParticipants();
   };
 
   const handleCloseModal = () => {
