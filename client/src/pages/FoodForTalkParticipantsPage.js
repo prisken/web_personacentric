@@ -216,7 +216,6 @@ const FoodForTalkParticipantsPage = () => {
                     {/* Gender Display */}
                     {participant.gender && (
                       <div>
-                        <span className="text-white/70 block mb-1">Gender:</span>
                         <span className="px-2 py-1 bg-white/20 text-white text-xs rounded-full">
                           {participant.gender}
                         </span>
@@ -235,7 +234,6 @@ const FoodForTalkParticipantsPage = () => {
                       if (interests && Array.isArray(interests) && interests.length > 0) {
                         return (
                           <div>
-                            <span className="text-white/70 block mb-1">Interests:</span>
                             <div className="flex flex-wrap gap-1">
                               {interests.slice(0, 3).map((interest, idx) => (
                                 <span key={idx} className="px-2 py-1 bg-yellow-400/20 text-yellow-300 text-xs rounded-full">{interest}</span>
@@ -252,14 +250,12 @@ const FoodForTalkParticipantsPage = () => {
 
                     {participant.bio && (
                       <div>
-                        <span className="text-white/70 block mb-1">Bio:</span>
                         <p className="text-white text-xs leading-relaxed">{expanded[participant.id] ? participant.bio : (participant.bio.length > 100 ? `${participant.bio.substring(0, 100)}...` : participant.bio)}</p>
                       </div>
                     )}
 
                     {participant.attractiveTraitsOther && (
                       <div>
-                        <span className="text-white/70 block mb-1">Other traits:</span>
                         <p className="text-white text-xs leading-relaxed">{participant.attractiveTraitsOther}</p>
                       </div>
                     )}
