@@ -36,8 +36,6 @@ const FoodForTalkRegisterPage = () => {
     // Additional Info
     occupation: '',
     dietaryRestrictions: '',
-    emergencyContactName: '',
-    emergencyContactPhone: '',
     // Fun Self-intro
     expectPersonType: '',
     dreamFirstDate: '',
@@ -121,11 +119,6 @@ const FoodForTalkRegisterPage = () => {
           error = language === 'zh-TW' ? '請輸入有效的手機號碼格式 (例如: +85212345678 或 12345678)' : 'Please enter a valid phone number (e.g., +85212345678 or 12345678)';
         }
         break;
-      case 'emergencyContactPhone':
-        if (value.trim() && !isValidPhoneNumber(value)) {
-          error = language === 'zh-TW' ? '請輸入有效的緊急聯絡電話格式 (例如: +85212345678 或 12345678)' : 'Please enter a valid emergency contact phone number (e.g., +85212345678 or 12345678)';
-        }
-        break;
       default:
         break;
     }
@@ -173,10 +166,6 @@ const FoodForTalkRegisterPage = () => {
       }
     });
     
-    // Validate emergency contact phone if provided
-    if (formData.emergencyContactPhone && !validateField('emergencyContactPhone', formData.emergencyContactPhone)) {
-      hasErrors = true;
-    }
     
     if (hasErrors) {
       toast.error(language === 'zh-TW' ? '請修正表單中的錯誤' : 'Please fix the errors in the form');
@@ -204,8 +193,6 @@ const FoodForTalkRegisterPage = () => {
       // Additional info fields
       submitData.append('occupation', formData.occupation || '');
       submitData.append('dietaryRestrictions', formData.dietaryRestrictions || '');
-      submitData.append('emergencyContactName', formData.emergencyContactName || '');
-      submitData.append('emergencyContactPhone', formData.emergencyContactPhone || '');
       
       // Fun self-intro fields
       submitData.append('expectPersonType', formData.expectPersonType);
@@ -324,26 +311,6 @@ const FoodForTalkRegisterPage = () => {
                 <div>
                   <label className="block text-white font-medium mb-2">職業 Occupation</label>
                   <input type="text" name="occupation" value={formData.occupation} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入您的職業" />
-                </div>
-                <div>
-                  <label className="block text-white font-medium mb-2">緊急聯絡人姓名 Emergency Contact Name</label>
-                  <input type="text" name="emergencyContactName" value={formData.emergencyContactName} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="請輸入緊急聯絡人姓名" />
-                </div>
-                <div>
-                  <label className="block text-white font-medium mb-2">緊急聯絡人電話 Emergency Contact Phone</label>
-                  <input 
-                    type="tel" 
-                    name="emergencyContactPhone" 
-                    value={formData.emergencyContactPhone} 
-                    onChange={handleInputChange} 
-                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
-                      validationErrors.emergencyContactPhone ? 'border-red-400' : 'border-white/30'
-                    }`}
-                    placeholder="請輸入緊急聯絡人電話 (例如: +85212345678 或 12345678)" 
-                  />
-                  {validationErrors.emergencyContactPhone && (
-                    <p className="text-red-300 text-sm mt-1">{validationErrors.emergencyContactPhone}</p>
-                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">飲食限制 Dietary Restrictions</label>

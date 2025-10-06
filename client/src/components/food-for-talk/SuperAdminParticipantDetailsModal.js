@@ -290,8 +290,6 @@ const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose, onP
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {renderEditableField('Email', 'email', 'email')}
                   {renderEditableField('WhatsApp', 'whatsappPhone', 'tel')}
-                  {renderEditableField('Emergency Contact Name', 'emergencyContactName', 'text')}
-                  {renderEditableField('Emergency Contact Phone', 'emergencyContactPhone', 'tel')}
                 </div>
               </div>
 

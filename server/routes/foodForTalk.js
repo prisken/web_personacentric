@@ -52,8 +52,6 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       // Additional info fields
       occupation,
       dietaryRestrictions,
-      emergencyContactName,
-      emergencyContactPhone,
       expectPersonType,
       dreamFirstDate,
       dreamFirstDateOther,
@@ -135,8 +133,6 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       bio: bio || '',
       interests: parsedInterests,
       dietary_restrictions: dietaryRestrictions || '',
-      emergency_contact_name: emergencyContactName || '',
-      emergency_contact_phone: emergencyContactPhone || '',
       profile_photo_url: profilePhotoUrl,
       secret_passkey: secretPasskey,
       is_verified: true
@@ -262,8 +258,7 @@ router.get('/profile', async (req, res) => {
       attributes: [
         'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
         'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
-        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
-        'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+        'interests_other', 'dietary_restrictions', 'expect_person_type', 'dream_first_date',
         'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
         'japanese_food_preference', 'quickfire_magic_item_choice',
         'quickfire_desired_outcome', 'consent_accepted', 'profile_photo_url',
@@ -308,8 +303,6 @@ router.get('/profile', async (req, res) => {
       })(),
       interestsOther: participant.interests_other,
       dietaryRestrictions: participant.dietary_restrictions,
-      emergencyContactName: participant.emergency_contact_name,
-      emergencyContactPhone: participant.emergency_contact_phone,
       profilePhotoUrl: participant.profile_photo_url,
       createdAt: participant.created_at,
       expectPersonType: participant.expect_person_type,
@@ -400,7 +393,6 @@ router.put('/profile', async (req, res) => {
       'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
       'attractive_traits_other', 'japanese_food_preference', 
       'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
-      'emergency_contact_name', 'emergency_contact_phone'
     ];
 
     // Map camelCase payload keys to snake_case DB columns
@@ -417,8 +409,6 @@ router.put('/profile', async (req, res) => {
       interests: 'interests',
       interestsOther: 'interests_other',
       dietaryRestrictions: 'dietary_restrictions',
-      emergencyContactName: 'emergency_contact_name',
-      emergencyContactPhone: 'emergency_contact_phone',
       expectPersonType: 'expect_person_type',
       dreamFirstDate: 'dream_first_date',
       dreamFirstDateOther: 'dream_first_date_other',
@@ -456,8 +446,7 @@ router.put('/profile', async (req, res) => {
       attributes: [
         'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
         'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
-        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
-        'emergency_contact_phone', 'expect_person_type', 
+        'interests_other', 'dietary_restrictions', 'expect_person_type', 
         'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
         'attractive_traits_other', 'japanese_food_preference', 
         'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
@@ -492,8 +481,6 @@ router.put('/profile', async (req, res) => {
       })(),
       interestsOther: updatedParticipant.interests_other,
       dietaryRestrictions: updatedParticipant.dietary_restrictions,
-      emergencyContactName: updatedParticipant.emergency_contact_name,
-      emergencyContactPhone: updatedParticipant.emergency_contact_phone,
       profilePhotoUrl: updatedParticipant.profile_photo_url,
       expectPersonType: updatedParticipant.expect_person_type,
       dreamFirstDate: updatedParticipant.dream_first_date,

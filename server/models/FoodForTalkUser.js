@@ -58,14 +58,6 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  emergency_contact_name: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  emergency_contact_phone: {
-    type: DataTypes.STRING(20),
-    allowNull: true
-  },
   profile_photo_url: {
     type: DataTypes.STRING(500),
     allowNull: true

@@ -78,8 +78,6 @@ router.get('/participants/:id', async (req, res) => {
       })(),
       interestsOther: participant.interests_other,
       dietaryRestrictions: participant.dietary_restrictions,
-      emergencyContactName: participant.emergency_contact_name,
-      emergencyContactPhone: participant.emergency_contact_phone,
       profilePhotoUrl: participant.profile_photo_url,
       isVerified: participant.is_verified,
       isActive: participant.is_active,
@@ -191,8 +189,7 @@ router.put('/participants/:id', async (req, res) => {
     const allowedFields = [
       'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
       'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
-      'interests_other', 'dietary_restrictions', 'emergency_contact_name',
-      'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+      'interests_other', 'dietary_restrictions', 'expect_person_type', 'dream_first_date',
       'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
       'japanese_food_preference', 'quickfire_magic_item_choice',
       'quickfire_desired_outcome', 'consent_accepted', 'is_active', 'is_verified'
@@ -213,8 +210,6 @@ router.put('/participants/:id', async (req, res) => {
       interests: 'interests',
       interestsOther: 'interests_other',
       dietaryRestrictions: 'dietary_restrictions',
-      emergencyContactName: 'emergency_contact_name',
-      emergencyContactPhone: 'emergency_contact_phone',
       expectPersonType: 'expect_person_type',
       dreamFirstDate: 'dream_first_date',
       dreamFirstDateOther: 'dream_first_date_other',
@@ -260,8 +255,7 @@ router.put('/participants/:id', async (req, res) => {
       attributes: [
         'id', 'email', 'first_name', 'last_name', 'nickname', 'gender', 'age',
         'phone', 'whatsapp_phone', 'occupation', 'bio', 'interests',
-        'interests_other', 'dietary_restrictions', 'emergency_contact_name',
-        'emergency_contact_phone', 'expect_person_type', 'dream_first_date',
+        'interests_other', 'dietary_restrictions', 'expect_person_type', 'dream_first_date',
         'dream_first_date_other', 'attractive_traits', 'attractive_traits_other',
         'japanese_food_preference', 'quickfire_magic_item_choice',
         'quickfire_desired_outcome', 'consent_accepted', 'is_active', 'is_verified',
@@ -296,8 +290,6 @@ router.put('/participants/:id', async (req, res) => {
       })(),
       interestsOther: updatedParticipant.interests_other,
       dietaryRestrictions: updatedParticipant.dietary_restrictions,
-      emergencyContactName: updatedParticipant.emergency_contact_name,
-      emergencyContactPhone: updatedParticipant.emergency_contact_phone,
       profilePhotoUrl: updatedParticipant.profile_photo_url,
       isVerified: updatedParticipant.is_verified,
       isActive: updatedParticipant.is_active,
@@ -492,8 +484,7 @@ router.get('/export/participants', async (req, res) => {
     const participants = await FoodForTalkUser.findAll({
       attributes: [
         'first_name', 'last_name', 'email', 'phone', 'age', 'occupation',
-        'bio', 'interests', 'dietary_restrictions', 'emergency_contact_name',
-        'emergency_contact_phone', 'is_verified', 'is_active', 'created_at',
+        'bio', 'interests', 'dietary_restrictions', 'is_verified', 'is_active', 'created_at',
         'last_login'
       ],
       order: [['created_at', 'DESC']]
@@ -516,8 +507,6 @@ router.get('/export/participants', async (req, res) => {
       `"${participant.bio.replace(/"/g, '""')}"`,
       `"${(participant.interests || []).join('; ')}"`,
       `"${participant.dietary_restrictions || ''}"`,
-      participant.emergency_contact_name,
-      participant.emergency_contact_phone,
       participant.is_verified ? 'Yes' : 'No',
       participant.is_active ? 'Yes' : 'No',
       participant.created_at.toISOString().split('T')[0],
