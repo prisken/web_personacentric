@@ -182,7 +182,7 @@ const ChatV2Interface = ({ token }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="h-screen flex flex-col bg-[#0b1028] bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
       <div className="bg-white/10 border-b border-white/20 px-4 py-3 text-white flex items-center justify-between max-w-4xl w-full mx-auto">
         <div className="font-semibold">🌐 Public Chat</div>
         <div className="text-white/70 text-sm">{participants.length} online</div>

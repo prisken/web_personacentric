@@ -41,7 +41,7 @@ body {
   font-family: 'Inter', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
   line-height: 1.6;
   color: var(--gray-900);
-  background-color: #ffffff;
+  background-color: #0b1028; /* ensure dark base behind gradients */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
