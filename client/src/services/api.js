@@ -554,6 +554,10 @@ class ApiService {
     return this.get('/food-for-talk/admin/participants');
   }
 
+  async clearFoodForTalkPublicChat() {
+    return this.delete('/food-for-talk/admin/chat/public');
+  }
+
   async getFoodForTalkAdminParticipantDetails(participantId) {
     return this.get(`/food-for-talk/admin/participants/${participantId}`);
   }

@@ -6,6 +6,16 @@ const FoodForTalkChatMessage = require('../models/FoodForTalkChatMessage');
 const FoodForTalkProfileView = require('../models/FoodForTalkProfileView');
 
 const router = express.Router();
+// Clear public chat history
+router.delete('/chat/public', async (req, res) => {
+  try {
+    await FoodForTalkChatMessage.destroy({ where: { message_type: 'public' } });
+    res.json({ success: true, message: 'Public chat history cleared' });
+  } catch (error) {
+    console.error('Clear public chat error:', error);
+    res.status(500).json({ success: false, message: 'Failed to clear chat history' });
+  }
+});
 
 // Generate a 6-digit passkey
 const generatePasskey = () => {

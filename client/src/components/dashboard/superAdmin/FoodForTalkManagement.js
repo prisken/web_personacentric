@@ -246,6 +246,24 @@ const FoodForTalkManagement = () => {
             {showEventSettings ? 'Hide Settings' : 'Manage Event Settings'}
           </button>
         </div>
+        <div className="flex justify-end">
+          <button
+            onClick={async () => {
+              if (!window.confirm('Clear ALL public chat messages? This cannot be undone.')) return;
+              try {
+                await apiService.clearFoodForTalkPublicChat();
+                toast.success('Public chat history cleared');
+                fetchStats();
+              } catch (e) {
+                console.error('Clear chat error:', e);
+                toast.error('Failed to clear chat history');
+              }
+            }}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+          >
+            Clear Public Chat History
+          </button>
+        </div>
         
         {showEventSettings && (
           <div className="space-y-6">
