@@ -36,13 +36,13 @@ const ParticipantsList = ({
             <div className="flex items-center space-x-3">
               {/* Avatar */}
               <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center text-sm font-bold text-black">
-                {participant.blurredName?.charAt(0) || '?'}
+                {(participant.blurredName || participant.displayName)?.charAt(0) || '?'}
               </div>
               
               {/* User info */}
               <div className="flex-1 min-w-0">
                 <div className="text-white font-medium truncate">
-                  {participant.blurredName}
+                  {participant.blurredName || participant.displayName}
                 </div>
                 <div className="text-white/70 text-sm">
                   Online

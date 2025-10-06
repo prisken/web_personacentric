@@ -57,29 +57,22 @@ const FoodForTalkSecretChatPage = () => {
   useEffect(() => {
     if (isInChat && currentUser && !wsRef.current) {
       // Initialize WebSocket connection for real-time chat
-      const wsUrl = process.env.NODE_ENV === 'production' 
-        ? 'wss://webpersonacentric-personacentric.up.railway.app'
-        : 'ws://localhost:5001';
-      wsRef.current = new WebSocket(`${wsUrl}/food-for-talk-chat`);
+      const wsBase = process.env.REACT_APP_WS_URL || (
+        process.env.NODE_ENV === 'production' 
+          ? 'wss://webpersonacentric-personacentric.up.railway.app'
+          : 'ws://localhost:5001'
+      );
+      const token = localStorage.getItem('foodForTalkSecretToken');
+      const connector = `${wsBase}/food-for-talk-chat?token=${encodeURIComponent(token || '')}`;
+      wsRef.current = new WebSocket(connector);
       
       wsRef.current.onopen = () => {
         console.log('WebSocket connection opened, currentUser:', currentUser);
         // Send join message when connection is established
         if (currentUser && currentUser.id) {
-          const joinMessage = {
-            type: 'join',
-            userId: currentUser.id,
-            userInfo: {
-              id: currentUser.id,
-              firstName: currentUser.blurredName || 'User',
-              lastName: '',
-              email: currentUser.email
-            }
-          };
-          console.log('Sending join message:', joinMessage);
+          const joinMessage = { type: 'join' };
+          console.log('Sending join message');
           wsRef.current.send(JSON.stringify(joinMessage));
-        } else {
-          console.log('No currentUser available for join message');
         }
       };
 
@@ -95,6 +88,9 @@ const FoodForTalkSecretChatPage = () => {
             }
             return [...prev, data.message];
           });
+        } else if (data.type === 'chat_history') {
+          // Replace messages with history for public chat
+          setMessages(data.messages || []);
         } else if (data.type === 'private_message') {
           setPrivateMessages(prev => {
             const conversationId = data.conversationId;
@@ -126,7 +122,7 @@ const FoodForTalkSecretChatPage = () => {
               return [...prev, {
                 id: data.conversationId,
                 userId: data.message.senderId,
-                participantName: participant?.blurredName || 'Unknown',
+                participantName: participant?.blurredName || data.message.senderDisplayName || 'Unknown',
                 lastMessage: data.message.content,
                 timestamp: data.message.timestamp
               }];
@@ -234,7 +230,12 @@ const FoodForTalkSecretChatPage = () => {
       // Get participants for chat room (with blurred names)
       const response = await apiService.getFoodForTalkChatParticipants();
       if (response.participants) {
-        setParticipants(response.participants);
+        const normalized = response.participants.map(p => ({
+          id: p.id,
+          blurredName: p.firstName || p.nickname || 'User***',
+          profilePhotoUrl: p.profilePhotoUrl
+        }));
+        setParticipants(normalized);
       }
     } catch (error) {
       console.error('Failed to load chat participants:', error);
@@ -259,25 +260,13 @@ const FoodForTalkSecretChatPage = () => {
       return;
     }
 
-    const message = {
-      id: Date.now(),
-      userId: currentUser.id,
-      blurredName: currentUser.blurredName,
-      content: newMessage.trim(),
-      timestamp: new Date().toISOString(),
-      type: 'public'
+    const payload = {
+      type: 'send_message',
+      message: { content: newMessage.trim() }
     };
-    
-    console.log('Sending message:', message);
-    console.log('WebSocket ready state:', wsRef.current.readyState);
-    
+
     if (wsRef.current.readyState === WebSocket.OPEN) {
-      const sendData = {
-        type: 'send_message',
-        message
-      };
-      console.log('Sending WebSocket data:', sendData);
-      wsRef.current.send(JSON.stringify(sendData));
+      wsRef.current.send(JSON.stringify(payload));
     } else {
       console.error('WebSocket is not open. Ready state:', wsRef.current.readyState);
       toast.error('Connection lost. Please refresh the page.');
@@ -289,30 +278,16 @@ const FoodForTalkSecretChatPage = () => {
   const sendPrivateMessage = async (recipientId, content) => {
     if (!content.trim() || !wsRef.current) return;
 
-    const message = {
-      id: Date.now(),
-      senderId: currentUser.id,
-      recipientId,
-      senderBlurredName: currentUser.blurredName,
-      content: content.trim(),
-      timestamp: new Date().toISOString(),
-      type: 'private'
+    const conversationId = [currentUser.id, recipientId].sort().join('-');
+    const payload = {
+      type: 'send_private_message',
+      message: { recipientId, content: content.trim(), conversationId },
+      conversationId
     };
 
-    const conversationId = [currentUser.id, recipientId].sort().join('-');
-    
-    wsRef.current.send(JSON.stringify({
-      type: 'send_private_message',
-      message,
-      conversationId
-    }));
+    wsRef.current.send(JSON.stringify(payload));
 
-    setPrivateMessages(prev => ({
-      ...prev,
-      [conversationId]: [...(prev[conversationId] || []), message]
-    }));
-
-    // Add to active conversations if not already there
+    // Conversation tab UX update (no optimistic message insert)
     setActivePrivateConversations(prev => {
       if (!prev.find(conv => conv.id === conversationId)) {
         const participant = participants.find(p => p.id === recipientId);
@@ -323,17 +298,10 @@ const FoodForTalkSecretChatPage = () => {
           lastMessage: content.trim(),
           timestamp: new Date().toISOString()
         }];
-      } else {
-        // Update last message
-        return prev.map(conv => 
-          conv.id === conversationId 
-            ? { ...conv, lastMessage: content.trim(), timestamp: new Date().toISOString() }
-            : conv
-        );
       }
+      return prev;
     });
 
-    // Switch to this conversation tab
     setActiveTab(conversationId);
   };
 

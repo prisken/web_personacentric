@@ -18,6 +18,7 @@
   "env": {
     "REACT_APP_SITE_URL": "https://personacentric.com",
     "REACT_APP_SITE_NAME": "Persona Centric Financial Platform",
-    "REACT_APP_API_URL": "https://webpersonacentric-personacentric.up.railway.app/api"
+    "REACT_APP_API_URL": "https://webpersonacentric-personacentric.up.railway.app/api",
+    "REACT_APP_WS_URL": "wss://webpersonacentric-personacentric.up.railway.app"
   }
 } 

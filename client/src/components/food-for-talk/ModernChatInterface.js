@@ -133,7 +133,7 @@ const ModernChatInterface = ({
               message={message}
               isOwn={message.userId === currentUser?.id || message.senderId === currentUser?.id}
               isSystem={message.type === 'system'}
-              senderName={message.blurredName || message.senderBlurredName}
+              senderName={message.blurredName || message.senderBlurredName || message.displayName || message.senderDisplayName}
               timestamp={message.timestamp}
             />
           ))

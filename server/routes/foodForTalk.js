@@ -925,46 +925,32 @@ router.get('/chat-participants', async (req, res) => {
       return res.status(401).json({ message: 'Invalid token type' });
     }
 
-    // Get all participants for chat (with blurred names)
+    // Describe table to safely include optional columns (prod-safe)
+    const columns = await require('../config/database').getQueryInterface().describeTable('food_for_talk_users');
+    const existingColumns = Object.keys(columns);
+
+    // Build attributes, prefer minimal fields to avoid exposing personal info
+    const baseAttrs = ['id', 'first_name', 'last_name', 'profile_photo_url'];
+    if (existingColumns.includes('nickname')) baseAttrs.push('nickname');
+
     const participants = await FoodForTalkUser.findAll({
       where: { is_active: true, is_verified: true },
-      attributes: [
-        'id', 'first_name', 'last_name', 'age', 'occupation', 
-        'bio', 'interests', 'dietary_restrictions', 'profile_photo_url'
-      ],
+      attributes: baseAttrs,
       order: [['created_at', 'ASC']]
     });
 
-    // Format participants with blurred names for chat
-    const participantsWithBlurredNames = participants.map(participant => ({
-      id: participant.id,
-      firstName: participant.first_name ? participant.first_name.charAt(0) + '***' : 'Anonymous',
-      lastName: participant.last_name ? participant.last_name.charAt(0) + '***' : '',
-      age: participant.age,
-      occupation: participant.occupation,
-      bio: participant.bio,
-      interests: (() => {
-        try {
-          // Handle different formats from database
-          if (Array.isArray(participant.interests)) {
-            return participant.interests;
-          } else if (typeof participant.interests === 'string') {
-            // Try JSON.parse first
-            try {
-              return JSON.parse(participant.interests);
-            } catch (jsonError) {
-              // If JSON.parse fails, it might be comma-separated string
-              return participant.interests.split(',').map(item => item.trim());
-            }
-          }
-          return [];
-        } catch (e) {
-          return [];
-        }
-      })(),
-      dietaryRestrictions: participant.dietary_restrictions,
-      profilePhotoUrl: participant.profile_photo_url
-    }));
+    // Format participants with nickname-only display for chat
+    const participantsWithBlurredNames = participants.map(participant => {
+      const hasNickname = 'nickname' in participant && participant.nickname && participant.nickname.trim().length > 0;
+      const displayName = hasNickname
+        ? participant.nickname.trim()
+        : (participant.first_name ? participant.first_name.charAt(0) + '***' : 'Anonymous');
+      return {
+        id: participant.id,
+        blurredName: displayName,
+        profilePhotoUrl: participant.profile_photo_url
+      };
+    });
 
     res.json({
       message: 'Chat participants retrieved successfully',
