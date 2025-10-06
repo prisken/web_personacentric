@@ -344,11 +344,15 @@ const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose, onP
                 <div className="space-y-4">
                   {renderEditableField('Looking for', 'expectPersonType', 'select', expectPersonTypeOptions)}
                   {renderEditableField('Dream first date', 'dreamFirstDate', 'select', dreamFirstDateOptions)}
-                  {renderEditableField('Dream first date (other)', 'dreamFirstDateOther', 'text')}
+                  {((language === 'zh-TW' && editData.dreamFirstDate === '其他') || (language !== 'zh-TW' && editData.dreamFirstDate === 'Other')) && (
+                    renderEditableField('Dream first date (other)', 'dreamFirstDateOther', 'text')
+                  )}
                   {renderArrayField('Attractive traits', 'attractiveTraits', language === 'zh-TW'
                     ? ['好有幽默感', '很會聊天', '做嘢認真專注', '好有創意', '好有同理心', '組織力強', '運動細胞發達', '廚藝高手', '藝術天分', '其他']
                     : ['Funny & witty', 'Great conversationalist', 'Hardworking & focused', 'Creative thinker', 'Empathetic & caring', 'Organized & reliable', 'Athletic', 'Great cook', 'Artistic talent', 'Other'], 2)}
-                  {renderEditableField('Other attractive traits', 'attractiveTraitsOther', 'text')}
+                  {(((language === 'zh-TW') && (editData.attractiveTraits || []).includes('其他')) || ((language !== 'zh-TW') && (editData.attractiveTraits || []).includes('Other'))) && (
+                    renderEditableField('Other attractive traits', 'attractiveTraitsOther', 'text')
+                  )}
                 </div>
               </div>
 
