@@ -9,7 +9,6 @@ const ChatV2Interface = ({ token }) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const wsRef = useRef(null);
   const typingTimeout = useRef(null);
-  const [showPollComposer, setShowPollComposer] = useState(false);
   const formatTime = (ts) => {
     try {
       return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -71,12 +70,7 @@ const ChatV2Interface = ({ token }) => {
             // optional: show a subtle typing badge near header; for simplicity, ignore for now
           }
           break;
-        case 'poll_created':
-          setMessages(prev => [...prev, { id: `poll_${data.poll.id}`, type: 'poll', poll: data.poll }]);
-          break;
-        case 'poll_update':
-          setMessages(prev => prev.map(m => (m.type === 'poll' && m.poll.id === data.poll.id) ? { ...m, poll: data.poll } : m));
-          break;
+        
         case 'reaction':
           // ephemeral, can be visualized on the message bubble if desired
           break;
@@ -166,30 +160,7 @@ const ChatV2Interface = ({ token }) => {
           }
         }} onKeyDown={e => { if (e.key === 'Enter') { onSend(text); setText(''); } }} />
         <button className="ml-2 px-3 py-2 rounded bg-white/10 text-white" title="Spark" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark' }))}>✨</button>
-        <button className="ml-2 px-3 py-2 rounded bg-white/10 text-white" title="Poll" onClick={() => setShowPollComposer(v => !v)}>📊</button>
         <button className="ml-2 px-4 py-2 rounded bg-blue-500 text-white" onClick={() => { onSend(text); setText(''); }}>Send</button>
-      </div>
-    );
-  };
-
-  const PollComposer = () => {
-    const [q, setQ] = useState('');
-    const [opts, setOpts] = useState(['', '']);
-    const addOption = () => setOpts(prev => prev.length < 4 ? [...prev, ''] : prev);
-    const setOption = (i, v) => setOpts(prev => prev.map((x, idx) => idx === i ? v : x));
-    const create = () => {
-      const payload = { type: 'poll_create', question: q, options: opts };
-      wsRef.current && wsRef.current.send(JSON.stringify(payload));
-      setQ(''); setOpts(['', '']);
-    };
-    return (
-      <div className="p-2 border-t border-white/10 bg-white/5 text-white flex items-center space-x-2 overflow-x-auto">
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Create a mini poll question" className="px-2 py-1 bg-white/10 rounded outline-none" />
-        {opts.map((o, i) => (
-          <input key={i} value={o} onChange={e => setOption(i, e.target.value)} placeholder={`Option ${i+1}`} className="px-2 py-1 bg-white/10 rounded outline-none" />
-        ))}
-        <button className="px-2 bg-white/10 rounded" onClick={addOption}>+ option</button>
-        <button className="px-3 bg-green-500/70 rounded" onClick={create}>Post Poll</button>
       </div>
     );
   };
@@ -208,19 +179,9 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className={`flex-1 overflow-y-auto p-2 ${showPollComposer ? 'pb-56' : 'pb-40'}`}>
+      <div className={`flex-1 overflow-y-auto p-2 pb-40`}>
         {renderMessages()}
       </div>
-
-      {showPollComposer && (
-        <div className="fixed left-0 right-0 bottom-16 sm:bottom-20 z-30">
-          <div className="max-w-3xl mx-auto">
-            <div className="mx-2 sm:mx-4 rounded-xl shadow-lg border border-white/10 bg-black/50 backdrop-blur">
-              <PollComposer />
-            </div>
-          </div>
-        </div>
-      )}
 
       <div className="fixed left-0 right-0 bottom-0 z-50">
         {activeTab === 'public' ? (
