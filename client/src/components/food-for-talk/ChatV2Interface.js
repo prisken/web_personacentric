@@ -9,6 +9,7 @@ const ChatV2Interface = ({ token }) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const wsRef = useRef(null);
   const typingTimeout = useRef(null);
+  const [showPollComposer, setShowPollComposer] = useState(false);
 
   useEffect(() => {
     const wsBase = process.env.REACT_APP_WS_URL || (process.env.NODE_ENV === 'production' ? 'wss://webpersonacentric-personacentric.up.railway.app' : 'ws://localhost:5001');
@@ -129,7 +130,7 @@ const ChatV2Interface = ({ token }) => {
   const InputBar = ({ onSend, placeholder }) => {
     const [text, setText] = useState('');
     return (
-      <div className="p-3 bg-white/10 border-t border-white/20 flex">
+      <div className="p-3 bg-white/10 border-t border-white/20 flex items-center">
         <input className="flex-1 bg-white/20 rounded px-3 py-2 text-white outline-none" value={text} placeholder={placeholder} onChange={e => {
           setText(e.target.value);
           if (wsRef.current) {
@@ -140,10 +141,9 @@ const ChatV2Interface = ({ token }) => {
             }, 1200);
           }
         }} onKeyDown={e => { if (e.key === 'Enter') { onSend(text); setText(''); } }} />
-        <button className="ml-2 px-4 rounded bg-blue-500 text-white" onClick={() => { onSend(text); setText(''); }}>Send</button>
-        <div className="ml-2 hidden sm:flex">
-          <button className="px-3 rounded bg-white/10 text-white" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark' }))}>✨ Spark</button>
-        </div>
+        <button className="ml-2 px-3 py-2 rounded bg-white/10 text-white" title="Spark" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark' }))}>✨</button>
+        <button className="ml-2 px-3 py-2 rounded bg-white/10 text-white" title="Poll" onClick={() => setShowPollComposer(v => !v)}>📊</button>
+        <button className="ml-2 px-4 py-2 rounded bg-blue-500 text-white" onClick={() => { onSend(text); setText(''); }}>Send</button>
       </div>
     );
   };
@@ -184,13 +184,21 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2 pb-36">
+      <div className={`flex-1 overflow-y-auto p-2 ${showPollComposer ? 'pb-56' : 'pb-36'}`}>
         {renderMessages()}
       </div>
 
-      <PollComposer />
+      {showPollComposer && (
+        <div className="fixed left-0 right-0 bottom-16 sm:bottom-20 z-30">
+          <div className="max-w-3xl mx-auto">
+            <div className="mx-2 sm:mx-4 rounded-xl shadow-lg border border-white/10 bg-black/50 backdrop-blur">
+              <PollComposer />
+            </div>
+          </div>
+        </div>
+      )}
 
-      <div className="fixed left-0 right-0 bottom-0">
+      <div className="fixed left-0 right-0 bottom-0 z-40">
         {activeTab === 'public' ? (
           <InputBar onSend={sendPublic} placeholder="Say something fun..." />
         ) : (
@@ -202,7 +210,7 @@ const ChatV2Interface = ({ token }) => {
       </div>
 
       {/* Mobile participants drawer trigger */}
-      <div className="fixed right-4 bottom-24 z-40">
+      <div className="fixed right-4 bottom-24 z-30">
         <details className="group">
           <summary className="cursor-pointer px-3 py-2 rounded bg-white/20 text-white">Participants</summary>
           <div className="absolute right-0 bottom-12 w-72 bg-white/10 backdrop-blur border border-white/20 rounded p-2 max-h-96 overflow-auto">
