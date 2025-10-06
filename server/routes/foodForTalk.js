@@ -398,7 +398,7 @@ router.put('/profile', async (req, res) => {
       return res.status(401).json({ message: 'Invalid token' });
     }
 
-    const { id: userId } = decoded;
+    const { userId } = decoded;
     console.log('🔍 [PUT PROFILE DEBUG] User ID from token:', userId);
     console.log('🔍 [PUT PROFILE DEBUG] Token decoded successfully');
     
