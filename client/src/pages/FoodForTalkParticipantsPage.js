@@ -213,6 +213,15 @@ const FoodForTalkParticipantsPage = () => {
                   </div>
 
                   <div className="space-y-2 text-sm">
+                    {/* Gender Display */}
+                    {participant.gender && (
+                      <div>
+                        <span className="text-white/70 block mb-1">Gender:</span>
+                        <span className="px-2 py-1 bg-white/20 text-white text-xs rounded-full">
+                          {participant.gender}
+                        </span>
+                      </div>
+                    )}
 
                     {(() => {
                       let interests = participant.interests;
