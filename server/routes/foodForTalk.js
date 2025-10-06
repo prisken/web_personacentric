@@ -653,7 +653,8 @@ router.post('/secret-login', async (req, res) => {
       }
     }
 
-    // Option B: Email/password supplied
+    // Option B: Already logged in participant but only passkey sent
+    // Option C: Email/password supplied
     if (!user) {
       if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required when not already logged in' });

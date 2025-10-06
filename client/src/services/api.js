@@ -514,8 +514,12 @@ class ApiService {
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
-    
-    return this.post('/food-for-talk/secret-login', credentials, { headers });
+    // If only passkey provided (participant already logged in), send minimal payload
+    const payload = credentials?.passkey && !credentials?.email && !credentials?.password
+      ? { passkey: credentials.passkey }
+      : credentials;
+
+    return this.post('/food-for-talk/secret-login', payload, { headers });
   }
 
   async getFoodForTalkParticipants() {

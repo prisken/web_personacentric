@@ -14,6 +14,7 @@ const FoodForTalkSecretChatPage = () => {
     password: '',
     passkey: ''
   });
+  const [hasParticipantSession, setHasParticipantSession] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [participants, setParticipants] = useState([]);
   const [messages, setMessages] = useState([]);
@@ -27,6 +28,8 @@ const FoodForTalkSecretChatPage = () => {
   // Check if user is already authenticated
   useEffect(() => {
     const token = localStorage.getItem('foodForTalkSecretToken');
+    const participantToken = localStorage.getItem('foodForTalkToken');
+    setHasParticipantSession(!!participantToken);
     if (token) {
       // User is already authenticated, set states and load participants
       setIsAuthenticated(true);
@@ -207,7 +210,10 @@ const FoodForTalkSecretChatPage = () => {
     setLoading(true);
 
     try {
-      const response = await apiService.secretLoginToFoodForTalk(loginData);
+      const payload = hasParticipantSession 
+        ? { passkey: loginData.passkey }
+        : loginData;
+      const response = await apiService.secretLoginToFoodForTalk(payload);
       
       if (response.token) {
         // Store the secret token for future requests
@@ -402,31 +408,35 @@ const FoodForTalkSecretChatPage = () => {
         {/* Login Form */}
         <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
           <form onSubmit={handleLogin} className="space-y-6">
-            <div>
-              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
-              <input
-                type="email"
-                name="email"
-                value={loginData.email}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your email"
-              />
-            </div>
+            {!hasParticipantSession && (
+              <>
+                <div>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.email')}</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={loginData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder="Enter your email"
+                  />
+                </div>
 
-            <div>
-              <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
-              <input
-                type="password"
-                name="password"
-                value={loginData.password}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                placeholder="Enter your password"
-              />
-            </div>
+                <div>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.password')}</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={loginData.password}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </>
+            )}
 
             <div>
               <label className="block text-white font-medium mb-2">{t('foodForTalk.secretLogin.secretPasskey')}</label>
