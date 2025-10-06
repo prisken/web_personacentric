@@ -375,6 +375,10 @@ router.get('/profile', async (req, res) => {
 // Update participant profile (self-editing)
 router.put('/profile', async (req, res) => {
   try {
+    console.log('🔍 [PUT PROFILE DEBUG] PUT /profile endpoint called');
+    console.log('🔍 [PUT PROFILE DEBUG] Request body:', req.body);
+    console.log('🔍 [PUT PROFILE DEBUG] Authorization header:', req.headers.authorization);
+    
     // Get token from Authorization header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -395,6 +399,9 @@ router.put('/profile', async (req, res) => {
     }
 
     const { id: userId } = decoded;
+    console.log('🔍 [PUT PROFILE DEBUG] User ID from token:', userId);
+    console.log('🔍 [PUT PROFILE DEBUG] Token decoded successfully');
+    
     const updateData = req.body;
 
     const participant = await FoodForTalkUser.findByPk(userId);
