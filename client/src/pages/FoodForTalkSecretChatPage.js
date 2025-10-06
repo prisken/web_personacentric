@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useLanguage } from '../contexts/LanguageContext';
 import apiService from '../services/api';
-import ModernChatInterface from '../components/food-for-talk/ModernChatInterface';
+import ChatV2Interface from '../components/food-for-talk/ChatV2Interface';
 
 const FoodForTalkSecretChatPage = () => {
   const { t } = useLanguage();
@@ -89,8 +89,14 @@ const FoodForTalkSecretChatPage = () => {
             return [...prev, data.message];
           });
         } else if (data.type === 'chat_history') {
-          // Replace messages with history for public chat
-          setMessages(data.messages || []);
+          // Merge history with any existing messages (keep welcome/system)
+          setMessages(prev => {
+            const existingIds = new Set(prev.map(m => m.id));
+            const history = Array.isArray(data.messages) ? data.messages : [];
+            const merged = [...prev];
+            history.forEach(m => { if (!existingIds.has(m.id)) merged.push(m); });
+            return merged;
+          });
         } else if (data.type === 'private_message') {
           setPrivateMessages(prev => {
             const conversationId = data.conversationId;
@@ -250,9 +256,9 @@ const FoodForTalkSecretChatPage = () => {
     }));
   };
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !wsRef.current) return;
+  const sendMessage = async (messageContent) => {
+    const content = (messageContent || '').trim();
+    if (!content || !wsRef.current) return;
 
     if (!currentUser) {
       console.error('currentUser is null, cannot send message');
@@ -262,7 +268,7 @@ const FoodForTalkSecretChatPage = () => {
 
     const payload = {
       type: 'send_message',
-      message: { content: newMessage.trim() }
+      message: { content }
     };
 
     if (wsRef.current.readyState === WebSocket.OPEN) {
@@ -271,8 +277,6 @@ const FoodForTalkSecretChatPage = () => {
       console.error('WebSocket is not open. Ready state:', wsRef.current.readyState);
       toast.error('Connection lost. Please refresh the page.');
     }
-
-    setNewMessage('');
   };
 
   const sendPrivateMessage = async (recipientId, content) => {
@@ -369,23 +373,8 @@ const FoodForTalkSecretChatPage = () => {
   };
 
   if (isInChat) {
-    return (
-      <ModernChatInterface
-        messages={messages}
-        participants={participants}
-        currentUser={currentUser}
-        onSendMessage={sendMessage}
-        onSendPrivateMessage={sendPrivateMessage}
-        onStartPrivateChat={startPrivateConversation}
-        onViewProfile={viewUserProfile}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        privateMessages={privateMessages}
-        activePrivateConversations={activePrivateConversations}
-        onClosePrivateConversation={closePrivateConversation}
-        t={t}
-      />
-    );
+    const secretToken = localStorage.getItem('foodForTalkSecretToken');
+    return <ChatV2Interface token={secretToken} />;
   }
 
   return (
