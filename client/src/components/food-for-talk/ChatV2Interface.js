@@ -175,7 +175,11 @@ const ChatV2Interface = ({ token }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="h-screen flex flex-col relative overflow-hidden">
+      <div className="fft-animated-gradient"></div>
+      <div className="fft-noise-overlay"></div>
+      <div className="fft-blob" style={{ top: '-8rem', left: '-6rem', background: 'rgba(147,51,234,0.35)' }}></div>
+      <div className="fft-blob" style={{ bottom: '-10rem', right: '-8rem', background: 'rgba(59,130,246,0.35)' }}></div>
       <div className="bg-white/10 border-b border-white/20 px-4 py-3 text-white flex items-center justify-between">
         <div className="font-semibold">🌐 Public Chat</div>
         <div className="text-white/70 text-sm">{participants.length} online</div>

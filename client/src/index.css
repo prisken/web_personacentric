@@ -162,6 +162,51 @@ body {
   }
 }
 
+/* Food for Talk - Animated background */
+.fft-animated-gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(800px 400px at 10% 0%, rgba(109, 40, 217, 0.6) 0%, rgba(109, 40, 217, 0) 60%),
+              radial-gradient(900px 500px at 90% 100%, rgba(37, 99, 235, 0.6) 0%, rgba(37, 99, 235, 0) 60%),
+              linear-gradient(135deg, #0b1028 0%, #0f172a 60%, #1e293b 100%);
+  background-size: 200% 200%;
+  animation: fft-gradient-pan 22s ease-in-out infinite alternate;
+  filter: saturate(1.08);
+  z-index: -1;
+}
+
+@keyframes fft-gradient-pan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+.fft-noise-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: .18;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.fft-blob {
+  position: absolute;
+  width: 36rem;
+  height: 36rem;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: .35;
+  animation: fft-float 18s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes fft-float {
+  0% { transform: translate3d(0, 0, 0) scale(1); }
+  100% { transform: translate3d(28px, -36px, 0) scale(1.05); }
+}
+
 /* Tablet Responsive Design */
 @media (min-width: 769px) and (max-width: 1024px) {
   .container {
