@@ -10,6 +10,14 @@ class FoodForTalkWebSocketServerV2 {
     this.userIdToSocket = new Map();
     this.socketToClient = new Map();
     this.startedConversations = new Set();
+    this.prompts = [
+      'Share your favorite café in the city ☕',
+      'What’s your go-to comfort food? 🍜',
+      'Two truths and a lie – go! 🎲',
+      'First date idea in 7 words or less 💡',
+      'If you could teleport right now, where? ✨'
+    ];
+    this.polls = new Map(); // pollId -> { question, options: [label], counts: [n] }
     this.wss.on('connection', (ws, req) => this.onConnection(ws, req));
   }
 
@@ -74,6 +82,25 @@ class FoodForTalkWebSocketServerV2 {
       case 'private_message':
         await this.handlePrivateMessage(client, data);
         break;
+      case 'typing_start':
+        this.broadcast({ type: 'typing', scope: data.scope || 'public', from: client.userId, to: data.to || null, active: true }, ws);
+        break;
+      case 'typing_stop':
+        this.broadcast({ type: 'typing', scope: data.scope || 'public', from: client.userId, to: data.to || null, active: false }, ws);
+        break;
+      case 'react_message':
+        // Ephemeral reactions
+        this.broadcast({ type: 'reaction', messageId: data.messageId, emoji: data.emoji, from: client.userId });
+        break;
+      case 'spark':
+        await this.handleSpark(client);
+        break;
+      case 'poll_create':
+        await this.handlePollCreate(client, data);
+        break;
+      case 'poll_vote':
+        await this.handlePollVote(client, data);
+        break;
       default:
         break;
     }
@@ -132,16 +159,64 @@ class FoodForTalkWebSocketServerV2 {
     if (!this.startedConversations.has(conversationId)) {
       this.startedConversations.add(conversationId);
       const recipientName = await this.getDisplayNameByUserId(recipientId);
-      this.broadcast({
+      const announce = {
+        id: Date.now(),
         type: 'system',
-        message: {
-          id: Date.now(),
-          type: 'system',
-          content: `${client.displayName} and ${recipientName} started a private chat`,
-          timestamp: new Date().toISOString()
-        }
-      });
+        content: `${client.displayName} and ${recipientName} started a private chat`,
+        timestamp: new Date().toISOString()
+      };
+      this.broadcast({ type: 'system', message: announce });
+      this.broadcast({ type: 'dm_started', participants: [
+        { id: client.userId, name: client.displayName },
+        { id: recipientId, name: recipientName }
+      ]});
     }
+  }
+
+  async handleSpark(client) {
+    const prompt = this.prompts[Math.floor(Math.random() * this.prompts.length)];
+    const saved = await FoodForTalkChatMessage.create({
+      sender_id: client.userId,
+      recipient_id: null,
+      content: `[Spark] ${prompt}`,
+      message_type: 'public',
+      conversation_id: null
+    });
+    const message = {
+      id: saved.id,
+      userId: client.userId,
+      displayName: client.displayName,
+      content: saved.content,
+      timestamp: saved.created_at,
+      type: 'public'
+    };
+    this.broadcast({ type: 'public_message', message });
+  }
+
+  async handlePollCreate(client, data) {
+    const question = (data.question || '').trim();
+    const options = Array.isArray(data.options) ? data.options.filter(s => (s || '').trim().length > 0).slice(0, 4) : [];
+    if (!question || options.length < 2) return;
+    const pollId = `poll_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
+    this.polls.set(pollId, { question, options, counts: options.map(() => 0) });
+    this.broadcast({ type: 'poll_created', poll: { id: pollId, question, options, counts: options.map(() => 0) } });
+    // Persist a readable system message
+    await FoodForTalkChatMessage.create({
+      sender_id: client.userId,
+      recipient_id: null,
+      content: `[Poll] ${question} — ${options.join(' / ')}`,
+      message_type: 'public',
+      conversation_id: null
+    });
+  }
+
+  async handlePollVote(client, data) {
+    const { pollId, optionIndex } = data;
+    const poll = this.polls.get(pollId);
+    if (!poll) return;
+    if (typeof optionIndex !== 'number' || optionIndex < 0 || optionIndex >= poll.options.length) return;
+    poll.counts[optionIndex] += 1;
+    this.broadcast({ type: 'poll_update', poll: { id: pollId, question: poll.question, options: poll.options, counts: poll.counts } });
   }
 
   onClose(ws) {

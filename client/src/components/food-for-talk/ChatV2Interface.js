@@ -8,6 +8,7 @@ const ChatV2Interface = ({ token }) => {
   const [openDMs, setOpenDMs] = useState([]); // [{id, userId, name}]
   const [currentUserId, setCurrentUserId] = useState(null);
   const wsRef = useRef(null);
+  const typingTimeout = useRef(null);
 
   useEffect(() => {
     const wsBase = process.env.REACT_APP_WS_URL || (process.env.NODE_ENV === 'production' ? 'wss://webpersonacentric-personacentric.up.railway.app' : 'ws://localhost:5001');
@@ -52,6 +53,24 @@ const ChatV2Interface = ({ token }) => {
           break;
         case 'system':
           setMessages(prev => [...prev, data.message]);
+          break;
+        case 'dm_started':
+          // trigger a local confetti hint by adding a special system message flag
+          setMessages(prev => [...prev, { id: Date.now(), type: 'system', content: '🎉 A private chat just started!', timestamp: new Date().toISOString() }]);
+          break;
+        case 'typing':
+          if (data.scope === 'public') {
+            // optional: show a subtle typing badge near header; for simplicity, ignore for now
+          }
+          break;
+        case 'poll_created':
+          setMessages(prev => [...prev, { id: `poll_${data.poll.id}`, type: 'poll', poll: data.poll }]);
+          break;
+        case 'poll_update':
+          setMessages(prev => prev.map(m => (m.type === 'poll' && m.poll.id === data.poll.id) ? { ...m, poll: data.poll } : m));
+          break;
+        case 'reaction':
+          // ephemeral, can be visualized on the message bubble if desired
           break;
         case 'presence_joined':
           setParticipants(prev => prev.find(p => p.id === data.user.id) ? prev : [...prev, { id: data.user.id, name: data.user.displayName }]);
@@ -111,8 +130,42 @@ const ChatV2Interface = ({ token }) => {
     const [text, setText] = useState('');
     return (
       <div className="p-3 bg-white/10 border-t border-white/20 flex">
-        <input className="flex-1 bg-white/20 rounded px-3 py-2 text-white outline-none" value={text} placeholder={placeholder} onChange={e => setText(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { onSend(text); setText(''); } }} />
+        <input className="flex-1 bg-white/20 rounded px-3 py-2 text-white outline-none" value={text} placeholder={placeholder} onChange={e => {
+          setText(e.target.value);
+          if (wsRef.current) {
+            wsRef.current.send(JSON.stringify({ type: 'typing_start', scope: activeTab === 'public' ? 'public' : 'private', to: activeTab === 'public' ? null : (openDMs.find(d => d.id === activeTab)?.userId || null) }));
+            clearTimeout(typingTimeout.current);
+            typingTimeout.current = setTimeout(() => {
+              wsRef.current && wsRef.current.send(JSON.stringify({ type: 'typing_stop', scope: activeTab === 'public' ? 'public' : 'private', to: activeTab === 'public' ? null : (openDMs.find(d => d.id === activeTab)?.userId || null) }));
+            }, 1200);
+          }
+        }} onKeyDown={e => { if (e.key === 'Enter') { onSend(text); setText(''); } }} />
         <button className="ml-2 px-4 rounded bg-blue-500 text-white" onClick={() => { onSend(text); setText(''); }}>Send</button>
+        <div className="ml-2 hidden sm:flex">
+          <button className="px-3 rounded bg-white/10 text-white" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark' }))}>✨ Spark</button>
+        </div>
+      </div>
+    );
+  };
+
+  const PollComposer = () => {
+    const [q, setQ] = useState('');
+    const [opts, setOpts] = useState(['', '']);
+    const addOption = () => setOpts(prev => prev.length < 4 ? [...prev, ''] : prev);
+    const setOption = (i, v) => setOpts(prev => prev.map((x, idx) => idx === i ? v : x));
+    const create = () => {
+      const payload = { type: 'poll_create', question: q, options: opts };
+      wsRef.current && wsRef.current.send(JSON.stringify(payload));
+      setQ(''); setOpts(['', '']);
+    };
+    return (
+      <div className="p-2 border-t border-white/10 bg-white/5 text-white flex items-center space-x-2 overflow-x-auto">
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="Create a mini poll question" className="px-2 py-1 bg-white/10 rounded outline-none" />
+        {opts.map((o, i) => (
+          <input key={i} value={o} onChange={e => setOption(i, e.target.value)} placeholder={`Option ${i+1}`} className="px-2 py-1 bg-white/10 rounded outline-none" />
+        ))}
+        <button className="px-2 bg-white/10 rounded" onClick={addOption}>+ option</button>
+        <button className="px-3 bg-green-500/70 rounded" onClick={create}>Post Poll</button>
       </div>
     );
   };
@@ -131,9 +184,11 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2 pb-24">
+      <div className="flex-1 overflow-y-auto p-2 pb-36">
         {renderMessages()}
       </div>
+
+      <PollComposer />
 
       <div className="fixed left-0 right-0 bottom-0">
         {activeTab === 'public' ? (
