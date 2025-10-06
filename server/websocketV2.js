@@ -39,6 +39,9 @@ class FoodForTalkWebSocketServerV2 {
     const history = await this.fetchRecentPublicHistory(50);
     this.send(ws, { type: 'history', messages: history });
 
+    // Send session info to client
+    this.send(ws, { type: 'session', user: { id: authUser.userId, displayName } });
+
     // Presence announce
     this.broadcast({ type: 'presence_joined', user: { id: authUser.userId, displayName } }, ws);
 

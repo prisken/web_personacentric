@@ -5,7 +5,8 @@ const ChatV2Interface = ({ token }) => {
   const [participants, setParticipants] = useState([]);
   const [activeTab, setActiveTab] = useState('public');
   const [privateConversations, setPrivateConversations] = useState({}); // id -> msgs
-  const [openDMs, setOpenDMs] = useState([]); // [{id, name}]
+  const [openDMs, setOpenDMs] = useState([]); // [{id, userId, name}]
+  const [currentUserId, setCurrentUserId] = useState(null);
   const wsRef = useRef(null);
 
   useEffect(() => {
@@ -17,6 +18,9 @@ const ChatV2Interface = ({ token }) => {
     ws.onmessage = (evt) => {
       const data = JSON.parse(evt.data);
       switch (data.type) {
+        case 'session':
+          setCurrentUserId(data.user?.id || null);
+          break;
         case 'welcome':
           setMessages(prev => [...prev, { id: Date.now(), type: 'system', content: data.message, timestamp: new Date().toISOString() }]);
           break;
@@ -36,6 +40,14 @@ const ChatV2Interface = ({ token }) => {
             const list = prev[data.conversationId] || [];
             if (list.some(m => m.id === data.message.id)) return prev;
             return { ...prev, [data.conversationId]: [...list, data.message] };
+          });
+          // Ensure DM tab exists for recipient or sender view
+          setOpenDMs(prev => {
+            const peerId = data.message.senderId === currentUserId ? data.message.recipientId : data.message.senderId;
+            const convId = data.conversationId;
+            if (prev.find(d => d.id === convId)) return prev;
+            const peer = participants.find(p => p.id === peerId);
+            return [...prev, { id: convId, userId: peerId, name: peer?.name || data.message.senderDisplayName || 'DM' }];
           });
           break;
         case 'system':
@@ -64,12 +76,12 @@ const ChatV2Interface = ({ token }) => {
   const sendPrivate = (userId, content) => {
     if (!content.trim() || !wsRef.current) return;
     wsRef.current.send(JSON.stringify({ type: 'private_message', recipientId: userId, content: content.trim() }));
-    const conversationId = [userId, 'me'].sort().join('-');
+    const conversationId = [userId, currentUserId || 'me'].sort().join('-');
     if (!openDMs.find(d => d.id === conversationId)) {
       const participant = participants.find(p => p.id === userId);
       setOpenDMs(prev => [...prev, { id: conversationId, userId, name: participant?.name || 'DM' }]);
-      setActiveTab(conversationId);
     }
+    setActiveTab(conversationId);
   };
 
   const renderMessages = () => {
@@ -116,21 +128,23 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className="flex-1 overflow-y-auto p-2">
+      <div className="flex-1 overflow-y-auto p-2 pb-24">
         {renderMessages()}
       </div>
 
-      {activeTab === 'public' ? (
-        <InputBar onSend={sendPublic} placeholder="Say something fun..." />
-      ) : (
-        <InputBar onSend={(text) => {
-          const dm = openDMs.find(d => d.id === activeTab);
-          if (dm) sendPrivate(dm.userId, text);
-        }} placeholder="Send a private message..." />
-      )}
+      <div className="fixed left-0 right-0 bottom-0">
+        {activeTab === 'public' ? (
+          <InputBar onSend={sendPublic} placeholder="Say something fun..." />
+        ) : (
+          <InputBar onSend={(text) => {
+            const dm = openDMs.find(d => d.id === activeTab);
+            if (dm) sendPrivate(dm.userId, text);
+          }} placeholder="Send a private message..." />
+        )}
+      </div>
 
       {/* Mobile participants drawer trigger */}
-      <div className="fixed right-4 bottom-20">
+      <div className="fixed right-4 bottom-24">
         <details className="group">
           <summary className="cursor-pointer px-3 py-2 rounded bg-white/20 text-white">Participants</summary>
           <div className="absolute right-0 mt-2 w-72 bg-white/10 backdrop-blur border border-white/20 rounded p-2 max-h-96 overflow-auto">
@@ -138,7 +152,7 @@ const ChatV2Interface = ({ token }) => {
               <div key={p.id} className="flex items-center justify-between text-white px-2 py-2 hover:bg-white/10 rounded">
                 <div>{p.name}</div>
                 <button className="text-blue-300" onClick={() => {
-                  const convId = [p.id, 'me'].sort().join('-');
+                  const convId = [p.id, currentUserId || 'me'].sort().join('-');
                   if (!openDMs.find(d => d.id === convId)) setOpenDMs(prev => [...prev, { id: convId, userId: p.id, name: p.name }]);
                   setActiveTab(convId);
                 }}>Chat</button>
