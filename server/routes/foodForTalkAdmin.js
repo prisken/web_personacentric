@@ -59,7 +59,19 @@ router.get('/participants/:id', async (req, res) => {
       bio: participant.bio,
       interests: (() => {
         try {
-          return participant.interests ? JSON.parse(participant.interests) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.interests)) {
+            return participant.interests;
+          } else if (typeof participant.interests === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.interests);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.interests.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -81,7 +93,19 @@ router.get('/participants/:id', async (req, res) => {
       dreamFirstDateOther: participant.dream_first_date_other,
       attractiveTraits: (() => {
         try {
-          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.attractive_traits)) {
+            return participant.attractive_traits;
+          } else if (typeof participant.attractive_traits === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.attractive_traits);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.attractive_traits.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }

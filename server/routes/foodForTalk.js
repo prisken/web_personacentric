@@ -310,7 +310,19 @@ router.get('/profile', async (req, res) => {
       bio: participant.bio,
       interests: (() => {
         try {
-          return participant.interests ? JSON.parse(participant.interests) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.interests)) {
+            return participant.interests;
+          } else if (typeof participant.interests === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.interests);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.interests.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -326,7 +338,19 @@ router.get('/profile', async (req, res) => {
       dreamFirstDateOther: participant.dream_first_date_other,
       attractiveTraits: (() => {
         try {
-          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.attractive_traits)) {
+            return participant.attractive_traits;
+          } else if (typeof participant.attractive_traits === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.attractive_traits);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.attractive_traits.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -717,7 +741,19 @@ router.get('/participants/:id', async (req, res) => {
       bio: participant.bio,
       interests: (() => {
         try {
-          return participant.interests ? JSON.parse(participant.interests) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.interests)) {
+            return participant.interests;
+          } else if (typeof participant.interests === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.interests);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.interests.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -731,7 +767,19 @@ router.get('/participants/:id', async (req, res) => {
       dreamFirstDateOther: participant.dream_first_date_other,
       attractiveTraits: (() => {
         try {
-          return participant.attractive_traits ? JSON.parse(participant.attractive_traits) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.attractive_traits)) {
+            return participant.attractive_traits;
+          } else if (typeof participant.attractive_traits === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.attractive_traits);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.attractive_traits.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -803,9 +851,26 @@ router.get('/participants', async (req, res) => {
       
       const formattedInterests = (() => {
         try {
-          const result = participant.interests ? JSON.parse(participant.interests) : [];
-          console.log('🔍 [PARTICIPANTS DEBUG] Parsed interests result:', result);
-          return result;
+          // Handle different formats from database
+          if (Array.isArray(participant.interests)) {
+            console.log('🔍 [PARTICIPANTS DEBUG] Interests already an array:', participant.interests);
+            return participant.interests;
+          } else if (typeof participant.interests === 'string') {
+            // Try JSON.parse first
+            try {
+              const jsonResult = JSON.parse(participant.interests);
+              console.log('🔍 [PARTICIPANTS DEBUG] JSON parsed interests:', jsonResult);
+              return jsonResult;
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              console.log('🔍 [PARTICIPANTS DEBUG] JSON parse failed, trying comma-separated:', participant.interests);
+              const commaResult = participant.interests.split(',').map(item => item.trim());
+              console.log('🔍 [PARTICIPANTS DEBUG] Comma-separated parsed interests:', commaResult);
+              return commaResult;
+            }
+          }
+          console.log('🔍 [PARTICIPANTS DEBUG] No interests found, returning empty array');
+          return [];
         } catch (e) {
           console.error('🔍 [PARTICIPANTS DEBUG] Error parsing interests:', e);
           return [];
@@ -875,7 +940,19 @@ router.get('/chat-participants', async (req, res) => {
       bio: participant.bio,
       interests: (() => {
         try {
-          return participant.interests ? JSON.parse(participant.interests) : [];
+          // Handle different formats from database
+          if (Array.isArray(participant.interests)) {
+            return participant.interests;
+          } else if (typeof participant.interests === 'string') {
+            // Try JSON.parse first
+            try {
+              return JSON.parse(participant.interests);
+            } catch (jsonError) {
+              // If JSON.parse fails, it might be comma-separated string
+              return participant.interests.split(',').map(item => item.trim());
+            }
+          }
+          return [];
         } catch (e) {
           return [];
         }
