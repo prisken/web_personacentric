@@ -240,7 +240,6 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
                   Contact Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {renderEditableField('Phone', 'phone', 'tel')}
                   {renderEditableField('WhatsApp', 'whatsappPhone', 'tel')}
                   {renderEditableField('Emergency Contact Name', 'emergencyContactName', 'text')}
                   {renderEditableField('Emergency Contact Phone', 'emergencyContactPhone', 'tel')}

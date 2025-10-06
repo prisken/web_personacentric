@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import apiService from '../../services/api';
 import { useLanguage } from '../../contexts/LanguageContext';
 
-const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
+const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose, onParticipantUpdated }) => {
   const { t, language } = useLanguage();
   const [participant, setParticipant] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -50,6 +50,9 @@ const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose }) =
       setParticipant(response.participant);
       setEditing(false);
       toast.success('Participant details updated successfully');
+      if (onParticipantUpdated) {
+        onParticipantUpdated(response.participant);
+      }
     } catch (error) {
       console.error('Error updating participant:', error);
       toast.error(error.message || 'Failed to update participant details');
@@ -286,7 +289,6 @@ const SuperAdminParticipantDetailsModal = ({ participantId, isOpen, onClose }) =
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {renderEditableField('Email', 'email', 'email')}
-                  {renderEditableField('Phone', 'phone', 'tel')}
                   {renderEditableField('WhatsApp', 'whatsappPhone', 'tel')}
                   {renderEditableField('Emergency Contact Name', 'emergencyContactName', 'text')}
                   {renderEditableField('Emergency Contact Phone', 'emergencyContactPhone', 'tel')}

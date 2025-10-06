@@ -140,6 +140,11 @@ const FoodForTalkManagement = () => {
     }
   };
 
+  const handleParticipantUpdated = (updatedParticipant) => {
+    // Refresh the participants list to show updated data
+    fetchParticipants();
+  };
+
   const filteredParticipants = participants.filter(participant => {
     const matchesSearch = 
       participant.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -567,6 +572,7 @@ const FoodForTalkManagement = () => {
           setShowModal(false);
           setSelectedParticipantId(null);
         }}
+        onParticipantUpdated={handleParticipantUpdated}
       />
     </div>
   );

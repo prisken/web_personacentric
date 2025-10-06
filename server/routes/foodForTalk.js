@@ -419,8 +419,6 @@ router.put('/profile', async (req, res) => {
 
     // Update participant
     await participant.update(filteredUpdateData);
-    console.log('🔍 [PROFILE UPDATE] Participant updated successfully. ID:', userId);
-    console.log('🔍 [PROFILE UPDATE] Updated data:', filteredUpdateData);
 
     // Return updated participant data
     const updatedParticipant = await FoodForTalkUser.findByPk(userId, {
@@ -488,8 +486,6 @@ router.put('/profile', async (req, res) => {
       consentAccepted: updatedParticipant.consent_accepted
     };
 
-    console.log('🔍 [PROFILE UPDATE] Returning formatted participant:', formattedParticipant.nickname, formattedParticipant.bio);
-    
     res.json({ 
       message: 'Profile updated successfully',
       participant: formattedParticipant
