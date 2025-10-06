@@ -156,6 +156,7 @@ const ChatV2Interface = ({ token }) => {
 
   const InputBar = ({ onSend, placeholder }) => {
     const [text, setText] = useState('');
+    const [sparkLang, setSparkLang] = useState('en');
     return (
       <div className="p-3 bg-white/10 border-t border-white/20 flex items-center">
         <input className="flex-1 bg-white/20 rounded px-3 py-2 text-white outline-none" value={text} placeholder={placeholder} onChange={e => {
@@ -168,7 +169,13 @@ const ChatV2Interface = ({ token }) => {
             }, 1200);
           }
         }} onKeyDown={e => { if (e.key === 'Enter') { onSend(text); setText(''); } }} />
-        <button className="ml-2 px-3 py-2 rounded bg-white/10 text-white" title="Spark" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark' }))}>✨</button>
+        <div className="ml-2 flex items-center space-x-1">
+          <select value={sparkLang} onChange={e => setSparkLang(e.target.value)} className="bg-white/10 text-white text-xs px-2 py-1 rounded">
+            <option value="en">EN</option>
+            <option value="zh">中文</option>
+          </select>
+          <button className="px-3 py-2 rounded bg-white/10 text-white" title="Spark" onClick={() => wsRef.current && wsRef.current.send(JSON.stringify({ type: 'spark', lang: sparkLang }))}>✨</button>
+        </div>
         <button className="ml-2 px-4 py-2 rounded bg-blue-500 text-white" onClick={() => { onSend(text); setText(''); }}>Send</button>
       </div>
     );

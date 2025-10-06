@@ -10,12 +10,19 @@ class FoodForTalkWebSocketServerV2 {
     this.userIdToSocket = new Map();
     this.socketToClient = new Map();
     this.startedConversations = new Set();
-    this.prompts = [
+    this.promptsEN = [
       'Share your favorite café in the city ☕',
       'What’s your go-to comfort food? 🍜',
       'Two truths and a lie – go! 🎲',
       'First date idea in 7 words or less 💡',
       'If you could teleport right now, where? ✨'
+    ];
+    this.promptsZH = [
+      '分享你最喜歡的城市咖啡館吧 ☕',
+      '你最喜歡的療癒食物是什麼？🍜',
+      '兩個真相一個謊言，開始！🎲',
+      '用不超過七個字說出理想初次約會 💡',
+      '如果現在可以瞬間移動，你想去哪裡？✨'
     ];
     this.wss.on('connection', (ws, req) => this.onConnection(ws, req));
   }
@@ -92,7 +99,7 @@ class FoodForTalkWebSocketServerV2 {
         this.broadcast({ type: 'reaction', messageId: data.messageId, emoji: data.emoji, from: client.userId });
         break;
       case 'spark':
-        await this.handleSpark(client);
+        await this.handleSpark(client, data);
         break;
       
       default:
@@ -167,8 +174,10 @@ class FoodForTalkWebSocketServerV2 {
     }
   }
 
-  async handleSpark(client) {
-    const prompt = this.prompts[Math.floor(Math.random() * this.prompts.length)];
+  async handleSpark(client, data = {}) {
+    const lang = (data.lang === 'zh' || data.lang === 'cn' || data.lang === 'zh-TW' || data.lang === 'zh-CN') ? 'zh' : 'en';
+    const pool = lang === 'zh' ? this.promptsZH : this.promptsEN;
+    const prompt = pool[Math.floor(Math.random() * pool.length)];
     const saved = await FoodForTalkChatMessage.create({
       sender_id: client.userId,
       recipient_id: null,
