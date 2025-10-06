@@ -178,8 +178,8 @@ const ChatV2Interface = ({ token }) => {
           <button className="px-3 py-2 rounded bg-white/10 text-white" title="Spark" onClick={() => setShowSparkMenu(v => !v)}>✨</button>
           {showSparkMenu && (
             <div className="absolute bottom-10 right-0 bg-[#0b1028]/95 backdrop-blur text-white text-sm rounded shadow-lg border border-white/20 z-50">
-              <button className="block w-full text-left px-3 py-2 hover:bg-white/10" onClick={() => sendSpark('en')}>✨ Spark (EN)</button>
-              <button className="block w-full text-left px-3 py-2 hover:bg-white/10" onClick={() => sendSpark('zh')}>✨ Spark (中文)</button>
+              <button className="block w-full text-left px-3 py-2 hover:bg-white/10" onClick={() => sendSpark('en')}>(EN)</button>
+              <button className="block w-full text-left px-3 py-2 hover:bg-white/10" onClick={() => sendSpark('zh')}>(中文)</button>
             </div>
           )}
         </div>
@@ -189,7 +189,7 @@ const ChatV2Interface = ({ token }) => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-[#0b1028] bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="h-screen flex flex-col bg-[#0b1028]">
       <div className="bg-white/10 border-b border-white/20 px-4 py-3 text-white flex items-center justify-between max-w-4xl w-full mx-auto">
         <div className="font-semibold">🌐 Public Chat</div>
         <div className="text-white/70 text-sm">{participants.length} online</div>
