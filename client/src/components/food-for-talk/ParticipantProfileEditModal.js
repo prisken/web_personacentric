@@ -107,6 +107,18 @@ const ParticipantProfileEditModal = ({ isOpen, onClose, onProfileUpdated }) => {
           />
         </div>
       );
+    } else if (type === 'checkbox') {
+      return (
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            checked={!!editData[field]}
+            onChange={(e) => handleInputChange(field, e.target.checked)}
+            className="w-4 h-4 text-yellow-400 bg-white/20 border-white/30 rounded focus:ring-yellow-400 focus:ring-2"
+          />
+          <label className="text-white/70 text-sm">{label}</label>
+        </div>
+      );
     } else {
       return (
         <div>

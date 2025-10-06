@@ -122,6 +122,27 @@ const ParticipantDetailsModal = ({ participantId, isOpen, onClose }) => {
                   return null;
                 })()}
 
+                {participant.interestsOther && (
+                  <div className="mb-4">
+                    <span className="text-white/70 text-sm block mb-2">Other Interests:</span>
+                    <p className="text-white leading-relaxed">{participant.interestsOther}</p>
+                  </div>
+                )}
+
+                {participant.occupation && (
+                  <div className="mb-4">
+                    <span className="text-white/70 text-sm block mb-2">Occupation:</span>
+                    <p className="text-white leading-relaxed">{participant.occupation}</p>
+                  </div>
+                )}
+
+                {participant.dietaryRestrictions && (
+                  <div className="mb-4">
+                    <span className="text-white/70 text-sm block mb-2">Dietary Restrictions:</span>
+                    <p className="text-white leading-relaxed">{participant.dietaryRestrictions}</p>
+                  </div>
+                )}
+
               </div>
 
               {/* Dating Preferences */}

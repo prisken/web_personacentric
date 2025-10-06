@@ -198,12 +198,51 @@ router.put('/participants/:id', async (req, res) => {
       'quickfire_desired_outcome', 'consent_accepted', 'is_active', 'is_verified'
     ];
 
+    // Support camelCase payload from frontend by mapping to snake_case
+    const camelToSnakeMap = {
+      email: 'email',
+      firstName: 'first_name',
+      lastName: 'last_name',
+      nickname: 'nickname',
+      gender: 'gender',
+      age: 'age',
+      phone: 'phone',
+      whatsappPhone: 'whatsapp_phone',
+      occupation: 'occupation',
+      bio: 'bio',
+      interests: 'interests',
+      interestsOther: 'interests_other',
+      dietaryRestrictions: 'dietary_restrictions',
+      emergencyContactName: 'emergency_contact_name',
+      emergencyContactPhone: 'emergency_contact_phone',
+      expectPersonType: 'expect_person_type',
+      dreamFirstDate: 'dream_first_date',
+      dreamFirstDateOther: 'dream_first_date_other',
+      attractiveTraits: 'attractive_traits',
+      attractiveTraitsOther: 'attractive_traits_other',
+      japaneseFoodPreference: 'japanese_food_preference',
+      quickfireMagicItemChoice: 'quickfire_magic_item_choice',
+      quickfireDesiredOutcome: 'quickfire_desired_outcome',
+      consentAccepted: 'consent_accepted',
+      isActive: 'is_active',
+      isVerified: 'is_verified'
+    };
+
     const filteredUpdateData = {};
-    for (const field of allowedFields) {
-      if (updateData.hasOwnProperty(field)) {
-        filteredUpdateData[field] = updateData[field];
+    Object.entries(updateData).forEach(([key, value]) => {
+      const snakeKey = camelToSnakeMap[key] || key;
+      if (!allowedFields.includes(snakeKey)) return;
+      if (snakeKey === 'consent_accepted' || snakeKey === 'is_active' || snakeKey === 'is_verified') {
+        filteredUpdateData[snakeKey] = value === true || value === 'true';
+      } else if (snakeKey === 'age') {
+        const ageNumber = typeof value === 'string' ? parseInt(value, 10) : value;
+        if (!Number.isNaN(ageNumber)) filteredUpdateData[snakeKey] = ageNumber;
+      } else if (snakeKey === 'interests' || snakeKey === 'attractive_traits') {
+        if (Array.isArray(value)) filteredUpdateData[snakeKey] = value;
+      } else {
+        filteredUpdateData[snakeKey] = value;
       }
-    }
+    });
 
     // Handle array fields - store as arrays, not JSON strings
     if (updateData.interests && Array.isArray(updateData.interests)) {
@@ -245,7 +284,12 @@ router.put('/participants/:id', async (req, res) => {
       bio: updatedParticipant.bio,
       interests: (() => {
         try {
-          return updatedParticipant.interests ? JSON.parse(updatedParticipant.interests) : [];
+          if (Array.isArray(updatedParticipant.interests)) {
+            return updatedParticipant.interests;
+          } else if (typeof updatedParticipant.interests === 'string') {
+            return JSON.parse(updatedParticipant.interests);
+          }
+          return [];
         } catch (e) {
           return [];
         }
@@ -264,7 +308,12 @@ router.put('/participants/:id', async (req, res) => {
       dreamFirstDateOther: updatedParticipant.dream_first_date_other,
       attractiveTraits: (() => {
         try {
-          return updatedParticipant.attractive_traits ? JSON.parse(updatedParticipant.attractive_traits) : [];
+          if (Array.isArray(updatedParticipant.attractive_traits)) {
+            return updatedParticipant.attractive_traits;
+          } else if (typeof updatedParticipant.attractive_traits === 'string') {
+            return JSON.parse(updatedParticipant.attractive_traits);
+          }
+          return [];
         } catch (e) {
           return [];
         }

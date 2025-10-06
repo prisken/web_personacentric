@@ -399,23 +399,54 @@ router.put('/profile', async (req, res) => {
       'interests_other', 'dietary_restrictions', 'expect_person_type', 
       'dream_first_date', 'dream_first_date_other', 'attractive_traits', 
       'attractive_traits_other', 'japanese_food_preference', 
-      'quickfire_magic_item_choice', 'quickfire_desired_outcome'
+      'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
+      'emergency_contact_name', 'emergency_contact_phone'
     ];
 
-    const filteredUpdateData = {};
-    for (const field of allowedFields) {
-      if (updateData.hasOwnProperty(field)) {
-        filteredUpdateData[field] = updateData[field];
-      }
-    }
+    // Map camelCase payload keys to snake_case DB columns
+    const camelToSnakeMap = {
+      firstName: 'first_name',
+      lastName: 'last_name',
+      nickname: 'nickname',
+      gender: 'gender',
+      age: 'age',
+      phone: 'phone',
+      whatsappPhone: 'whatsapp_phone',
+      occupation: 'occupation',
+      bio: 'bio',
+      interests: 'interests',
+      interestsOther: 'interests_other',
+      dietaryRestrictions: 'dietary_restrictions',
+      emergencyContactName: 'emergency_contact_name',
+      emergencyContactPhone: 'emergency_contact_phone',
+      expectPersonType: 'expect_person_type',
+      dreamFirstDate: 'dream_first_date',
+      dreamFirstDateOther: 'dream_first_date_other',
+      attractiveTraits: 'attractive_traits',
+      attractiveTraitsOther: 'attractive_traits_other',
+      japaneseFoodPreference: 'japanese_food_preference',
+      quickfireMagicItemChoice: 'quickfire_magic_item_choice',
+      quickfireDesiredOutcome: 'quickfire_desired_outcome',
+      consentAccepted: 'consent_accepted'
+    };
 
-    // Handle array fields - store as arrays, not JSON strings
-    if (updateData.interests && Array.isArray(updateData.interests)) {
-      filteredUpdateData.interests = updateData.interests;
-    }
-    if (updateData.attractive_traits && Array.isArray(updateData.attractive_traits)) {
-      filteredUpdateData.attractive_traits = updateData.attractive_traits;
-    }
+    const filteredUpdateData = {};
+
+    // Accept both snake_case and camelCase inputs, only allow permitted fields
+    Object.entries(updateData).forEach(([key, value]) => {
+      const snakeKey = camelToSnakeMap[key] || key;
+      if (!allowedFields.includes(snakeKey)) return;
+      if (snakeKey === 'consent_accepted') {
+        filteredUpdateData[snakeKey] = value === true || value === 'true';
+      } else if (snakeKey === 'age') {
+        const ageNumber = typeof value === 'string' ? parseInt(value, 10) : value;
+        if (!Number.isNaN(ageNumber)) filteredUpdateData[snakeKey] = ageNumber;
+      } else if (snakeKey === 'interests' || snakeKey === 'attractive_traits') {
+        if (Array.isArray(value)) filteredUpdateData[snakeKey] = value;
+      } else {
+        filteredUpdateData[snakeKey] = value;
+      }
+    });
 
     // Update participant
     await participant.update(filteredUpdateData);
@@ -719,6 +750,7 @@ router.get('/participants/:id', async (req, res) => {
         'expect_person_type', 'dream_first_date', 'dream_first_date_other',
         'attractive_traits', 'attractive_traits_other', 'japanese_food_preference',
         'quickfire_magic_item_choice', 'quickfire_desired_outcome', 'consent_accepted',
+        'occupation', 'dietary_restrictions',
         'profile_photo_url', 'created_at'
       ]
     });
@@ -734,6 +766,7 @@ router.get('/participants/:id', async (req, res) => {
       gender: participant.gender,
       age: participant.age,
       bio: participant.bio,
+      occupation: participant.occupation,
       interests: (() => {
         try {
           // Handle different formats from database
@@ -754,6 +787,7 @@ router.get('/participants/:id', async (req, res) => {
         }
       })(),
       interestsOther: participant.interests_other,
+      dietaryRestrictions: participant.dietary_restrictions,
       profilePhotoUrl: participant.profile_photo_url,
       createdAt: participant.created_at,
       // Expanded registration fields
