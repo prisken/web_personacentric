@@ -507,7 +507,15 @@ class ApiService {
   }
 
   async secretLoginToFoodForTalk(credentials) {
-    return this.post('/food-for-talk/secret-login', credentials);
+    // Include JWT token if user is already logged in
+    const token = localStorage.getItem('foodForTalkToken');
+    const headers = {};
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return this.post('/food-for-talk/secret-login', credentials, { headers });
   }
 
   async getFoodForTalkParticipants() {
