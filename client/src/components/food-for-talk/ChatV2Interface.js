@@ -10,6 +10,7 @@ const ChatV2Interface = ({ token }) => {
   const wsRef = useRef(null);
   const typingTimeout = useRef(null);
   const scrollRef = useRef(null);
+  const endRef = useRef(null);
   const formatTime = (ts) => {
     try {
       return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -95,15 +96,15 @@ const ChatV2Interface = ({ token }) => {
 
   // Auto-scroll to bottom on new messages or thread change
   useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    // Smooth scroll to bottom similar to messaging apps
-    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+    if (endRef.current) {
+      endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }
   }, [messages, privateConversations, activeTab]);
 
   const sendPublic = (content) => {
     if (!content.trim() || !wsRef.current) return;
     wsRef.current.send(JSON.stringify({ type: 'public_message', content: content.trim() }));
+    if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
   const sendPrivate = (userId, content) => {
@@ -115,6 +116,7 @@ const ChatV2Interface = ({ token }) => {
       setOpenDMs(prev => [...prev, { id: conversationId, userId, name: participant?.name || 'DM' }]);
     }
     setActiveTab(conversationId);
+    if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
   };
 
   const renderMessages = () => {
@@ -161,6 +163,7 @@ const ChatV2Interface = ({ token }) => {
       if (!wsRef.current) return;
       wsRef.current.send(JSON.stringify({ type: 'spark', lang }));
       setShowSparkMenu(false);
+      setTimeout(() => { if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' }); }, 50);
     };
     return (
       <div className="p-3 bg-white/10 border-t border-white/20 flex items-center">
@@ -205,6 +208,7 @@ const ChatV2Interface = ({ token }) => {
       <div className="flex-1 w-full">
         <div ref={scrollRef} className={`max-w-4xl mx-auto overflow-y-auto p-2 pb-40`} style={{ height: '100%' }}>
           {renderMessages()}
+          <div ref={endRef} />
         </div>
       </div>
 
