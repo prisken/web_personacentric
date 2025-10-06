@@ -9,6 +9,7 @@ const ChatV2Interface = ({ token }) => {
   const [currentUserId, setCurrentUserId] = useState(null);
   const wsRef = useRef(null);
   const typingTimeout = useRef(null);
+  const scrollRef = useRef(null);
   const formatTime = (ts) => {
     try {
       return new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -91,6 +92,14 @@ const ChatV2Interface = ({ token }) => {
     ws.onerror = () => {};
     return () => { if (wsRef.current) wsRef.current.close(); };
   }, [token]);
+
+  // Auto-scroll to bottom on new messages or thread change
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    // Smooth scroll to bottom similar to messaging apps
+    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+  }, [messages, privateConversations, activeTab]);
 
   const sendPublic = (content) => {
     if (!content.trim() || !wsRef.current) return;
@@ -179,7 +188,7 @@ const ChatV2Interface = ({ token }) => {
         ))}
       </div>
 
-      <div className={`flex-1 overflow-y-auto p-2 pb-40`}>
+      <div ref={scrollRef} className={`flex-1 overflow-y-auto p-2 pb-40`}>
         {renderMessages()}
       </div>
 
