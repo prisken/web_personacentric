@@ -189,10 +189,17 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
         }
       }
 
-      user = await FoodForTalkUser.create(createData);
+      // Avoid RETURNING unknown columns on Postgres by disabling returning and supplying id
+      const newId = uuidv4();
+      createData.id = newId;
+      await FoodForTalkUser.create(createData, { returning: false });
+      user = { id: newId, email };
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
-      user = await FoodForTalkUser.create(baseData);
+      const newId = uuidv4();
+      const safeBase = { ...baseData, id: newId };
+      await FoodForTalkUser.create(safeBase, { returning: false });
+      user = { id: newId, email };
     }
 
     // Send confirmation email (you can implement this)
