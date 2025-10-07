@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import apiService from '../../services/api';
 import AgentProfileImageUpload from '../AgentProfileImageUpload';
+import AssignedFftParticipants from './AssignedFftParticipants';
 import FinancialPlanningTab from './FinancialPlanningTab';
 import ClientManagement from './ClientManagement';
 import EventDetailsOverlay from '../EventDetailsOverlay';
@@ -77,6 +78,7 @@ const AgentDashboard = ({ data, onRefresh }) => {
     { id: 'blogs', label: '部落格', icon: '📝' },
     { id: 'financial_planning', label: '理財產品配置', icon: '💰' },
     { id: 'clients', label: '客戶配對', icon: '👥', comingSoon: true },
+    { id: 'fft_participants', label: 'Food for Talk 參與者', icon: '💬' },
     { id: 'profile', label: '個人資料', icon: '👤' }
   ];
 
@@ -381,6 +383,11 @@ const AgentDashboard = ({ data, onRefresh }) => {
               </div>
             )}
           </div>
+        )}
+
+        {/* Food for Talk Assigned Participants */}
+        {activeTab === 'fft_participants' && (
+          <AssignedFftParticipants />
         )}
 
 

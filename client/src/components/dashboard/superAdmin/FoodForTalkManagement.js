@@ -11,6 +11,8 @@ const FoodForTalkManagement = () => {
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [agents, setAgents] = useState([]);
+  const [assigningId, setAssigningId] = useState(null);
   
   // Event settings state
   const [eventSettings, setEventSettings] = useState({
@@ -27,6 +29,7 @@ const FoodForTalkManagement = () => {
     fetchParticipants();
     fetchStats();
     fetchEventSettings();
+    fetchAgents();
   }, []);
 
   const fetchParticipants = async () => {
@@ -67,6 +70,15 @@ const FoodForTalkManagement = () => {
     } catch (error) {
       console.error('Error fetching event settings:', error);
       toast.error('Failed to fetch event settings');
+    }
+  };
+
+  const fetchAgents = async () => {
+    try {
+      const res = await apiService.getAgents();
+      if (res.success) setAgents(res.data || []);
+    } catch (e) {
+      console.error('Error fetching agents:', e);
     }
   };
 
@@ -460,6 +472,9 @@ const FoodForTalkManagement = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Assign Agent
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -573,6 +588,41 @@ const FoodForTalkManagement = () => {
                       >
                         Delete
                       </button>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <div className="flex items-center space-x-2">
+                      <select
+                        disabled={assigningId === participant.id}
+                        className="px-2 py-1 border rounded"
+                        value={participant.assigned_agent_id || ''}
+                        onChange={async (e) => {
+                          const val = e.target.value;
+                          try {
+                            setAssigningId(participant.id);
+                            if (val) {
+                              await apiService.assignFoodForTalkParticipantAgent(participant.id, val);
+                              toast.success('Agent assigned');
+                            } else {
+                              await apiService.unassignFoodForTalkParticipantAgent(participant.id);
+                              toast.success('Agent unassigned');
+                            }
+                            fetchParticipants();
+                          } catch (err) {
+                            console.error('Assign agent error:', err);
+                            toast.error('Failed to update assignment');
+                          } finally {
+                            setAssigningId(null);
+                          }
+                        }}
+                      >
+                        <option value="">-- None --</option>
+                        {agents.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.first_name} {a.last_name} ({a.email})
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </td>
                 </tr>

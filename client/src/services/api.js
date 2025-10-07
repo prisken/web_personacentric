@@ -605,6 +605,14 @@ class ApiService {
     return this.patch(`/food-for-talk/admin/participants/${participantId}/regenerate-passkey`);
   }
 
+  async assignFoodForTalkParticipantAgent(participantId, agentUserId) {
+    return this.post(`/food-for-talk/admin/participants/${participantId}/assign-agent`, { agentUserId });
+  }
+
+  async unassignFoodForTalkParticipantAgent(participantId) {
+    return this.post(`/food-for-talk/admin/participants/${participantId}/unassign-agent`, {});
+  }
+
   async forgotFoodForTalkPassword(email) {
     return this.post('/food-for-talk/forgot-password', { email });
   }

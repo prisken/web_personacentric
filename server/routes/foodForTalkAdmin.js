@@ -4,10 +4,11 @@ const FoodForTalkUser = require('../models/FoodForTalkUser');
 const sequelize = require('../config/database');
 const FoodForTalkChatMessage = require('../models/FoodForTalkChatMessage');
 const FoodForTalkProfileView = require('../models/FoodForTalkProfileView');
+const { authenticateToken, requireSuperAdminOnly, requireAdminOrSuperAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 // Clear public chat history
-router.delete('/chat/public', async (req, res) => {
+router.delete('/chat/public', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
     await FoodForTalkChatMessage.destroy({ where: { message_type: 'public' } });
     res.json({ success: true, message: 'Public chat history cleared' });
@@ -17,13 +18,54 @@ router.delete('/chat/public', async (req, res) => {
   }
 });
 
+// Assign an agent to a participant (super admin only)
+router.post('/participants/:id/assign-agent', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { agentUserId } = req.body;
+
+    if (!agentUserId) {
+      return res.status(400).json({ message: 'agentUserId is required' });
+    }
+
+    const participant = await FoodForTalkUser.findByPk(id);
+    if (!participant) return res.status(404).json({ message: 'Participant not found' });
+
+    const { User } = require('../models');
+    const agent = await User.findOne({ where: { id: agentUserId, role: 'agent' }, attributes: ['id', 'first_name', 'last_name', 'email'] });
+    if (!agent) return res.status(400).json({ message: 'Invalid agent user id' });
+
+    await participant.update({ assigned_agent_id: agentUserId });
+
+    return res.json({ success: true, message: 'Agent assigned successfully', assignedAgent: agent });
+  } catch (error) {
+    console.error('Assign agent error:', error);
+    return res.status(500).json({ message: 'Failed to assign agent' });
+  }
+});
+
+// Unassign agent from a participant (super admin only)
+router.post('/participants/:id/unassign-agent', authenticateToken, requireSuperAdminOnly, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const participant = await FoodForTalkUser.findByPk(id);
+    if (!participant) return res.status(404).json({ message: 'Participant not found' });
+
+    await participant.update({ assigned_agent_id: null });
+    return res.json({ success: true, message: 'Agent unassigned successfully' });
+  } catch (error) {
+    console.error('Unassign agent error:', error);
+    return res.status(500).json({ message: 'Failed to unassign agent' });
+  }
+});
+
 // Generate a 6-digit passkey
 const generatePasskey = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
 // Get all participants (admin only)
-router.get('/participants', async (req, res) => {
+router.get('/participants', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     // Describe table to get existing columns in the actual DB (prod-safe)
     const columns = await sequelize.getQueryInterface().describeTable('food_for_talk_users');
@@ -42,7 +84,7 @@ router.get('/participants', async (req, res) => {
 });
 
 // Get participant by ID with all details (for super admin)
-router.get('/participants/:id', async (req, res) => {
+router.get('/participants/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const columns = await sequelize.getQueryInterface().describeTable('food_for_talk_users');
@@ -133,7 +175,7 @@ router.get('/participants/:id', async (req, res) => {
 });
 
 // Toggle participant status
-router.patch('/participants/:id/toggle-status', async (req, res) => {
+router.patch('/participants/:id/toggle-status', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const { isActive } = req.body;
@@ -153,7 +195,7 @@ router.patch('/participants/:id/toggle-status', async (req, res) => {
 });
 
 // Regenerate passkey for participant
-router.patch('/participants/:id/regenerate-passkey', async (req, res) => {
+router.patch('/participants/:id/regenerate-passkey', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -176,7 +218,7 @@ router.patch('/participants/:id/regenerate-passkey', async (req, res) => {
 });
 
 // Update participant details
-router.put('/participants/:id', async (req, res) => {
+router.put('/participants/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -338,7 +380,7 @@ router.put('/participants/:id', async (req, res) => {
 });
 
 // Delete participant
-router.delete('/participants/:id', async (req, res) => {
+router.delete('/participants/:id', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -364,7 +406,7 @@ router.delete('/participants/:id', async (req, res) => {
 });
 
 // Get chat messages
-router.get('/chat-messages', async (req, res) => {
+router.get('/chat-messages', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { limit = 100, offset = 0, conversationId } = req.query;
 
@@ -400,7 +442,7 @@ router.get('/chat-messages', async (req, res) => {
 });
 
 // Get profile views
-router.get('/profile-views', async (req, res) => {
+router.get('/profile-views', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const { limit = 100, offset = 0 } = req.query;
 
@@ -430,7 +472,7 @@ router.get('/profile-views', async (req, res) => {
 });
 
 // Get comprehensive statistics
-router.get('/statistics', async (req, res) => {
+router.get('/statistics', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const totalParticipants = await FoodForTalkUser.count();
     const activeParticipants = await FoodForTalkUser.count({ where: { is_active: true } });
@@ -489,7 +531,7 @@ router.get('/statistics', async (req, res) => {
 });
 
 // Export participants data
-router.get('/export/participants', async (req, res) => {
+router.get('/export/participants', authenticateToken, requireAdminOrSuperAdmin, async (req, res) => {
   try {
     const participants = await FoodForTalkUser.findAll({
       attributes: [

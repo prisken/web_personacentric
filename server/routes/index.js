@@ -20,6 +20,7 @@ const externalQuizRoutes = require('./external-quiz');
 const dashboardRoutes = require('./dashboard');
 const foodForTalkRoutes = require('./foodForTalk');
 const foodForTalkAdminRoutes = require('./foodForTalkAdmin');
+const foodForTalkAgentRoutes = require('./foodForTalkAgent');
 const databaseFixRoutes = require('./databaseFix');
 
 // Mount routes
@@ -41,6 +42,7 @@ router.use('/external-quiz', externalQuizRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/food-for-talk', foodForTalkRoutes);
 router.use('/food-for-talk/admin', foodForTalkAdminRoutes);
+router.use('/food-for-talk/agent', foodForTalkAgentRoutes);
 router.use('/db-fix', databaseFixRoutes);
 
 module.exports = router; 

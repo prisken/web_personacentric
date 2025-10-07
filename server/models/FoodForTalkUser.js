@@ -145,6 +145,10 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.BOOLEAN,
     allowNull: true,
     defaultValue: false
+  },
+  assigned_agent_id: {
+    type: DataTypes.UUID,
+    allowNull: true
   }
 }, {
   tableName: 'food_for_talk_users',
@@ -156,7 +160,8 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     { fields: ['is_verified'] },
     { fields: ['is_active'] },
     { fields: ['registration_date'] },
-    { fields: ['secret_passkey'] }
+    { fields: ['secret_passkey'] },
+    { fields: ['assigned_agent_id'], name: 'idx_fft_assigned_agent_id' }
   ]
 });
 

@@ -413,7 +413,8 @@ router.get('/profile', async (req, res) => {
       japaneseFoodPreference: participant.japanese_food_preference,
       quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
       quickfireDesiredOutcome: participant.quickfire_desired_outcome,
-      consentAccepted: participant.consent_accepted
+      consentAccepted: participant.consent_accepted,
+      assignedAgentId: participant.assigned_agent_id || null
     };
 
     res.json({
@@ -1052,7 +1053,8 @@ router.get('/participants', async (req, res) => {
         bio: participant.bio,
         interests: formattedInterests,
         profilePhotoUrl: participant.profile_photo_url,
-        attractiveTraitsOther: participant.attractive_traits_other
+        attractiveTraitsOther: participant.attractive_traits_other,
+        assignedAgentId: participant.assigned_agent_id || null
       };
     });
 
