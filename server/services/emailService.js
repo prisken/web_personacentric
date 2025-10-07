@@ -10,14 +10,28 @@ class EmailService {
     // Try to create transporter with environment variables
     // If not available, create a test transporter for development
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      this.transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        }
-      });
-      console.log('✅ Email service initialized with Gmail');
+      // Check if using SendGrid (EMAIL_USER === 'apikey')
+      if (process.env.EMAIL_USER === 'apikey') {
+        this.transporter = nodemailer.createTransport({
+          host: 'smtp.sendgrid.net',
+          port: 587,
+          auth: {
+            user: 'apikey',
+            pass: process.env.EMAIL_PASS
+          }
+        });
+        console.log('✅ Email service initialized with SendGrid');
+      } else {
+        // Gmail or other SMTP
+        this.transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+        console.log('✅ Email service initialized with Gmail');
+      }
     } else {
       // Create a test account for development
       this.transporter = nodemailer.createTransport({
