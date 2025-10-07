@@ -733,14 +733,14 @@ router.post('/forgot-password', async (req, res) => {
     const resetExpires = new Date(Date.now() + 60 * 60 * 1000);
 
     await user.update({ reset_password_token: resetToken, reset_password_expires: resetExpires });
-    try {
-      await emailService.sendFoodForTalkPasswordResetEmail(user.email, resetToken);
-    } catch (emailErr) {
-      console.error('FFT reset email send failed (continuing):', emailErr?.message);
-      // Intentionally continue to avoid leaking email existence or failing the flow
-    }
-
-    return res.json({ success: true, message: 'If an account exists, a reset email has been sent' });
+    
+    // Send response immediately, then attempt email in background
+    res.json({ success: true, message: 'If an account exists, a reset email has been sent' });
+    
+    // Attempt to send email (non-blocking)
+    emailService.sendFoodForTalkPasswordResetEmail(user.email, resetToken)
+      .then(() => console.log('📧 FFT password reset email sent successfully'))
+      .catch(emailErr => console.error('FFT reset email send failed:', emailErr?.message));
   } catch (err) {
     console.error('FFT forgot password error:', err);
     return res.status(500).json({ success: false, error: 'Internal server error' });
