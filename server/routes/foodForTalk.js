@@ -75,7 +75,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     }
 
     // Check if user already exists
-    const existingUser = await FoodForTalkUser.findOne({ where: { email } });
+    const existingUser = await FoodForTalkUser.findOne({
+      where: { email },
+      attributes: ['id', 'email']
+    });
     if (existingUser) {
       console.log('User already exists with email:', email);
       return res.status(400).json({ 
@@ -604,7 +607,10 @@ router.post('/login', async (req, res) => {
     }
 
     // Find user
-    const user = await FoodForTalkUser.findOne({ where: { email } });
+    const user = await FoodForTalkUser.findOne({
+      where: { email },
+      attributes: ['id', 'email', 'password_hash', 'nickname', 'is_verified', 'first_name', 'last_name', 'secret_passkey']
+    });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -663,7 +669,10 @@ router.post('/forgot-password', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
 
-    const user = await FoodForTalkUser.findOne({ where: { email } });
+    const user = await FoodForTalkUser.findOne({
+      where: { email },
+      attributes: ['id', 'email']
+    });
     if (!user) {
       return res.json({ success: true, message: 'If an account exists, a reset email has been sent' });
     }
@@ -701,7 +710,8 @@ router.post('/reset-password', async (req, res) => {
       where: {
         reset_password_token: token,
         reset_password_expires: { [Op.gt]: new Date() }
-      }
+      },
+      attributes: ['id', 'email', 'password_hash', 'reset_password_token', 'reset_password_expires']
     });
     if (!user) {
       return res.status(400).json({ success: false, error: 'Invalid or expired reset token' });
@@ -734,7 +744,7 @@ router.post('/secret-login', async (req, res) => {
         const token = authHeader.substring(7);
         const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
         if (decoded.type === 'food-for-talk-participant' && decoded.email) {
-          user = await FoodForTalkUser.findOne({ where: { email: decoded.email } });
+          user = await FoodForTalkUser.findOne({ where: { email: decoded.email }, attributes: ['id', 'email', 'password_hash', 'nickname', 'secret_passkey', 'is_verified'] });
         }
       } catch (e) {
         // ignore and fallback to email/password flow
@@ -747,7 +757,7 @@ router.post('/secret-login', async (req, res) => {
       if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required when not already logged in' });
       }
-      user = await FoodForTalkUser.findOne({ where: { email } });
+      user = await FoodForTalkUser.findOne({ where: { email }, attributes: ['id', 'email', 'password_hash', 'nickname', 'secret_passkey', 'is_verified'] });
       if (!user) {
         return res.status(401).json({ message: 'Invalid email or password' });
       }
