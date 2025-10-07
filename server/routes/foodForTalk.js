@@ -67,8 +67,11 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       consentAccepted
     } = req.body;
 
+    // Normalize email to lowercase for case-insensitive comparison
+    const normalizedEmail = email?.toLowerCase().trim();
+
     // Validate required fields
-    if (!email || !password || !age || !firstName || !lastName) {
+    if (!normalizedEmail || !password || !age || !firstName || !lastName) {
       return res.status(400).json({ 
         message: 'Missing required fields. Please fill in all required information including first name and last name.' 
       });
@@ -76,7 +79,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
 
     // Check if user already exists
     const existingUser = await FoodForTalkUser.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
       attributes: ['id', 'email']
     });
     if (existingUser) {
@@ -127,7 +130,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
 
     // Prepare base data (safe across legacy schema)
     const baseData = {
-      email,
+      email: normalizedEmail,
       password_hash: passwordHash,
       first_name: firstName || 'Anonymous',
       last_name: lastName || 'Participant',
@@ -654,13 +657,16 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+    // Normalize email to lowercase for case-insensitive comparison
+    const normalizedEmail = email?.toLowerCase().trim();
+
+    if (!normalizedEmail || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Find user
     const user = await FoodForTalkUser.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
       attributes: ['id', 'email', 'password_hash', 'nickname', 'is_verified', 'first_name', 'last_name', 'secret_passkey']
     });
     if (!user) {
@@ -719,10 +725,14 @@ router.post('/login', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
-    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+    
+    // Normalize email to lowercase for case-insensitive comparison
+    const normalizedEmail = email?.toLowerCase().trim();
+    
+    if (!normalizedEmail) return res.status(400).json({ success: false, error: 'Email is required' });
 
     const user = await FoodForTalkUser.findOne({
-      where: { email },
+      where: { email: normalizedEmail },
       attributes: ['id', 'email']
     });
     if (!user) {

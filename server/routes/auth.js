@@ -15,19 +15,23 @@ router.post('/login', authController.login);
 router.post('/emergency-login', async (req, res) => {
   try {
     const { email, password } = req.body;
+    
+    // Normalize email to lowercase for case-insensitive comparison
+    const normalizedEmail = email?.toLowerCase().trim();
+    
     const { sequelize } = require('../models');
     const bcrypt = require('bcryptjs');
     const jwt = require('jsonwebtoken');
     
-    console.log('🚨 Emergency login attempt for:', email);
+    console.log('🚨 Emergency login attempt for:', normalizedEmail);
     
     // Use raw SQL to find user
     const [users] = await sequelize.query(`
       SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
       FROM users 
-      WHERE email = :email
+      WHERE LOWER(email) = LOWER(:email)
     `, {
-      replacements: { email },
+      replacements: { email: normalizedEmail },
       type: sequelize.QueryTypes.SELECT
     });
     

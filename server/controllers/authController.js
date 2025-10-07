@@ -10,15 +10,18 @@ class AuthController {
     try {
       const { email, password } = req.body;
 
+      // Normalize email to lowercase for case-insensitive comparison
+      const normalizedEmail = email?.toLowerCase().trim();
+
       // Validate input
-      if (!email || !password) {
+      if (!normalizedEmail || !password) {
         return res.status(400).json({
           success: false,
           error: 'Email and password are required'
         });
       }
 
-      console.log('🔍 Login attempt for:', email);
+      console.log('🔍 Login attempt for:', normalizedEmail);
 
       // Use raw SQL to avoid missing column errors
       const { sequelize } = require('../config/database');
@@ -26,9 +29,9 @@ class AuthController {
       const [users] = await sequelize.query(`
         SELECT id, email, password_hash, first_name, last_name, role, points, subscription_status
         FROM users 
-        WHERE email = :email
+        WHERE LOWER(email) = LOWER(:email)
       `, {
-        replacements: { email },
+        replacements: { email: normalizedEmail },
         type: sequelize.QueryTypes.SELECT
       });
       
@@ -91,8 +94,11 @@ class AuthController {
     try {
       const { email, password, first_name, last_name, role = 'client' } = req.body;
 
+      // Normalize email to lowercase for case-insensitive comparison
+      const normalizedEmail = email?.toLowerCase().trim();
+
       // Validate input
-      if (!email || !password || !first_name || !last_name) {
+      if (!normalizedEmail || !password || !first_name || !last_name) {
         return res.status(400).json({
           success: false,
           error: 'All fields are required'
@@ -100,7 +106,7 @@ class AuthController {
       }
 
       // Check if user already exists
-      const existingUser = await User.findOne({ where: { email } });
+      const existingUser = await User.findOne({ where: { email: normalizedEmail } });
       if (existingUser) {
         return res.status(400).json({
           success: false,
@@ -113,7 +119,7 @@ class AuthController {
 
       // Create user
       const user = await User.create({
-        email,
+        email: normalizedEmail,
         password_hash: passwordHash,
         first_name,
         last_name,
