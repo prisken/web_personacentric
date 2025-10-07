@@ -199,13 +199,24 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       // Avoid RETURNING unknown columns on Postgres by disabling returning and supplying id
       const newId = uuidv4();
       createData.id = newId;
-      await FoodForTalkUser.create(createData, { returning: false });
+      // Ensure timestamps if table expects them
+      if (existingColumns.includes('created_at') && !createData.created_at) createData.created_at = new Date();
+      if (existingColumns.includes('updated_at') && !createData.updated_at) createData.updated_at = new Date();
+      if (existingColumns.includes('registration_date') && !createData.registration_date) createData.registration_date = new Date();
+      // Raw insert to avoid model RETURNING unknown columns in prod
+      const qi = require('../config/database').getQueryInterface();
+      await qi.bulkInsert('food_for_talk_users', [createData], { returning: false });
       user = { id: newId, email };
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
       const newId = uuidv4();
       const safeBase = { ...baseData, id: newId };
-      await FoodForTalkUser.create(safeBase, { returning: false });
+      const qi = require('../config/database').getQueryInterface();
+      // Provide minimal required timestamps for prod
+      safeBase.created_at = new Date();
+      safeBase.updated_at = new Date();
+      safeBase.registration_date = new Date();
+      await qi.bulkInsert('food_for_talk_users', [safeBase], { returning: false });
       user = { id: newId, email };
     }
 
