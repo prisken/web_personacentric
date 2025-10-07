@@ -130,6 +130,13 @@ const FoodForTalkParticipantsPage = () => {
           >
             ✏️ Edit Profile
           </button>
+          <Link
+            to="/food-for-talk/secret-chat"
+            className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-purple-500/40 hover:bg-purple-500/60 border border-purple-500/20 backdrop-blur-sm transition-all duration-300"
+            title="Enter Secret Chat Room"
+          >
+            💬 Secret Chat
+          </Link>
           <button
             type="button"
             onClick={handleLogout}
