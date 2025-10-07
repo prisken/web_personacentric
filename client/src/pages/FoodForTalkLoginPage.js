@@ -102,6 +102,11 @@ const FoodForTalkLoginPage = () => {
                 placeholder={t('foodForTalk.login.password')}
               />
             </div>
+            <div className="text-right -mt-2">
+              <Link to="/food-for-talk/forgot-password" className="text-yellow-300 hover:text-yellow-200 text-sm">
+                Forgot password?
+              </Link>
+            </div>
 
             <button
               type="submit"

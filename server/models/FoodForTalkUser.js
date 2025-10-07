@@ -66,6 +66,14 @@ const FoodForTalkUser = sequelize.define('FoodForTalkUser', {
     type: DataTypes.STRING(255),
     allowNull: true
   },
+  reset_password_token: {
+    type: DataTypes.STRING(255),
+    allowNull: true
+  },
+  reset_password_expires: {
+    type: DataTypes.DATE,
+    allowNull: true
+  },
   is_verified: {
     type: DataTypes.BOOLEAN,
     defaultValue: false

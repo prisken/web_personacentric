@@ -59,3 +59,4 @@ const ChatMessage = ({ message, isOwn, isSystem, senderName, timestamp }) => {
 export default ChatMessage;
 
 
+

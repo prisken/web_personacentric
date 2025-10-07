@@ -604,6 +604,14 @@ class ApiService {
   async regenerateFoodForTalkPasskey(participantId) {
     return this.patch(`/food-for-talk/admin/participants/${participantId}/regenerate-passkey`);
   }
+
+  async forgotFoodForTalkPassword(email) {
+    return this.post('/food-for-talk/forgot-password', { email });
+  }
+
+  async resetFoodForTalkPassword(token, newPassword) {
+    return this.post('/food-for-talk/reset-password', { token, newPassword });
+  }
 }
 
 // Create a singleton instance

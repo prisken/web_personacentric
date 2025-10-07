@@ -3,11 +3,14 @@ const bcrypt = require('bcryptjs');
 const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const FoodForTalkUser = require('../models/FoodForTalkUser');
 const FoodForTalkChatMessage = require('../models/FoodForTalkChatMessage');
 const FoodForTalkProfileView = require('../models/FoodForTalkProfileView');
 const { uploadToCloudinary } = require('../config/cloudinary');
+const emailService = require('../services/emailService');
+const { Op } = require('sequelize');
 
 const router = express.Router();
 
@@ -630,6 +633,70 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error?.message, error?.stack);
     res.status(500).json({ message: 'Login failed. Please try again.' });
+  }
+});
+
+// Food for Talk - Forgot password
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, error: 'Email is required' });
+
+    const user = await FoodForTalkUser.findOne({ where: { email } });
+    if (!user) {
+      return res.json({ success: true, message: 'If an account exists, a reset email has been sent' });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetExpires = new Date(Date.now() + 60 * 60 * 1000);
+
+    await user.update({ reset_password_token: resetToken, reset_password_expires: resetExpires });
+    try {
+      await emailService.sendFoodForTalkPasswordResetEmail(user.email, resetToken);
+    } catch (emailErr) {
+      console.error('FFT reset email send failed (continuing):', emailErr?.message);
+      // Intentionally continue to avoid leaking email existence or failing the flow
+    }
+
+    return res.json({ success: true, message: 'If an account exists, a reset email has been sent' });
+  } catch (err) {
+    console.error('FFT forgot password error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+});
+
+// Food for Talk - Reset password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, error: 'Token and new password are required' });
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long' });
+    }
+
+    const user = await FoodForTalkUser.findOne({
+      where: {
+        reset_password_token: token,
+        reset_password_expires: { [Op.gt]: new Date() }
+      }
+    });
+    if (!user) {
+      return res.status(400).json({ success: false, error: 'Invalid or expired reset token' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await user.update({
+      password_hash: passwordHash,
+      reset_password_token: null,
+      reset_password_expires: null
+    });
+
+    return res.json({ success: true, message: 'Password has been reset successfully' });
+  } catch (err) {
+    console.error('FFT reset password error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error' });
   }
 });
 

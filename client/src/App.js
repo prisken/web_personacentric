@@ -40,6 +40,8 @@ const FoodForTalkLoginPage = lazy(() => import('./pages/FoodForTalkLoginPage'));
 const FoodForTalkSecretLoginPage = lazy(() => import('./pages/FoodForTalkSecretLoginPage'));
 const FoodForTalkParticipantsPage = lazy(() => import('./pages/FoodForTalkParticipantsPage'));
 const FoodForTalkSecretChatPage = lazy(() => import('./pages/FoodForTalkSecretChatPage'));
+const FoodForTalkForgotPasswordPage = lazy(() => import('./pages/FoodForTalkForgotPasswordPage'));
+const FoodForTalkResetPasswordPage = lazy(() => import('./pages/FoodForTalkResetPasswordPage'));
 
 // Loading component for Suspense
 const PageLoader = () => (
@@ -114,6 +116,8 @@ function App() {
             <Route path="/food-for-talk/secret-login" element={<FoodForTalkSecretLoginPage />} />
             <Route path="/food-for-talk/participants" element={<FoodForTalkParticipantsPage />} />
             <Route path="/food-for-talk/secret-chat" element={<FoodForTalkSecretChatPage />} />
+            <Route path="/food-for-talk/forgot-password" element={<FoodForTalkForgotPasswordPage />} />
+            <Route path="/food-for-talk/reset-password" element={<FoodForTalkResetPasswordPage />} />
                   </Routes>
                 </Suspense>
               </main>

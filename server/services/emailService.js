@@ -10,7 +10,7 @@ class EmailService {
     // Try to create transporter with environment variables
     // If not available, create a test transporter for development
     if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: process.env.EMAIL_USER,
@@ -20,7 +20,7 @@ class EmailService {
       console.log('✅ Email service initialized with Gmail');
     } else {
       // Create a test account for development
-      this.transporter = nodemailer.createTransporter({
+      this.transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
         auth: {
@@ -172,6 +172,46 @@ class EmailService {
       return result;
     } catch (error) {
       console.error('❌ Failed to send welcome email:', error);
+      throw error;
+    }
+  }
+
+  async sendFoodForTalkPasswordResetEmail(email, resetToken) {
+    const base = process.env.FOOD_FOR_TALK_FRONTEND_URL || process.env.FRONTEND_URL || 'http://localhost:3000';
+    const resetUrl = `${base}/food-for-talk/reset-password?token=${resetToken}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || 'noreply@personacentric.com',
+      to: email,
+      subject: 'Reset your Food for Talk password',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <div style="background:#111827; padding: 20px; text-align: center;">
+            <h1 style="color: white; margin: 0;">Food for Talk</h1>
+          </div>
+          <div style="padding: 30px 20px;">
+            <h2 style="color: #333; margin-bottom: 16px;">Password reset</h2>
+            <p style="color:#555;">Click the button below to set a new password. This link expires in 1 hour.</p>
+            <div style="text-align:center; margin: 24px 0;">
+              <a href="${resetUrl}" style="background:#f59e0b; color:#111; padding:12px 24px; text-decoration:none; border-radius:8px; font-weight:600;">
+                Reset Password
+              </a>
+            </div>
+            <p style="color:#777; word-break:break-all;">Or paste this URL into your browser:<br>${resetUrl}</p>
+          </div>
+        </div>
+      `
+    };
+
+    try {
+      const result = await this.transporter.sendMail(mailOptions);
+      console.log('📧 FFT password reset email sent:', result.messageId);
+      if (process.env.NODE_ENV !== 'production' && result.previewUrl) {
+        console.log('📧 FFT Preview URL:', result.previewUrl);
+      }
+      return result;
+    } catch (error) {
+      console.error('❌ Failed to send FFT password reset email:', error);
       throw error;
     }
   }
