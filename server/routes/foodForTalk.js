@@ -129,7 +129,6 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       first_name: firstName || 'Anonymous',
       last_name: lastName || 'Participant',
       phone: whatsappPhone,
-      whatsapp_phone: whatsappPhone,
       age: parseInt(age),
       // Additional fields from form
       occupation: occupation || '',
@@ -146,11 +145,16 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     try {
       const columns = await require('../config/database').getQueryInterface().describeTable('food_for_talk_users');
       const existingColumns = Object.keys(columns);
-      
-      // Build data object with only existing columns
-      const createData = { ...baseData };
-      
-      // Only add new columns if they exist in the database
+
+      // Build data object with only columns that actually exist in the DB
+      const createData = {};
+      Object.keys(baseData).forEach((key) => {
+        if (existingColumns.includes(key)) {
+          createData[key] = baseData[key];
+        }
+      });
+
+      // Only add optional/new columns if they exist in the database
       if (existingColumns.includes('nickname')) createData.nickname = nickname || null;
       if (existingColumns.includes('gender')) createData.gender = gender || null;
       if (existingColumns.includes('expect_person_type')) createData.expect_person_type = expectPersonType || null;
@@ -164,7 +168,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       if (existingColumns.includes('quickfire_desired_outcome')) createData.quickfire_desired_outcome = quickfireDesiredOutcome || null;
       if (existingColumns.includes('consent_accepted')) createData.consent_accepted = consentAccepted === 'true' || consentAccepted === true;
       if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
-      
+
       user = await FoodForTalkUser.create(createData);
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
