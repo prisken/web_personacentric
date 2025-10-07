@@ -171,6 +171,13 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       if (existingColumns.includes('quickfire_desired_outcome')) createData.quickfire_desired_outcome = quickfireDesiredOutcome || null;
       if (existingColumns.includes('consent_accepted')) createData.consent_accepted = consentAccepted === 'true' || consentAccepted === true;
       if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
+      // Legacy emergency contact columns on some prod DBs (NOT NULL). Provide safe defaults.
+      if (existingColumns.includes('emergency_contact_name') && !createData.emergency_contact_name) {
+        createData.emergency_contact_name = 'N/A';
+      }
+      if (existingColumns.includes('emergency_contact_phone') && !createData.emergency_contact_phone) {
+        createData.emergency_contact_phone = whatsappPhone || 'N/A';
+      }
 
       // Normalize JSON columns that might be TEXT on some prod DBs
       const isJsonType = (col) => {
