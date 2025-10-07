@@ -169,6 +169,23 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       if (existingColumns.includes('consent_accepted')) createData.consent_accepted = consentAccepted === 'true' || consentAccepted === true;
       if (existingColumns.includes('whatsapp_phone')) createData.whatsapp_phone = whatsappPhone;
 
+      // Normalize JSON columns that might be TEXT on some prod DBs
+      const isJsonType = (col) => {
+        try { return String(columns[col]?.type || '').toLowerCase().includes('json'); } catch (_) { return false; }
+      };
+      if (existingColumns.includes('interests')) {
+        const interestsColIsJson = isJsonType('interests');
+        if (Array.isArray(createData.interests) && !interestsColIsJson) {
+          createData.interests = JSON.stringify(createData.interests);
+        }
+      }
+      if (existingColumns.includes('attractive_traits')) {
+        const traitsColIsJson = isJsonType('attractive_traits');
+        if (Array.isArray(createData.attractive_traits) && !traitsColIsJson) {
+          createData.attractive_traits = JSON.stringify(createData.attractive_traits);
+        }
+      }
+
       user = await FoodForTalkUser.create(createData);
     } catch (createErr) {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
