@@ -179,20 +179,40 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
         createData.emergency_contact_phone = whatsappPhone || 'N/A';
       }
 
-      // Normalize JSON columns that might be TEXT on some prod DBs
+      // Normalize JSON/array columns for PostgreSQL compatibility
+      // PostgreSQL cannot determine type of empty arrays, so always stringify array fields
       const isJsonType = (col) => {
         try { return String(columns[col]?.type || '').toLowerCase().includes('json'); } catch (_) { return false; }
       };
+      const isArrayType = (col) => {
+        try { return String(columns[col]?.type || '').toLowerCase().includes('array'); } catch (_) { return false; }
+      };
+      
       if (existingColumns.includes('interests')) {
         const interestsColIsJson = isJsonType('interests');
-        if (Array.isArray(createData.interests) && !interestsColIsJson) {
-          createData.interests = JSON.stringify(createData.interests);
+        const interestsColIsArray = isArrayType('interests');
+        if (Array.isArray(createData.interests)) {
+          if (interestsColIsJson || !interestsColIsArray) {
+            // JSON or TEXT column - stringify
+            createData.interests = JSON.stringify(createData.interests);
+          } else if (interestsColIsArray && createData.interests.length === 0) {
+            // Empty array for PostgreSQL ARRAY type - use null or stringify
+            createData.interests = JSON.stringify(createData.interests);
+          }
         }
       }
+      
       if (existingColumns.includes('attractive_traits')) {
         const traitsColIsJson = isJsonType('attractive_traits');
-        if (Array.isArray(createData.attractive_traits) && !traitsColIsJson) {
-          createData.attractive_traits = JSON.stringify(createData.attractive_traits);
+        const traitsColIsArray = isArrayType('attractive_traits');
+        if (Array.isArray(createData.attractive_traits)) {
+          if (traitsColIsJson || !traitsColIsArray) {
+            // JSON or TEXT column - stringify
+            createData.attractive_traits = JSON.stringify(createData.attractive_traits);
+          } else if (traitsColIsArray && createData.attractive_traits.length === 0) {
+            // Empty array for PostgreSQL ARRAY type - use null or stringify
+            createData.attractive_traits = JSON.stringify(createData.attractive_traits);
+          }
         }
       }
 
@@ -211,6 +231,13 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       console.warn('Create with schema-safe approach failed, retrying with baseData only:', createErr?.message);
       const newId = uuidv4();
       const safeBase = { ...baseData, id: newId };
+      // Stringify all array fields for PostgreSQL compatibility
+      if (Array.isArray(safeBase.interests)) {
+        safeBase.interests = JSON.stringify(safeBase.interests);
+      }
+      if (Array.isArray(safeBase.attractive_traits)) {
+        safeBase.attractive_traits = JSON.stringify(safeBase.attractive_traits);
+      }
       const qi = require('../config/database').getQueryInterface();
       // Provide minimal required timestamps for prod
       safeBase.created_at = new Date();
