@@ -28,6 +28,24 @@ router.post('/participants/:id/assign-agent', authenticateToken, requireSuperAdm
       return res.status(400).json({ message: 'agentUserId is required' });
     }
 
+    // Ensure column exists in production DB (prod-safe)
+    try {
+      const qi = sequelize.getQueryInterface();
+      const columns = await qi.describeTable('food_for_talk_users');
+      if (!columns.assigned_agent_id) {
+        await qi.addColumn('food_for_talk_users', 'assigned_agent_id', {
+          type: require('sequelize').UUID,
+          allowNull: true,
+          references: { model: 'users', key: 'id' }
+        });
+        try {
+          await qi.addIndex('food_for_talk_users', ['assigned_agent_id'], { name: 'idx_fft_assigned_agent_id' });
+        } catch (_) { /* ignore */ }
+      }
+    } catch (e) {
+      console.warn('assign-agent ensure column failed (continuing):', e?.message);
+    }
+
     const participant = await FoodForTalkUser.findByPk(id);
     if (!participant) return res.status(404).json({ message: 'Participant not found' });
 
@@ -48,6 +66,22 @@ router.post('/participants/:id/assign-agent', authenticateToken, requireSuperAdm
 router.post('/participants/:id/unassign-agent', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
     const { id } = req.params;
+    // Ensure column exists in production DB (prod-safe)
+    try {
+      const qi = sequelize.getQueryInterface();
+      const columns = await qi.describeTable('food_for_talk_users');
+      if (!columns.assigned_agent_id) {
+        await qi.addColumn('food_for_talk_users', 'assigned_agent_id', {
+          type: require('sequelize').UUID,
+          allowNull: true,
+          references: { model: 'users', key: 'id' }
+        });
+        try { await qi.addIndex('food_for_talk_users', ['assigned_agent_id'], { name: 'idx_fft_assigned_agent_id' }); } catch (_) {}
+      }
+    } catch (e) {
+      console.warn('unassign-agent ensure column failed (continuing):', e?.message);
+    }
+
     const participant = await FoodForTalkUser.findByPk(id);
     if (!participant) return res.status(404).json({ message: 'Participant not found' });
 

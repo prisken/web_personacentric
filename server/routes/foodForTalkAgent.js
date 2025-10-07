@@ -1,12 +1,30 @@
 const express = require('express');
 const FoodForTalkUser = require('../models/FoodForTalkUser');
-const { authenticateToken, requireAgentOrAdmin } = require('../middleware/auth');
+const sequelize = require('../config/database');
+const { authenticateToken, requireAgentOrSuperAdmin: _requireAgentOrSuperAdmin } = require('../middleware/auth');
+const { requireAgentOrAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
 // List participants assigned to current agent
 router.get('/my-participants', authenticateToken, requireAgentOrAdmin, async (req, res) => {
   try {
+    // Ensure column exists (prod-safe)
+    try {
+      const qi = sequelize.getQueryInterface();
+      const columns = await qi.describeTable('food_for_talk_users');
+      if (!columns.assigned_agent_id) {
+        await qi.addColumn('food_for_talk_users', 'assigned_agent_id', {
+          type: require('sequelize').UUID,
+          allowNull: true,
+          references: { model: 'users', key: 'id' }
+        });
+        try { await qi.addIndex('food_for_talk_users', ['assigned_agent_id'], { name: 'idx_fft_assigned_agent_id' }); } catch (_) {}
+      }
+    } catch (e) {
+      console.warn('agent list ensure column failed (continuing):', e?.message);
+    }
+
     const agentUserId = req.user.id;
     const participants = await FoodForTalkUser.findAll({
       where: { assigned_agent_id: agentUserId },
