@@ -72,7 +72,7 @@ const FoodForTalkRegisterPage = () => {
     : ['Cooking', 'Sports', 'Movies/Series', 'Travel', 'Art/Handcraft', 'Singing/Music', 'Gaming/Board games', 'Writing/Reading', 'Other'];
 
   const traitChoices = language === 'zh-TW'
-    ? ['好有幽默感', '很會聊天', '做嘢認真專注', '好有創意', '好有同理心', '組織力強', '運動細胞發達', '廚藝高手', '藝術天分', '其他']
+    ? ['幽默感', '傾偈', '做嘢認真', '有創意', '有同理心', '組織力強', '運動細胞發達', '廚藝高手', '藝術天分', '其他']
     : ['Funny & witty', 'Great conversationalist', 'Hardworking & focused', 'Creative thinker', 'Empathetic & caring', 'Organized & reliable', 'Athletic', 'Great cook', 'Artistic talent', 'Other'];
 
   const japaneseFoods = language === 'zh-TW'
@@ -80,8 +80,8 @@ const FoodForTalkRegisterPage = () => {
     : ['Sushi', 'Sashimi', 'Tempura', 'Ramen', 'Japanese dessert', 'Sake/Drinks'];
 
   const quickMagic = language === 'zh-TW'
-    ? ['用嚟表白', '當護身符', '偷偷收埋', '送俾最有緣嗰位']
-    : ['Confess love', 'Keep as amulet', 'Hide it secretly', 'Gift to the fated one'];
+    ? ['隱形', '超大力', '讀心術', '瞬間移動']
+    : ['Invisible', 'Super strength', 'Mind reading', 'Teleport'];
 
   const quickOutcome = language === 'zh-TW'
     ? ['新朋友', '脫單機會', '笑到肚痛的回憶', '靚相打卡', '一段特別的故事']
@@ -215,11 +215,17 @@ const FoodForTalkRegisterPage = () => {
 
       const response = await apiService.registerForFoodForTalk(submitData);
 
-      if (response.message && response.message.includes('successful')) {
-        toast.success('Registration successful! You will receive a confirmation email shortly.');
+      if (response?.token) {
+        // Store FFT participant token to keep user logged in immediately
+        localStorage.setItem('foodForTalkToken', response.token);
+        toast.success('Registration successful! You are now logged in.');
         navigate('/food-for-talk');
+      } else if (response?.message && response.message.toLowerCase().includes('registration successful')) {
+        // Fallback success case without token (should not happen after server update)
+        toast.success('Registration successful! Please log in.');
+        navigate('/food-for-talk/login');
       } else {
-        toast.error(response.message || 'Registration failed. Please try again.');
+        toast.error(response?.message || 'Registration failed. Please try again.');
       }
     } catch (error) {
       console.error('Registration error:', error);
@@ -507,6 +513,18 @@ const FoodForTalkRegisterPage = () => {
                 <input type="checkbox" checked={formData.consentAccepted} onChange={(e)=>setFormData(prev=>({...prev, consentAccepted: e.target.checked}))} className="mt-1" />
                 <span>{t('foodForTalk.form.consent')}</span>
               </label>
+            </div>
+
+            {/* Profile Photo (optional) */}
+            <div>
+              <label className="block text-white font-medium mb-2">{t('foodForTalk.form.profilePhoto')}</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+              />
+              <p className="text-white/60 text-sm mt-2">{language === 'zh-TW' ? '上傳個人照片（可選，大小上限 5MB）' : 'Upload a profile photo (optional, max 5MB)'}</p>
             </div>
 
             {/* Bio (optional) */}

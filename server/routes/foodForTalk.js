@@ -253,9 +253,29 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Send confirmation email (you can implement this)
     // await sendEventRegistrationEmail(user.email, user.first_name);
 
+    // Auto-login: generate JWT token for the newly registered participant
+    let token;
+    try {
+      token = jwt.sign(
+        { userId: user.id, email: normalizedEmail, type: 'food-for-talk-participant' },
+        process.env.JWT_SECRET || 'fallback-secret',
+        { expiresIn: '24h' }
+      );
+    } catch (signErr) {
+      console.error('JWT sign error after registration:', signErr);
+      return res.status(500).json({ message: 'Registration succeeded but authentication failed. Please try logging in.' });
+    }
+
     res.status(201).json({
-      message: 'Registration successful! You can now login with your email and password.',
-      userId: user.id
+      message: 'Registration successful',
+      token,
+      user: {
+        id: user.id,
+        email: normalizedEmail,
+        firstName: firstName || 'Anonymous',
+        lastName: lastName || 'Participant',
+        hasPasskey: true
+      }
     });
   } catch (error) {
     console.error('Registration error:', error);
@@ -385,7 +405,6 @@ router.get('/profile', async (req, res) => {
       })(),
       interestsOther: participant.interests_other,
       dietaryRestrictions: participant.dietary_restrictions,
-      profilePhotoUrl: participant.profile_photo_url,
       createdAt: participant.created_at,
       expectPersonType: participant.expect_person_type,
       dreamFirstDate: participant.dream_first_date,
@@ -1052,7 +1071,6 @@ router.get('/participants', async (req, res) => {
         age: participant.age,
         bio: participant.bio,
         interests: formattedInterests,
-        profilePhotoUrl: participant.profile_photo_url,
         attractiveTraitsOther: participant.attractive_traits_other,
         assignedAgentId: participant.assigned_agent_id || null
       };
