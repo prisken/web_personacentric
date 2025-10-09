@@ -185,7 +185,7 @@ const FoodForTalkParticipantsPage = () => {
                   See you on
                 </h2>
                 <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 tracking-wide">
-                  1/11/2025
+                  15/11/2025
                 </div>
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-yellow-400"></div>
