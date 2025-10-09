@@ -182,21 +182,21 @@ const FoodForTalkParticipantsPage = () => {
                 
                 {/* Main text */}
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 mb-4 leading-tight">
-                  See you on
+                  {t('foodForTalk.participants.seeYouOn')}
                 </h2>
                 <div className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-2 tracking-wide">
-                  15/11/2025
+                  {t('foodForTalk.participants.date')}
                 </div>
                 <div className="flex items-center justify-center gap-3 mb-4">
                   <div className="w-8 h-0.5 bg-gradient-to-r from-transparent to-yellow-400"></div>
-                  <span className="text-2xl sm:text-3xl font-bold text-yellow-300">@</span>
+                  <span className="text-2xl sm:text-3xl font-bold text-yellow-300">{t('foodForTalk.participants.at')}</span>
                   <div className="w-8 h-0.5 bg-gradient-to-r from-yellow-400 to-transparent"></div>
                 </div>
-                <div className="text-3xl sm:text-4xl font-bold text-white mb-2">
-                  IPPAIKI
+                <div className="text-3xl sm:text-4xl font-bold text白色 mb-2">
+                  {t('foodForTalk.participants.venue')}
                 </div>
                 <p className="text-lg sm:text-xl text-white/90 font-medium">
-                  Get ready for an amazing experience! 🍵
+                  {t('foodForTalk.participants.excited')}
                 </p>
               </div>
             </div>

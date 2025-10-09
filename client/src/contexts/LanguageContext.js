@@ -858,6 +858,11 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.participants.age': '歲',
       'foodForTalk.participants.interests': '興趣',
       'foodForTalk.participants.bio': '簡介',
+      'foodForTalk.participants.seeYouOn': '到時見',
+      'foodForTalk.participants.date': '15/11/2025',
+      'foodForTalk.participants.at': '@',
+      'foodForTalk.participants.venue': 'IPPAIKI',
+      'foodForTalk.participants.excited': '準備好一場精彩體驗！🍵',
 
       // Secret Chat
       'foodForTalk.chat.title': '秘密聊天室',
@@ -1774,6 +1779,11 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.participants.age': 'years old',
       'foodForTalk.participants.interests': 'Interests',
       'foodForTalk.participants.bio': 'Bio',
+      'foodForTalk.participants.seeYouOn': 'See you on',
+      'foodForTalk.participants.date': '15/11/2025',
+      'foodForTalk.participants.at': '@',
+      'foodForTalk.participants.venue': 'IPPAIKI',
+      'foodForTalk.participants.excited': 'Get ready for an amazing experience! 🍵',
 
       // Secret Chat
       'foodForTalk.chat.title': 'Secret Chat Room',
