@@ -70,10 +70,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Normalize email to lowercase for case-insensitive comparison
     const normalizedEmail = email?.toLowerCase().trim();
 
-    // Validate required fields
-    if (!normalizedEmail || !password || !age || !firstName || !lastName) {
+    // Validate required fields (first and last name no longer required)
+    if (!normalizedEmail || !password || !age) {
       return res.status(400).json({ 
-        message: 'Missing required fields. Please fill in all required information including first name and last name.' 
+        message: 'Missing required fields. Please provide email, password and age.' 
       });
     }
 
@@ -253,11 +253,11 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Send confirmation email (you can implement this)
     // await sendEventRegistrationEmail(user.email, user.first_name);
 
-    // Auto-login: generate JWT token for the newly registered participant
+    // Auto-login: generate JWT token for the newly registered participant (include nickname for display)
     let token;
     try {
       token = jwt.sign(
-        { userId: user.id, email: normalizedEmail, type: 'food-for-talk-participant' },
+        { userId: user.id, email: normalizedEmail, nickname: nickname || null, type: 'food-for-talk-participant' },
         process.env.JWT_SECRET || 'fallback-secret',
         { expiresIn: '24h' }
       );

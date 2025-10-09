@@ -92,18 +92,12 @@ const FoodForTalkRegisterPage = () => {
     
     switch (name) {
       case 'firstName':
-        if (!value.trim()) {
-          error = language === 'zh-TW' ? '請輸入名字' : 'First name is required';
-        } else if (value.trim().length < 2) {
-          error = language === 'zh-TW' ? '名字至少需要2個字符' : 'First name must be at least 2 characters';
-        }
+        // No validation required for first name per latest requirement
+        error = '';
         break;
       case 'lastName':
-        if (!value.trim()) {
-          error = language === 'zh-TW' ? '請輸入姓氏' : 'Last name is required';
-        } else if (value.trim().length < 2) {
-          error = language === 'zh-TW' ? '姓氏至少需要2個字符' : 'Last name must be at least 2 characters';
-        }
+        // No validation required for last name per latest requirement
+        error = '';
         break;
       case 'email':
         if (!value.trim()) {
@@ -157,7 +151,7 @@ const FoodForTalkRegisterPage = () => {
     e.preventDefault();
     
     // Validate all required fields for event registration (name, email, phone only)
-    const requiredFields = ['firstName', 'lastName', 'email', 'whatsappPhone'];
+    const requiredFields = ['email', 'whatsappPhone'];
     let hasErrors = false;
     
     requiredFields.forEach(field => {

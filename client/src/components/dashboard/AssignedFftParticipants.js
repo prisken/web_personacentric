@@ -60,8 +60,24 @@ const AssignedFftParticipants = () => {
               {participants.map((p) => (
                 <tr key={p.id}>
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{p.firstName} {p.lastName}</div>
-                    <div className="text-gray-500 text-sm">{p.nickname || '-'}</div>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        {p.profilePhotoUrl ? (
+                          <img src={p.profilePhotoUrl} alt={p.nickname || `${p.firstName} ${p.lastName}`}
+                               className="h-10 w-10 rounded-full object-cover" />
+                        ) : (
+                          <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                            <span className="text-sm font-medium text-gray-600">
+                              {(p.nickname || p.firstName || '?').charAt(0)}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">{p.firstName} {p.lastName}</div>
+                        <div className="text-gray-500 text-sm">{p.nickname || '-'}</div>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <div>{p.email}</div>
@@ -94,5 +110,8 @@ const AssignedFftParticipants = () => {
 };
 
 export default AssignedFftParticipants;
+
+
+
 
 
