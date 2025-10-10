@@ -10,13 +10,13 @@ This document contains all the questions and answers (both English and Chinese) 
 ### 1.1 First Name (姓名)
 - **English**: "First Name"
 - **Chinese**: "姓名"
-- **Placeholder**: "請輸入您的姓名"
+- **Placeholder**: "輸入您的姓名"
 - **Validation**: Required, minimum 2 characters
 
 ### 1.2 Last Name (姓氏)
 - **English**: "Last Name"
 - **Chinese**: "姓氏"
-- **Placeholder**: "請輸入您的姓氏"
+- **Placeholder**: "輸入您的姓氏"
 - **Validation**: Required, minimum 2 characters
 
 ### 1.3 Nickname (暱稱)
@@ -45,13 +45,13 @@ This document contains all the questions and answers (both English and Chinese) 
 
 ### 2.1 Email (電子郵件)
 - **English**: "Email"
-- **Chinese**: "電子郵件"
+- **Chinese**: "電郵"
 - **Placeholder**: "Email"
 - **Validation**: Required, valid email format
 
-### 2.2 WhatsApp Phone (WhatsApp電話)
-- **English**: "WhatsApp Phone"
-- **Chinese**: "WhatsApp電話"
+### 2.2 Phone (電話)
+- **English**: "Phone"
+- **Chinese**: "電話"
 - **Placeholder**: "Phone (e.g., +85212345678 or 12345678)"
 - **Validation**: Required, valid phone number format
 
@@ -68,13 +68,13 @@ This document contains all the questions and answers (both English and Chinese) 
 ### 3.1 Occupation (職業)
 - **English**: "Occupation"
 - **Chinese**: "職業"
-- **Placeholder**: "請輸入您的職業"
+- **Placeholder**: "您的職業"
 - **Validation**: Optional
 
 ### 3.2 Dietary Restrictions (飲食限制)
 - **English**: "Dietary Restrictions"
 - **Chinese**: "飲食限制"
-- **Placeholder**: "請告訴我們任何飲食限制或過敏"
+- **Placeholder**: "告訴我們任何飲食限制或過敏"
 - **Validation**: Optional
 
 ---
@@ -83,7 +83,7 @@ This document contains all the questions and answers (both English and Chinese) 
 
 ### 4.1 Expected Person Type (期望的人類型)
 - **English**: "What type of person are you hoping to meet?"
-- **Chinese**: "你希望遇到什麼類型的人？"
+- **Chinese**: "想認識什麼類型的人？"
 
 **Options (English)**:
 - Fun & Laughs
@@ -104,8 +104,8 @@ This document contains all the questions and answers (both English and Chinese) 
 **Validation**: Required
 
 ### 4.2 Dream First Date (理想第一次約會)
-- **English**: "What's your dream first date?"
-- **Chinese**: "你的理想第一次約會是什麼？"
+- **English**: "What's your dream date?"
+- **Chinese**: "理想約會是什麼？"
 
 **Options (English)**:
 - Japanese restaurant dinner
@@ -116,9 +116,9 @@ This document contains all the questions and answers (both English and Chinese) 
 - Other
 
 **Options (Chinese)**:
-- 一齊去日式餐廳開餐
-- 一起行山
-- 去睇演唱會/音樂會
+- 日式餐廳開餐
+- 行山
+- 睇演唱會/音樂會
 - 夜遊維港
 - 咖啡店慢談
 - 其他
@@ -132,8 +132,8 @@ This document contains all the questions and answers (both English and Chinese) 
 - **Validation**: Required if "Other" is selected
 
 ### 4.4 Interests (興趣)
-- **English**: "What are your interests?"
-- **Chinese**: "你的興趣是什麼？"
+- **English**: "interests?"
+- **Chinese**: "興趣？"
 
 **Options (English)**:
 - Cooking
@@ -167,7 +167,7 @@ This document contains all the questions and answers (both English and Chinese) 
 
 ### 4.6 Attractive Traits (吸引人的特質)
 - **English**: "What traits do you find most attractive?"
-- **Chinese**: "你覺得什麼特質最吸引人？"
+- **Chinese**: "你最吸引人嘅係？"
 
 **Options (English)**:
 - Funny & witty
@@ -182,11 +182,11 @@ This document contains all the questions and answers (both English and Chinese) 
 - Other
 
 **Options (Chinese)**:
-- 好有幽默感
-- 很會聊天
-- 做嘢認真專注
-- 好有創意
-- 好有同理心
+- 幽默感
+- 傾偈
+- 做嘢認真
+- 有創意
+- 有同理心
 - 組織力強
 - 運動細胞發達
 - 廚藝高手
@@ -224,20 +224,20 @@ This document contains all the questions and answers (both English and Chinese) 
 **Validation**: Required
 
 ### 4.9 Quickfire Magic Item Choice (快速選擇魔法物品)
-- **English**: "If you had a magic item, what would you use it for?"
-- **Chinese**: "如果你有一件魔法物品，你會用它來做什麼？"
+- **English**: "What super power you want?"
+- **Chinese**: "想要什麼超能力？"
 
 **Options (English)**:
-- Confess love
-- Keep as amulet
-- Hide it secretly
-- Gift to the fated one
+- Invisible
+- Super strength
+- Mind reading
+- Teleport
 
 **Options (Chinese)**:
-- 用嚟表白
-- 當護身符
-- 偷偷收埋
-- 送俾最有緣嗰位
+- 隱形
+- 超大力
+- 讀心術
+- 瞬間移動
 
 **Validation**: Required
 

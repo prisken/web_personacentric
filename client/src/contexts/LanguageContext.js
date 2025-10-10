@@ -722,7 +722,8 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.eventTime': '晚上7:00 - 9:00',
       'foodForTalk.location': '香港中環',
       'foodForTalk.description': '參加我們的快速約會活動，在輕鬆的環境中認識新朋友，享受美食和有趣的對話。',
-      'foodForTalk.registerNow': '立即報名',
+      'foodForTalk.registerNow': '立即報名 - 名額有限 + 專屬聊天',
+      'foodForTalk.trustSignals': '限25名參與者 • 精選配對',
       'foodForTalk.seeParticipants': '查看參與者',
       'foodForTalk.enterSecretChat': '進入秘密聊天室',
       'foodForTalk.countdown.days': '天',
@@ -803,8 +804,6 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.form.bioPlaceholder': '簡單介紹自己（興趣、專長、理想對象…）',
       'foodForTalk.form.profilePhoto': '個人照片',
       'foodForTalk.form.consent': '我同意讓我的暱稱、年齡、性別、興趣等資料公開俾其他入選參加者瀏覽，並同意條款及細則。',
-      'foodForTalk.form.bio': '關於自己（可簡短介紹自己、興趣、理想對象等）',
-      'foodForTalk.form.bioPlaceholder': '用一段文字介紹你自己...',
       'foodForTalk.submit': '立即報名',
 
       // Registration
@@ -1645,7 +1644,8 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.eventTime': '7:00 PM - 9:00 PM',
       'foodForTalk.location': 'Central Hong Kong',
       'foodForTalk.description': 'Join our speed dating event to meet new people in a relaxed environment, enjoy great food and engaging conversations.',
-      'foodForTalk.registerNow': 'Register Now',
+      'foodForTalk.registerNow': 'Register Now - Limited Spots Available + Exclusive Chat Access',
+      'foodForTalk.trustSignals': 'Limited to 25 participants • Curated matches only',
       'foodForTalk.seeParticipants': 'See Participants',
       'foodForTalk.enterSecretChat': 'Enter Secret Chat Room',
       'foodForTalk.countdown.days': 'Days',
@@ -1724,8 +1724,6 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.form.bioPlaceholder': 'Tell us about yourself (hobbies, interests, what you are looking for…)',
       'foodForTalk.form.profilePhoto': 'Profile Photo',
       'foodForTalk.form.consent': 'I agree to share my nickname, age, gender, and selected interests with other shortlisted participants, and agree to the terms and conditions.',
-      'foodForTalk.form.bio': 'About You',
-      'foodForTalk.form.bioPlaceholder': 'Tell us about yourself in a short paragraph...',
       'foodForTalk.submit': 'Join the Fun!',
 
       // Registration
