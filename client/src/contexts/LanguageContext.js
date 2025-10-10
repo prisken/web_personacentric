@@ -722,7 +722,7 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.eventTime': '晚上7:00 - 9:00',
       'foodForTalk.location': '香港中環',
       'foodForTalk.description': '參加我們的快速約會活動，在輕鬆的環境中認識新朋友，享受美食和有趣的對話。',
-      'foodForTalk.registerNow': '立即報名 - 名額有限 + 專屬聊天',
+      'foodForTalk.registerNow': '立即報名 - 名額有限 + 專屬聊天室',
       'foodForTalk.trustSignals': '限25名參與者 • 精選配對',
       'foodForTalk.seeParticipants': '查看參與者',
       'foodForTalk.enterSecretChat': '進入秘密聊天室',
