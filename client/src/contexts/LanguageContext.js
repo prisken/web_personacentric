@@ -802,7 +802,7 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.form.email': '電郵',
       'foodForTalk.form.bio': '自我介紹',
       'foodForTalk.form.bioPlaceholder': '簡單介紹自己（興趣、專長、理想對象…）',
-      'foodForTalk.form.profilePhoto': '個人照片',
+      'foodForTalk.form.profilePhoto': '個人照片 (可選)',
       'foodForTalk.form.consent': '我同意讓我的暱稱、年齡、性別、興趣等資料公開俾其他入選參加者瀏覽，並同意條款及細則。',
       'foodForTalk.submit': '立即報名',
 
@@ -1724,7 +1724,7 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.form.email': 'Email',
       'foodForTalk.form.bio': 'Bio',
       'foodForTalk.form.bioPlaceholder': 'Tell us about yourself (hobbies, interests, what you are looking for…)',
-      'foodForTalk.form.profilePhoto': 'Profile Photo',
+      'foodForTalk.form.profilePhoto': 'Profile Photo (Optional)',
       'foodForTalk.form.consent': 'I agree to share my nickname, age, gender, and selected interests with other shortlisted participants, and agree to the terms and conditions.',
       'foodForTalk.submit': 'Join the Fun!',
 
