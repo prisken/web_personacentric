@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLanguage } from '../../contexts/LanguageContext';
+import RegisterButton from './RegisterButton';
 
 const EventDetails = () => {
   const { t } = useLanguage();
@@ -54,12 +55,7 @@ const EventDetails = () => {
 
       <div className="mt-10">
         <div className="inline-block">
-          <a href="/food-for-talk/register" className="group relative inline-flex items-center px-8 py-4 rounded-2xl font-extrabold text-white text-lg transition-all duration-300 transform hover:scale-105 shadow-lg" style={{background:'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)', boxShadow:'0 12px 40px rgba(245, 158, 11, 0.4)'}}>
-            <span className="relative z-10 flex items-center">{t('foodForTalk.submit')}
-              <svg className="ml-3 w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-            </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-yellow-300/20 via-yellow-400/20 to-orange-400/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </a>
+          <RegisterButton location="event_details_section" />
         </div>
       </div>
 

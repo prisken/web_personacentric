@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import analyticsService from '../../services/analyticsService';
 
 const ActionButtons = ({ isLoggedIn }) => {
   const { t } = useLanguage();
@@ -26,6 +27,13 @@ const ActionButtons = ({ isLoggedIn }) => {
             : "/food-for-talk/login"
         }
         state={{ from: '/food-for-talk/participants' }}
+        onClick={() => {
+          analyticsService.trackButtonClick('See Participants', 'hero_section', {
+            is_logged_in: isLoggedIn,
+            login_type: loginType,
+            destination: isLoggedIn ? '/food-for-talk/participants' : '/food-for-talk/login'
+          });
+        }}
         className="group relative w-full px-4 py-2 rounded-lg font-bold text-white text-sm sm:text-base sm:px-6 sm:py-3 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.8) 0%, rgba(37, 99, 235, 0.8) 100%)',
@@ -60,6 +68,13 @@ const ActionButtons = ({ isLoggedIn }) => {
             ? "/food-for-talk/secret-chat"
             : "/food-for-talk/secret-login"
         }
+        onClick={() => {
+          analyticsService.trackButtonClick('Enter Secret Chat', 'hero_section', {
+            is_logged_in: isLoggedIn,
+            login_type: loginType,
+            destination: isLoggedIn && loginType === 'secret' ? '/food-for-talk/secret-chat' : '/food-for-talk/secret-login'
+          });
+        }}
         className="group relative w-full px-4 py-2 rounded-lg font-bold text-white text-sm sm:text-base sm:px-6 sm:py-3 transition-all duration-300 transform hover:scale-105 flex items-center justify-center"
         style={{
           background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.8) 0%, rgba(147, 51, 234, 0.8) 100%)',

@@ -16,6 +16,7 @@ const notFoundHandler = require('./middleware/notFoundHandler');
 
 // Import routes
 const routes = require('./routes');
+const analyticsRoutes = require('./routes/analytics');
 
 // Import utilities
 const ServerStartup = require('./utils/serverStartup');
@@ -69,6 +70,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // API Routes - MUST come before the catch-all route
 app.use('/api', routes);
+app.use('/api/analytics', analyticsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

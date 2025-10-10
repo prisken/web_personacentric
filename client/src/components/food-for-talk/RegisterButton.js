@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../../contexts/LanguageContext';
+import analyticsService from '../../services/analyticsService';
 
-const RegisterButton = () => {
+const RegisterButton = ({ location = 'hero_section' } = {}) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const { t } = useLanguage();
+  
+  // Track button click
+  const handleClick = () => {
+    analyticsService.trackButtonClick('Register Now', location, {
+      button_text: t('foodForTalk.registerNow'),
+      page_section: location
+    });
+    
+    // Track as conversion event
+    analyticsService.trackConversion('registration_intent', 0, {
+      source: 'landing_page',
+      location: location
+    });
+  };
+  
   return (
     <Link
       to="/food-for-talk/register"
+      onClick={handleClick}
       className="group relative inline-flex items-center w-auto mx-auto sm:mx-0 px-5 py-2.5 sm:px-8 sm:py-4 rounded-2xl font-extrabold text-white text-base sm:text-xl transition-all duration-300 transform hover:scale-105 shadow-lg"
       style={{
         background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%)',

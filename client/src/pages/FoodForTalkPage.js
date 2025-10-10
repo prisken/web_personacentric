@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { useLanguage } from '../contexts/LanguageContext';
 import CountdownTimer from '../components/food-for-talk/CountdownTimer';
@@ -7,6 +6,7 @@ import EventDetails from '../components/food-for-talk/EventDetails';
 import RegisterButton from '../components/food-for-talk/RegisterButton';
 import ActionButtons from '../components/food-for-talk/ActionButtons';
 import apiService from '../services/api';
+import analyticsService from '../services/analyticsService';
 
 const FoodForTalkPage = () => {
   const { t, toggleLanguage, language } = useLanguage();
@@ -54,14 +54,38 @@ const FoodForTalkPage = () => {
 
   // Logout function
   const handleLogout = () => {
+    // Track logout action
+    analyticsService.trackButtonClick('Logout', 'header', {
+      user_email: userInfo?.email,
+      user_nickname: userInfo?.nickname
+    });
+    
     localStorage.removeItem('foodForTalkToken');
     localStorage.removeItem('foodForTalkSecretToken');
     setIsLoggedIn(false);
     setUserInfo(null);
   };
 
-  // Fetch event settings from database and check login status
+  // Track language toggle
+  const handleLanguageToggle = () => {
+    const fromLang = language;
+    const toLang = language === 'zh-TW' ? 'en' : 'zh-TW';
+    analyticsService.trackLanguageToggle(fromLang, toLang);
+    toggleLanguage();
+  };
+
+  // Initialize analytics and fetch event settings
   useEffect(() => {
+    // Initialize analytics service
+    analyticsService.initialize();
+    
+    // Track page view
+    analyticsService.trackPageView('Food For Talk Landing Page', {
+      is_logged_in: isLoggedIn,
+      language: language,
+      event_status: eventSettings.event_status
+    });
+
     const fetchEventSettings = async () => {
       try {
         const response = await apiService.get('/super-admin/food-for-talk/public/event-settings');
@@ -85,7 +109,20 @@ const FoodForTalkPage = () => {
 
     fetchEventSettings();
     checkLoginStatus();
+
+    // Track time on page when component unmounts
+    return () => {
+      analyticsService.trackTimeOnPage('Food For Talk Landing Page');
+    };
   }, []);
+
+  // Track when login status changes
+  useEffect(() => {
+    analyticsService.trackEngagement('login_status_change', {
+      is_logged_in: isLoggedIn,
+      user_type: isLoggedIn ? (userInfo?.email ? 'participant' : 'unknown') : 'visitor'
+    });
+  }, [isLoggedIn, userInfo]);
 
   // Set event date from database or default
   const eventDate = useMemo(() => {
@@ -207,7 +244,7 @@ const FoodForTalkPage = () => {
           )}
           <button
             type="button"
-            onClick={toggleLanguage}
+            onClick={handleLanguageToggle}
             className="px-3 py-1.5 rounded-md text-sm font-semibold text-white bg-black/40 hover:bg-black/60 border border-white/20 backdrop-blur-sm"
           >
             {language === 'zh-TW' ? 'EN' : '中文'}
@@ -247,6 +284,9 @@ const FoodForTalkPage = () => {
             <button
               type="button"
               onClick={() => {
+                // Track info button click
+                analyticsService.trackButtonClick('Info Button', 'hero_section');
+                
                 const el = document.getElementById('event-info');
                 if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
