@@ -1683,6 +1683,8 @@ export const LanguageProvider = ({ children }) => {
       'foodForTalk.details.faq.a2': 'Watch out for Whatsapp or email notifications.',
       'foodForTalk.details.faq.q3': 'What benefits will I get?',
       'foodForTalk.details.faq.a3': 'New friends, great memories, nice food & drinks — maybe even meet the right one!',
+      'foodForTalk.details.faq.q4': 'What if I don\'t get selected?',
+      'foodForTalk.details.faq.a4': 'Speed dating events happen monthly at different venues with different games. Didn\'t make it this time? More opportunities are coming!',
 
       // Disclaimer
       'foodForTalk.disclaimer.title': '🌸 High Tea or me Disclaimer 🌸',
