@@ -92,12 +92,25 @@ const FoodForTalkRegisterPage = () => {
     
     switch (name) {
       case 'firstName':
-        // No validation required for first name per latest requirement
-        error = '';
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入姓名' : 'First name is required';
+        } else if (value.trim().length < 2) {
+          error = language === 'zh-TW' ? '姓名至少需要2個字符' : 'First name must be at least 2 characters';
+        }
         break;
       case 'lastName':
-        // No validation required for last name per latest requirement
-        error = '';
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入姓氏' : 'Last name is required';
+        } else if (value.trim().length < 2) {
+          error = language === 'zh-TW' ? '姓氏至少需要2個字符' : 'Last name must be at least 2 characters';
+        }
+        break;
+      case 'nickname':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入暱稱' : 'Nickname is required';
+        } else if (value.trim().length < 2) {
+          error = language === 'zh-TW' ? '暱稱至少需要2個字符' : 'Nickname must be at least 2 characters';
+        }
         break;
       case 'email':
         if (!value.trim()) {
@@ -114,18 +127,12 @@ const FoodForTalkRegisterPage = () => {
         }
         break;
       case 'password':
-        if (!value.trim()) {
-          error = language === 'zh-TW' ? '請輸入密碼' : 'Password is required';
-        } else if (value.length < 6) {
-          error = language === 'zh-TW' ? '密碼至少需要6個字符' : 'Password must be at least 6 characters';
-        }
+        // Password is now optional - no validation required
+        error = '';
         break;
       case 'age':
-        if (!value) {
-          error = language === 'zh-TW' ? '請選擇年齡' : 'Age is required';
-        } else if (isNaN(value) || value < 20 || value > 40) {
-          error = language === 'zh-TW' ? '年齡必須在20-40歲之間' : 'Age must be between 20-40';
-        }
+        // Age is now optional - no validation required
+        error = '';
         break;
       default:
         break;
@@ -164,8 +171,8 @@ const FoodForTalkRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate all required fields for event registration (email, phone, password, age)
-    const requiredFields = ['email', 'whatsappPhone', 'password', 'age'];
+    // Validate all required fields for event registration (firstName, lastName, nickname, email, contact)
+    const requiredFields = ['firstName', 'lastName', 'nickname', 'email', 'whatsappPhone'];
     let hasErrors = false;
     
     requiredFields.forEach(field => {
@@ -305,24 +312,32 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">暱稱（公開給其他參加者）Nickname</label>
-                  <input type="text" name="nickname" value={formData.nickname} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="其他參加者會看到這個暱稱" />
+                  <input 
+                    type="text" 
+                    name="nickname" 
+                    value={formData.nickname} 
+                    onChange={handleInputChange} 
+                    required
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.nickname ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="其他參加者會看到這個暱稱" 
+                  />
+                  {validationErrors.nickname && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.nickname}</p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.age')}</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.age')} (Optional)</label>
                   <select 
                     name="age" 
                     value={formData.age} 
                     onChange={handleInputChange} 
-                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
-                      validationErrors.age ? 'border-red-400' : 'border-white/30'
-                    }`}
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
                   >
                     <option value="">{t('foodForTalk.form.selectAge')}</option>
                     {ageOptions.map(a => (<option key={a} value={a}>{a}</option>))}
                   </select>
-                  {validationErrors.age && (
-                    <p className="text-red-300 text-sm mt-1">{validationErrors.age}</p>
-                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.gender')}</label>
@@ -519,22 +534,16 @@ const FoodForTalkRegisterPage = () => {
                   )}
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')}</label>
+                  <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')} (Optional)</label>
                   <input 
                     type="password" 
                     name="password" 
                     value={formData.password} 
                     onChange={handleInputChange} 
-                    required 
                     minLength="6" 
-                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
-                      validationErrors.password ? 'border-red-400' : 'border-white/30'
-                    }`}
-                    placeholder="Create a password (min 6 characters)" 
+                    className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder="Create a password (optional, min 6 characters)" 
                   />
-                  {validationErrors.password && (
-                    <p className="text-red-300 text-sm mt-1">{validationErrors.password}</p>
-                  )}
                 </div>
               </div>
             </div>

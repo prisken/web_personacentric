@@ -70,10 +70,10 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
     // Normalize email to lowercase for case-insensitive comparison
     const normalizedEmail = email?.toLowerCase().trim();
 
-    // Validate required fields (first and last name no longer required)
-    if (!normalizedEmail || !password || !age) {
+    // Validate required fields (firstName, lastName, nickname, email, whatsappPhone)
+    if (!normalizedEmail || !firstName || !lastName || !nickname || !whatsappPhone) {
       return res.status(400).json({ 
-        message: 'Missing required fields. Please provide email, password and age.' 
+        message: 'Missing required fields. Please provide first name, last name, nickname, email and contact number.' 
       });
     }
 
@@ -89,8 +89,9 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       });
     }
 
-    // Hash the provided password
-    const passwordHash = await bcrypt.hash(password, 12);
+    // Hash the provided password (generate random password if not provided)
+    const finalPassword = password || Math.random().toString(36).slice(-8);
+    const passwordHash = await bcrypt.hash(finalPassword, 12);
 
     // Upload profile photo if provided
     let profilePhotoUrl = null;
@@ -135,7 +136,7 @@ router.post('/register', upload.single('profilePhoto'), async (req, res) => {
       first_name: firstName || 'Anonymous',
       last_name: lastName || 'Participant',
       phone: whatsappPhone,
-      age: parseInt(age),
+      age: age ? parseInt(age) : null,
       // Additional fields from form
       occupation: occupation || '',
       bio: bio || '',
