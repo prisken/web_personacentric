@@ -113,6 +113,20 @@ const FoodForTalkRegisterPage = () => {
           error = language === 'zh-TW' ? '請輸入有效的手機號碼格式 (例如: +85212345678 或 12345678)' : 'Please enter a valid phone number (e.g., +85212345678 or 12345678)';
         }
         break;
+      case 'password':
+        if (!value.trim()) {
+          error = language === 'zh-TW' ? '請輸入密碼' : 'Password is required';
+        } else if (value.length < 6) {
+          error = language === 'zh-TW' ? '密碼至少需要6個字符' : 'Password must be at least 6 characters';
+        }
+        break;
+      case 'age':
+        if (!value) {
+          error = language === 'zh-TW' ? '請選擇年齡' : 'Age is required';
+        } else if (isNaN(value) || value < 20 || value > 40) {
+          error = language === 'zh-TW' ? '年齡必須在20-40歲之間' : 'Age must be between 20-40';
+        }
+        break;
       default:
         break;
     }
@@ -150,8 +164,8 @@ const FoodForTalkRegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validate all required fields for event registration (name, email, phone only)
-    const requiredFields = ['email', 'whatsappPhone'];
+    // Validate all required fields for event registration (email, phone, password, age)
+    const requiredFields = ['email', 'whatsappPhone', 'password', 'age'];
     let hasErrors = false;
     
     requiredFields.forEach(field => {
@@ -295,10 +309,20 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div>
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.age')}</label>
-                  <select name="age" value={formData.age} onChange={handleInputChange} className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
+                  <select 
+                    name="age" 
+                    value={formData.age} 
+                    onChange={handleInputChange} 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.age ? 'border-red-400' : 'border-white/30'
+                    }`}
+                  >
                     <option value="">{t('foodForTalk.form.selectAge')}</option>
                     {ageOptions.map(a => (<option key={a} value={a}>{a}</option>))}
                   </select>
+                  {validationErrors.age && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.age}</p>
+                  )}
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.gender')}</label>
@@ -496,7 +520,21 @@ const FoodForTalkRegisterPage = () => {
                 </div>
                 <div className="md:col-span-2">
                   <label className="block text-white font-medium mb-2">{t('foodForTalk.form.password')}</label>
-                  <input type="password" name="password" value={formData.password} onChange={handleInputChange} required minLength="6" className="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Create a password (min 6 characters)" />
+                  <input 
+                    type="password" 
+                    name="password" 
+                    value={formData.password} 
+                    onChange={handleInputChange} 
+                    required 
+                    minLength="6" 
+                    className={`w-full px-4 py-3 rounded-lg bg-white/20 border text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent ${
+                      validationErrors.password ? 'border-red-400' : 'border-white/30'
+                    }`}
+                    placeholder="Create a password (min 6 characters)" 
+                  />
+                  {validationErrors.password && (
+                    <p className="text-red-300 text-sm mt-1">{validationErrors.password}</p>
+                  )}
                 </div>
               </div>
             </div>
