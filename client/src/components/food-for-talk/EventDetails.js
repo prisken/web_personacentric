@@ -71,7 +71,6 @@ const EventDetails = () => {
               <li>{t('foodForTalk.disclaimer.item4')}</li>
               <li>{t('foodForTalk.disclaimer.item5')}</li>
             </ol>
-            <div className="text-white/60 text-[11px]">{t('foodForTalk.disclaimer.placementNote')}</div>
           </div>
         </div>
       </div>
