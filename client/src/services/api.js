@@ -203,9 +203,9 @@ class ApiService {
     }
   }
 
-  // DELETE request
-  async delete(endpoint) {
-    return this.request(endpoint, { method: 'DELETE' });
+  // DELETE request (supports optional body/options)
+  async delete(endpoint, options = {}) {
+    return this.request(endpoint, { method: 'DELETE', ...options });
   }
 
   // File upload method
@@ -491,9 +491,13 @@ class ApiService {
     return this.put(`/super-admin/users/${userId}/role`, { role });
   }
 
-  async deleteSuperAdminUser(userId, confirmation, reason) {
+  async deleteSuperAdminUser(userId, confirmation) {
     return this.delete(`/super-admin/users/${userId}`, {
-      body: JSON.stringify({ confirmation, reason })
+      body: JSON.stringify({ confirmation }),
+      headers: {
+        // ensure Content-Type header is present since request() expects JSON for bodies
+        'Content-Type': 'application/json'
+      }
     });
   }
 

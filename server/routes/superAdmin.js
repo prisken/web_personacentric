@@ -248,7 +248,7 @@ router.put('/users/:userId', authenticateToken, requireSuperAdminOnly, async (re
 router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async (req, res) => {
   try {
     const { userId } = req.params;
-    const { confirmation, reason } = req.body;
+    const { confirmation, reason } = req.body || {};
     
     // Safety check: require confirmation
     if (!confirmation || confirmation !== 'DELETE_USER_CONFIRMED') {
@@ -258,13 +258,7 @@ router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async 
       });
     }
     
-    // Safety check: require reason
-    if (!reason || reason.trim().length < 10) {
-      return res.status(400).json({
-        success: false,
-        error: 'Deletion reason is required (minimum 10 characters)'
-      });
-    }
+    // Reason is now optional per product decision
     
     const user = await User.findByPk(userId);
     if (!user) {
@@ -290,8 +284,8 @@ router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async 
       });
     }
     
-    // Log the deletion for audit trail
-    console.log(`User deletion: ${user.email} (${user.role}) deleted by ${req.user.email} at ${new Date().toISOString()}. Reason: ${reason}`);
+    // Log the deletion for audit trail (reason optional)
+    console.log(`User deletion: ${user.email} (${user.role}) deleted by ${req.user.email} at ${new Date().toISOString()}. Reason: ${reason || 'N/A'}`);
     
     // Instead of hard delete, mark as deleted (soft delete approach)
     await user.update({
@@ -301,7 +295,7 @@ router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async 
       phone: null,
       is_verified: false,
       subscription_status: 'inactive',
-      permissions: { deleted: true, deleted_at: new Date().toISOString(), deleted_by: req.user.id, deletion_reason: reason }
+      permissions: { deleted: true, deleted_at: new Date().toISOString(), deleted_by: req.user.id, deletion_reason: reason || null }
     });
     
     res.json({
@@ -311,8 +305,8 @@ router.delete('/users/:userId', authenticateToken, requireSuperAdminOnly, async 
         id: user.id,
         originalEmail: user.email,
         deletedAt: new Date().toISOString(),
-        deletedBy: req.user.email,
-        reason: reason
+      deletedBy: req.user.email,
+      reason: reason || null
       }
     });
   } catch (error) {

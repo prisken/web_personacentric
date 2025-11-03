@@ -8,7 +8,6 @@ const UserManagement = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deleteReason, setDeleteReason] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [categoryCounts, setCategoryCounts] = useState({});
@@ -135,21 +134,14 @@ const UserManagement = () => {
 
   const handleDeleteClick = (user) => {
     setSelectedUser(user);
-    setDeleteReason('');
     setShowDeleteModal(true);
   };
 
   const handleDeleteUser = async (e) => {
     e.preventDefault();
-    if (!deleteReason.trim() || deleteReason.trim().length < 10) {
-      setError('Please provide a deletion reason (minimum 10 characters)');
-      return;
-    }
-
     try {
-      await apiService.deleteSuperAdminUser(selectedUser.id, 'DELETE_USER_CONFIRMED', deleteReason);
+      await apiService.deleteSuperAdminUser(selectedUser.id, 'DELETE_USER_CONFIRMED');
       setShowDeleteModal(false);
-      setDeleteReason('');
       fetchUsers(currentPage, selectedCategory, searchTerm);
     } catch (error) {
       setError(error.message || 'Failed to delete user');
@@ -585,17 +577,6 @@ const UserManagement = () => {
                 </p>
               </div>
               <form onSubmit={handleDeleteUser} className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">刪除原因 *</label>
-                  <textarea
-                    value={deleteReason}
-                    onChange={(e) => setDeleteReason(e.target.value)}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2"
-                    rows="3"
-                    placeholder="請詳細說明刪除此用戶的原因 (至少10個字符)"
-                    required
-                  />
-                </div>
                 <div className="flex justify-end space-x-3 pt-4">
                   <button
                     type="button"
