@@ -203,9 +203,14 @@ class ApiService {
     }
   }
 
-  // DELETE request (supports optional body/options)
+  // DELETE request (supports optional body/options) and explicitly attaches Authorization
   async delete(endpoint, options = {}) {
-    return this.request(endpoint, { method: 'DELETE', ...options });
+    const token = this.getAuthToken();
+    const mergedHeaders = {
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(options.headers || {})
+    };
+    return this.request(endpoint, { method: 'DELETE', ...options, headers: mergedHeaders });
   }
 
   // File upload method
