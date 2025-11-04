@@ -78,12 +78,22 @@ router.put('/participants/:id', authenticateToken, requireAgentOrAdmin, async (r
     }
 
     const updateData = req.body || {};
+    // Basic validation similar to admin route
+    if (updateData.email && !String(updateData.email).includes('@')) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
+    if (updateData.age && (isNaN(updateData.age) || updateData.age < 18 || updateData.age > 100)) {
+      return res.status(400).json({ message: 'Age must be between 18 and 100' });
+    }
+
     const allowedFields = [
+      'email',
       'first_name', 'last_name', 'nickname', 'gender', 'age', 'phone', 'whatsapp_phone',
-      'occupation', 'bio', 'interests', 'dietary_restrictions', 'consent_accepted',
+      'occupation', 'bio', 'interests', 'interests_other', 'dietary_restrictions', 'consent_accepted',
       'expect_person_type', 'dream_first_date', 'dream_first_date_other',
       'attractive_traits', 'attractive_traits_other', 'japanese_food_preference',
-      'quickfire_magic_item_choice', 'quickfire_desired_outcome'
+      'quickfire_magic_item_choice', 'quickfire_desired_outcome',
+      'is_active', 'is_verified'
     ];
 
     const camelToSnake = {
@@ -93,14 +103,15 @@ router.put('/participants/:id', authenticateToken, requireAgentOrAdmin, async (r
       dreamFirstDateOther: 'dream_first_date_other', attractiveTraits: 'attractive_traits',
       attractiveTraitsOther: 'attractive_traits_other', japaneseFoodPreference: 'japanese_food_preference',
       quickfireMagicItemChoice: 'quickfire_magic_item_choice', quickfireDesiredOutcome: 'quickfire_desired_outcome',
-      consentAccepted: 'consent_accepted'
+      consentAccepted: 'consent_accepted',
+      isActive: 'is_active', isVerified: 'is_verified'
     };
 
     const filtered = {};
     Object.entries(updateData).forEach(([k, v]) => {
       const key = camelToSnake[k] || k;
       if (!allowedFields.includes(key)) return;
-      if (key === 'consent_accepted') filtered[key] = v === true || v === 'true';
+      if (key === 'consent_accepted' || key === 'is_active' || key === 'is_verified') filtered[key] = v === true || v === 'true';
       else if (key === 'age') {
         const ageNum = typeof v === 'string' ? parseInt(v, 10) : v;
         if (!Number.isNaN(ageNum)) filtered[key] = ageNum;

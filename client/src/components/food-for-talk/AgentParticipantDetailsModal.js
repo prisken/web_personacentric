@@ -46,11 +46,8 @@ const AgentParticipantDetailsModal = ({ participantId, isOpen, onClose, onPartic
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Prepare payload: only send fields editable by agent
+      // Prepare payload: remove read-only fields
       const payload = { ...editData };
-      delete payload.email; // agent cannot change email
-      delete payload.isVerified;
-      delete payload.isActive;
       delete payload.registrationDate;
       delete payload.lastLogin;
       delete payload.profilePhotoUrl;
@@ -140,7 +137,11 @@ const AgentParticipantDetailsModal = ({ participantId, isOpen, onClose, onPartic
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="text-white/70 text-sm block mb-1">Email:</label>
-                    <input type="email" value={editData.email || ''} disabled className="w-full px-3 py-2 bg-white/10 border border-white/20 text-white rounded-lg" />
+                    {editing ? (
+                      <input type="email" value={editData.email || ''} onChange={(e)=>handleInputChange('email', e.target.value)} className="w-full px-3 py-2 bg-white/20 border border-white/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400" />
+                    ) : (
+                      <input type="email" value={participant.email || ''} disabled className="w-full px-3 py-2 bg-white/10 border border-white/20 text-white rounded-lg" />
+                    )}
                   </div>
                   <div>
                     <label className="text-white/70 text-sm block mb-1">WhatsApp:</label>
@@ -184,6 +185,24 @@ const AgentParticipantDetailsModal = ({ participantId, isOpen, onClose, onPartic
                     ) : (
                       <p className="text-white font-medium">{participant.age || ''}</p>
                     )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      {editing ? (
+                        <input type="checkbox" checked={!!editData.isActive} onChange={(e)=>handleInputChange('isActive', e.target.checked)} className="w-4 h-4 text-yellow-400 bg-white/20 border-white/30 rounded focus:ring-yellow-400 focus:ring-2" />
+                      ) : (
+                        <input type="checkbox" checked={!!participant.isActive} readOnly className="w-4 h-4 text-yellow-400 bg-white/20 border-white/30 rounded" />
+                      )}
+                      <label className="text-white/70 text-sm">Account Active</label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {editing ? (
+                        <input type="checkbox" checked={!!editData.isVerified} onChange={(e)=>handleInputChange('isVerified', e.target.checked)} className="w-4 h-4 text-yellow-400 bg-white/20 border-white/30 rounded focus:ring-yellow-400 focus:ring-2" />
+                      ) : (
+                        <input type="checkbox" checked={!!participant.isVerified} readOnly className="w-4 h-4 text-yellow-400 bg-white/20 border-white/30 rounded" />
+                      )}
+                      <label className="text-white/70 text-sm">Verified</label>
+                    </div>
                   </div>
                 </div>
               </div>
