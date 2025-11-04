@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import apiService from '../../services/api';
 import { toast } from 'react-toastify';
+import AgentParticipantDetailsModal from '../food-for-talk/AgentParticipantDetailsModal';
 
 const AssignedFftParticipants = () => {
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState(null);
+  const [detailsId, setDetailsId] = useState(null);
 
   const load = async () => {
     try {
@@ -52,7 +54,7 @@ const AssignedFftParticipants = () => {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">名稱</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">聯絡</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">編輯</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Secret Passkey</th>
               </tr>
             </thead>
@@ -85,15 +87,10 @@ const AssignedFftParticipants = () => {
                   </td>
                   <td className="px-6 py-4 text-sm">
                     <button
-                      disabled={savingId === p.id}
-                      onClick={() => {
-                        const newBio = prompt('更新簡介 (bio):', p.bio || '');
-                        if (newBio === null) return;
-                        saveParticipant(p.id, { bio: newBio });
-                      }}
+                      onClick={() => setDetailsId(p.id)}
                       className="px-3 py-1 bg-blue-600 text-white rounded"
                     >
-                      {savingId === p.id ? 'Saving...' : 'Edit Bio'}
+                      View Details
                     </button>
                   </td>
                   <td className="px-6 py-4 text-sm font-mono">
@@ -106,6 +103,12 @@ const AssignedFftParticipants = () => {
         </div>
       </div>
     </div>
+    <AgentParticipantDetailsModal
+      participantId={detailsId}
+      isOpen={!!detailsId}
+      onClose={() => setDetailsId(null)}
+      onParticipantUpdated={() => load()}
+    />
   );
 };
 

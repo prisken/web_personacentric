@@ -120,6 +120,56 @@ router.put('/participants/:id', authenticateToken, requireAgentOrAdmin, async (r
   }
 });
 
+// Agent views details of an assigned participant
+router.get('/participants/:id', authenticateToken, requireAgentOrAdmin, async (req, res) => {
+  try {
+    const agentUserId = req.user.id;
+    const { id } = req.params;
+    const participant = await FoodForTalkUser.findByPk(id);
+    if (!participant) return res.status(404).json({ message: 'Participant not found' });
+    if (participant.assigned_agent_id !== agentUserId && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to view this participant' });
+    }
+
+    // Build a formatted participant similar to admin view but scoped
+    const formatted = {
+      id: participant.id,
+      email: participant.email,
+      firstName: participant.first_name,
+      lastName: participant.last_name,
+      nickname: participant.nickname,
+      gender: participant.gender,
+      age: participant.age,
+      phone: participant.phone,
+      whatsappPhone: participant.whatsapp_phone,
+      occupation: participant.occupation,
+      bio: participant.bio,
+      interests: (() => { try { return Array.isArray(participant.interests) ? participant.interests : JSON.parse(participant.interests || '[]'); } catch { return []; } })(),
+      interestsOther: participant.interests_other,
+      dietaryRestrictions: participant.dietary_restrictions,
+      profilePhotoUrl: participant.profile_photo_url,
+      isVerified: participant.is_verified,
+      isActive: participant.is_active,
+      registrationDate: participant.registration_date,
+      lastLogin: participant.last_login,
+      expectPersonType: participant.expect_person_type,
+      dreamFirstDate: participant.dream_first_date,
+      dreamFirstDateOther: participant.dream_first_date_other,
+      attractiveTraits: (() => { try { return Array.isArray(participant.attractive_traits) ? participant.attractive_traits : JSON.parse(participant.attractive_traits || '[]'); } catch { return []; } })(),
+      attractiveTraitsOther: participant.attractive_traits_other,
+      japaneseFoodPreference: participant.japanese_food_preference,
+      quickfireMagicItemChoice: participant.quickfire_magic_item_choice,
+      quickfireDesiredOutcome: participant.quickfire_desired_outcome,
+      consentAccepted: participant.consent_accepted
+    };
+
+    return res.json({ success: true, participant: formatted });
+  } catch (error) {
+    console.error('Agent get participant details error:', error);
+    return res.status(500).json({ message: 'Failed to get participant details' });
+  }
+});
+
 module.exports = router;
 
 
