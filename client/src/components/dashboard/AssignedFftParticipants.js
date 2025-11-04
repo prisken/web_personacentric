@@ -45,6 +45,7 @@ const AssignedFftParticipants = () => {
   }
 
   return (
+    <>
     <div className="space-y-6">
       <div className="bg-white rounded-2xl shadow p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4">指派給我的參與者</h2>
@@ -109,6 +110,7 @@ const AssignedFftParticipants = () => {
       onClose={() => setDetailsId(null)}
       onParticipantUpdated={() => load()}
     />
+    </>
   );
 };
 
